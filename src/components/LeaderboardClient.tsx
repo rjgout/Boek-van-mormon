@@ -7,7 +7,6 @@ import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
 interface Entry {
   rank: number;
   userId: string;
-  username: string;
   displayName: string;
   xp: number;
   tier: LeagueTier;

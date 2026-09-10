@@ -1,0 +1,44 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/session";
+import { parseTag } from "@/lib/handle";
+
+const SELECT = { id: true, handle: true, discriminator: true, displayName: true } as const;
+
+export async function GET(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const q = req.nextUrl.searchParams.get("q")?.trim() ?? "";
+  if (q.length < 2) return NextResponse.json({ results: [] });
+
+  let matches;
+  const tag = parseTag(q);
+  if (tag) {
+    // Exacte tag "Handle#12345" — altijd vindbaar, dit is de bedoelde,
+    // privacyvriendelijke manier om iemand te zoeken zonder e-mailadres.
+    matches = await prisma.user.findMany({
+      where: { handle: { equals: tag.handle, mode: "insensitive" }, discriminator: tag.discriminator },
+      select: SELECT,
+      take: 5,
+    });
+  } else if (q.includes("@")) {
+    // E-mailadres: alleen tonen als de eigenaar dat expliciet heeft aangezet.
+    matches = await prisma.user.findMany({
+      where: { email: { equals: q.toLowerCase() }, searchableByEmail: true },
+      select: SELECT,
+      take: 5,
+    });
+  } else {
+    // Losse handle (zonder tag): kan meerdere mensen opleveren, de zoeker
+    // kiest de juiste op basis van naam/tag.
+    matches = await prisma.user.findMany({
+      where: { handle: { contains: q, mode: "insensitive" } },
+      select: SELECT,
+      take: 10,
+    });
+  }
+
+  const results = matches.filter((m) => m.id !== user.id);
+  return NextResponse.json({ results });
+}

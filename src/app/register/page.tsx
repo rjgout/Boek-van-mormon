@@ -6,9 +6,10 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: "", username: "", displayName: "", password: "" });
+  const [form, setForm] = useState({ email: "", handle: "", displayName: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [createdTag, setCreatedTag] = useState<string | null>(null);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -19,14 +20,39 @@ export default function RegisterPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
+    const data = await res.json().catch(() => ({}));
     setLoading(false);
     if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
       setError(data.error ?? "Er ging iets mis.");
       return;
     }
-    router.push("/dashboard");
-    router.refresh();
+    setCreatedTag(data.tag);
+  }
+
+  if (createdTag) {
+    return (
+      <div className="max-w-md mx-auto card text-center flex flex-col items-center gap-4">
+        <div className="text-4xl">🎉</div>
+        <h1 className="text-xl font-extrabold text-brand-800 dark:text-brand-300">Account aangemaakt!</h1>
+        <p className="text-slate-600 dark:text-slate-300">Jouw unieke gebruikersnaam is:</p>
+        <p className="text-2xl font-extrabold tracking-wide bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 rounded-2xl px-4 py-2">
+          {createdTag}
+        </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Deel deze met vrienden zodat ze je kunnen vinden — je e-mailadres blijft privé, tenzij je dat later zelf
+          aanzet bij je profielinstellingen.
+        </p>
+        <button
+          className="btn-primary"
+          onClick={() => {
+            router.push("/dashboard");
+            router.refresh();
+          }}
+        >
+          Aan de slag →
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -40,13 +66,19 @@ export default function RegisterPage() {
           value={form.displayName}
           onChange={(e) => setForm({ ...form, displayName: e.target.value })}
         />
-        <input
-          className="input"
-          placeholder="Gebruikersnaam"
-          required
-          value={form.username}
-          onChange={(e) => setForm({ ...form, username: e.target.value })}
-        />
+        <div>
+          <input
+            className="input"
+            placeholder="Gebruikersnaam"
+            required
+            value={form.handle}
+            onChange={(e) => setForm({ ...form, handle: e.target.value })}
+          />
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+            Je krijgt er automatisch een uniek nummer achter, bv. "{form.handle || "Naam"}#12345" — zo kan iedereen
+            dezelfde gebruikersnaam kiezen en hoef je nooit je e-mailadres te delen om gevonden te worden.
+          </p>
+        </div>
         <input
           className="input"
           placeholder="E-mailadres"

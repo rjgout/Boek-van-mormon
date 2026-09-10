@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 
-const schema = z.object({ username: z.string().trim().toLowerCase().min(1) });
+const schema = z.object({ targetUserId: z.string().trim().min(1) });
 
 export async function POST(req: NextRequest) {
   const user = await getCurrentUser();
@@ -11,9 +11,9 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: "Vul een gebruikersnaam in." }, { status: 400 });
+  if (!parsed.success) return NextResponse.json({ error: "Ongeldige invoer" }, { status: 400 });
 
-  const target = await prisma.user.findUnique({ where: { username: parsed.data.username } });
+  const target = await prisma.user.findUnique({ where: { id: parsed.data.targetUserId } });
   if (!target) return NextResponse.json({ error: "Gebruiker niet gevonden." }, { status: 404 });
   if (target.id === user.id) {
     return NextResponse.json({ error: "Je kan jezelf niet toevoegen." }, { status: 400 });

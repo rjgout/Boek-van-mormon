@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
+import { formatTag } from "@/lib/handle";
 
 interface AchievementView {
   slug: string;
@@ -15,7 +16,10 @@ interface AchievementView {
 
 interface ProfileData {
   displayName: string;
-  username: string;
+  handle: string;
+  discriminator: string;
+  email: string;
+  searchableByEmail: boolean;
   xpTotal: number;
   currentStreak: number;
   longestStreak: number;
@@ -32,6 +36,7 @@ export default function ProfileClient() {
   const [data, setData] = useState<ProfileData | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [savingPrivacy, setSavingPrivacy] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -39,6 +44,19 @@ export default function ProfileClient() {
       .then((r) => r.json())
       .then(setData);
   }, []);
+
+  async function toggleSearchableByEmail() {
+    if (!data) return;
+    const next = !data.searchableByEmail;
+    setData({ ...data, searchableByEmail: next });
+    setSavingPrivacy(true);
+    await fetch("/api/account", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ searchableByEmail: next }),
+    }).catch(() => {});
+    setSavingPrivacy(false);
+  }
 
   async function deleteAccount() {
     setDeleting(true);
@@ -61,7 +79,7 @@ export default function ProfileClient() {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
             <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">{data.displayName}</h1>
-            <p className="text-slate-400 dark:text-slate-500">@{data.username}</p>
+            <p className="text-slate-400 dark:text-slate-500">{formatTag(data.handle, data.discriminator)}</p>
           </div>
           {data.tier && (
             <span className="text-sm font-bold bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-200 rounded-full px-3 py-1.5">
@@ -100,6 +118,27 @@ export default function ProfileClient() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="card flex flex-col gap-3">
+        <h2 className="font-extrabold text-lg dark:text-slate-100">Privacy</h2>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-1 h-5 w-5 accent-brand-500"
+            checked={data.searchableByEmail}
+            onChange={toggleSearchableByEmail}
+            disabled={savingPrivacy}
+          />
+          <span className="text-sm dark:text-slate-200">
+            Vindbaar via e-mailadres ({data.email}) bij het toevoegen van vrienden.
+            <br />
+            <span className="text-slate-400 dark:text-slate-500">
+              Staat standaard uit — je bent altijd vindbaar via je gebruikersnaam{" "}
+              {formatTag(data.handle, data.discriminator)}, ongeacht deze instelling.
+            </span>
+          </span>
+        </label>
       </section>
 
       <section className="card flex flex-col gap-3">

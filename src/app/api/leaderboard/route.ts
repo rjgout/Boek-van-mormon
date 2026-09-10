@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       ...(scope === "league" ? { tier: myTier } : {}),
       ...(userIds ? { userId: { in: userIds } } : {}),
     },
-    include: { user: { select: { id: true, username: true, displayName: true } } },
+    include: { user: { select: { id: true, displayName: true } } },
     orderBy: { xp: "desc" },
   });
 
@@ -42,7 +42,6 @@ export async function GET(req: NextRequest) {
     entries: scores.map((s, i) => ({
       rank: i + 1,
       userId: s.user.id,
-      username: s.user.username,
       displayName: s.user.displayName,
       xp: s.xp,
       tier: s.tier,

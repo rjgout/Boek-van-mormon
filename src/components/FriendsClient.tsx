@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState, FormEvent } from "react";
+import { useEffect, useState } from "react";
+import { formatTag } from "@/lib/handle";
 
 interface FriendUser {
   id: string;
-  username: string;
+  handle: string;
+  discriminator: string;
   displayName: string;
   xpTotal: number;
   currentStreak: number;
@@ -16,10 +18,19 @@ interface FriendsData {
   outgoing: { friendshipId: string; to: FriendUser }[];
 }
 
+interface SearchResult {
+  id: string;
+  handle: string;
+  discriminator: string;
+  displayName: string;
+}
+
 export default function FriendsClient() {
   const [data, setData] = useState<FriendsData | null>(null);
-  const [username, setUsername] = useState("");
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[] | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<Set<string>>(new Set());
   const [giftedTo, setGiftedTo] = useState<string | null>(null);
 
   async function load() {
@@ -31,20 +42,32 @@ export default function FriendsClient() {
     load();
   }, []);
 
-  async function sendRequest(e: FormEvent) {
-    e.preventDefault();
+  useEffect(() => {
+    if (query.trim().length < 2) {
+      setResults(null);
+      return;
+    }
+    const timeout = setTimeout(() => {
+      fetch(`/api/users/search?q=${encodeURIComponent(query)}`)
+        .then((r) => r.json())
+        .then((d) => setResults(d.results));
+    }, 250);
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  async function sendRequest(target: SearchResult) {
     setMessage(null);
     const res = await fetch("/api/friends/request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ targetUserId: target.id }),
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) {
       setMessage(body.error ?? "Er ging iets mis.");
     } else {
-      setMessage(`Vriendschapsverzoek naar ${username} verstuurd!`);
-      setUsername("");
+      setMessage(`Vriendschapsverzoek naar ${formatTag(target.handle, target.discriminator)} verstuurd!`);
+      setSentTo((prev) => new Set(prev).add(target.id));
       load();
     }
   }
@@ -77,17 +100,35 @@ export default function FriendsClient() {
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
       <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Vrienden</h1>
 
-      <form onSubmit={sendRequest} className="card flex gap-3">
+      <div className="card flex flex-col gap-3">
         <input
           className="input"
-          placeholder="Gebruikersnaam van je vriend"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Zoek op gebruikersnaam (Naam#12345) of, als iemand dat heeft aangezet, e-mailadres"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
         />
-        <button className="btn-primary shrink-0" type="submit">
-          Toevoegen
-        </button>
-      </form>
+        {results && results.length === 0 && query.trim().length >= 2 && (
+          <p className="text-sm text-slate-400 dark:text-slate-500">Niemand gevonden.</p>
+        )}
+        {results && results.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {results.map((r) => (
+              <div key={r.id} className="flex items-center justify-between !py-2">
+                <span className="dark:text-slate-100">
+                  {r.displayName} <span className="text-slate-400 dark:text-slate-500">({formatTag(r.handle, r.discriminator)})</span>
+                </span>
+                <button
+                  className="btn-secondary !px-3 !py-1.5"
+                  disabled={sentTo.has(r.id)}
+                  onClick={() => sendRequest(r)}
+                >
+                  {sentTo.has(r.id) ? "Verstuurd" : "Toevoegen"}
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
       {message && <p className="text-sm font-semibold text-brand-600">{message}</p>}
 
       {data.incoming.length > 0 && (
@@ -96,7 +137,7 @@ export default function FriendsClient() {
           <div className="flex flex-col gap-2">
             {data.incoming.map(({ friendshipId, from }) => (
               <div key={friendshipId} className="card flex items-center justify-between !py-3">
-                <span className="font-bold">{from.displayName} (@{from.username})</span>
+                <span className="font-bold">{from.displayName} ({formatTag(from.handle, from.discriminator)})</span>
                 <div className="flex gap-2">
                   <button className="btn-primary !px-3 !py-1.5" onClick={() => respond(friendshipId, "accept")}>
                     Accepteren
@@ -117,7 +158,7 @@ export default function FriendsClient() {
           <div className="flex flex-col gap-2">
             {data.outgoing.map(({ friendshipId, to }) => (
               <div key={friendshipId} className="card !py-3 text-slate-500 dark:text-slate-400">
-                Wachten op {to.displayName} (@{to.username})
+                Wachten op {to.displayName} ({formatTag(to.handle, to.discriminator)})
               </div>
             ))}
           </div>
@@ -126,13 +167,14 @@ export default function FriendsClient() {
 
       <section>
         <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Jouw vrienden ({data.friends.length})</h2>
-        {data.friends.length === 0 && <p className="text-slate-400 dark:text-slate-500">Nog geen vrienden — voeg iemand toe hierboven!</p>}
+        {data.friends.length === 0 && <p className="text-slate-400 dark:text-slate-500">Nog geen vrienden — zoek iemand hierboven!</p>}
         <div className="flex flex-col gap-2">
           {data.friends.map((f) => (
             <div key={f.id} className="card flex items-center justify-between !py-3">
               <div>
                 <div className="font-bold">
-                  {f.displayName} <span className="text-slate-400 dark:text-slate-500 font-normal">@{f.username}</span>
+                  {f.displayName}{" "}
+                  <span className="text-slate-400 dark:text-slate-500 font-normal">({formatTag(f.handle, f.discriminator)})</span>
                 </div>
                 <div className="text-xs text-slate-400 dark:text-slate-500">
                   🔥 {f.currentStreak} streak · ⭐ {f.xpTotal} XP

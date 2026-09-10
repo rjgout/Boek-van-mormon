@@ -26,7 +26,10 @@ export async function GET() {
 
   return NextResponse.json({
     displayName: user.displayName,
-    username: user.username,
+    handle: user.handle,
+    discriminator: user.discriminator,
+    email: user.email,
+    searchableByEmail: user.searchableByEmail,
     xpTotal: user.xpTotal,
     currentStreak: user.currentStreak,
     longestStreak: user.longestStreak,

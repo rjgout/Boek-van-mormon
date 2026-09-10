@@ -12,10 +12,21 @@ datasource db {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
-  username     String   @unique
+  // handle+discriminator vormen samen de unieke, doorzoekbare "tag"
+  // (bv. "Jan#12345") — bewust NIET uniek op zichzelf, zodat mensen niet
+  // hun e-mailadres hoeven te delen om gevonden te worden. Zie
+  // src/lib/handle.ts voor het genereren/parsen van deze tag.
+  handle          String
+  discriminator   String // 5 cijfers, bv. "04213"
+  // Standaard UIT: alleen als een gebruiker dit expliciet aanzet, kan diens
+  // exacte e-mailadres gebruikt worden om ze te vinden bij het toevoegen
+  // van vrienden (zie /api/users/search).
+  searchableByEmail Boolean @default(false)
   displayName  String
   passwordHash String
   createdAt    DateTime @default(now())
+
+  @@unique([handle, discriminator])
 
   // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
   // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes

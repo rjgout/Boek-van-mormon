@@ -6,7 +6,8 @@ export async function GET() {
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
   return NextResponse.json({
     id: user.id,
-    username: user.username,
+    handle: user.handle,
+    discriminator: user.discriminator,
     displayName: user.displayName,
     xpTotal: user.xpTotal,
     currentStreak: user.currentStreak,

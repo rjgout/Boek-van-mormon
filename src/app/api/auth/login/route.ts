@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { createSessionToken, verifyPassword, SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth";
+import { parseTag } from "@/lib/handle";
 
 const schema = z.object({
-  identifier: z.string().trim().toLowerCase().min(1, "Vul je e-mailadres of gebruikersnaam in."),
+  identifier: z.string().trim().min(1, "Vul je e-mailadres of gebruikersnaam in."),
   password: z.string().min(1, "Vul je wachtwoord in."),
 });
 
@@ -16,9 +17,14 @@ export async function POST(req: NextRequest) {
   }
   const { identifier, password } = parsed.data;
 
-  const user = await prisma.user.findFirst({
-    where: { OR: [{ email: identifier }, { username: identifier }] },
-  });
+  // Inloggen kan met e-mailadres, of met de volledige unieke tag
+  // ("Handle#12345") — de kale handle alleen is niet uniek genoeg.
+  const tag = parseTag(identifier);
+  const user = tag
+    ? await prisma.user.findFirst({
+        where: { handle: { equals: tag.handle, mode: "insensitive" }, discriminator: tag.discriminator },
+      })
+    : await prisma.user.findUnique({ where: { email: identifier.toLowerCase() } });
 
   const genericError = { error: "Onjuiste inloggegevens." };
   if (!user) {
@@ -31,7 +37,7 @@ export async function POST(req: NextRequest) {
   }
 
   const token = await createSessionToken(user.id);
-  const res = NextResponse.json({ id: user.id, username: user.username });
+  const res = NextResponse.json({ id: user.id });
   res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions);
   return res;
 }

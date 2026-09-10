@@ -46,9 +46,9 @@ async function main() {
   // --- Demo-gebruikers zodat vrienden/competitie/live game meteen te testen zijn ---
   const demoPassword = await bcrypt.hash("demo1234", 10);
   const demoUsers = [
-    { email: "anna@example.com", username: "anna", displayName: "Anna" },
-    { email: "bram@example.com", username: "bram", displayName: "Bram" },
-    { email: "carla@example.com", username: "carla", displayName: "Carla" },
+    { email: "anna@example.com", handle: "anna", discriminator: "00001", displayName: "Anna" },
+    { email: "bram@example.com", handle: "bram", discriminator: "00001", displayName: "Bram" },
+    { email: "carla@example.com", handle: "carla", discriminator: "00001", displayName: "Carla" },
   ];
 
   const createdUsers = [];
@@ -73,7 +73,7 @@ async function main() {
     create: { senderId: carla.id, receiverId: anna.id, status: "PENDING" },
   });
 
-  console.log("Demo-gebruikers: anna/bram/carla (wachtwoord: demo1234)");
+  console.log("Demo-gebruikers: anna#00001/bram#00001/carla#00001 (wachtwoord: demo1234)");
   console.log("Seed klaar.");
 }
 

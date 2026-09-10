@@ -9,6 +9,11 @@ van een specifieke cloud-hostingprovider.
 ## Functionaliteit
 
 - **Accounts & sessies**: registreren/inloggen/account verwijderen (AVG) via een httpOnly session-cookie.
+- **Privacyvriendelijke gebruikersnaam**: je gebruikersnaam wordt bij registratie
+  automatisch aangevuld met een uniek nummer (bv. `Jan#83173`), zodat
+  iedereen dezelfde naam kan kiezen en je nooit je e-mailadres hoeft te
+  delen om door vrienden gevonden te worden. Vindbaar via e-mailadres is een
+  losse instelling op je profiel, standaard uit.
 - **Reader**: hoofdstukken lezen met een duidelijk kruimelpad (Boek → Hoofdstuk),
   instelbare lettergrootte, donkere modus, bladwijzers, highlights, eigen
   notities per vers, en een zoekfunctie over de hele tekst.

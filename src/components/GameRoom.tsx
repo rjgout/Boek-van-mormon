@@ -24,7 +24,6 @@ interface QuestionData {
 
 interface Friend {
   id: string;
-  username: string;
   displayName: string;
 }
 
