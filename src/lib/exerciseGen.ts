@@ -10,12 +10,16 @@ const STOPWORDS = new Set([
 ]);
 
 export interface GeneratedExercise {
-  type: "FILL_BLANK" | "WORD_BANK";
+  type: "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE";
   verseRef: string;
   prompt: string;
   answers: string[];
   wordBank?: string[];
 }
+
+// Bekende namen in de demo-parafrases; gebruikt om een vals statement te
+// maken voor TRUE_FALSE-oefeningen (naam vervangen door een andere naam).
+const KNOWN_NAMES = ["Nephi", "Laman", "Lemuel", "Sam", "Lehi", "Alma", "Zarahemla", "Jeruzalem", "Laban"];
 
 function cleanWord(raw: string): string {
   return raw.replace(/^[^a-zA-ZÀ-ÿ]+|[^a-zA-ZÀ-ÿ]+$/g, "");
@@ -79,6 +83,30 @@ export function generateWordBank(verseText: string, verseRef: string, seed = 0):
     answers: span.map((w) => w.toLowerCase()),
     wordBank: shuffled,
   };
+}
+
+/**
+ * Waar/niet-waar: bij een "vals" statement wordt een bekende naam in het
+ * vers vervangen door een andere naam. Levert null op als het vers geen
+ * bekende naam bevat om mee te wisselen.
+ */
+export function generateTrueFalse(verseText: string, verseRef: string, seed = 0): GeneratedExercise | null {
+  const tokens = verseText.split(/\s+/);
+  const nameIndex = tokens.findIndex((t) => KNOWN_NAMES.includes(cleanWord(t)));
+  if (nameIndex === -1) return null;
+
+  const makeFalse = seed % 2 === 1;
+  if (!makeFalse) {
+    return { type: "TRUE_FALSE", verseRef, prompt: verseText, answers: ["true"] };
+  }
+
+  const original = cleanWord(tokens[nameIndex]);
+  const alternatives = KNOWN_NAMES.filter((n) => n !== original);
+  const replacement = alternatives[seed % alternatives.length];
+  const falseTokens = [...tokens];
+  falseTokens[nameIndex] = falseTokens[nameIndex].replace(original, replacement);
+
+  return { type: "TRUE_FALSE", verseRef, prompt: falseTokens.join(" "), answers: ["false"] };
 }
 
 export function normalizeAnswer(text: string): string {

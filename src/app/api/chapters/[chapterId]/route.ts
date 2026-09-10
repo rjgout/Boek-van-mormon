@@ -12,7 +12,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ cha
     include: {
       book: true,
       verses: { orderBy: { number: "asc" } },
-      exercises: { orderBy: { order: "asc" } },
+      exercises: { orderBy: { order: "asc" }, where: { status: "APPROVED" } },
     },
   });
   if (!chapter) return NextResponse.json({ error: "Hoofdstuk niet gevonden" }, { status: 404 });

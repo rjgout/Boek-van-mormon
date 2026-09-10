@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { checkAndAwardAchievements } from "@/lib/achievements";
 
 export async function POST(_req: NextRequest, { params }: { params: Promise<{ friendshipId: string }> }) {
   const user = await getCurrentUser();
@@ -12,6 +13,10 @@ export async function POST(_req: NextRequest, { params }: { params: Promise<{ fr
     return NextResponse.json({ error: "Verzoek niet gevonden." }, { status: 404 });
   }
 
-  await prisma.friendship.update({ where: { id: friendshipId }, data: { status: "ACCEPTED" } });
+  await prisma.$transaction(async (tx) => {
+    await tx.friendship.update({ where: { id: friendshipId }, data: { status: "ACCEPTED" } });
+    await checkAndAwardAchievements(tx, friendship.senderId);
+    await checkAndAwardAchievements(tx, friendship.receiverId);
+  });
   return NextResponse.json({ ok: true });
 }

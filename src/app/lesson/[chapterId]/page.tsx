@@ -13,14 +13,32 @@ export default async function LessonPage({ params }: { params: Promise<{ chapter
     include: {
       book: true,
       verses: { orderBy: { number: "asc" } },
-      exercises: { orderBy: { order: "asc" } },
+      exercises: { orderBy: { order: "asc" }, where: { status: "APPROVED" } },
     },
   });
   if (!chapter) redirect("/dashboard");
 
+  const verseIds = chapter.verses.map((v) => v.id);
+  const [bookmarks, highlights, notes, allChapters] = await Promise.all([
+    prisma.bookmark.findMany({ where: { userId: user.id, verseId: { in: verseIds } } }),
+    prisma.highlight.findMany({ where: { userId: user.id, verseId: { in: verseIds } } }),
+    prisma.note.findMany({ where: { userId: user.id, verseId: { in: verseIds } } }),
+    prisma.chapter.findMany({
+      orderBy: [{ book: { order: "asc" } }, { order: "asc" }],
+      select: { id: true },
+    }),
+  ]);
+
+  const bookmarkedVerseIds = new Set(bookmarks.map((b) => b.verseId));
+  const highlightedVerseIds = new Set(highlights.map((h) => h.verseId));
+  const notesByVerseId = Object.fromEntries(notes.map((n) => [n.verseId, n.text]));
+
+  const currentIndex = allChapters.findIndex((c) => c.id === chapter.id);
+  const nextChapterId = currentIndex >= 0 ? allChapters[currentIndex + 1]?.id ?? null : null;
+
   const exercises = chapter.exercises.map((e) => ({
     id: e.id,
-    type: e.type as "FILL_BLANK" | "WORD_BANK",
+    type: e.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE",
     verseRef: e.verseRef,
     prompt: e.prompt,
     blanks: (JSON.parse(e.answers) as string[]).length,
@@ -32,7 +50,15 @@ export default async function LessonPage({ params }: { params: Promise<{ chapter
       chapterId={chapter.id}
       bookName={chapter.book.name}
       chapterNumber={chapter.number}
-      verses={chapter.verses.map((v) => ({ number: v.number, text: v.text }))}
+      nextChapterId={nextChapterId}
+      verses={chapter.verses.map((v) => ({
+        id: v.id,
+        number: v.number,
+        text: v.text,
+        bookmarked: bookmarkedVerseIds.has(v.id),
+        highlighted: highlightedVerseIds.has(v.id),
+        note: notesByVerseId[v.id] ?? "",
+      }))}
       exercises={exercises}
     />
   );

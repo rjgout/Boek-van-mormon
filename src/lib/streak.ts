@@ -1,5 +1,9 @@
+import type { XPReason } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { dayKey, daysBetween, weekStartKey } from "@/lib/dates";
+import { awardXp } from "@/lib/xp";
+import { resolveStartingTier } from "@/lib/leagues";
+import { checkAndAwardAchievements } from "@/lib/achievements";
 
 const PASS_THRESHOLD = 60; // percentage nodig om een hoofdstuk als voltooid te tellen
 const STREAK_MILESTONE_FOR_FREEZE = 7; // elke 7-daagse streak levert een freeze op
@@ -15,17 +19,20 @@ export interface StudyResult {
   freezeUsed: boolean;
   freezesEarned: number;
   freezeCount: number;
+  newAchievements: string[];
 }
 
 /**
- * Verwerkt het resultaat van een les: update XP, hoofdstukvoortgang, streak en
- * (indien van toepassing) verdiende of verbruikte streak freezes.
+ * Verwerkt het resultaat van een les (of een live-spel, via `xpReason`): update
+ * XP (met audittrail), hoofdstukvoortgang, streak, verdiende/verbruikte
+ * streak freezes, divisie-XP en achievements.
  */
 export async function completeLesson(
   userId: string,
   chapterId: string,
   scorePercent: number,
-  xpForThisAttempt: number
+  xpForThisAttempt: number,
+  xpReason: XPReason = "LESSON_COMPLETED"
 ): Promise<StudyResult> {
   return prisma.$transaction(async (tx) => {
     const user = await tx.user.findUniqueOrThrow({ where: { id: userId } });
@@ -116,11 +123,10 @@ export async function completeLesson(
       });
     }
 
-    // --- XP & weekscore ---
+    // --- Streak/freeze-velden (XP loopt apart via awardXp, zie onder) ---
     await tx.user.update({
       where: { id: userId },
       data: {
-        xpTotal: { increment: xpForThisAttempt },
         currentStreak,
         longestStreak,
         lastStudyDate: today,
@@ -128,12 +134,28 @@ export async function completeLesson(
       },
     });
 
-    const weekStart = weekStartKey();
-    await tx.weeklyScore.upsert({
-      where: { userId_weekStart: { userId, weekStart } },
-      create: { userId, weekStart, xp: xpForThisAttempt },
-      update: { xp: { increment: xpForThisAttempt } },
+    await awardXp(tx, userId, xpForThisAttempt, xpReason, {
+      chapterId,
+      scorePercent,
+      perfect: scorePercent === 100,
     });
+
+    // --- Wekelijkse competitie / divisie ---
+    const weekStart = weekStartKey();
+    const existingWeeklyScore = await tx.weeklyScore.findUnique({
+      where: { userId_weekStart: { userId, weekStart } },
+    });
+    if (existingWeeklyScore) {
+      await tx.weeklyScore.update({
+        where: { userId_weekStart: { userId, weekStart } },
+        data: { xp: { increment: xpForThisAttempt } },
+      });
+    } else {
+      const tier = await resolveStartingTier(tx, userId, weekStart);
+      await tx.weeklyScore.create({ data: { userId, weekStart, xp: xpForThisAttempt, tier } });
+    }
+
+    const newAchievements = await checkAndAwardAchievements(tx, userId);
 
     return {
       xpEarned: xpForThisAttempt,
@@ -145,6 +167,7 @@ export async function completeLesson(
       freezeUsed,
       freezesEarned,
       freezeCount,
+      newAchievements,
     };
   });
 }
@@ -173,5 +196,6 @@ export async function giftFreeze(fromUserId: string, toUserId: string) {
     await tx.freezeTransaction.create({
       data: { userId: toUserId, type: "GIFT_RECEIVED", amount: 1, relatedId: fromUserId },
     });
+    await checkAndAwardAchievements(tx, fromUserId);
   });
 }

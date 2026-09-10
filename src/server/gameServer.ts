@@ -13,7 +13,7 @@ const REVEAL_PAUSE_MS = 3_500;
 
 interface GameExercise {
   id: string;
-  type: "FILL_BLANK" | "WORD_BANK";
+  type: "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE";
   verseRef: string;
   prompt: string;
   answers: string[];
@@ -78,10 +78,13 @@ function sanitizeExercise(ex: GameExercise) {
 }
 
 async function loadExercises(chapterId: string): Promise<GameExercise[]> {
-  const rows = await prisma.exercise.findMany({ where: { chapterId }, orderBy: { order: "asc" } });
+  const rows = await prisma.exercise.findMany({
+    where: { chapterId, status: "APPROVED" },
+    orderBy: { order: "asc" },
+  });
   return rows.map((r) => ({
     id: r.id,
-    type: r.type as "FILL_BLANK" | "WORD_BANK",
+    type: r.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE",
     verseRef: r.verseRef,
     prompt: r.prompt,
     answers: JSON.parse(r.answers) as string[],
@@ -147,6 +150,8 @@ async function finishGame(room: RoomState) {
   ioInstance?.to(room.code).emit("game_finished", { scoreboard: serializePlayers(room) });
   await prisma.liveGame.update({ where: { code: room.code }, data: { status: "FINISHED" } }).catch(() => {});
 
+  const maxScore = Math.max(0, ...[...room.players.values()].map((p) => p.score));
+
   for (const p of room.players.values()) {
     await prisma.liveGamePlayer
       .update({ where: { gameId_userId: { gameId: room.id, userId: p.userId } }, data: { score: p.score } })
@@ -154,8 +159,9 @@ async function finishGame(room: RoomState) {
 
     const percent = room.exercises.length === 0 ? 0 : Math.round((p.correctCount / room.exercises.length) * 100);
     const xp = Math.round(p.score / 5);
+    const won = maxScore > 0 && p.score === maxScore;
     if (xp > 0) {
-      await completeLesson(p.userId, room.chapterId, percent, xp).catch(() => {});
+      await completeLesson(p.userId, room.chapterId, percent, xp, won ? "LIVE_GAME_WON" : "LIVE_GAME_PLAYED").catch(() => {});
     }
   }
   setTimeout(() => rooms.delete(room.code), 5 * 60_000);

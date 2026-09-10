@@ -8,7 +8,18 @@ body {
 }
 
 body {
-  @apply bg-brand-50 text-slate-800 font-display;
+  @apply bg-brand-50 text-slate-800 font-display transition-colors;
+  @apply dark:bg-slate-900 dark:text-slate-100;
+}
+
+/* Leesplezier: instelbare lettergrootte voor de reader (zie ReaderSettings) */
+:root {
+  --reader-font-scale: 1;
+}
+
+.reader-text {
+  font-size: calc(1.125rem * var(--reader-font-scale));
+  line-height: 1.9;
 }
 
 .btn {
@@ -21,6 +32,7 @@ body {
 
 .btn-secondary {
   @apply btn bg-white text-brand-600 border-2 border-brand-200 shadow-[0_4px_0_0_theme(colors.brand.200)] hover:bg-brand-50 active:shadow-none active:translate-y-1;
+  @apply dark:bg-slate-800 dark:text-brand-300 dark:border-slate-600 dark:shadow-[0_4px_0_0_theme(colors.slate.950)] dark:hover:bg-slate-700;
 }
 
 .btn-ice {
@@ -28,9 +40,11 @@ body {
 }
 
 .card {
-  @apply bg-white rounded-3xl shadow-sm border border-slate-100 p-6;
+  @apply bg-white rounded-3xl shadow-sm border border-slate-100 p-6 transition-colors;
+  @apply dark:bg-slate-800 dark:border-slate-700;
 }
 
 .input {
-  @apply w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base outline-none focus:border-brand-400 transition;
+  @apply w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base outline-none focus:border-brand-400 transition bg-white text-slate-800;
+  @apply dark:bg-slate-900 dark:border-slate-600 dark:text-slate-100;
 }

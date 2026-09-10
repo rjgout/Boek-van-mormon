@@ -31,7 +31,7 @@ export default function LoginPage() {
 
   return (
     <div className="max-w-md mx-auto card">
-      <h1 className="text-2xl font-extrabold mb-6 text-brand-800">Inloggen</h1>
+      <h1 className="text-2xl font-extrabold mb-6 text-brand-800 dark:text-brand-300">Inloggen</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           className="input"
@@ -48,12 +48,12 @@ export default function LoginPage() {
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
         />
-        {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
+        {error && <p className="text-red-600 dark:text-red-400 text-sm font-semibold">{error}</p>}
         <button type="submit" disabled={loading} className="btn-primary mt-2">
           {loading ? "Bezig..." : "Inloggen"}
         </button>
       </form>
-      <p className="text-sm text-slate-500 mt-4">
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-4">
         Nog geen account?{" "}
         <Link href="/register" className="text-brand-600 font-bold">
           Maak er een aan

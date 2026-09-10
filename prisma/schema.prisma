@@ -17,17 +17,26 @@ model User {
   passwordHash String
   createdAt    DateTime @default(now())
 
+  // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
+  // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes
+  // is dat FreezeTransaction. Zie src/lib/xp.ts en src/lib/streak.ts.
   xpTotal        Int       @default(0)
   currentStreak  Int       @default(0)
   longestStreak  Int       @default(0)
-  lastStudyDate  String? // yyyy-mm-dd, in the user's local day bucket
+  lastStudyDate  String? // yyyy-mm-dd, in de dag-bucket van de gebruiker
   freezeCount    Int       @default(0)
 
   progress          ChapterProgress[]
+  readingSessions   ReadingSession[]
   attempts          ExerciseAttempt[]
   freezeTx          FreezeTransaction[] @relation("FreezeOwner")
   freezeTxRelated   FreezeTransaction[] @relation("FreezeRelated")
+  xpTx              XPTransaction[]
   weeklyScores      WeeklyScore[]
+  bookmarks         Bookmark[]
+  highlights        Highlight[]
+  notes             Note[]
+  achievements      UserAchievement[]
 
   sentFriendReqs     Friendship[] @relation("FriendSender")
   receivedFriendReqs Friendship[] @relation("FriendReceiver")
@@ -52,10 +61,11 @@ model Chapter {
   book     Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
   number   Int
   order    Int
-  verses    Verse[]
-  exercises Exercise[]
-  progress  ChapterProgress[]
-  liveGames LiveGame[]
+  verses          Verse[]
+  exercises       Exercise[]
+  progress        ChapterProgress[]
+  liveGames       LiveGame[]
+  readingSessions ReadingSession[]
 
   @@unique([bookId, number])
 }
@@ -67,28 +77,181 @@ model Verse {
   number    Int
   text      String
 
+  people    VersePerson[]
+  places    VersePlace[]
+  topics    VerseTopic[]
+  bookmarks Bookmark[]
+  highlights Highlight[]
+  notes     Note[]
+  exercises Exercise[]
+
   @@unique([chapterId, number])
 }
 
-// --- Oefeningen (invuloefeningen, geen multiple choice) -----------------
+// --- Context: personen, plaatsen en thema's --------------------------------
+// Fase-4-fundament (zie productplan): het datamodel staat, de profielpagina's
+// en thema-filters worden in een latere fase gebouwd.
+
+model Person {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  name        String
+  description String?
+  fatherId    String?
+  father      Person?       @relation("Parentage", fields: [fatherId], references: [id], onDelete: SetNull)
+  children    Person[]      @relation("Parentage")
+  verses      VersePerson[]
+}
+
+model Place {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  description String?
+  verses      VersePlace[]
+}
+
+model Topic {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  name        String
+  description String?
+  verses      VerseTopic[]
+}
+
+model VersePerson {
+  id       String  @id @default(cuid())
+  verseId  String
+  verse    Verse   @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  personId String
+  person   Person  @relation(fields: [personId], references: [id], onDelete: Cascade)
+  role     String? // bv. "spreker", "genoemd"
+
+  @@unique([verseId, personId])
+}
+
+model VersePlace {
+  id      String @id @default(cuid())
+  verseId String
+  verse   Verse  @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  placeId String
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@unique([verseId, placeId])
+}
+
+model VerseTopic {
+  id      String @id @default(cuid())
+  verseId String
+  verse   Verse  @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  topicId String
+  topic   Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@unique([verseId, topicId])
+}
+
+// --- Leeservaring: bladwijzers, highlights, notities, leesmomenten --------
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verseId   String
+  verse     Verse    @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, verseId])
+}
+
+model Highlight {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verseId   String
+  verse     Verse    @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  color     String   @default("yellow")
+  createdAt DateTime @default(now())
+
+  @@unique([userId, verseId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verseId   String
+  verse     Verse    @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, verseId])
+}
+
+// Een "leesmoment": aparte registratie van het lézen, los van de quiz erna.
+// Nodig voor "ga verder waar je gebleven was" en om lezen te kunnen meten
+// zonder dat het per se aan een voltooide quiz hangt.
+model ReadingSession {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapterId  String
+  chapter    Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+}
+
+// --- Oefeningen: gekoppeld aan concrete brontekst, bewust weinig multiple
+// choice (invullen, volgorde, waar/niet waar) -----------------------------
+//
+// `status` bereidt de AI-contentworkflow uit het productplan voor: nu is
+// alles automatisch gegenereerd en meteen APPROVED, maar handmatig
+// gecontroleerde of AI-voorgestelde vragen kunnen straks als DRAFT/IN_REVIEW
+// binnenkomen zonder dat gebruikers ze al te zien krijgen (zie
+// src/app/api/chapters/[chapterId]/route.ts, dat alleen APPROVED serveert).
 
 enum ExerciseType {
   FILL_BLANK
   WORD_BANK
+  TRUE_FALSE
+}
+
+enum ContentStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  REJECTED
 }
 
 model Exercise {
-  id        String       @id @default(cuid())
-  chapterId String
-  chapter   Chapter      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  order     Int
-  type      ExerciseType
-  verseRef  String // bv. "1 Nephi 3:7"
-  prompt    String // tekst met "____" op de plek van het weggelaten woord
-  answers   String // JSON-array van geaccepteerde antwoorden per blank
-  wordBank  String? // JSON-array van keuzewoorden voor WORD_BANK type
+  id            String        @id @default(cuid())
+  chapterId     String
+  chapter       Chapter       @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  order         Int
+  type          ExerciseType
+  status        ContentStatus @default(APPROVED)
+  verseRef      String // bv. "1 Nephi 3:7"
+  sourceVerseId String?
+  sourceVerse   Verse?        @relation(fields: [sourceVerseId], references: [id], onDelete: SetNull)
+  prompt        String // tekst met "____" op de plek van het weggelaten woord, of de stelling bij TRUE_FALSE
+  answers       String // JSON-array van geaccepteerde antwoorden (of ["true"]/["false"])
+  wordBank      String? // JSON-array van keuzewoorden voor WORD_BANK type
+  options       QuestionOption[]
 
   attempts ExerciseAttempt[]
+}
+
+// Nog niet gebruikt door de huidige generatoren (FILL_BLANK/WORD_BANK/
+// TRUE_FALSE hebben er geen nodig), maar aanwezig zodat toekomstige
+// selectie-achtige vraagtypes (bv. "wie zei dit?", "koppel persoon aan
+// gebeurtenis") zonder schemawijziging toegevoegd kunnen worden.
+model QuestionOption {
+  id         String   @id @default(cuid())
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  label      String
+  isCorrect  Boolean  @default(false)
+  order      Int      @default(0)
 }
 
 model ExerciseAttempt {
@@ -114,6 +277,49 @@ model ChapterProgress {
   completedAt DateTime?
 
   @@unique([userId, chapterId])
+}
+
+// --- XP: elke mutatie is een transactie, auditbaar en met een reden -------
+// (user.xpTotal blijft een cache voor snelle reads, zie src/lib/xp.ts)
+
+enum XPReason {
+  LESSON_COMPLETED
+  PERFECT_SCORE
+  LIVE_GAME_PLAYED
+  LIVE_GAME_WON
+  ACHIEVEMENT
+}
+
+model XPTransaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount    Int
+  reason    XPReason
+  metadata  String? // JSON, bv. {"chapterId": "..."}
+  createdAt DateTime @default(now())
+}
+
+// --- Achievements -----------------------------------------------------------
+
+model Achievement {
+  id               String            @id @default(cuid())
+  slug             String            @unique
+  name             String
+  description      String
+  icon             String // emoji
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  earnedAt      DateTime    @default(now())
+
+  @@unique([userId, achievementId])
 }
 
 // --- Streak freezes -------------------------------------------------------
@@ -159,12 +365,26 @@ model Friendship {
 
 // --- Wekelijkse competitie -------------------------------------------------
 
+// Divisies (secties 9 uit het productplan): elke gebruiker zit per week in
+// precies één tier. Promotie/degradatie wordt "lazy" berekend zodra iemand
+// voor het eerst die week actief wordt (zie src/lib/leagues.ts) — dat werkt
+// zonder een aparte cron-taak en is functioneel gelijkwaardig aan een
+// wekelijkse batchjob die op maandag draait.
+enum LeagueTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+  DIAMOND
+}
+
 model WeeklyScore {
-  id        String @id @default(cuid())
+  id        String     @id @default(cuid())
   userId    String
-  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   weekStart String // yyyy-mm-dd (maandag)
-  xp        Int    @default(0)
+  xp        Int        @default(0)
+  tier      LeagueTier @default(BRONZE)
 
   @@unique([userId, weekStart])
 }

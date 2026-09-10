@@ -8,20 +8,36 @@ van een specifieke cloud-hostingprovider.
 
 ## Functionaliteit
 
-- **Accounts & sessies**: registreren/inloggen met een httpOnly session-cookie.
-- **Lessen**: lees een hoofdstuk, beantwoord daarna invuloefeningen (zelf het
-  ontbrekende woord typen, of woorden in de juiste volgorde slepen) — **geen
-  multiple choice**.
-- **Dag-streak**: elke dag studeren houdt je streak in leven.
-- **Streak freezes**: je verdient ze door mijlpalen te halen (een 7-daagse
-  streak, of elke 10 voltooide hoofdstukken), ze beschermen automatisch je
-  streak als je een dag mist, en je kan ze weggeven aan vrienden.
+- **Accounts & sessies**: registreren/inloggen/account verwijderen (AVG) via een httpOnly session-cookie.
+- **Reader**: hoofdstukken lezen met een duidelijk kruimelpad (Boek → Hoofdstuk),
+  instelbare lettergrootte, donkere modus, bladwijzers, highlights, eigen
+  notities per vers, en een zoekfunctie over de hele tekst.
+- **Oefeningen**: invullen, woorden in de juiste volgorde slepen, en
+  waar/niet-waar — bewust **geen** oefening die uitsluitend uit multiple
+  choice bestaat. Elke oefening is gekoppeld aan een concreet vers
+  (`sourceVerseId`) en heeft een content-status (`APPROVED`/`DRAFT`/...) als
+  fundament voor een latere handmatige-of-AI-controleworkflow.
+- **XP**: elke mutatie is een auditbare `XPTransaction` (niet zomaar een
+  teller) — reden, bedrag en tijdstip zijn altijd te herleiden.
+- **Dag-streak & streak freezes**: je verdient freezes door mijlpalen te
+  halen (een 7-daagse streak, of elke 10 voltooide hoofdstukken), ze
+  beschermen automatisch je streak als je een dag mist, en je kan ze
+  weggeven aan vrienden.
 - **Vrienden**: verzoeken sturen/accepteren, elkaars streak en XP zien.
-- **Wekelijkse competitie**: ranglijst op XP, wereldwijd of alleen vrienden.
+- **Wekelijkse competitie met divisies**: Bronze/Silver/Gold/Platinum/Diamond;
+  de top promoveert, de onderkant degradeert aan het einde van de week
+  (berekend zodra je voor het eerst die week actief wordt — geen aparte
+  cron-taak nodig).
+- **Achievements**: badges voor mijlpalen (eerste week-streak, eerste
+  hoofdstuk, 1000 XP, eerste freeze verdiend/weggegeven, eerste vriend,
+  eerste gewonnen duel), zichtbaar op je profiel.
 - **Live multiplayer-quiz**: maak een spel aan voor een hoofdstuk, nodig
   vrienden uit (real-time pop-up als ze de site open hebben, of deel de
   code), en speel gelijktijdig dezelfde invuloefeningen met een live
   scorebord (via Socket.io, met Redis als adapter).
+- **Privacy**: alleen functioneel noodzakelijke cookies (geen tracking, dus
+  geen cookiebanner nodig), een privacy- en cookiebeleid, en zelf je account
+  + alle gegevens kunnen verwijderen.
 
 ## Snel starten met Docker (aanbevolen)
 
@@ -119,17 +135,21 @@ De database staat volledig in het Docker-volume `bom_db_data`. Een
 container verwijderen en opnieuw starten laat de data intact; alleen het
 expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 
-## Beperkingen van deze versie
+## Beperkingen van deze versie / bewuste scope voor latere fasen
 
 - Live-spel-uitnodigingen komen alleen real-time binnen bij vrienden die op
   dat moment de site open hebben; anders deel je de speelcode handmatig.
-- De wekelijkse competitie is een eenvoudige XP-ranglijst (geen
-  divisies/promoveren zoals bij sommige apps).
 - Er draait momenteel één `bom-app`-instantie: de Redis-adapter zorgt dat
   Socket.io-broadcasts er al klaar voor zijn, maar het live-spel-geheugen
   zelf (spelersscores tijdens een actief spel) leeft nog in het geheugen van
   die ene instantie — voor meerdere instanties tegelijk zou dat ook naar
   Redis moeten verhuizen.
+- Het datamodel heeft al `Person`/`Place`/`Topic` (en de koppeltabellen naar
+  verzen) als fundament, maar er zijn nog geen profielpagina's of
+  thema-filters gebouwd.
+- Geen leesplannen, geen AI-contentworkflow (het `status`-veld op `Exercise`
+  staat er wel klaar voor), geen podcastkoppeling, en nog geen extra
+  spelmodi naast het Schriftduel (verspuzzel/blitz/streak battle e.d.).
 
 ## Zelf hosten op een Synology NAS (Docker + Cloudflare Tunnel)
 

@@ -128,7 +128,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
   if (phase === "error") {
     return (
       <div className="max-w-md mx-auto card text-center flex flex-col gap-4">
-        <p className="text-red-600 font-bold">{errorMessage}</p>
+        <p className="text-red-600 dark:text-red-400 font-bold">{errorMessage}</p>
         <Link href="/live" className="btn-secondary self-center">
           Terug
         </Link>
@@ -137,7 +137,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
   }
 
   if (phase === "connecting") {
-    return <p className="text-center text-slate-400">Verbinden...</p>;
+    return <p className="text-center text-slate-400 dark:text-slate-500">Verbinden...</p>;
   }
 
   if (phase === "lobby") {
@@ -145,9 +145,9 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
     return (
       <div className="max-w-xl mx-auto flex flex-col gap-6">
         <div className="card text-center flex flex-col gap-2">
-          <p className="text-sm text-slate-400 font-bold uppercase">Speelcode</p>
-          <p className="text-4xl font-extrabold tracking-[0.3em] text-brand-700">{code}</p>
-          <p className="text-slate-400 text-sm">Deel deze code met vrienden om mee te doen.</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 font-bold uppercase">Speelcode</p>
+          <p className="text-4xl font-extrabold tracking-[0.3em] text-brand-700 dark:text-brand-300">{code}</p>
+          <p className="text-slate-400 dark:text-slate-500 text-sm">Deel deze code met vrienden om mee te doen.</p>
         </div>
 
         <div className="card">
@@ -157,7 +157,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
               <li key={p.userId} className="flex items-center gap-2">
                 <span>{p.userId === hostId ? "👑" : "🙋"}</span>
                 <span className="font-bold">{p.displayName}</span>
-                {p.userId === myUserId && <span className="text-brand-500 text-sm">(jij)</span>}
+                {p.userId === myUserId && <span className="text-brand-500 dark:text-brand-300 text-sm">(jij)</span>}
               </li>
             ))}
           </ul>
@@ -188,7 +188,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
             Start spel →
           </button>
         ) : (
-          <p className="text-center text-slate-400">Wachten tot de host het spel start...</p>
+          <p className="text-center text-slate-400 dark:text-slate-500">Wachten tot de host het spel start...</p>
         )}
       </div>
     );
@@ -198,7 +198,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
     const promptParts = question.prompt.split(/____/);
     return (
       <div className="max-w-xl mx-auto flex flex-col gap-6">
-        <div className="flex items-center justify-between text-sm font-bold text-slate-400">
+        <div className="flex items-center justify-between text-sm font-bold text-slate-400 dark:text-slate-500">
           <span>
             Vraag {question.index + 1} / {question.total}
           </span>
@@ -211,7 +211,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
         <CountdownBar key={question.index} timeLimitMs={question.timeLimitMs} active={phase === "question"} />
 
         <div className="card flex flex-col gap-5">
-          <p className="text-xs font-bold uppercase text-slate-400">{question.verseRef}</p>
+          <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{question.verseRef}</p>
 
           {question.type === "FILL_BLANK" ? (
             <p className="text-xl leading-relaxed">
@@ -234,7 +234,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
           ) : (
             <>
               <p className="text-xl leading-relaxed">{question.prompt}</p>
-              <div className="flex flex-wrap gap-2 min-h-[3rem] p-3 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200">
+              <div className="flex flex-wrap gap-2 min-h-[3rem] p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-700">
                 {placed.map((p, i) => (
                   <button
                     key={i}
@@ -252,7 +252,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
                     key={poolIndex}
                     disabled={submitted || phase === "reveal"}
                     onClick={() => setPlaced([...placed, { word, poolIndex }])}
-                    className="rounded-xl bg-white border-2 border-slate-200 px-3 py-1.5 font-bold hover:border-brand-300"
+                    className="rounded-xl bg-white dark:bg-slate-800 dark:text-slate-100 border-2 border-slate-200 dark:border-slate-600 px-3 py-1.5 font-bold hover:border-brand-300"
                   >
                     {word}
                   </button>
@@ -270,9 +270,9 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
               Verstuur
             </button>
           )}
-          {submitted && phase === "question" && <p className="text-slate-400 text-sm self-end">Antwoord verstuurd, wachten op anderen...</p>}
+          {submitted && phase === "question" && <p className="text-slate-400 dark:text-slate-500 text-sm self-end">Antwoord verstuurd, wachten op anderen...</p>}
           {phase === "reveal" && correctAnswer && (
-            <p className="bg-brand-50 text-brand-700 rounded-xl px-3 py-2 font-bold">
+            <p className="bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300 rounded-xl px-3 py-2 font-bold">
               Juiste antwoord: {correctAnswer.join(" ")}
             </p>
           )}
@@ -286,7 +286,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
   if (phase === "finished") {
     return (
       <div className="max-w-xl mx-auto flex flex-col gap-6 items-center">
-        <h1 className="text-3xl font-extrabold text-brand-800">🏁 Spel afgelopen!</h1>
+        <h1 className="text-3xl font-extrabold text-brand-800 dark:text-brand-300">🏁 Spel afgelopen!</h1>
         <Scoreboard players={players} myUserId={myUserId} showMedals />
         <Link href="/live" className="btn-primary">
           Nieuw spel

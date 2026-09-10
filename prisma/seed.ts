@@ -5,9 +5,35 @@ import { importBooks } from "./importContent";
 
 const prisma = new PrismaClient();
 
+// Namen/omschrijvingen bij de achievement-slugs uit src/lib/achievements.ts.
+const achievementDefs = [
+  { slug: "streak-7", name: "Eerste week", icon: "🔥", description: "Hield 7 dagen op rij een streak vol." },
+  { slug: "streak-30", name: "Vol doorgezet", icon: "🔥", description: "Hield 30 dagen op rij een streak vol." },
+  { slug: "first-chapter", name: "Eerste hoofdstuk", icon: "📖", description: "Rondde je eerste hoofdstuk af." },
+  { slug: "xp-1000", name: "1000 XP", icon: "⭐", description: "Verdiende in totaal 1000 XP." },
+  { slug: "first-freeze-earned", name: "Eerste freeze", icon: "🧊", description: "Verdiende je eerste streak freeze." },
+  {
+    slug: "first-freeze-gifted",
+    name: "Vrijgevig",
+    icon: "🎁",
+    description: "Gaf je eerste streak freeze cadeau aan een vriend.",
+  },
+  { slug: "first-friend", name: "Niet alleen", icon: "👥", description: "Voegde je eerste vriend toe." },
+  { slug: "first-duel-won", name: "Eerste overwinning", icon: "⚔️", description: "Won je eerste live Schriftduel." },
+];
+
 async function main() {
   console.log("Seeding boeken, hoofdstukken, verzen en oefeningen (demo-inhoud)...");
   await importBooks(prisma, seedBooks);
+
+  console.log("Seeding achievements...");
+  for (const def of achievementDefs) {
+    await prisma.achievement.upsert({
+      where: { slug: def.slug },
+      update: { name: def.name, icon: def.icon, description: def.description },
+      create: def,
+    });
+  }
 
   // Demo-gebruikers (met een publiek bekend wachtwoord!) alleen aanmaken als dat
   // expliciet gevraagd wordt — dus NOOIT standaard op een productie-instantie.

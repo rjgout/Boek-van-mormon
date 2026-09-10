@@ -8,7 +8,7 @@ export async function GET() {
 
   const chapters = await prisma.chapter.findMany({
     orderBy: [{ book: { order: "asc" } }, { order: "asc" }],
-    include: { book: true, _count: { select: { exercises: true } } },
+    include: { book: true, _count: { select: { exercises: { where: { status: "APPROVED" } } } } },
   });
 
   return NextResponse.json(

@@ -71,11 +71,11 @@ export default function FriendsClient() {
     }
   }
 
-  if (!data) return <p className="text-slate-400">Laden...</p>;
+  if (!data) return <p className="text-slate-400 dark:text-slate-500">Laden...</p>;
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
-      <h1 className="text-2xl font-extrabold text-brand-800">Vrienden</h1>
+      <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Vrienden</h1>
 
       <form onSubmit={sendRequest} className="card flex gap-3">
         <input
@@ -92,7 +92,7 @@ export default function FriendsClient() {
 
       {data.incoming.length > 0 && (
         <section>
-          <h2 className="font-extrabold mb-2 text-slate-700">Verzoeken</h2>
+          <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Verzoeken</h2>
           <div className="flex flex-col gap-2">
             {data.incoming.map(({ friendshipId, from }) => (
               <div key={friendshipId} className="card flex items-center justify-between !py-3">
@@ -113,10 +113,10 @@ export default function FriendsClient() {
 
       {data.outgoing.length > 0 && (
         <section>
-          <h2 className="font-extrabold mb-2 text-slate-700">Verstuurde verzoeken</h2>
+          <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Verstuurde verzoeken</h2>
           <div className="flex flex-col gap-2">
             {data.outgoing.map(({ friendshipId, to }) => (
-              <div key={friendshipId} className="card !py-3 text-slate-500">
+              <div key={friendshipId} className="card !py-3 text-slate-500 dark:text-slate-400">
                 Wachten op {to.displayName} (@{to.username})
               </div>
             ))}
@@ -125,16 +125,16 @@ export default function FriendsClient() {
       )}
 
       <section>
-        <h2 className="font-extrabold mb-2 text-slate-700">Jouw vrienden ({data.friends.length})</h2>
-        {data.friends.length === 0 && <p className="text-slate-400">Nog geen vrienden — voeg iemand toe hierboven!</p>}
+        <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Jouw vrienden ({data.friends.length})</h2>
+        {data.friends.length === 0 && <p className="text-slate-400 dark:text-slate-500">Nog geen vrienden — voeg iemand toe hierboven!</p>}
         <div className="flex flex-col gap-2">
           {data.friends.map((f) => (
             <div key={f.id} className="card flex items-center justify-between !py-3">
               <div>
                 <div className="font-bold">
-                  {f.displayName} <span className="text-slate-400 font-normal">@{f.username}</span>
+                  {f.displayName} <span className="text-slate-400 dark:text-slate-500 font-normal">@{f.username}</span>
                 </div>
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-slate-400 dark:text-slate-500">
                   🔥 {f.currentStreak} streak · ⭐ {f.xpTotal} XP
                 </div>
               </div>

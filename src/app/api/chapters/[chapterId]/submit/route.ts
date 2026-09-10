@@ -28,7 +28,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cha
     return NextResponse.json({ error: "Ongeldige invoer" }, { status: 400 });
   }
 
-  const exercises = await prisma.exercise.findMany({ where: { chapterId } });
+  const exercises = await prisma.exercise.findMany({ where: { chapterId, status: "APPROVED" } });
   if (exercises.length === 0) {
     return NextResponse.json({ error: "Hoofdstuk niet gevonden" }, { status: 404 });
   }

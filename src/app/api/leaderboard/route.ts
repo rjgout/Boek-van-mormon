@@ -7,8 +7,13 @@ export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
 
-  const scope = req.nextUrl.searchParams.get("scope") === "friends" ? "friends" : "global";
+  const scope = req.nextUrl.searchParams.get("scope") === "friends" ? "friends" : "league";
   const weekStart = weekStartKey();
+
+  const myScore = await prisma.weeklyScore.findUnique({
+    where: { userId_weekStart: { userId: user.id, weekStart } },
+  });
+  const myTier = myScore?.tier ?? "BRONZE";
 
   let userIds: string[] | undefined;
   if (scope === "friends") {
@@ -20,20 +25,27 @@ export async function GET(req: NextRequest) {
   }
 
   const scores = await prisma.weeklyScore.findMany({
-    where: { weekStart, ...(userIds ? { userId: { in: userIds } } : {}) },
+    where: {
+      weekStart,
+      ...(scope === "league" ? { tier: myTier } : {}),
+      ...(userIds ? { userId: { in: userIds } } : {}),
+    },
     include: { user: { select: { id: true, username: true, displayName: true } } },
     orderBy: { xp: "desc" },
-    take: scope === "global" ? 20 : undefined,
   });
 
   return NextResponse.json({
     weekStart,
+    scope,
+    myTier,
+    hasActivityThisWeek: Boolean(myScore),
     entries: scores.map((s, i) => ({
       rank: i + 1,
       userId: s.user.id,
       username: s.user.username,
       displayName: s.user.displayName,
       xp: s.xp,
+      tier: s.tier,
       isMe: s.user.id === user.id,
     })),
   });

@@ -52,7 +52,7 @@ export default function LiveLobbyForm() {
 
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-8">
-      <h1 className="text-2xl font-extrabold text-brand-800">Live spel</h1>
+      <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Live spel</h1>
 
       <form onSubmit={createGame} className="card flex flex-col gap-4">
         <h2 className="font-extrabold">Nieuw spel starten</h2>
