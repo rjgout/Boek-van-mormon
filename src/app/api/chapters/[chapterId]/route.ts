@@ -1,0 +1,34 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/session";
+
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ chapterId: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const { chapterId } = await params;
+  const chapter = await prisma.chapter.findUnique({
+    where: { id: chapterId },
+    include: {
+      book: true,
+      verses: { orderBy: { number: "asc" } },
+      exercises: { orderBy: { order: "asc" } },
+    },
+  });
+  if (!chapter) return NextResponse.json({ error: "Hoofdstuk niet gevonden" }, { status: 404 });
+
+  return NextResponse.json({
+    id: chapter.id,
+    bookName: chapter.book.name,
+    number: chapter.number,
+    verses: chapter.verses.map((v) => ({ number: v.number, text: v.text })),
+    exercises: chapter.exercises.map((e) => ({
+      id: e.id,
+      type: e.type,
+      verseRef: e.verseRef,
+      prompt: e.prompt,
+      blanks: (JSON.parse(e.answers) as string[]).length,
+      wordBank: e.wordBank ? (JSON.parse(e.wordBank) as string[]) : undefined,
+    })),
+  });
+}

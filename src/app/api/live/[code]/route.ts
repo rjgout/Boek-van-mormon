@@ -1,0 +1,29 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/session";
+
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ code: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const { code } = await params;
+  const game = await prisma.liveGame.findUnique({
+    where: { code: code.toUpperCase() },
+    include: {
+      chapter: { include: { book: true } },
+      host: { select: { id: true, displayName: true } },
+      players: { include: { user: { select: { id: true, displayName: true } } } },
+    },
+  });
+  if (!game) return NextResponse.json({ error: "Spel niet gevonden." }, { status: 404 });
+
+  return NextResponse.json({
+    code: game.code,
+    status: game.status,
+    chapterId: game.chapterId,
+    chapterLabel: `${game.chapter.book.name} ${game.chapter.number}`,
+    hostId: game.hostId,
+    hostName: game.host.displayName,
+    players: game.players.map((p) => ({ userId: p.userId, displayName: p.user.displayName, score: p.score })),
+  });
+}

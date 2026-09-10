@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// --- Accounts ---------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  displayName  String
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  xpTotal        Int       @default(0)
+  currentStreak  Int       @default(0)
+  longestStreak  Int       @default(0)
+  lastStudyDate  String? // yyyy-mm-dd, in the user's local day bucket
+  freezeCount    Int       @default(0)
+
+  progress          ChapterProgress[]
+  attempts          ExerciseAttempt[]
+  freezeTx          FreezeTransaction[] @relation("FreezeOwner")
+  freezeTxRelated   FreezeTransaction[] @relation("FreezeRelated")
+  weeklyScores      WeeklyScore[]
+
+  sentFriendReqs     Friendship[] @relation("FriendSender")
+  receivedFriendReqs Friendship[] @relation("FriendReceiver")
+
+  hostedGames  LiveGame[]       @relation("GameHost")
+  gamePlayers  LiveGamePlayer[]
+}
+
+// --- Content: Boek van Mormon structuur --------------------------------
+
+model Book {
+  id       String    @id @default(cuid())
+  slug     String    @unique
+  name     String
+  order    Int
+  chapters Chapter[]
+}
+
+model Chapter {
+  id       String   @id @default(cuid())
+  bookId   String
+  book     Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  number   Int
+  order    Int
+  verses    Verse[]
+  exercises Exercise[]
+  progress  ChapterProgress[]
+  liveGames LiveGame[]
+
+  @@unique([bookId, number])
+}
+
+model Verse {
+  id        String  @id @default(cuid())
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  number    Int
+  text      String
+
+  @@unique([chapterId, number])
+}
+
+// --- Oefeningen (invuloefeningen, geen multiple choice) -----------------
+// type: "FILL_BLANK" | "WORD_BANK" (SQLite kent geen native enums)
+
+model Exercise {
+  id        String   @id @default(cuid())
+  chapterId String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  order     Int
+  type      String
+  verseRef  String // bv. "1 Nephi 3:7"
+  prompt    String // tekst met "____" op de plek van het weggelaten woord
+  answers   String // JSON-array van geaccepteerde antwoorden per blank
+  wordBank  String? // JSON-array van keuzewoorden voor WORD_BANK type
+
+  attempts ExerciseAttempt[]
+}
+
+model ExerciseAttempt {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  givenText  String
+  correct    Boolean
+  createdAt  DateTime @default(now())
+}
+
+model ChapterProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapterId   String
+  chapter     Chapter   @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  completed   Boolean   @default(false)
+  bestScore   Int       @default(0) // percentage 0-100
+  xpEarned    Int       @default(0)
+  completedAt DateTime?
+
+  @@unique([userId, chapterId])
+}
+
+// --- Streak freezes -------------------------------------------------------
+// type: "EARNED" | "AUTO_SPENT" | "GIFT_SENT" | "GIFT_RECEIVED"
+
+model FreezeTransaction {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation("FreezeOwner", fields: [userId], references: [id], onDelete: Cascade)
+  type       String
+  amount     Int
+  relatedId  String?
+  related    User?    @relation("FreezeRelated", fields: [relatedId], references: [id], onDelete: SetNull)
+  reason     String?
+  createdAt  DateTime @default(now())
+}
+
+// --- Vrienden -------------------------------------------------------------
+// status: "PENDING" | "ACCEPTED" | "DECLINED"
+
+model Friendship {
+  id         String   @id @default(cuid())
+  senderId   String
+  sender     User     @relation("FriendSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User     @relation("FriendReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+
+  @@unique([senderId, receiverId])
+}
+
+// --- Wekelijkse competitie -------------------------------------------------
+
+model WeeklyScore {
+  id        String @id @default(cuid())
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart String // yyyy-mm-dd (maandag)
+  xp        Int    @default(0)
+
+  @@unique([userId, weekStart])
+}
+
+// --- Live multiplayer quiz --------------------------------------------------
+// status: "LOBBY" | "IN_PROGRESS" | "FINISHED"
+
+model LiveGame {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  hostId    String
+  host      User     @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
+  chapterId String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  status    String   @default("LOBBY")
+  createdAt DateTime @default(now())
+  players   LiveGamePlayer[]
+}
+
+model LiveGamePlayer {
+  id       String   @id @default(cuid())
+  gameId   String
+  game     LiveGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score    Int      @default(0)
+  joinedAt DateTime @default(now())
+
+  @@unique([gameId, userId])
+}
