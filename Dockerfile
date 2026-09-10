@@ -29,4 +29,22 @@ COPY prisma ./prisma
 RUN npm prune --omit=dev
 
 EXPOSE 3000
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+
+# Kritiek voor Docker Compose depends_on/orchestratie: geeft aan of de app
+# (en de databaseverbinding) daadwerkelijk gezond is, niet alleen of het
+# proces draait. Node 22 heeft een ingebouwde fetch(), dus geen curl/wget nodig.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://localhost:'+(process.env.PORT||3000)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+# Retry rond 'migrate deploy': depends_on/service_healthy laat de database-
+# container meestal op tijd klaarstaan, maar dit vangt de korte race op
+# tussen "pg_isready" en "daadwerkelijk klaar voor migraties" op.
+CMD ["sh", "-c", "\
+  ok=0; \
+  for i in $(seq 1 10); do \
+    npx prisma migrate deploy && ok=1 && break; \
+    echo 'Database nog niet klaar, opnieuw proberen...'; sleep 3; \
+  done; \
+  if [ \"$ok\" != 1 ]; then echo 'Kon migraties niet toepassen, stoppen.'; exit 1; fi; \
+  npm start \
+"]

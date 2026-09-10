@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -71,14 +71,18 @@ model Verse {
 }
 
 // --- Oefeningen (invuloefeningen, geen multiple choice) -----------------
-// type: "FILL_BLANK" | "WORD_BANK" (SQLite kent geen native enums)
+
+enum ExerciseType {
+  FILL_BLANK
+  WORD_BANK
+}
 
 model Exercise {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   chapterId String
-  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter   Chapter      @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   order     Int
-  type      String
+  type      ExerciseType
   verseRef  String // bv. "1 Nephi 3:7"
   prompt    String // tekst met "____" op de plek van het weggelaten woord
   answers   String // JSON-array van geaccepteerde antwoorden per blank
@@ -113,31 +117,42 @@ model ChapterProgress {
 }
 
 // --- Streak freezes -------------------------------------------------------
-// type: "EARNED" | "AUTO_SPENT" | "GIFT_SENT" | "GIFT_RECEIVED"
+
+enum FreezeTxType {
+  EARNED
+  AUTO_SPENT
+  GIFT_SENT
+  GIFT_RECEIVED
+}
 
 model FreezeTransaction {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   userId     String
-  user       User     @relation("FreezeOwner", fields: [userId], references: [id], onDelete: Cascade)
-  type       String
+  user       User         @relation("FreezeOwner", fields: [userId], references: [id], onDelete: Cascade)
+  type       FreezeTxType
   amount     Int
   relatedId  String?
-  related    User?    @relation("FreezeRelated", fields: [relatedId], references: [id], onDelete: SetNull)
+  related    User?        @relation("FreezeRelated", fields: [relatedId], references: [id], onDelete: SetNull)
   reason     String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime     @default(now())
 }
 
 // --- Vrienden -------------------------------------------------------------
-// status: "PENDING" | "ACCEPTED" | "DECLINED"
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
 
 model Friendship {
-  id         String   @id @default(cuid())
+  id         String           @id @default(cuid())
   senderId   String
-  sender     User     @relation("FriendSender", fields: [senderId], references: [id], onDelete: Cascade)
+  sender     User             @relation("FriendSender", fields: [senderId], references: [id], onDelete: Cascade)
   receiverId String
-  receiver   User     @relation("FriendReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
-  status     String   @default("PENDING")
-  createdAt  DateTime @default(now())
+  receiver   User             @relation("FriendReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     FriendshipStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
 
   @@unique([senderId, receiverId])
 }
@@ -155,17 +170,22 @@ model WeeklyScore {
 }
 
 // --- Live multiplayer quiz --------------------------------------------------
-// status: "LOBBY" | "IN_PROGRESS" | "FINISHED"
+
+enum LiveGameStatus {
+  LOBBY
+  IN_PROGRESS
+  FINISHED
+}
 
 model LiveGame {
-  id        String   @id @default(cuid())
-  code      String   @unique
+  id        String         @id @default(cuid())
+  code      String         @unique
   hostId    String
-  host      User     @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
+  host      User           @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
   chapterId String
-  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  status    String   @default("LOBBY")
-  createdAt DateTime @default(now())
+  chapter   Chapter        @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  status    LiveGameStatus @default(LOBBY)
+  createdAt DateTime       @default(now())
   players   LiveGamePlayer[]
 }
 

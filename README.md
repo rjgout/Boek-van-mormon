@@ -2,6 +2,10 @@
 
 Op een speelse manier het Boek van Mormon lezen — in het Nederlands, Duolingo-stijl.
 
+Gebouwd om **zelf gehost** te worden: een self-contained Docker-opzet met
+een echte PostgreSQL-database en persistente volumes, zonder afhankelijkheid
+van een specifieke cloud-hostingprovider.
+
 ## Functionaliteit
 
 - **Accounts & sessies**: registreren/inloggen met een httpOnly session-cookie.
@@ -17,7 +21,34 @@ Op een speelse manier het Boek van Mormon lezen — in het Nederlands, Duolingo-
 - **Live multiplayer-quiz**: maak een spel aan voor een hoofdstuk, nodig
   vrienden uit (real-time pop-up als ze de site open hebben, of deel de
   code), en speel gelijktijdig dezelfde invuloefeningen met een live
-  scorebord (via Socket.io).
+  scorebord (via Socket.io, met Redis als adapter).
+
+## Snel starten met Docker (aanbevolen)
+
+Eén commando start de hele stack: de app, PostgreSQL (met een persistent
+volume) en Redis.
+
+```bash
+cp .env.example .env
+# open .env en vul POSTGRES_PASSWORD, REDIS_PASSWORD en SESSION_SECRET in
+docker compose up -d --build
+```
+
+De app draait daarna op `http://localhost:3000`. Zet zelf een reverse proxy
+(Cloudflare Tunnel, Nginx, Caddy, Traefik, ...) ervoor als je 'm publiek
+bereikbaar wil maken onder je eigen domein — zie
+[`docs/DEPLOY-SYNOLOGY.md`](docs/DEPLOY-SYNOLOGY.md) voor een volledig
+uitgewerkt voorbeeld met een Synology NAS + Cloudflare Tunnel, inclusief
+automatische updates.
+
+Content laden (eenmalig, en telkens wanneer je content toevoegt/wijzigt):
+
+```bash
+docker exec bom-app npm run db:seed
+```
+
+Zie **Architectuur** hieronder voor wat elke container doet, en **Back-ups**
+voor hoe je de database veiligstelt.
 
 ## Auteursrecht van de brontekst
 
@@ -30,31 +61,63 @@ Zodra je toestemming hebt geregeld om de officiële tekst te gebruiken, kan
 je je eigen content laden via:
 
 ```bash
-npm run db:import -- ./mijn-boek-van-mormon.json
+docker exec bom-app npm run db:import -- /pad/naar/bestand.json
 ```
 
-Zie de comments in `prisma/import.ts` voor het verwachte JSON-formaat.
+(kopieer het bestand eerst de container in met `docker cp`). Zie de
+comments in `prisma/import.ts` voor het verwachte JSON-formaat.
 
-## Aan de slag
+## Architectuur
+
+| Container    | Rol                                                                 | Persistent? |
+|--------------|----------------------------------------------------------------------|-------------|
+| `bom-app`    | Next.js-app + API-routes + de live-quiz Socket.io-server            | Nee — stateless, vervangbaar zonder dataverlies |
+| `bom-db`     | PostgreSQL — alle gebruikers, voortgang, XP, streaks, freezes, vrienden, competitie, quizresultaten en content | Ja — Docker-volume `bom_db_data` |
+| `bom-redis`  | Redis, actief gebruikt als Socket.io-adapter voor de live multiplayer-quiz | Nee — tijdelijke, vervangbare realtime-state |
+
+`bom-app` is bewust stateless: hij is op elk moment te verwijderen en opnieuw
+te starten (bv. bij een update) zonder dataverlies, omdat alle persistente
+data in `bom-db` staat. Redis wordt écht gebruikt (niet als ongebruikte
+infrastructuur): elke room-broadcast van de live-quiz loopt via de
+Socket.io-Redis-adapter, wat het ook mogelijk maakt om later — zonder de
+multiplayer-architectuur te herbouwen — meerdere `bom-app`-instanties
+tegelijk te draaien.
+
+## Lokaal ontwikkelen zonder Docker
 
 ```bash
 npm install
-cp .env.example .env         # pas SESSION_SECRET aan voor productie
-npm run db:migrate:deploy    # database schema aanmaken (via Prisma migrations)
-npm run db:seed              # demo-inhoud + demo-gebruikers (anna/bram/carla, wachtwoord: demo1234)
-npm run dev                  # start op http://localhost:3000
+# start zelf een lokale PostgreSQL en Redis, en zet DATABASE_URL/REDIS_URL
+# in .env (zie de voorbeelden onderaan .env.example)
+npm run db:migrate:deploy
+npm run db:seed
+npm run dev
 ```
 
 Tijdens actieve ontwikkeling van het schema kan `npm run db:push` (zonder
 migratiebestanden aan te maken) handiger zijn; gebruik `npm run
 db:migrate:dev -- --name <omschrijving>` om een nieuwe migratie vast te
-leggen zodra een schemawijziging klaar is voor productie.
+leggen zodra een schemawijziging klaar is voor productie/commit.
 
 ## Techstack
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
-- Prisma + SQLite (met migrations in `prisma/migrations/`)
-- Socket.io voor de live multiplayer-quiz (via een custom server, zie `server.ts`)
+- PostgreSQL + Prisma (migrations in `prisma/migrations/`)
+- Redis + `@socket.io/redis-adapter` voor de live multiplayer-quiz (via een
+  custom server, zie `server.ts` / `src/server/gameServer.ts`)
+- Docker Compose met healthchecks, `depends_on: condition: service_healthy`
+  en herstart-policies voor alle services
+
+## Back-ups
+
+```bash
+./scripts/backup.sh            # -> backups/bom-<tijdstip>.dump
+./scripts/restore.sh backups/bom-20260101T000000Z.dump
+```
+
+De database staat volledig in het Docker-volume `bom_db_data`. Een
+container verwijderen en opnieuw starten laat de data intact; alleen het
+expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 
 ## Beperkingen van deze versie
 
@@ -62,13 +125,17 @@ leggen zodra een schemawijziging klaar is voor productie.
   dat moment de site open hebben; anders deel je de speelcode handmatig.
 - De wekelijkse competitie is een eenvoudige XP-ranglijst (geen
   divisies/promoveren zoals bij sommige apps).
-- Voor productiegebruik: gebruik een sterke, geheime `SESSION_SECRET` en
-  overweeg een zwaardere database (bv. Postgres) achter Prisma.
+- Er draait momenteel één `bom-app`-instantie: de Redis-adapter zorgt dat
+  Socket.io-broadcasts er al klaar voor zijn, maar het live-spel-geheugen
+  zelf (spelersscores tijdens een actief spel) leeft nog in het geheugen van
+  die ene instantie — voor meerdere instanties tegelijk zou dat ook naar
+  Redis moeten verhuizen.
 
 ## Zelf hosten op een Synology NAS (Docker + Cloudflare Tunnel)
 
-Zie [`docs/DEPLOY-SYNOLOGY.md`](docs/DEPLOY-SYNOLOGY.md) voor de volledige
-stap-voor-stap instructies: een Docker-image die via GitHub Actions
-automatisch gebouwd en gepubliceerd wordt, en op de NAS door Watchtower
-opgehaald en herstart wordt zodra je naar `main` merget — plus hoe je 'm
-onder je eigen domein achter een Cloudflare Tunnel zet.
+Zie [`docs/DEPLOY-SYNOLOGY.md`](docs/DEPLOY-SYNOLOGY.md) voor een volledig
+uitgewerkt voorbeeld: een Docker-image die via GitHub Actions automatisch
+gebouwd en gepubliceerd wordt, en op de NAS door Watchtower opgehaald en
+herstart wordt zodra je naar `main` merget — plus hoe je 'm onder je eigen
+domein achter een Cloudflare Tunnel zet. Dezelfde aanpak werkt met kleine
+aanpassingen op elke andere Docker-host.

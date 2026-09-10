@@ -1,5 +1,7 @@
 import type { Server as HttpServer } from "http";
 import { Server as SocketIOServer, Socket } from "socket.io";
+import { createAdapter } from "@socket.io/redis-adapter";
+import Redis from "ioredis";
 import { prisma } from "@/lib/db";
 import { verifySessionToken, SESSION_COOKIE } from "@/lib/auth";
 import { parseCookieHeader } from "@/lib/parseCookieHeader";
@@ -191,6 +193,23 @@ function registerAnswer(room: RoomState, userId: string, given: string[]) {
 
 export function initGameServer(httpServer: HttpServer) {
   ioInstance = new SocketIOServer(httpServer, { path: "/socket.io" });
+
+  // Redis-adapter voor Socket.io: alle room-broadcasts (lobby/vraag/reveal)
+  // lopen hierdoor via Redis pub/sub. Nu draait er één bom-app-instantie,
+  // maar dit is wat het mogelijk maakt om later zonder herbouw meerdere
+  // instanties te draaien die dezelfde live-spellen kunnen bedienen.
+  const redisUrl = process.env.REDIS_URL;
+  if (redisUrl) {
+    const pubClient = new Redis(redisUrl, { lazyConnect: false });
+    const subClient = pubClient.duplicate();
+    pubClient.on("error", (err) => console.error("Redis (pub) verbindingsfout:", err.message));
+    subClient.on("error", (err) => console.error("Redis (sub) verbindingsfout:", err.message));
+    ioInstance.adapter(createAdapter(pubClient, subClient));
+  } else {
+    console.warn(
+      "REDIS_URL is niet gezet — Socket.io draait zonder Redis-adapter (werkt alleen correct met één bom-app-instantie)."
+    );
+  }
 
   ioInstance.on("connection", async (socket) => {
     const user = await authenticateSocket(socket);
