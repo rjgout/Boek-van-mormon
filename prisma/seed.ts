@@ -9,6 +9,14 @@ async function main() {
   console.log("Seeding boeken, hoofdstukken, verzen en oefeningen (demo-inhoud)...");
   await importBooks(prisma, seedBooks);
 
+  // Demo-gebruikers (met een publiek bekend wachtwoord!) alleen aanmaken als dat
+  // expliciet gevraagd wordt — dus NOOIT standaard op een productie-instantie.
+  if (process.env.SEED_DEMO_USERS !== "true") {
+    console.log("SEED_DEMO_USERS staat niet op 'true' — demo-gebruikers overgeslagen.");
+    console.log("Seed klaar.");
+    return;
+  }
+
   // --- Demo-gebruikers zodat vrienden/competitie/live game meteen te testen zijn ---
   const demoPassword = await bcrypt.hash("demo1234", 10);
   const demoUsers = [

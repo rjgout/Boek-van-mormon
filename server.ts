@@ -18,7 +18,9 @@ app.prepare().then(() => {
 
   initGameServer(httpServer);
 
+  // Geen host doorgeven aan listen(): dit bindt op alle interfaces (0.0.0.0),
+  // nodig zodat andere containers (bv. cloudflared) de app kunnen bereiken.
   httpServer.listen(port, () => {
-    console.log(`> Boek van Mormon draait op http://${hostname}:${port}`);
+    console.log(`> Boek van Mormon luistert op poort ${port} (bereikbaar op http://localhost:${port} lokaal)`);
   });
 });

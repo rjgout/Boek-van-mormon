@@ -1,0 +1,40 @@
+# Voorbeeld docker-compose project voor een Synology NAS (Container Manager).
+# Zie docs/DEPLOY-SYNOLOGY.md voor de volledige uitleg.
+#
+# Vervang <OWNER> hieronder door je GitHub-gebruikers-/organisatienaam in
+# kleine letters (bv. rjgout).
+
+services:
+  bvm-app:
+    image: ghcr.io/<OWNER>/boek-van-mormon:latest
+    container_name: bvm-app
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    networks:
+      - cloudflared_net
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  # Enige aparte service: controleert elke 5 minuten of er een nieuwe image
+  # op ghcr.io staat (na een merge naar main) en herstart bvm-app dan
+  # automatisch. Laat deze weg als je liever handmatig update.
+  watchtower:
+    image: containrrr/watchtower
+    container_name: bvm-watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 300 --label-enable --cleanup
+    environment:
+      - WATCHTOWER_LABEL_ENABLE=true
+
+networks:
+  # Dit MOET hetzelfde (externe) Docker-netwerk zijn waar je bestaande
+  # cloudflared-container op aangesloten is, zodat de tunnel de app kan
+  # bereiken via http://bvm-app:3000. Zoek de naam op met:
+  #   docker inspect <naam-van-je-cloudflared-container> | grep -A3 Networks
+  cloudflared_net:
+    external: true

@@ -39,16 +39,21 @@ Zie de comments in `prisma/import.ts` voor het verwachte JSON-formaat.
 
 ```bash
 npm install
-cp .env.example .env      # pas SESSION_SECRET aan voor productie
-npm run db:push           # database schema aanmaken
-npm run db:seed           # demo-inhoud + demo-gebruikers (anna/bram/carla, wachtwoord: demo1234)
-npm run dev                # start op http://localhost:3000
+cp .env.example .env         # pas SESSION_SECRET aan voor productie
+npm run db:migrate:deploy    # database schema aanmaken (via Prisma migrations)
+npm run db:seed              # demo-inhoud + demo-gebruikers (anna/bram/carla, wachtwoord: demo1234)
+npm run dev                  # start op http://localhost:3000
 ```
+
+Tijdens actieve ontwikkeling van het schema kan `npm run db:push` (zonder
+migratiebestanden aan te maken) handiger zijn; gebruik `npm run
+db:migrate:dev -- --name <omschrijving>` om een nieuwe migratie vast te
+leggen zodra een schemawijziging klaar is voor productie.
 
 ## Techstack
 
 - Next.js (App Router) + TypeScript + Tailwind CSS
-- Prisma + SQLite
+- Prisma + SQLite (met migrations in `prisma/migrations/`)
 - Socket.io voor de live multiplayer-quiz (via een custom server, zie `server.ts`)
 
 ## Beperkingen van deze versie
@@ -59,3 +64,11 @@ npm run dev                # start op http://localhost:3000
   divisies/promoveren zoals bij sommige apps).
 - Voor productiegebruik: gebruik een sterke, geheime `SESSION_SECRET` en
   overweeg een zwaardere database (bv. Postgres) achter Prisma.
+
+## Zelf hosten op een Synology NAS (Docker + Cloudflare Tunnel)
+
+Zie [`docs/DEPLOY-SYNOLOGY.md`](docs/DEPLOY-SYNOLOGY.md) voor de volledige
+stap-voor-stap instructies: een Docker-image die via GitHub Actions
+automatisch gebouwd en gepubliceerd wordt, en op de NAS door Watchtower
+opgehaald en herstart wordt zodra je naar `main` merget — plus hoe je 'm
+onder je eigen domein achter een Cloudflare Tunnel zet.
