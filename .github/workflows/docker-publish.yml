@@ -30,7 +30,7 @@ jobs:
 
       - name: Bepaal image-naam (ghcr.io vereist kleine letters)
         id: image
-        run: echo "name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/bom-app" >> "$GITHUB_OUTPUT"
+        run: echo "name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/bom-game" >> "$GITHUB_OUTPUT"
 
       - name: Extract metadata
         id: meta

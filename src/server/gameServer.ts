@@ -201,7 +201,7 @@ export function initGameServer(httpServer: HttpServer) {
   ioInstance = new SocketIOServer(httpServer, { path: "/socket.io" });
 
   // Redis-adapter voor Socket.io: alle room-broadcasts (lobby/vraag/reveal)
-  // lopen hierdoor via Redis pub/sub. Nu draait er één bom-app-instantie,
+  // lopen hierdoor via Redis pub/sub. Nu draait er één bom-game-instantie,
   // maar dit is wat het mogelijk maakt om later zonder herbouw meerdere
   // instanties te draaien die dezelfde live-spellen kunnen bedienen.
   const redisUrl = process.env.REDIS_URL;
@@ -213,7 +213,7 @@ export function initGameServer(httpServer: HttpServer) {
     ioInstance.adapter(createAdapter(pubClient, subClient));
   } else {
     console.warn(
-      "REDIS_URL is niet gezet — Socket.io draait zonder Redis-adapter (werkt alleen correct met één bom-app-instantie)."
+      "REDIS_URL is niet gezet — Socket.io draait zonder Redis-adapter (werkt alleen correct met één bom-game-instantie)."
     );
   }
 

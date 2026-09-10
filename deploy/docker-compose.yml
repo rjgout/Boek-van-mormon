@@ -1,30 +1,36 @@
-# Voorbeeld docker-compose project voor een Synology NAS (Container Manager),
-# met automatische updates via Watchtower. Zie docs/DEPLOY-SYNOLOGY.md voor
-# de volledige uitleg.
+# Stack voor Portainer (of Container Manager) op je NAS.
 #
-# Vervang <OWNER> hieronder door je GitHub-gebruikers-/organisatienaam in
-# kleine letters (bv. rjgout).
+# Gebruik:
+#   1. Vervang hieronder elke *_PASSWORD/SESSION_SECRET-placeholder door je
+#      eigen waarde (zoek ze op met Ctrl+F — sommige komen op 2-3 plekken
+#      voor en moeten daar allemaal hetzelfde zijn).
+#   2. Plak dit in Portainer: Stacks -> Add stack -> Web editor -> plak ->
+#      Deploy the stack.
+#   3. Wijs je eigen reverse proxy / Cloudflare Tunnel naar poort 3000 van je
+#      NAS (of naar de container "bom-game" als je 'm op hetzelfde
+#      Docker-netwerk aansluit).
+#
+# Zie docs/DEPLOY-SYNOLOGY.md voor de volledige toelichting.
 
 services:
-  bom-app:
-    image: ghcr.io/<OWNER>/bom-app:latest
-    container_name: bom-app
+  bom-game:
+    image: ghcr.io/rjgout/bom-game:latest
+    container_name: bom-game
     restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://bom:CHANGE_THIS_DB_PASSWORD@bom-db:5432/bom?schema=public
+      REDIS_URL: redis://:CHANGE_THIS_REDIS_PASSWORD@bom-redis:6379
+      SESSION_SECRET: CHANGE_THIS_TO_A_LONG_RANDOM_STRING
+      PORT: 3000
     depends_on:
       bom-db:
         condition: service_healthy
       bom-redis:
         condition: service_healthy
-    env_file:
-      - .env
-    environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-bom}:${POSTGRES_PASSWORD:?Zet POSTGRES_PASSWORD in .env}@bom-db:5432/${POSTGRES_DB:-bom}?schema=public"
-      REDIS_URL: "redis://:${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}@bom-redis:6379"
-    networks:
-      - default
-      - cloudflared_net
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://localhost:'+(process.env.PORT||3000)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
       timeout: 5s
       start_period: 20s
@@ -37,15 +43,13 @@ services:
     container_name: bom-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-bom}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Zet POSTGRES_PASSWORD in .env}
-      POSTGRES_DB: ${POSTGRES_DB:-bom}
+      POSTGRES_USER: bom
+      POSTGRES_PASSWORD: CHANGE_THIS_DB_PASSWORD
+      POSTGRES_DB: bom
     volumes:
-      - bom_db_data:/var/lib/postgresql/data
-    networks:
-      - default
+      - /volume1/docker/bom-game/postgres:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bom} -d ${POSTGRES_DB:-bom}"]
+      test: ["CMD-SHELL", "pg_isready -U bom -d bom"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -54,20 +58,16 @@ services:
     image: redis:7-alpine
     container_name: bom-redis
     restart: unless-stopped
-    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}", "--appendonly", "no"]
-    environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}
-    networks:
-      - default
+    command: ["redis-server", "--requirepass", "CHANGE_THIS_REDIS_PASSWORD", "--appendonly", "no"]
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      test: ["CMD-SHELL", "redis-cli -a CHANGE_THIS_REDIS_PASSWORD ping | grep -q PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Enige aparte service: controleert elke 5 minuten of er een nieuwe image
-  # op ghcr.io staat (na een merge naar main) en herstart bom-app dan
-  # automatisch. Laat deze weg als je liever handmatig update.
+  # Checkt elke 5 minuten of er een nieuwe bom-game-image op ghcr.io staat
+  # en herstart dan automatisch alleen die container. bom-db en bom-redis
+  # blijven gewoon draaien.
   watchtower:
     image: containrrr/watchtower
     container_name: bom-watchtower
@@ -75,19 +75,3 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     command: --interval 300 --label-enable --cleanup
-    environment:
-      - WATCHTOWER_LABEL_ENABLE=true
-
-networks:
-  # Het standaard, door dit compose-project aangemaakte netwerk (voor
-  # bom-app <-> bom-db/bom-redis) heet "default" en hoeft niet aangepast.
-  default: {}
-  # Dit MOET hetzelfde (externe) Docker-netwerk zijn waar je bestaande
-  # cloudflared-container op aangesloten is, zodat de tunnel de app kan
-  # bereiken via http://bom-app:3000. Zoek de naam op met:
-  #   docker inspect <naam-van-je-cloudflared-container> | grep -A3 Networks
-  cloudflared_net:
-    external: true
-
-volumes:
-  bom_db_data:

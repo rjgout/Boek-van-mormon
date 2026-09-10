@@ -13,9 +13,9 @@
 # via Watchtower) zie deploy/docker-compose.yml en docs/DEPLOY-SYNOLOGY.md.
 
 services:
-  bom-app:
+  bom-game:
     build: .
-    container_name: bom-app
+    container_name: bom-game
     restart: unless-stopped
     depends_on:
       bom-db:
@@ -67,7 +67,7 @@ services:
 
 volumes:
   # Persistente data (gebruikers, voortgang, XP, streaks, freezes, vrienden,
-  # competitie, spelresultaten, content) staat hier — NIET in de bom-app
+  # competitie, spelresultaten, content) staat hier — NIET in de bom-game
   # container. Een container verwijderen en opnieuw starten (zonder deze
   # volume te verwijderen) laat alle data intact.
   bom_db_data:

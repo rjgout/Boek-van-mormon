@@ -1,151 +1,114 @@
-# Deployen op je Synology NAS via Cloudflare Tunnel
+# Deployen op je Synology NAS via Portainer
 
-Dit beschrijft hoe je deze app draaiend krijgt op je Synology NAS onder je
-eigen domein (bv. `bom.jouwdomein.nl`), zodanig dat een merge naar `main` op
-GitHub automatisch live gaat op de NAS.
+Je hebt al Cloudflare (Tunnel + domein) en Portainer draaien op je NAS. Deze
+app sluit daar gewoon op aan — je hoeft niks in de Cloudflare Tunnel-container
+of z'n Docker-netwerk te wijzigen. Alles hieronder gebeurt in Portainer.
 
 ## Hoe het in elkaar zit
 
-1. Je merget naar `main` op GitHub.
+1. Je pusht naar `main` op GitHub.
 2. De workflow `.github/workflows/docker-publish.yml` bouwt een Docker-image
    en publiceert die naar GitHub Container Registry (ghcr.io) als
-   `ghcr.io/<owner>/bom-app:latest`.
-3. Op de NAS draaien drie containers: `bom-app` (de applicatie), `bom-db`
+   `ghcr.io/<owner>/bom-game:latest`.
+3. Op de NAS draaien drie containers: `bom-game` (de applicatie), `bom-db`
    (PostgreSQL, met alle persistente data) en `bom-redis` (Socket.io-adapter
    voor de live multiplayer-quiz). Een vierde, **Watchtower**, checkt elke 5
-   minuten of er een nieuwe `bom-app`-image staat. Zo ja: hij haalt 'm op en
+   minuten of er een nieuwe `bom-game`-image staat. Zo ja: hij haalt 'm op en
    herstart die ene container automatisch — `bom-db` en `bom-redis` blijven
    gewoon draaien, geen actie op de NAS nodig.
-4. Je bestaande **cloudflared**-container (Cloudflare Tunnel) stuurt verkeer
-   voor jouw domein door naar de `bom-app`-container, op hetzelfde
-   Docker-netwerk.
+4. `bom-game` publiceert poort 3000 rechtstreeks op je NAS. Jij wijst je
+   eigen, al bestaande Cloudflare Tunnel naar `<NAS-IP>:3000` — dat regel je
+   zelf in het Cloudflare Zero Trust-dashboard, niet in Docker.
 
 Alle persistente data (gebruikers, wachtwoorden, leesvoortgang, XP, streaks,
 freezes, vrienden, competitie, quizresultaten, content, instellingen) staat
-in PostgreSQL, in een Docker-volume dat losstaat van de containers. Je kan
-`bom-app` (of `bom-db`/`bom-redis`) probleemloos verwijderen en opnieuw
-starten — zolang je het volume `bom_db_data` niet verwijdert, blijft alles
-behouden.
+in PostgreSQL, in een map op je NAS die losstaat van de containers. Je kan
+`bom-game` (of `bom-db`/`bom-redis`) probleemloos verwijderen en opnieuw
+starten zonder dataverlies.
 
 ## Stap 1 — Eenmalig: package publiek maken op GitHub
 
-Zodra de workflow voor het eerst gedraaid heeft na een merge naar `main`
+Zodra de workflow voor het eerst gedraaid heeft na een push naar `main`
 (check: tabblad *Actions* in de repo):
 
-1. Ga naar je GitHub-profiel/organisatie → **Packages** → `bom-app`.
+1. Ga naar je GitHub-profiel → **Packages** → `bom-game`.
 2. **Package settings** → **Change visibility** → **Public**.
 
 Dit is nodig zodat de NAS de image kan ophalen zonder in te loggen bij ghcr.io.
 
-## Stap 2 — Map voorbereiden op de NAS
+## Stap 2 — Stack toevoegen in Portainer
 
-Maak via File Station (of SSH) een map, bijvoorbeeld:
+1. Open Portainer → **Stacks** → **Add stack**.
+2. Naam: `bom-game`.
+3. Build method: **Web editor**.
+4. Open [`deploy/docker-compose.yml`](../deploy/docker-compose.yml) uit deze
+   repo, kopieer de inhoud en plak 'm in het Web editor-veld.
+5. Vervang drie placeholders (zoek ze op met Ctrl+F — sommige komen op 2-3
+   plekken voor en moeten daar overal hetzelfde blijven):
+   - `CHANGE_THIS_DB_PASSWORD` → een zelfverzonnen wachtwoord voor de database
+   - `CHANGE_THIS_REDIS_PASSWORD` → een zelfverzonnen wachtwoord voor Redis
+   - `CHANGE_THIS_TO_A_LONG_RANDOM_STRING` → een lange, geheime willekeurige
+     string (bv. gegenereerd met `openssl rand -hex 32` op je laptop)
+6. Klik **Deploy the stack**.
 
-```
-/volume1/docker/bom/
-├── docker-compose.yml
-└── .env
-```
+Portainer trekt nu de drie images (`bom-game`, `postgres:16-alpine`,
+`redis:7-alpine`, plus `watchtower`) en start alles. `bom-game` wacht via de
+`depends_on`/`service_healthy`-configuratie tot `bom-db` en `bom-redis`
+daadwerkelijk gezond zijn, draait daarna automatisch de database-migraties
+(met een korte automatische retry) en start pas dan de server.
 
-Kopieer `deploy/docker-compose.yml` en `deploy/.env.example` uit deze repo
-naar die map (hernoem `.env.example` naar `.env`).
+Je kan de voortgang volgen bij **Stacks → bom-game → Containers**, of per
+container op **Logs** klikken.
 
-In `docker-compose.yml`: vervang `<OWNER>` door je GitHub-gebruikersnaam in
-kleine letters.
+## Stap 3 — Content laden (eenmalig, en na elke content-update)
 
-In `.env`: vul een echte `POSTGRES_PASSWORD` en `REDIS_PASSWORD` in
-(willekeurige lange strings), en een echte, geheime `SESSION_SECRET` (bv.
-gegenereerd met `openssl rand -hex 32` — kan ook op je eigen laptop). Laat
-`SEED_DEMO_USERS` weg of op `false` — dit is een publieke site, dus geen
-demo-accounts met een bekend wachtwoord.
-
-### Het juiste Docker-netwerk vinden
-
-`bom-app` moet op hetzelfde Docker-netwerk staan als je cloudflared-container,
-zodat de tunnel 'm kan bereiken via `http://bom-app:3000`. Zoek de
-netwerknaam op (via SSH op de NAS):
-
-```bash
-docker inspect <naam-van-je-cloudflared-container> --format '{{json .NetworkSettings.Networks}}'
-```
-
-Vul de gevonden netwerknaam in bij `cloudflared_net` (het `external: true`
-netwerk) in `docker-compose.yml`. Bestaat er nog geen gedeeld netwerk, maak
-er dan een aan en sluit je cloudflared-container er ook op aan:
+Ga naar **Containers → bom-game → Console**, kies `/bin/sh`, **Connect**, en
+draai daarin:
 
 ```bash
-docker network create cloudflared_net
+npm run db:seed
 ```
 
-## Stap 3 — Project importeren in Container Manager
+Dit laadt de demo-parafrases (zie de auteursrechtnotitie in de hoofd-README).
+Heb je een eigen (toegestaan) bronbestand, kopieer dat dan eerst naar de
+container (**Containers → bom-game → Volumes**, of `docker cp` via SSH) en
+draai vervolgens `npm run db:import -- /pad/naar/bestand.json`.
 
-1. Open **Container Manager** → **Project** → **Create**.
-2. Kies de map `/volume1/docker/bom/` en selecteer `docker-compose.yml`.
-3. Start het project.
+## Stap 4 — Cloudflare: domein naar de NAS wijzen
 
-`bom-app` wacht via de `depends_on`/`service_healthy`-configuratie tot
-`bom-db` en `bom-redis` daadwerkelijk gezond zijn, draait daarna
-`prisma migrate deploy` (met een korte automatische retry, voor het geval de
-database net iets later klaar is) en start pas dan de server.
+Dit doe je volledig in je eigen, al bestaande Cloudflare-omgeving — niks in
+Docker hoeft hiervoor aangepast te worden:
 
-## Stap 4 — Content laden (eenmalig, en na elke content-update)
-
-De demo-parafrases (zie de auteursrechtnotitie in de hoofd-README) laden of
-je eigen (toegestane) brontekst importeren doe je door een commando in de
-draaiende container uit te voeren:
-
-```bash
-# Demo-content:
-docker exec bom-app npm run db:seed
-
-# Of je eigen JSON-bestand (kopieer het eerst de container in):
-docker cp mijn-boek-van-mormon.json bom-app:/tmp/import.json
-docker exec bom-app npm run db:import -- /tmp/import.json
-```
-
-## Stap 5 — Cloudflare Tunnel: hostname toevoegen
-
-1. Ga naar het [Cloudflare Zero Trust dashboard](https://one.dash.cloudflare.com/)
-   → **Networks** → **Tunnels** → je bestaande tunnel → **Public Hostname** → **Add**.
-2. Kies je subdomain en domein (bv. `bom` op `jouwdomein.nl`).
-3. Service type: **HTTP**, URL: `bom-app:3000` (de containernaam op het
-   gedeelde netwerk — geen `localhost` nodig).
-4. Opslaan. Cloudflare zet automatisch de bijbehorende DNS-record.
+1. Maak (of gebruik) je domein/subdomein bij Cloudflare.
+2. Wijs 'm naar je NAS op poort **3000** (via je bestaande Tunnel, of hoe je
+   dat verder al geregeld hebt).
 
 WebSockets (voor de live multiplayer-quiz) werken hierbij standaard, zonder
 extra configuratie.
 
-## Stap 6 — Testen
+## Stap 5 — Testen
 
 Open je domein in een browser. Werkt registreren/inloggen en de lesflow, dan
-staat alles goed. Je kan de status van alle containers ook checken met
-`docker ps` — `bom-app`, `bom-db` en `bom-redis` moeten alle drie
-`(healthy)` tonen.
+staat alles goed. In Portainer moeten `bom-game`, `bom-db` en `bom-redis`
+alle drie een groene/gezonde status tonen.
 
 ## Daarna: updates gaan vanzelf
 
-Elke merge naar `main` → nieuwe `bom-app`-image op ghcr.io → Watchtower op
-de NAS haalt 'm binnen ~5 minuten op en herstart alleen `bom-app` (`bom-db`
+Elke push naar `main` → nieuwe `bom-game`-image op ghcr.io → Watchtower op
+de NAS haalt 'm binnen ~5 minuten op en herstart alleen `bom-game` (`bom-db`
 en `bom-redis` blijven gewoon draaien, dus geen downtime van de database).
-Je ziet dit terug in de Watchtower-logs (`docker logs bom-watchtower`).
+Je ziet dit terug in de logs van de `bom-watchtower`-container.
 
 **Let op bij schemawijzigingen**: nieuwe Prisma-migraties in
 `prisma/migrations/` worden automatisch toegepast bij het opstarten
-(`prisma migrate deploy`). Zorg dus altijd dat je lokaal `npm run
-db:migrate:dev -- --name <omschrijving>` draait (en de gegenereerde migratie
-meecommit) in plaats van rechtstreeks het schema aan te passen — anders mist
-de NAS de wijziging.
+(`prisma migrate deploy`) — daar hoef je zelf niets voor te doen op de NAS.
 
 ## Back-ups
 
-Gebruik de meegeleverde scripts (draai ze op de NAS, vanuit de map met je
-`docker-compose.yml`/`.env`):
+De database staat op je NAS onder `/volume1/docker/bom-game/postgres` (zie
+het `volumes:`-pad in `deploy/docker-compose.yml`) — neem die map mee in je
+bestaande Synology-back-upplan (Hyper Backup e.d.).
 
-```bash
-./scripts/backup.sh          # maakt backups/bom-<tijdstip>.dump
-./scripts/restore.sh backups/bom-20260101T000000Z.dump   # herstelt een backup
-```
-
-Neem de `backups/`-map mee in je bestaande Synology-back-upplan (Hyper
-Backup e.d.), of zet er zelf een periodieke Task Scheduler-taak voor op die
-`scripts/backup.sh` aanroept.
+Wil je liever een los, herstelbaar databasedump-bestand, gebruik dan de
+meegeleverde scripts (`scripts/backup.sh` / `scripts/restore.sh`) — die
+werken op elke Docker-host, ook je NAS via SSH.
