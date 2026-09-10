@@ -2,6 +2,7 @@ import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
 import { initGameServer } from "./src/server/gameServer";
+import { APP_NAME } from "./src/lib/brand";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -21,6 +22,6 @@ app.prepare().then(() => {
   // Geen host doorgeven aan listen(): dit bindt op alle interfaces (0.0.0.0),
   // nodig zodat andere containers (bv. cloudflared) de app kunnen bereiken.
   httpServer.listen(port, () => {
-    console.log(`> Boek van Mormon luistert op poort ${port} (bereikbaar op http://localhost:${port} lokaal)`);
+    console.log(`> ${APP_NAME} luistert op poort ${port} (bereikbaar op http://localhost:${port} lokaal)`);
   });
 });

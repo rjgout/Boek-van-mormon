@@ -8,10 +8,11 @@ import ThemeScript from "@/components/ThemeScript";
 import ThemeToggle from "@/components/ThemeToggle";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
+import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Boek van Mormon — speels lezen",
-  description: "Lees het Boek van Mormon op een speelse, Duolingo-achtige manier.",
+  title: `${APP_NAME} — Boek van Mormon`,
+  description: APP_TAGLINE,
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,7 +28,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg">
               <span aria-hidden>📖</span>
-              Boek van Mormon
+              {APP_NAME}
             </Link>
 
             {user ? (

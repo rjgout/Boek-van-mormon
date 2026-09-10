@@ -1,6 +1,6 @@
-# Boek van Mormon
+# Geloof je dat ook? — Boek van Mormon
 
-Op een speelse manier het Boek van Mormon lezen — in het Nederlands, Duolingo-stijl.
+Op een speelse, motiverende manier het Boek van Mormon lezen — in het Nederlands.
 
 Gebouwd om **zelf gehost** te worden: een self-contained Docker-opzet met
 een echte PostgreSQL-database en persistente volumes, zonder afhankelijkheid

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
+import { APP_NAME } from "@/lib/brand";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
@@ -8,6 +9,7 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col items-center text-center gap-8 py-12">
+      <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{APP_NAME}</p>
       <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-800 dark:text-brand-300 leading-tight">
         Lees het Boek van Mormon,
         <br />
