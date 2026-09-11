@@ -488,6 +488,23 @@ function ExerciseCard({
 
   if (exercise.type === "FILL_BLANK") {
     const options = exercise.options ?? [];
+
+    // Oudere content (van vóór keuzeopties bestonden) heeft geen opties —
+    // nooit een doodlopende weg tonen, gewoon doorlaten zonder score.
+    if (options.length === 0) {
+      return (
+        <div className="card flex flex-col gap-5">
+          <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Deze oefening kan nog niet getoond worden (verouderde content — herlaad de content via db:seed).
+          </p>
+          <button className="btn-primary self-end" disabled={disabled} onClick={() => onDone([""], false)}>
+            Doorgaan →
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div className="card flex flex-col gap-5">
         <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
