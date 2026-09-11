@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { isAnswerCorrect, isWordBankCorrect } from "@/lib/exerciseGen";
+import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeLesson } from "@/lib/streak";
+import { advanceCourseProgress } from "@/lib/courses";
 
 const schema = z.object({
   answers: z.array(
@@ -42,10 +43,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cha
     if (!exercise || exercise.chapterId !== chapterId) continue;
 
     const accepted = JSON.parse(exercise.answers) as string[];
-    const correct =
-      exercise.type === "WORD_BANK"
-        ? isWordBankCorrect(submitted.given, accepted)
-        : isAnswerCorrect(submitted.given[0] ?? "", accepted);
+    const correct = isExerciseCorrect(exercise.type, submitted.given, accepted);
 
     if (correct) correctCount++;
     results.push({ exerciseId: exercise.id, correct, correctAnswer: accepted });
@@ -65,6 +63,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cha
   const xp = correctCount * XP_PER_CORRECT + (scorePercent === 100 ? XP_PERFECT_BONUS : 0);
 
   const lessonResult = await completeLesson(user.id, chapterId, scorePercent, xp);
+
+  // Zet de actieve cursus (indien van toepassing) een hoofdstuk verder —
+  // no-op voor FREE_CHOICE, en ook als dit hoofdstuk niet bij die cursus hoort.
+  if (user.activeCourseId) {
+    await advanceCourseProgress(prisma, user.id, user.activeCourseId, chapterId);
+  }
 
   return NextResponse.json({ results, correctCount, total, ...lessonResult });
 }

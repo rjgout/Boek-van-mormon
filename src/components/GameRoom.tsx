@@ -15,7 +15,7 @@ interface QuestionData {
   id: string;
   index: number;
   total: number;
-  type: "FILL_BLANK" | "WORD_BANK";
+  type: "FILL_BLANK" | "WORD_BANK" | "MULTIPLE_CHOICE" | "SEQUENCE";
   verseRef: string;
   prompt: string;
   blanks: number;
@@ -214,7 +214,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
         <div className="card flex flex-col gap-5">
           <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{question.verseRef}</p>
 
-          {question.type === "FILL_BLANK" ? (
+          {question.type === "FILL_BLANK" || question.type === "MULTIPLE_CHOICE" ? (
             <>
               <p className="text-xl leading-relaxed">
                 {promptParts.map((part, i) => (

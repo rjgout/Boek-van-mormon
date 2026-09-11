@@ -8,6 +8,7 @@ import { createAuthToken } from "@/lib/authTokens";
 import { isEmailConfigured, sendMail } from "@/lib/email";
 import { verifyEmailTemplate } from "@/lib/emailTemplates";
 import { getBaseUrl } from "@/lib/baseUrl";
+import { FRONT_TO_BACK_SLUG } from "@/lib/courses";
 
 const schema = z.object({
   email: z.string().trim().toLowerCase().email("Vul een geldig e-mailadres in."),
@@ -45,6 +46,11 @@ export async function POST(req: NextRequest) {
   // (eerst db:seed, dan je eigen account) per ongeluk een demo-account admin.
   const isFirstUser = (await prisma.user.count({ where: { isDemoSeed: false } })) === 0;
 
+  // Standaard-cursus voor nieuwe accounts: "van voor naar achter". Bestaat
+  // die nog niet (content nog niet geïmporteerd), dan blijft dit gewoon leeg
+  // — dashboard/page.tsx vangt dat later alsnog af.
+  const defaultCourse = await prisma.course.findUnique({ where: { slug: FRONT_TO_BACK_SLUG } });
+
   // handle+discriminator is uniek, handle alleen niet — bij een botsing
   // (zeldzaam: 1 op 100.000 voor exact dezelfde combinatie) proberen we
   // gewoon een nieuw willekeurig nummer.
@@ -52,7 +58,15 @@ export async function POST(req: NextRequest) {
     const discriminator = generateDiscriminator();
     try {
       const user = await prisma.user.create({
-        data: { email, handle, discriminator, displayName, passwordHash, isAdmin: isFirstUser },
+        data: {
+          email,
+          handle,
+          discriminator,
+          displayName,
+          passwordHash,
+          isAdmin: isFirstUser,
+          activeCourseId: defaultCourse?.id,
+        },
       });
 
       // Best-effort: als er geen (werkende) e-mailconfiguratie is, blijft

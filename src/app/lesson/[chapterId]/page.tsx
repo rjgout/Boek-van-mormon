@@ -42,7 +42,7 @@ export default async function LessonPage({ params }: { params: Promise<{ chapter
 
   const exercises = chapter.exercises.map((e) => ({
     id: e.id,
-    type: e.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE",
+    type: e.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE",
     verseRef: e.verseRef,
     prompt: e.prompt,
     blanks: (JSON.parse(e.answers) as string[]).length,

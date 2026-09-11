@@ -1,5 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { generateFillBlank, generateWordBank, generateTrueFalse, buildDistractorPool } from "../src/lib/exerciseGen";
+import {
+  generateFillBlank,
+  generateWordBank,
+  generateTrueFalse,
+  buildDistractorPool,
+  shuffleWithSeed,
+} from "../src/lib/exerciseGen";
+import { syncCourses } from "../src/lib/courses";
 import type { SeedBook } from "./content";
 
 /**
@@ -100,7 +107,44 @@ export async function importBooks(prisma: PrismaClient, books: SeedBook[]) {
         }
       }
 
+      // Handmatig geschreven begrijpend-lezen-oefeningen (zie ComprehensionExercise
+      // in prisma/content.ts) — kunnen niet automatisch uit de verzen worden
+      // afgeleid zoals de rest hierboven.
+      for (let c = 0; c < (seedChapter.comprehension ?? []).length; c++) {
+        const comp = seedChapter.comprehension![c];
+        if (comp.type === "MULTIPLE_CHOICE") {
+          await prisma.exercise.create({
+            data: {
+              chapterId: chapter.id,
+              order: exerciseOrder++,
+              type: "MULTIPLE_CHOICE",
+              verseRef: comp.verseRef,
+              prompt: comp.prompt,
+              answers: JSON.stringify([comp.options[comp.correctIndex].toLowerCase()]),
+              options: {
+                create: comp.options.map((label, order) => ({ label, isCorrect: order === comp.correctIndex, order })),
+              },
+            },
+          });
+        } else {
+          const shuffled = shuffleWithSeed(comp.items, c + 1);
+          await prisma.exercise.create({
+            data: {
+              chapterId: chapter.id,
+              order: exerciseOrder++,
+              type: "SEQUENCE",
+              verseRef: comp.verseRef,
+              prompt: comp.prompt,
+              answers: JSON.stringify(comp.items.map((item) => item.toLowerCase())),
+              wordBank: JSON.stringify(shuffled),
+            },
+          });
+        }
+      }
+
       console.log(`  - ${seedBook.name} ${seedChapter.number}: ${exerciseOrder} oefeningen`);
     }
   }
+
+  await syncCourses(prisma);
 }

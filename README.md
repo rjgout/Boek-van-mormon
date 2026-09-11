@@ -175,9 +175,26 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 - Het datamodel heeft al `Person`/`Place`/`Topic` (en de koppeltabellen naar
   verzen) als fundament, maar er zijn nog geen profielpagina's of
   thema-filters gebouwd.
-- Geen leesplannen, geen AI-contentworkflow (het `status`-veld op `Exercise`
-  staat er wel klaar voor), geen podcastkoppeling, en nog geen extra
-  spelmodi naast het Schriftduel (verspuzzel/blitz/streak battle e.d.).
+- **Cursussen**: drie manieren om door de content te gaan — van voor naar
+  achter (één vaste volgorde door alles), vrije keuze, en per boek — waartussen
+  je op `/courses` kan wisselen zonder je voortgang te verliezen. Een cursus
+  wisselen verandert alleen welk hoofdstuk het dashboard als "Vandaag"
+  voorstelt; de vrije boek/hoofdstuk-lijst daaronder blijft altijd bereikbaar.
+  Thema- en personencursussen (op basis van het al aanwezige `Topic`/`Person`-
+  datamodel), een leesplan-met-einddatum, een herhalingscursus en een
+  bladwijzers-cursus staan gepland maar zijn nog niet gebouwd.
+- **Snelle ronde** (`/practice`): een korte, hoofdstukloze oefensessie uit al
+  voltooide hoofdstukken — redt je dagstreak (met minder XP dan een volledige
+  les) zonder een cursus vooruit te helpen, zodat een gemiste dag in je
+  van-voor-naar-achter-cursus nooit je streak hoeft te kosten.
+- **Begrijpend lezen**: naast de drie automatisch gegenereerde oefeningtypes
+  zijn er nu ook `MULTIPLE_CHOICE` (vrije vraag + N opties — kernboodschap,
+  motivatie, wie-zei-dit) en `SEQUENCE` (gebeurtenissen in de juiste volgorde
+  zetten). Deze worden bewust **niet** automatisch gegenereerd — zie
+  `ComprehensionExercise` in `prisma/content.ts` voor het handmatige formaat.
+- Geen AI-contentworkflow (het `status`-veld op `Exercise` staat er wel klaar
+  voor), geen podcastkoppeling, en nog geen extra spelmodi naast het
+  Schriftduel (verspuzzel/blitz/streak battle e.d.).
 
 ## Zelf hosten op een Synology NAS (Docker + Cloudflare Tunnel)
 

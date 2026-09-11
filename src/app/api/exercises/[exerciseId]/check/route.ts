@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { isAnswerCorrect, isWordBankCorrect } from "@/lib/exerciseGen";
+import { isExerciseCorrect } from "@/lib/exerciseGen";
 
 const schema = z.object({ given: z.array(z.string()).min(1) });
 
@@ -28,10 +28,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ exe
   }
 
   const accepted = JSON.parse(exercise.answers) as string[];
-  const correct =
-    exercise.type === "WORD_BANK"
-      ? isWordBankCorrect(parsed.data.given, accepted)
-      : isAnswerCorrect(parsed.data.given[0] ?? "", accepted);
+  const correct = isExerciseCorrect(exercise.type, parsed.data.given, accepted);
 
   return NextResponse.json({ correct, correctAnswer: accepted });
 }

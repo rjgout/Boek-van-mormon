@@ -73,6 +73,13 @@ model User {
   gamePlayers  LiveGamePlayer[]
 
   authTokens   AuthToken[]
+
+  // De cursus die momenteel "Vandaag" op het dashboard bepaalt. Losse
+  // voortgang per cursus blijft bewaard in UserCourseProgress, dus
+  // wisselen van cursus verlies je nooit je plek in een andere.
+  activeCourseId String?
+  activeCourse   Course?              @relation("ActiveCourse", fields: [activeCourseId], references: [id], onDelete: SetNull)
+  courseProgress UserCourseProgress[]
 }
 
 enum AuthTokenType {
@@ -123,6 +130,7 @@ model Book {
   name     String
   order    Int
   chapters Chapter[]
+  courses  Course[] // BY_BOOK-cursussen die dit boek dekken
 }
 
 model Chapter {
@@ -136,8 +144,66 @@ model Chapter {
   progress        ChapterProgress[]
   liveGames       LiveGame[]
   readingSessions ReadingSession[]
+  courseChapters       CourseChapter[]
+  courseProgressCursor UserCourseProgress[]
 
   @@unique([bookId, number])
+}
+
+// --- Cursussen: verschillende manieren om door de content te lopen --------
+//
+// FRONT_TO_BACK en BY_BOOK hebben een vaste, geordende hoofdstuklijst
+// (CourseChapter) die opnieuw wordt opgebouwd bij elke content-import (zie
+// prisma/importContent.ts) — dus altijd in sync met de actuele inhoud.
+// FREE_CHOICE heeft bewust GEEN CourseChapter-rijen: dat is de vrije "kies
+// zelf een hoofdstuk"-modus over alle content heen, zonder vaste volgorde.
+enum CourseType {
+  FRONT_TO_BACK
+  FREE_CHOICE
+  BY_BOOK
+}
+
+model Course {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  type        CourseType
+  name        String
+  description String?
+  order       Int        @default(0)
+  bookId      String? // alleen gezet voor BY_BOOK
+  book        Book?      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  chapters       CourseChapter[]
+  userProgress   UserCourseProgress[]
+  activeForUsers User[]               @relation("ActiveCourse")
+}
+
+model CourseChapter {
+  id        String  @id @default(cuid())
+  courseId  String
+  course    Course  @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  order     Int
+
+  @@unique([courseId, chapterId])
+  @@unique([courseId, order])
+}
+
+// Per gebruiker, per cursus: welk hoofdstuk als volgende aan de beurt is.
+// Blijft bestaan als je naar een andere cursus wisselt, zodat je nooit je
+// plek kwijtraakt (zie User.activeCourseId hierboven).
+model UserCourseProgress {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId         String
+  course           Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  currentChapterId String? // null = cursus uitgelezen (of nog niet gestart, bij FREE_CHOICE)
+  currentChapter   Chapter?  @relation(fields: [currentChapterId], references: [id], onDelete: SetNull)
+  lastActivityAt   DateTime  @default(now())
+
+  @@unique([userId, courseId])
 }
 
 model Verse {
@@ -284,6 +350,10 @@ enum ExerciseType {
   FILL_BLANK
   WORD_BANK
   TRUE_FALSE
+  // Begrijpend-lezen-vraagtypes (handmatig geschreven, niet automatisch
+  // gegenereerd uit brontekst — zie src/lib/exerciseGen.ts).
+  MULTIPLE_CHOICE // vrije vraag + N keuzeopties (QuestionOption), bv. kernboodschap/motivatie/wie-zei-dit
+  SEQUENCE // zet gebeurtenis-samenvattingen in de juiste volgorde; zelfde databron als WORD_BANK (answers/wordBank)
 }
 
 enum ContentStatus {
@@ -358,6 +428,9 @@ enum XPReason {
   LIVE_GAME_PLAYED
   LIVE_GAME_WON
   ACHIEVEMENT
+  // "Snelle ronde": korte, chapter-loze oefensessie die wel je dagstreak
+  // redt maar geen hoofdstuk-cursus vooruit helpt. Zie completeQuickPractice.
+  QUICK_PRACTICE
 }
 
 model XPTransaction {

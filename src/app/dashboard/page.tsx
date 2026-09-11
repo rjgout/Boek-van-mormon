@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { isEmailConfigured } from "@/lib/email";
+import { advanceCourseProgress } from "@/lib/courses";
 import SearchBar from "@/components/SearchBar";
 
 const WORDS_PER_MINUTE = 130; // rustig lees-/nadenktempo
@@ -18,7 +19,7 @@ export default async function DashboardPage() {
     redirect("/verify-email");
   }
 
-  const [books, pendingRequests] = await Promise.all([
+  const [books, pendingRequests, activeCourse] = await Promise.all([
     prisma.book.findMany({
       orderBy: { order: "asc" },
       include: {
@@ -33,12 +34,35 @@ export default async function DashboardPage() {
       },
     }),
     prisma.friendship.count({ where: { receiverId: user.id, status: "PENDING" } }),
+    user.activeCourseId ? prisma.course.findUnique({ where: { id: user.activeCourseId } }) : null,
   ]);
 
   const allChapters = books.flatMap((book) =>
     book.chapters.map((chapter) => ({ book, chapter, progress: chapter.progress[0] }))
   );
-  const todayEntry = allChapters.find((c) => !(c.progress?.completed ?? false)) ?? allChapters[allChapters.length - 1];
+
+  // "Vandaag" volgt de actieve cursus (behalve bij vrije keuze, waar je zelf
+  // kiest): het volgende hoofdstuk in die cursus, of anders — geen actieve
+  // cursus, cursus uitgelezen, of vrije keuze — het eerste onvoltooide
+  // hoofdstuk over alles heen.
+  let todayChapterId: string | null = null;
+  if (activeCourse && activeCourse.type !== "FREE_CHOICE") {
+    let courseProgress = await prisma.userCourseProgress.findUnique({
+      where: { userId_courseId: { userId: user.id, courseId: activeCourse.id } },
+    });
+    if (!courseProgress) {
+      await advanceCourseProgress(prisma, user.id, activeCourse.id);
+      courseProgress = await prisma.userCourseProgress.findUnique({
+        where: { userId_courseId: { userId: user.id, courseId: activeCourse.id } },
+      });
+    }
+    todayChapterId = courseProgress?.currentChapterId ?? null;
+  }
+
+  const todayEntry =
+    (todayChapterId && allChapters.find((c) => c.chapter.id === todayChapterId)) ||
+    allChapters.find((c) => !(c.progress?.completed ?? false)) ||
+    allChapters[allChapters.length - 1];
   const todayWordCount = todayEntry?.chapter.verses.reduce((sum, v) => sum + v.text.split(/\s+/).length, 0) ?? 0;
   const estimatedMinutes = Math.max(1, Math.round(todayWordCount / WORDS_PER_MINUTE));
   const xpAvailable = (todayEntry?.chapter._count.exercises ?? 0) * 10;
@@ -62,7 +86,14 @@ export default async function DashboardPage() {
 
         {todayEntry && !allDone ? (
           <div className="card bg-gradient-to-br from-brand-500 to-brand-600 text-white flex flex-col gap-3">
-            <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">Vandaag</p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">
+                Vandaag{activeCourse ? ` — ${activeCourse.name}` : ""}
+              </p>
+              <Link href="/courses" className="text-brand-100 text-xs font-bold underline underline-offset-2">
+                Wissel cursus
+              </Link>
+            </div>
             <h2 className="text-2xl font-extrabold">
               📖 {todayEntry.book.name} {todayEntry.chapter.number}
             </h2>
@@ -83,6 +114,9 @@ export default async function DashboardPage() {
         )}
 
         <div className="flex gap-3 flex-wrap text-sm">
+          <Link href="/practice" className="btn-secondary !px-3 !py-2">
+            ⚡ Snelle ronde
+          </Link>
           <Link href="/bookmarks" className="btn-secondary !px-3 !py-2">
             🔖 Bladwijzers
           </Link>

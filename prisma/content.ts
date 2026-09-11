@@ -5,9 +5,30 @@
 // Vervang deze via een eigen import (zie prisma/seed.ts -> importFromJson)
 // zodra je toestemming hebt geregeld om de officiële tekst te gebruiken.
 
+// Begrijpend-lezen-oefeningen (zie ExerciseType.MULTIPLE_CHOICE/SEQUENCE):
+// bewust handmatig geschreven, niet uit de verzen gegenereerd — dat vereist
+// nu eenmaal daadwerkelijk begrip van wat er gebeurt, niet alleen de tekst.
+export interface ComprehensionMultipleChoice {
+  type: "MULTIPLE_CHOICE";
+  verseRef: string;
+  prompt: string;
+  options: string[];
+  correctIndex: number;
+}
+
+export interface ComprehensionSequence {
+  type: "SEQUENCE";
+  verseRef: string;
+  prompt: string;
+  items: string[]; // in de juiste volgorde
+}
+
+export type ComprehensionExercise = ComprehensionMultipleChoice | ComprehensionSequence;
+
 export interface SeedChapter {
   number: number;
   verses: string[];
+  comprehension?: ComprehensionExercise[];
 }
 
 export interface SeedBook {
@@ -31,6 +52,31 @@ export const seedBooks: SeedBook[] = [
           "Er kwamen in die tijd veel profeten die het volk waarschuwden dat de stad verwoest zou worden.",
           "Toen Lehi bad voor zijn volk, zag hij een groot licht en hoorde hij veel dingen die hem deden beven.",
           "Hij keerde terug naar zijn huis in Jeruzalem en wierp zich neer op zijn bed, overweldigd door de Geest.",
+        ],
+        comprehension: [
+          {
+            type: "MULTIPLE_CHOICE",
+            verseRef: "1 Nephi 1",
+            prompt: "Wat is de kernboodschap van dit hoofdstuk?",
+            options: [
+              "Nephi legt uit waarom hij dit verslag schrijft en vertelt over de roeping van zijn vader Lehi als profeet.",
+              "Nephi beschrijft een oorlog tussen twee koninkrijken.",
+              "Nephi vertelt over een groot feest in Jeruzalem.",
+              "Nephi geeft een overzicht van de wetten van Mozes.",
+            ],
+            correctIndex: 0,
+          },
+          {
+            type: "SEQUENCE",
+            verseRef: "1 Nephi 1",
+            prompt: "Zet deze gebeurtenissen in de juiste volgorde.",
+            items: [
+              "Nephi krijgt onderwijs van zijn vader.",
+              "Profeten waarschuwen dat Jeruzalem verwoest zal worden.",
+              "Lehi bidt en ziet een groot licht.",
+              "Lehi keert terug naar huis, overweldigd door de Geest.",
+            ],
+          },
         ],
       },
       {

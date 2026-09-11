@@ -28,7 +28,7 @@ export interface GeneratedExercise {
 }
 
 /** Deterministische shuffle (zelfde patroon als generateWordBank hieronder). */
-function shuffleWithSeed<T>(items: T[], seed: number): T[] {
+export function shuffleWithSeed<T>(items: T[], seed: number): T[] {
   const shuffled = [...items];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = (seed * 31 + i * 17) % (i + 1);
@@ -166,8 +166,16 @@ export function isAnswerCorrect(given: string, accepted: string[]): boolean {
   return accepted.some((a) => normalizeAnswer(a) === normalizedGiven);
 }
 
-/** Voor WORD_BANK: de geplaatste woorden moeten in exact dezelfde volgorde staan. */
+/** Voor WORD_BANK (en SEQUENCE): de geplaatste items moeten in exact dezelfde volgorde staan. */
 export function isWordBankCorrect(placedWords: string[], answers: string[]): boolean {
   if (placedWords.length !== answers.length) return false;
   return placedWords.every((w, i) => normalizeAnswer(w) === normalizeAnswer(answers[i]));
+}
+
+/** Eén centrale plek voor "is dit antwoord goed", per oefeningtype — gebruikt door
+ * de check-route, de submit-route, het live-spel en de snelle-ronde-oefening. */
+export function isExerciseCorrect(type: string, given: string[], accepted: string[]): boolean {
+  return type === "WORD_BANK" || type === "SEQUENCE"
+    ? isWordBankCorrect(given, accepted)
+    : isAnswerCorrect(given[0] ?? "", accepted);
 }

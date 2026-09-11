@@ -5,7 +5,7 @@ import Redis from "ioredis";
 import { prisma } from "@/lib/db";
 import { verifySessionToken, SESSION_COOKIE } from "@/lib/auth";
 import { parseCookieHeader } from "@/lib/parseCookieHeader";
-import { isAnswerCorrect, isWordBankCorrect } from "@/lib/exerciseGen";
+import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeLesson } from "@/lib/streak";
 
 const QUESTION_TIME_MS = 20_000;
@@ -13,7 +13,7 @@ const REVEAL_PAUSE_MS = 3_500;
 
 interface GameExercise {
   id: string;
-  type: "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE";
+  type: "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE";
   verseRef: string;
   prompt: string;
   answers: string[];
@@ -87,7 +87,7 @@ async function loadExercises(chapterId: string): Promise<GameExercise[]> {
   });
   return rows.map((r) => ({
     id: r.id,
-    type: r.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE",
+    type: r.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE",
     verseRef: r.verseRef,
     prompt: r.prompt,
     answers: JSON.parse(r.answers) as string[],
@@ -177,8 +177,7 @@ function registerAnswer(room: RoomState, userId: string, given: string[]) {
   const exercise = room.exercises[room.questionIndex];
   if (!exercise) return;
 
-  const correct =
-    exercise.type === "WORD_BANK" ? isWordBankCorrect(given, exercise.answers) : isAnswerCorrect(given[0] ?? "", exercise.answers);
+  const correct = isExerciseCorrect(exercise.type, given, exercise.answers);
 
   const elapsed = Date.now() - room.questionStartedAt;
   const remainingFraction = Math.max(0, 1 - elapsed / QUESTION_TIME_MS);

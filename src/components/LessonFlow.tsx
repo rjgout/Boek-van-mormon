@@ -6,9 +6,11 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
 import { normalizeAnswer } from "@/lib/exerciseGen";
 
-interface Exercise {
+export type ExerciseType = "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE";
+
+export interface Exercise {
   id: string;
-  type: "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE";
+  type: ExerciseType;
   verseRef: string;
   prompt: string;
   blanks: number;
@@ -361,7 +363,7 @@ function formatCorrectAnswer(type: Exercise["type"], correctAnswer: string[]): s
   return correctAnswer.join(" ");
 }
 
-function ExerciseCard({
+export function ExerciseCard({
   exercise,
   onDone,
   onSkip,
@@ -558,7 +560,52 @@ function ExerciseCard({
     );
   }
 
-  // WORD_BANK
+  if (exercise.type === "MULTIPLE_CHOICE") {
+    const options = exercise.options ?? [];
+    return (
+      <div className="card flex flex-col gap-5">
+        <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
+        <p className="text-xl leading-relaxed dark:text-slate-100">{exercise.prompt}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {options.map((opt) => {
+            const isCorrectOption = checked && correctAnswer && normalizeAnswer(opt) === normalizeAnswer(correctAnswer[0] ?? "");
+            const isWrongPick = checked && choice === opt && !isCorrectOption;
+            return (
+              <button
+                key={opt}
+                disabled={checked}
+                onClick={() => setChoice(opt)}
+                className={`btn text-left border-2 ${
+                  isCorrectOption
+                    ? "bg-brand-500 text-white border-brand-500"
+                    : isWrongPick
+                      ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300 border-red-400"
+                      : choice === opt
+                        ? "bg-brand-500 text-white border-brand-500"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-brand-300"
+                }`}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+        {feedback}
+        <FooterControls
+          checked={checked}
+          checking={checking}
+          canCheck={canCheck}
+          disabled={disabled}
+          onCheck={check}
+          onNext={next}
+          onSkip={onSkip}
+        />
+      </div>
+    );
+  }
+
+  // WORD_BANK / SEQUENCE — zelfde mechaniek (items in de juiste volgorde
+  // aantikken), SEQUENCE gebruikt alleen langere zinnen i.p.v. losse woorden.
   return (
     <div className="card flex flex-col gap-5">
       <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
@@ -566,7 +613,11 @@ function ExerciseCard({
 
       <div className="flex flex-wrap gap-2 min-h-[3rem] p-3 rounded-2xl bg-slate-50 dark:bg-slate-900 border-2 border-dashed border-slate-200 dark:border-slate-700">
         {placed.length === 0 && (
-          <span className="text-slate-400 dark:text-slate-500 text-sm">Tik de woorden hieronder in de juiste volgorde</span>
+          <span className="text-slate-400 dark:text-slate-500 text-sm">
+            {exercise.type === "SEQUENCE"
+              ? "Tik de gebeurtenissen hieronder in de juiste volgorde"
+              : "Tik de woorden hieronder in de juiste volgorde"}
+          </span>
         )}
         {placed.map((p, i) => (
           <button
