@@ -10,6 +10,10 @@
 #      NAS (of naar de container "bom-game" als je 'm op hetzelfde
 #      Docker-netwerk aansluit).
 #
+# Updates: geen automatische updater (Watchtower) — na een nieuwe push naar
+# main haal je 'm zelf op in Portainer via Stacks -> bom-game -> Pull and
+# redeploy.
+#
 # Zie docs/DEPLOY-SYNOLOGY.md voor de volledige toelichting.
 
 services:
@@ -40,8 +44,6 @@ services:
       timeout: 5s
       start_period: 20s
       retries: 3
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
 
   bom-db:
     image: postgres:16-alpine
@@ -69,14 +71,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  # Checkt elke 5 minuten of er een nieuwe bom-game-image op ghcr.io staat
-  # en herstart dan automatisch alleen die container. bom-db en bom-redis
-  # blijven gewoon draaien.
-  watchtower:
-    image: containrrr/watchtower
-    container_name: bom-watchtower
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 --label-enable --cleanup

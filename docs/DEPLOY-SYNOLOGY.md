@@ -12,10 +12,9 @@ of z'n Docker-netwerk te wijzigen. Alles hieronder gebeurt in Portainer.
    `ghcr.io/<owner>/bom-game:latest`.
 3. Op de NAS draaien drie containers: `bom-game` (de applicatie), `bom-db`
    (PostgreSQL, met alle persistente data) en `bom-redis` (Socket.io-adapter
-   voor de live multiplayer-quiz). Een vierde, **Watchtower**, checkt elke 5
-   minuten of er een nieuwe `bom-game`-image staat. Zo ja: hij haalt 'm op en
-   herstart die ene container automatisch — `bom-db` en `bom-redis` blijven
-   gewoon draaien, geen actie op de NAS nodig.
+   voor de live multiplayer-quiz). Updaten naar een nieuwe versie doe je zelf
+   met één klik in Portainer (zie **Daarna: updaten** hieronder) — er draait
+   geen automatische updater.
 4. `bom-game` publiceert poort 3000 rechtstreeks op je NAS. Jij wijst je
    eigen, al bestaande Cloudflare Tunnel naar `<NAS-IP>:3000` — dat regel je
    zelf in het Cloudflare Zero Trust-dashboard, niet in Docker.
@@ -51,8 +50,8 @@ Dit is nodig zodat de NAS de image kan ophalen zonder in te loggen bij ghcr.io.
      string (bv. gegenereerd met `openssl rand -hex 32` op je laptop)
 6. Klik **Deploy the stack**.
 
-Portainer trekt nu de drie images (`bom-game`, `postgres:16-alpine`,
-`redis:7-alpine`, plus `watchtower`) en start alles. `bom-game` wacht via de
+Portainer trekt nu de drie images (`bom-game`, `postgres:16-alpine` en
+`redis:7-alpine`) en start alles. `bom-game` wacht via de
 `depends_on`/`service_healthy`-configuratie tot `bom-db` en `bom-redis`
 daadwerkelijk gezond zijn, draait daarna automatisch de database-migraties
 (met een korte automatische retry) en start pas dan de server.
@@ -92,12 +91,15 @@ Open je domein in een browser. Werkt registreren/inloggen en de lesflow, dan
 staat alles goed. In Portainer moeten `bom-game`, `bom-db` en `bom-redis`
 alle drie een groene/gezonde status tonen.
 
-## Daarna: updates gaan vanzelf
+## Daarna: updaten
 
-Elke push naar `main` → nieuwe `bom-game`-image op ghcr.io → Watchtower op
-de NAS haalt 'm binnen ~5 minuten op en herstart alleen `bom-game` (`bom-db`
-en `bom-redis` blijven gewoon draaien, dus geen downtime van de database).
-Je ziet dit terug in de logs van de `bom-watchtower`-container.
+Elke push naar `main` zet een nieuwe `bom-game`-image klaar op ghcr.io — die
+haal je zelf op wanneer het jou uitkomt:
+
+1. Portainer → **Stacks** → `bom-game`.
+2. **Pull and redeploy** (herbouwt alleen `bom-game` met de nieuwste image;
+   `bom-db` en `bom-redis` blijven gewoon draaien, dus geen downtime van de
+   database).
 
 **Let op bij schemawijzigingen**: nieuwe Prisma-migraties in
 `prisma/migrations/` worden automatisch toegepast bij het opstarten

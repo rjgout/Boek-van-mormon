@@ -8,9 +8,9 @@
 # voor poort 3000 als je de app publiek bereikbaar wil maken onder je eigen
 # domein — deze compose-file is daar bewust neutraal in.
 #
-# Voor het specifieke geval van een Synology NAS + Cloudflare Tunnel (met
-# een vooraf gebouwde image i.p.v. lokaal bouwen, plus automatische updates
-# via Watchtower) zie deploy/docker-compose.yml en docs/DEPLOY-SYNOLOGY.md.
+# Voor het specifieke geval van een Synology NAS + Portainer (met een
+# vooraf gebouwde image i.p.v. lokaal bouwen) zie deploy/docker-compose.yml
+# en docs/DEPLOY-SYNOLOGY.md.
 
 services:
   bom-game:

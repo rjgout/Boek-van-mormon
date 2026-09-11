@@ -160,7 +160,7 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 
 Zie [`docs/DEPLOY-SYNOLOGY.md`](docs/DEPLOY-SYNOLOGY.md) voor een volledig
 uitgewerkt voorbeeld: een Docker-image die via GitHub Actions automatisch
-gebouwd en gepubliceerd wordt, en op de NAS door Watchtower opgehaald en
-herstart wordt zodra je naar `main` merget — plus hoe je 'm onder je eigen
-domein achter een Cloudflare Tunnel zet. Dezelfde aanpak werkt met kleine
+gebouwd en gepubliceerd wordt zodra je naar `main` pusht, en die je met één
+klik in Portainer ophaalt en herstart — plus hoe je 'm onder je eigen domein
+achter een Cloudflare Tunnel zet. Dezelfde aanpak werkt met kleine
 aanpassingen op elke andere Docker-host.
