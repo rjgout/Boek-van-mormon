@@ -39,15 +39,18 @@ export async function importPodcastEpisodes(
 ) {
   for (let i = 0; i < episodes.length; i++) {
     const seed = episodes[i];
+    // order = -number, zodat de nieuwste (hoogst genummerde) aflevering
+    // altijd bovenaan staat — ongeacht in welke volgorde ze hier of via de
+    // feed-sync (zie src/lib/podcastFeed.ts) binnenkomen.
     const episode = await prisma.podcastEpisode.upsert({
       where: { number: seed.number },
-      update: { title: seed.title, summary: seed.summary, listenUrl: seed.listenUrl, order: i },
+      update: { title: seed.title, summary: seed.summary, listenUrl: seed.listenUrl, order: -seed.number },
       create: {
         number: seed.number,
         title: seed.title,
         summary: seed.summary,
         listenUrl: seed.listenUrl,
-        order: i,
+        order: -seed.number,
       },
     });
 

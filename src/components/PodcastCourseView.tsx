@@ -8,8 +8,10 @@ interface EpisodeView {
   listenUrl: string | null;
   contentCompleted: boolean;
   contentBestScore: number | null;
+  hasContentExercises: boolean;
   bomCompleted: boolean;
   bomBestScore: number | null;
+  hasBomExercises: boolean;
 }
 
 interface Props {
@@ -68,33 +70,62 @@ export default function PodcastCourseView({ courseName, streak, freezeCount, xpT
             </div>
             {episode.summary && <p className="text-sm text-slate-500 dark:text-slate-400">{episode.summary}</p>}
             <div className="flex gap-3 flex-wrap">
-              <Link
+              <ModeButton
                 href={`/podcast/${episode.id}/CONTENT`}
-                className={`btn flex-1 min-w-[220px] border-2 ${
-                  episode.contentCompleted
-                    ? "bg-brand-500 text-white border-brand-500"
-                    : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600"
-                }`}
-              >
-                {episode.contentCompleted ? "✓ " : ""}Inhoud van de aflevering
-                {episode.contentBestScore !== null ? ` · ${episode.contentBestScore}%` : ""}
-              </Link>
-              <Link
+                label="Inhoud van de aflevering"
+                available={episode.hasContentExercises}
+                completed={episode.contentCompleted}
+                bestScore={episode.contentBestScore}
+              />
+              <ModeButton
                 href={`/podcast/${episode.id}/BOM_CONNECTION`}
-                className={`btn flex-1 min-w-[220px] border-2 ${
-                  episode.bomCompleted
-                    ? "bg-brand-500 text-white border-brand-500"
-                    : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600"
-                }`}
-              >
-                {episode.bomCompleted ? "✓ " : ""}Verband met het Boek van Mormon
-                {episode.bomBestScore !== null ? ` · ${episode.bomBestScore}%` : ""}
-              </Link>
+                label="Verband met het Boek van Mormon"
+                available={episode.hasBomExercises}
+                completed={episode.bomCompleted}
+                bestScore={episode.bomBestScore}
+              />
             </div>
           </div>
         ))}
       </div>
     </div>
+  );
+}
+
+function ModeButton({
+  href,
+  label,
+  available,
+  completed,
+  bestScore,
+}: {
+  href: string;
+  label: string;
+  available: boolean;
+  completed: boolean;
+  bestScore: number | null;
+}) {
+  if (!available) {
+    return (
+      <span className="btn flex-1 min-w-[220px] border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 cursor-default">
+        {label} — oefeningen volgen nog
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className={`btn flex-1 min-w-[220px] border-2 ${
+        completed
+          ? "bg-brand-500 text-white border-brand-500"
+          : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600"
+      }`}
+    >
+      {completed ? "✓ " : ""}
+      {label}
+      {bestScore !== null ? ` · ${bestScore}%` : ""}
+    </Link>
   );
 }
 

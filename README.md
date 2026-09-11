@@ -188,6 +188,18 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
   wisselen verandert alleen welk hoofdstuk het dashboard als "Vandaag"
   voorstelt, of stuurt je (bij de podcastcursus) naar de afleveringenlijst.
   De vrije boek/hoofdstuk-lijst daaronder blijft altijd bereikbaar.
+
+  Elke keer dat content opnieuw geladen wordt (`npm run db:seed`, of de
+  "Content opnieuw laden"-knop op `/adminbackend`) wordt ook de podcastfeed
+  (`https://geloofjedatook.nl/@geloofjedatook/feed.xml`, overschrijfbaar via
+  de env var `PODCAST_FEED_URL`) opgehaald: nieuwe afleveringen verschijnen
+  daardoor vanzelf met de juiste titel/omschrijving/link, en bestaande
+  afleveringen krijgen die gegevens bijgewerkt als ze in de feed veranderen.
+  Dit raakt nooit de oefeningen zelf — die blijven handwerk (zie
+  `prisma/podcastContent.ts`) — dus een nieuwe aflevering staat er met
+  "oefeningen volgen nog" totdat daar begrijpend-lezen-vragen voor zijn
+  geschreven. Is de feed niet bereikbaar, dan wordt dat alleen gelogd; de rest
+  van `db:seed` gaat gewoon door.
   Thema- en personencursussen (op basis van het al aanwezige `Topic`/`Person`-
   datamodel), een leesplan-met-einddatum, een herhalingscursus en een
   bladwijzers-cursus staan gepland maar zijn nog niet gebouwd.

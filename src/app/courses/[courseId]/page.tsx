@@ -38,7 +38,10 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   if (course.type === "PODCAST") {
     const episodes = await prisma.podcastEpisode.findMany({
       orderBy: { order: "asc" },
-      include: { progress: { where: { userId: user.id } } },
+      include: {
+        progress: { where: { userId: user.id } },
+        exercises: { select: { mode: true } },
+      },
     });
 
     return (
@@ -58,8 +61,10 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             listenUrl: episode.listenUrl,
             contentCompleted: contentProgress?.completed ?? false,
             contentBestScore: contentProgress ? contentProgress.bestScore : null,
+            hasContentExercises: episode.exercises.some((e) => e.mode === "CONTENT"),
             bomCompleted: bomProgress?.completed ?? false,
             bomBestScore: bomProgress ? bomProgress.bestScore : null,
+            hasBomExercises: episode.exercises.some((e) => e.mode === "BOM_CONNECTION"),
           };
         })}
       />
