@@ -32,7 +32,11 @@ function toAnswersAndOptions(comp: PodcastComprehensionExercise): {
 }
 
 /** Idempotent: herdraaien overschrijft de oefeningen van dezelfde aflevering. */
-export async function importPodcastEpisodes(prisma: PrismaClient, episodes: PodcastEpisodeSeed[]) {
+export async function importPodcastEpisodes(
+  prisma: PrismaClient,
+  episodes: PodcastEpisodeSeed[],
+  log: (msg: string) => void = console.log
+) {
   for (let i = 0; i < episodes.length; i++) {
     const seed = episodes[i];
     const episode = await prisma.podcastEpisode.upsert({
@@ -83,6 +87,6 @@ export async function importPodcastEpisodes(prisma: PrismaClient, episodes: Podc
       });
     }
 
-    console.log(`  - Aflevering ${seed.number}: ${seed.content.length} + ${seed.bomConnection.length} oefeningen`);
+    log(`  - Aflevering ${seed.number}: ${seed.content.length} + ${seed.bomConnection.length} oefeningen`);
   }
 }

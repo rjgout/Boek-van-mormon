@@ -14,7 +14,11 @@ import type { SeedBook } from "./content";
  * invuloefeningen bij. Idempotent: herdraaien overschrijft bestaande
  * verzen/oefeningen van dezelfde hoofdstukken.
  */
-export async function importBooks(prisma: PrismaClient, books: SeedBook[]) {
+export async function importBooks(
+  prisma: PrismaClient,
+  books: SeedBook[],
+  log: (msg: string) => void = console.log
+) {
   for (let bookOrder = 0; bookOrder < books.length; bookOrder++) {
     const seedBook = books[bookOrder];
     const book = await prisma.book.upsert({
@@ -142,7 +146,7 @@ export async function importBooks(prisma: PrismaClient, books: SeedBook[]) {
         }
       }
 
-      console.log(`  - ${seedBook.name} ${seedChapter.number}: ${exerciseOrder} oefeningen`);
+      log(`  - ${seedBook.name} ${seedChapter.number}: ${exerciseOrder} oefeningen`);
     }
   }
 

@@ -91,6 +91,9 @@ Content laden (eenmalig, en telkens wanneer je content toevoegt/wijzigt):
 docker exec bom-game npm run db:seed
 ```
 
+Dit kan ook zonder terminal: een admin-account heeft op `/adminbackend` een
+knop "Content opnieuw laden" die precies hetzelfde doet.
+
 Zie **Architectuur** hieronder voor wat elke container doet, en **Back-ups**
 voor hoe je de database veiligstelt.
 

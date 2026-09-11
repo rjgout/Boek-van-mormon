@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getEmailSettingsView } from "@/lib/email";
 import AdminUsersClient from "@/components/AdminUsersClient";
 import EmailSettingsClient from "@/components/EmailSettingsClient";
+import ReseedClient from "@/components/ReseedClient";
 
 export default async function AdminBackendPage() {
   const user = await getCurrentUser();
@@ -45,6 +46,8 @@ export default async function AdminBackendPage() {
         <StatCard label="Hoofdstukken" value={chapterCount} />
         <StatCard label="Oefeningen" value={exerciseCount} />
       </div>
+
+      <ReseedClient />
 
       <AdminUsersClient
         initialUsers={users.map((u) => ({ ...u, createdAt: u.createdAt.toISOString() }))}
