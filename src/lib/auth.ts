@@ -38,9 +38,15 @@ export async function verifySessionToken(token: string): Promise<{ userId: strin
   }
 }
 
+// Cookies met Secure worden door de browser genegeerd op een pagina die
+// zelf over plain http geladen is (bv. testen via het LAN-IP van je NAS in
+// plaats van je https-domein). ALLOW_INSECURE_COOKIES=true zet Secure uit
+// voor dat geval — nooit gebruiken zodra de app op het internet staat.
+const allowInsecureCookies = process.env.ALLOW_INSECURE_COOKIES === "true";
+
 export const sessionCookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
+  secure: process.env.NODE_ENV === "production" && !allowInsecureCookies,
   sameSite: "lax" as const,
   path: "/",
   maxAge: SESSION_MAX_AGE_SECONDS,

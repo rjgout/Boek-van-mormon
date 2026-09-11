@@ -24,6 +24,11 @@ services:
       REDIS_URL: redis://:CHANGE_THIS_REDIS_PASSWORD@bom-redis:6379
       SESSION_SECRET: CHANGE_THIS_TO_A_LONG_RANDOM_STRING
       PORT: 3000
+      # Zet tijdelijk op "true" als je test via een plain-http-adres (bv.
+      # het LAN-IP van je NAS) — anders blijft inloggen hangen omdat de
+      # browser een Secure-cookie negeert zonder https. Weer op "false"
+      # zetten (of de regel weghalen) zodra je via je https-domein test.
+      ALLOW_INSECURE_COOKIES: "false"
     depends_on:
       bom-db:
         condition: service_healthy
