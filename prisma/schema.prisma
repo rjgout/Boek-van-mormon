@@ -33,6 +33,10 @@ model User {
   // installatiepad (eerst db:seed, dan pas je eigen account aanmaken) per
   // ongeluk een demo-account admin in plaats van je eigen account.
   isDemoSeed   Boolean  @default(false)
+  // Gezet door een admin-wachtwoordreset (/adminbackend); dwingt de
+  // gebruiker om na inloggen eerst zelf een nieuw wachtwoord te kiezen
+  // voordat de rest van de app bereikbaar is (zie dashboard/page.tsx).
+  mustChangePassword Boolean @default(false)
   createdAt    DateTime @default(now())
 
   @@unique([handle, discriminator])

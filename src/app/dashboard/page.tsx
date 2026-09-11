@@ -9,6 +9,7 @@ const WORDS_PER_MINUTE = 130; // rustig lees-/nadenktempo
 export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (user.mustChangePassword) redirect("/change-password");
 
   const [books, pendingRequests] = await Promise.all([
     prisma.book.findMany({

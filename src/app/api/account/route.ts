@@ -2,9 +2,40 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
-import { SESSION_COOKIE } from "@/lib/auth";
+import { SESSION_COOKIE, hashPassword, verifyPassword } from "@/lib/auth";
 
 const patchSchema = z.object({ searchableByEmail: z.boolean() });
+
+const passwordSchema = z.object({
+  currentPassword: z.string().min(1, "Vul je huidige (of tijdelijke) wachtwoord in."),
+  newPassword: z.string().min(8, "Nieuw wachtwoord moet minstens 8 tekens zijn."),
+});
+
+// Zelf je wachtwoord wijzigen — ook het verplichte pad na een
+// admin-wachtwoordreset (zie /api/admin/users/[userId]/reset-password).
+export async function PUT(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const body = await req.json().catch(() => null);
+  const parsed = passwordSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+  }
+
+  const valid = await verifyPassword(parsed.data.currentPassword, user.passwordHash);
+  if (!valid) {
+    return NextResponse.json({ error: "Huidig wachtwoord klopt niet." }, { status: 401 });
+  }
+
+  const passwordHash = await hashPassword(parsed.data.newPassword);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { passwordHash, mustChangePassword: false },
+  });
+
+  return NextResponse.json({ ok: true });
+}
 
 // Privacy-instelling: standaard uit. Alleen als een gebruiker dit zelf
 // aanzet, kan zijn/haar exacte e-mailadres gebruikt worden om diegene te

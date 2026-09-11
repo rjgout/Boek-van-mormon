@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
@@ -118,6 +119,13 @@ export default function ProfileClient() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="card flex flex-col gap-3">
+        <h2 className="font-extrabold text-lg dark:text-slate-100">Account</h2>
+        <Link href="/change-password" className="btn-secondary self-start">
+          Wachtwoord wijzigen
+        </Link>
       </section>
 
       <section className="card flex flex-col gap-3">

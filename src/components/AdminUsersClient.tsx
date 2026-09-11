@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { formatTag } from "@/lib/handle";
 
 interface AdminUser {
@@ -25,6 +25,7 @@ export default function AdminUsersClient({
   const [users, setUsers] = useState(initialUsers);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [revealedPasswords, setRevealedPasswords] = useState<Record<string, string>>({});
 
   async function toggleAdmin(userId: string, nextIsAdmin: boolean) {
     setError(null);
@@ -43,6 +44,21 @@ export default function AdminUsersClient({
     setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, isAdmin: nextIsAdmin } : u)));
   }
 
+  async function resetPassword(userId: string) {
+    if (!confirm("Wachtwoord van deze gebruiker resetten? Het huidige wachtwoord werkt dan niet meer.")) return;
+    setError(null);
+    setBusyId(userId);
+    const res = await fetch(`/api/admin/users/${userId}/reset-password`, { method: "POST" });
+    setBusyId(null);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Er ging iets mis.");
+      return;
+    }
+    const data = await res.json();
+    setRevealedPasswords((prev) => ({ ...prev, [userId]: data.tempPassword }));
+  }
+
   return (
     <div className="card overflow-x-auto">
       <h2 className="font-extrabold mb-4">Gebruikers ({users.length})</h2>
@@ -56,41 +72,76 @@ export default function AdminUsersClient({
             <th className="py-2 pr-3">XP</th>
             <th className="py-2 pr-3">Streak</th>
             <th className="py-2 pr-3">Admin</th>
-            <th className="py-2" />
+            <th className="py-2" colSpan={2} />
           </tr>
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="border-b border-slate-50 dark:border-slate-800">
-              <td className="py-2 pr-3 font-bold dark:text-slate-100">
-                {u.displayName}
-                {u.id === currentUserId && <span className="text-brand-500 dark:text-brand-300 font-normal"> (jij)</span>}
-              </td>
-              <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{formatTag(u.handle, u.discriminator)}</td>
-              <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{u.email}</td>
-              <td className="py-2 pr-3 dark:text-slate-200">{u.xpTotal}</td>
-              <td className="py-2 pr-3 dark:text-slate-200">🔥 {u.currentStreak}</td>
-              <td className="py-2 pr-3">
-                {u.isAdmin ? (
-                  <span className="text-brand-600 dark:text-brand-300 font-bold">Admin</span>
-                ) : (
-                  <span className="text-slate-400 dark:text-slate-500">Gebruiker</span>
-                )}
-              </td>
-              <td className="py-2">
-                {u.id === currentUserId ? (
-                  <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
-                ) : (
+            <Fragment key={u.id}>
+              <tr className="border-b border-slate-50 dark:border-slate-800">
+                <td className="py-2 pr-3 font-bold dark:text-slate-100">
+                  {u.displayName}
+                  {u.id === currentUserId && <span className="text-brand-500 dark:text-brand-300 font-normal"> (jij)</span>}
+                </td>
+                <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{formatTag(u.handle, u.discriminator)}</td>
+                <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{u.email}</td>
+                <td className="py-2 pr-3 dark:text-slate-200">{u.xpTotal}</td>
+                <td className="py-2 pr-3 dark:text-slate-200">🔥 {u.currentStreak}</td>
+                <td className="py-2 pr-3">
+                  {u.isAdmin ? (
+                    <span className="text-brand-600 dark:text-brand-300 font-bold">Admin</span>
+                  ) : (
+                    <span className="text-slate-400 dark:text-slate-500">Gebruiker</span>
+                  )}
+                </td>
+                <td className="py-2 pr-3">
+                  {u.id === currentUserId ? (
+                    <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                  ) : (
+                    <button
+                      className="btn-secondary !px-3 !py-1.5 !text-xs"
+                      disabled={busyId === u.id}
+                      onClick={() => toggleAdmin(u.id, !u.isAdmin)}
+                    >
+                      {busyId === u.id ? "Bezig..." : u.isAdmin ? "Adminrechten weghalen" : "Maak admin"}
+                    </button>
+                  )}
+                </td>
+                <td className="py-2">
                   <button
                     className="btn-secondary !px-3 !py-1.5 !text-xs"
                     disabled={busyId === u.id}
-                    onClick={() => toggleAdmin(u.id, !u.isAdmin)}
+                    onClick={() => resetPassword(u.id)}
                   >
-                    {busyId === u.id ? "Bezig..." : u.isAdmin ? "Adminrechten weghalen" : "Maak admin"}
+                    {busyId === u.id ? "Bezig..." : "Wachtwoord resetten"}
                   </button>
-                )}
-              </td>
-            </tr>
+                </td>
+              </tr>
+              {revealedPasswords[u.id] && (
+                <tr className="bg-gold-50 dark:bg-slate-700">
+                  <td colSpan={8} className="py-2 px-3 text-sm">
+                    Tijdelijk wachtwoord voor <strong>{u.displayName}</strong>:{" "}
+                    <code className="bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono">
+                      {revealedPasswords[u.id]}
+                    </code>{" "}
+                    — geef dit zelf door (bv. via chat). De gebruiker moet er bij het inloggen direct een eigen
+                    wachtwoord voor kiezen.{" "}
+                    <button
+                      className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-bold ml-2"
+                      onClick={() =>
+                        setRevealedPasswords((prev) => {
+                          const next = { ...prev };
+                          delete next[u.id];
+                          return next;
+                        })
+                      }
+                    >
+                      Sluiten
+                    </button>
+                  </td>
+                </tr>
+              )}
+            </Fragment>
           ))}
         </tbody>
       </table>

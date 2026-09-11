@@ -46,10 +46,14 @@ van een specifieke cloud-hostingprovider.
 - **Privacy**: alleen functioneel noodzakelijke cookies (geen tracking, dus
   geen cookiebanner nodig), een privacy- en cookiebeleid, en zelf je account
   + alle gegevens kunnen verwijderen.
-- **Adminbeheer** (`/adminbackend`): de allereerste registratie op een verse
-  installatie wordt automatisch admin (geen aparte setup-stap nodig); die
-  admin kan daarna andere gebruikers admin maken via een simpel
-  gebruikersoverzicht.
+- **Adminbeheer** (`/adminbackend`): de allereerste ECHTE registratie op een
+  verse installatie wordt automatisch admin (geen aparte setup-stap nodig,
+  en demo-accounts uit `db:seed` tellen hier niet voor mee); die admin ziet
+  een overzicht met statistieken (gebruikers/boeken/hoofdstukken/oefeningen),
+  kan andere gebruikers admin maken, en kan een wachtwoordreset voor een
+  gebruiker initiëren (er is geen e-mailflow — de admin geeft het getoonde
+  tijdelijke wachtwoord zelf door; de gebruiker moet er bij de eerstvolgende
+  login direct een eigen wachtwoord voor kiezen).
 
 ## Snel starten met Docker (aanbevolen)
 
