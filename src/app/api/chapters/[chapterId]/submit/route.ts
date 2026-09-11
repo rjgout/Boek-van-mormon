@@ -5,6 +5,8 @@ import { getCurrentUser } from "@/lib/session";
 import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeLesson } from "@/lib/streak";
 import { advanceCourseProgress } from "@/lib/courses";
+import { notifyNewAchievements } from "@/lib/notify";
+import { recordChallengeAttempt } from "@/lib/challenges";
 
 const schema = z.object({
   answers: z.array(
@@ -13,6 +15,9 @@ const schema = z.object({
       given: z.array(z.string()).min(1),
     })
   ),
+  // Gezet als dit hoofdstuk gespeeld wordt als iemands beurt in een
+  // uitdaging (zie /challenges) — de score telt dan ook mee daarvoor.
+  challengeId: z.string().optional(),
 });
 
 const XP_PER_CORRECT = 10;
@@ -63,6 +68,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cha
   const xp = correctCount * XP_PER_CORRECT + (scorePercent === 100 ? XP_PERFECT_BONUS : 0);
 
   const lessonResult = await completeLesson(user.id, chapterId, scorePercent, xp);
+  notifyNewAchievements(user.id, lessonResult.newAchievements).catch(() => {});
+
+  if (parsed.data.challengeId) {
+    await recordChallengeAttempt(user.id, parsed.data.challengeId, chapterId, scorePercent).catch(() => {});
+  }
 
   // Zet de actieve cursus (indien van toepassing) een hoofdstuk verder —
   // no-op voor FREE_CHOICE, en ook als dit hoofdstuk niet bij die cursus hoort.

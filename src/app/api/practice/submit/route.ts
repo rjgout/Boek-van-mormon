@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeQuickPractice } from "@/lib/streak";
+import { notifyNewAchievements } from "@/lib/notify";
 
 const schema = z.object({
   answers: z.array(
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
 
   const total = parsed.data.answers.length;
   const result = await completeQuickPractice(user.id, correctCount, total);
+  notifyNewAchievements(user.id, result.newAchievements).catch(() => {});
 
   return NextResponse.json({ correctCount, total, ...result });
 }

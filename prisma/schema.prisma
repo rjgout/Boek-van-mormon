@@ -54,6 +54,29 @@ model User {
   lastStudyDate  String? // yyyy-mm-dd, in de dag-bucket van de gebruiker
   freezeCount    Int       @default(0)
 
+  // Notificaties: allebei standaard UIT (zelfde privacy-by-default-principe
+  // als searchableByEmail hierboven) — een gebruiker moet er zelf voor
+  // kiezen. Pushnotificaties vereisen daarnaast browsertoestemming (zie
+  // PushSubscription); e-mailnotificaties vereisen dat de admin SMTP heeft
+  // ingesteld (zie EmailSettings/isEmailConfigured). Beide gelden voor alle
+  // gebeurtenistypes (dagelijkse herinnering, vriendschapsverzoek,
+  // achievement, wekelijkse competitie-uitslag, uitdagingen) — geen aparte
+  // instelling per type, dat vroeg de gebruiker niet.
+  emailNotificationsEnabled Boolean @default(false)
+  pushNotificationsEnabled  Boolean @default(false)
+  // "HH:MM", geïnterpreteerd in de lokale tijd van de server/container (er
+  // is nergens in deze app een per-gebruiker tijdzone bijgehouden — zie
+  // dayKey() in src/lib/dates.ts die ook al bewust op UTC-dagbuckets werkt).
+  dailyReminderTime String @default("20:00")
+  // Voorkomen dat de in-process scheduler (zie src/lib/scheduler.ts) dezelfde
+  // dag/week twee keer een herinnering/uitslag stuurt.
+  lastDailyReminderSentDate    String?
+  lastWeeklyResultNotifiedWeek String?
+
+  pushSubscriptions  PushSubscription[]
+  challengesSent     Challenge[]        @relation("ChallengeSender")
+  challengesReceived Challenge[]        @relation("ChallengeReceiver")
+
   progress          ChapterProgress[]
   readingSessions   ReadingSession[]
   attempts          ExerciseAttempt[]
@@ -151,6 +174,7 @@ model Chapter {
   readingSessions ReadingSession[]
   courseChapters       CourseChapter[]
   courseProgressCursor UserCourseProgress[]
+  challenges           Challenge[]
 
   @@unique([bookId, number])
 }
@@ -725,4 +749,65 @@ model LiveGamePlayer {
   joinedAt DateTime @default(now())
 
   @@unique([gameId, userId])
+}
+
+// --- Notificaties (e-mail + browser push) ----------------------------------
+
+// Eén rij per browser/apparaat waarop een gebruiker pushnotificaties heeft
+// toegestaan (de Web Push-standaard: elk apparaat/browser krijgt zijn eigen
+// endpoint). Verwijderd zodra de browser 'm meldt als verlopen (410 Gone),
+// zie src/lib/push.ts.
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  createdAt DateTime @default(now())
+}
+
+// Singleton (net als EmailSettings): het VAPID-sleutelpaar waarmee de server
+// zich bij pushdiensten (FCM/Mozilla/...) identificeert. Wordt automatisch
+// gegenereerd bij eerste gebruik (zie src/lib/push.ts) — geen admin-actie
+// nodig, in tegenstelling tot EmailSettings (SMTP moet je wel zelf weten).
+model PushSettings {
+  id         String @id @default("singleton")
+  publicKey  String
+  privateKey String
+}
+
+enum ChallengeStatus {
+  PENDING
+  DECLINED
+  ACCEPTED
+  FINISHED
+}
+
+// Asynchrone 1-op-1-uitdaging tussen twee vrienden op een specifiek
+// hoofdstuk: beide spelen de oefeningen van dat hoofdstuk onafhankelijk van
+// elkaar (niet gelijktijdig zoals LiveGame), en krijgen een notificatie
+// zodra de ander aan de beurt is/heeft gespeeld. Scores zijn los van
+// ChapterProgress/ExerciseAttempt — een uitdaging telt niet mee voor
+// hoofdstukvoortgang, streak of XP (dat gebeurt al via de normale lesflow;
+// dit is puur de "wie scoort beter"-vergelijking).
+model Challenge {
+  id         String          @id @default(cuid())
+  chapterId  String
+  chapter    Chapter         @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  senderId   String
+  sender     User            @relation("ChallengeSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User            @relation("ChallengeReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     ChallengeStatus @default(PENDING)
+
+  senderScore         Int?
+  senderCompletedAt   DateTime?
+  receiverScore       Int?
+  receiverCompletedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([receiverId])
+  @@index([senderId])
 }

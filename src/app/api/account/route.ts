@@ -4,7 +4,15 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { SESSION_COOKIE, hashPassword, verifyPassword } from "@/lib/auth";
 
-const patchSchema = z.object({ searchableByEmail: z.boolean() });
+const patchSchema = z.object({
+  searchableByEmail: z.boolean().optional(),
+  emailNotificationsEnabled: z.boolean().optional(),
+  pushNotificationsEnabled: z.boolean().optional(),
+  dailyReminderTime: z
+    .string()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Ongeldig tijdstip")
+    .optional(),
+});
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, "Vul je huidige (of tijdelijke) wachtwoord in."),
@@ -47,10 +55,13 @@ export async function PATCH(req: NextRequest) {
   const body = await req.json().catch(() => null);
   const parsed = patchSchema.safeParse(body);
   if (!parsed.success) return NextResponse.json({ error: "Ongeldige invoer" }, { status: 400 });
+  if (Object.keys(parsed.data).length === 0) {
+    return NextResponse.json({ error: "Niets om op te slaan" }, { status: 400 });
+  }
 
   await prisma.user.update({
     where: { id: user.id },
-    data: { searchableByEmail: parsed.data.searchableByEmail },
+    data: parsed.data,
   });
   return NextResponse.json({ ok: true });
 }

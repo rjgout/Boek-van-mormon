@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeKidsStory } from "@/lib/streak";
+import { notifyNewAchievements } from "@/lib/notify";
 
 const schema = z.object({
   answers: z.array(
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ sto
   const xp = correctCount * XP_PER_CORRECT + (scorePercent === 100 ? XP_PERFECT_BONUS : 0);
 
   const lessonResult = await completeKidsStory(user.id, storyId, scorePercent, xp);
+  notifyNewAchievements(user.id, lessonResult.newAchievements).catch(() => {});
 
   return NextResponse.json({ results, correctCount, total, ...lessonResult });
 }

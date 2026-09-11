@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { notifyFriendRequest } from "@/lib/notify";
 
 const schema = z.object({ targetUserId: z.string().trim().min(1) });
 
@@ -34,6 +35,8 @@ export async function POST(req: NextRequest) {
   const friendship = await prisma.friendship.create({
     data: { senderId: user.id, receiverId: target.id, status: "PENDING" },
   });
+
+  notifyFriendRequest(target.id, user.displayName).catch(() => {});
 
   return NextResponse.json({ id: friendship.id });
 }

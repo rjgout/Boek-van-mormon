@@ -34,6 +34,10 @@ interface Props {
   nextChapterId: string | null;
   verses: VerseView[];
   exercises: Exercise[];
+  // Gezet als deze les gespeeld wordt als iemands beurt in een uitdaging
+  // (zie /challenges) — de score telt dan ook mee voor die uitdaging, zie
+  // /api/chapters/[chapterId]/submit.
+  challengeId?: string;
 }
 
 type Phase = "read" | "exercises" | "review" | "summary";
@@ -62,7 +66,7 @@ const FONT_SCALE_KEY = "bom-reader-font-scale";
 const MIN_SCALE = 0.85;
 const MAX_SCALE = 1.5;
 
-export default function LessonFlow({ chapterId, bookName, chapterNumber, nextChapterId, verses, exercises }: Props) {
+export default function LessonFlow({ chapterId, bookName, chapterNumber, nextChapterId, verses, exercises, challengeId }: Props) {
   const [phase, setPhase] = useState<Phase>("read");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<SubmittedAnswer[]>([]);
@@ -91,7 +95,7 @@ export default function LessonFlow({ chapterId, bookName, chapterNumber, nextCha
     const res = await fetch(`/api/chapters/${chapterId}/submit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers: finalAnswers }),
+      body: JSON.stringify({ answers: finalAnswers, challengeId }),
     });
     const data = await res.json();
     setSubmitting(false);

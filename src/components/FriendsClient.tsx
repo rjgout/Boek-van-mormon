@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { formatTag } from "@/lib/handle";
 
 interface FriendUser {
@@ -180,13 +181,18 @@ export default function FriendsClient() {
                   🔥 {f.currentStreak} streak · ⭐ {f.xpTotal} XP
                 </div>
               </div>
-              <button
-                className="btn-ice !px-3 !py-1.5"
-                onClick={() => giftFreeze(f.id)}
-                disabled={giftedTo === f.id}
-              >
-                {giftedTo === f.id ? "Verstuurd!" : "🧊 Geef freeze"}
-              </button>
+              <div className="flex gap-2">
+                <Link href={`/challenges?friend=${f.id}`} className="btn-secondary !px-3 !py-1.5">
+                  ⚔️ Daag uit
+                </Link>
+                <button
+                  className="btn-ice !px-3 !py-1.5"
+                  onClick={() => giftFreeze(f.id)}
+                  disabled={giftedTo === f.id}
+                >
+                  {giftedTo === f.id ? "Verstuurd!" : "🧊 Geef freeze"}
+                </button>
+              </div>
             </div>
           ))}
         </div>

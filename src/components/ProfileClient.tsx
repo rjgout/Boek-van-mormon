@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
 import { formatTag } from "@/lib/handle";
+import { enableBrowserPush, disableBrowserPush, isPushSupported } from "@/lib/pushClient";
 
 interface AchievementView {
   slug: string;
@@ -21,6 +22,9 @@ interface ProfileData {
   discriminator: string;
   email: string;
   searchableByEmail: boolean;
+  emailNotificationsEnabled: boolean;
+  pushNotificationsEnabled: boolean;
+  dailyReminderTime: string;
   xpTotal: number;
   currentStreak: number;
   longestStreak: number;
@@ -38,6 +42,8 @@ export default function ProfileClient() {
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -57,6 +63,48 @@ export default function ProfileClient() {
       body: JSON.stringify({ searchableByEmail: next }),
     }).catch(() => {});
     setSavingPrivacy(false);
+  }
+
+  async function saveAccountPatch(patch: Record<string, boolean | string>) {
+    await fetch("/api/account", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    }).catch(() => {});
+  }
+
+  async function toggleEmailNotifications() {
+    if (!data) return;
+    const next = !data.emailNotificationsEnabled;
+    setData({ ...data, emailNotificationsEnabled: next });
+    setSavingNotifications(true);
+    await saveAccountPatch({ emailNotificationsEnabled: next });
+    setSavingNotifications(false);
+  }
+
+  async function togglePushNotifications() {
+    if (!data) return;
+    setPushError(null);
+    const next = !data.pushNotificationsEnabled;
+    setSavingNotifications(true);
+    try {
+      if (next) {
+        await enableBrowserPush();
+      } else {
+        await disableBrowserPush();
+      }
+      setData({ ...data, pushNotificationsEnabled: next });
+      await saveAccountPatch({ pushNotificationsEnabled: next });
+    } catch (e) {
+      setPushError(e instanceof Error ? e.message : "Kon pushnotificaties niet in-/uitschakelen.");
+    }
+    setSavingNotifications(false);
+  }
+
+  async function changeReminderTime(time: string) {
+    if (!data) return;
+    setData({ ...data, dailyReminderTime: time });
+    await saveAccountPatch({ dailyReminderTime: time });
   }
 
   async function deleteAccount() {
@@ -126,6 +174,55 @@ export default function ProfileClient() {
         <Link href="/change-password" className="btn-secondary self-start">
           Wachtwoord wijzigen
         </Link>
+      </section>
+
+      <section className="card flex flex-col gap-3">
+        <h2 className="font-extrabold text-lg dark:text-slate-100">Notificaties</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Voor: dagelijkse herinnering, vriendschapsverzoeken, prestaties, wekelijkse competitie-uitslag en
+          uitdagingen. Staan standaard allebei uit — zet aan wat je wil ontvangen.
+        </p>
+
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-1 h-5 w-5 accent-brand-500"
+            checked={data.emailNotificationsEnabled}
+            onChange={toggleEmailNotifications}
+            disabled={savingNotifications}
+          />
+          <span className="text-sm dark:text-slate-200">E-mailnotificaties naar {data.email}</span>
+        </label>
+
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-1 h-5 w-5 accent-brand-500"
+            checked={data.pushNotificationsEnabled}
+            onChange={togglePushNotifications}
+            disabled={savingNotifications || !isPushSupported()}
+          />
+          <span className="text-sm dark:text-slate-200">
+            Pushnotificaties via de browser
+            {!isPushSupported() && (
+              <>
+                <br />
+                <span className="text-slate-400 dark:text-slate-500">Niet ondersteund in deze browser.</span>
+              </>
+            )}
+          </span>
+        </label>
+        {pushError && <p className="text-sm text-red-600 dark:text-red-400">{pushError}</p>}
+
+        <label className="flex items-center gap-3">
+          <span className="text-sm dark:text-slate-200">Dagelijkse herinnering rond</span>
+          <input
+            type="time"
+            className="input !w-auto"
+            value={data.dailyReminderTime}
+            onChange={(e) => changeReminderTime(e.target.value)}
+          />
+        </label>
       </section>
 
       <section className="card flex flex-col gap-3">

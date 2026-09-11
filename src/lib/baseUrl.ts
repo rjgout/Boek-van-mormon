@@ -15,3 +15,17 @@ export function getBaseUrl(req: NextRequest): string {
   const host = req.headers.get("x-forwarded-host") ?? req.headers.get("host") ?? req.nextUrl.host;
   return `${proto}://${host}`;
 }
+
+/**
+ * Zelfde basis-URL, maar bruikbaar buiten een request-context (bv. de
+ * in-process notificatie-schedulers in src/lib/scheduler.ts, die geen
+ * inkomend request hebben om van af te leiden). Vereist dus APP_URL in de
+ * omgeving om een klikbare link te geven; zonder dat valt terug op
+ * localhost, wat in een e-mail/pushnotificatie niet aanklikbaar is maar de
+ * rest van het bericht niet in de weg zit.
+ */
+export function getAppUrl(): string {
+  const configured = process.env.APP_URL?.trim();
+  if (configured) return configured.replace(/\/+$/, "");
+  return `http://localhost:${process.env.PORT ?? "3000"}`;
+}

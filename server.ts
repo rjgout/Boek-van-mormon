@@ -2,6 +2,7 @@ import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
 import { initGameServer } from "./src/server/gameServer";
+import { startNotificationSchedulers } from "./src/lib/scheduler";
 import { APP_NAME } from "./src/lib/brand";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -18,6 +19,7 @@ app.prepare().then(() => {
   });
 
   initGameServer(httpServer);
+  startNotificationSchedulers();
 
   // Geen host doorgeven aan listen(): dit bindt op alle interfaces (0.0.0.0),
   // nodig zodat andere containers (bv. cloudflared) de app kunnen bereiken.

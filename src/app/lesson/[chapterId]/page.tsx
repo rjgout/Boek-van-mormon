@@ -3,11 +3,18 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import LessonFlow from "@/components/LessonFlow";
 
-export default async function LessonPage({ params }: { params: Promise<{ chapterId: string }> }) {
+export default async function LessonPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ chapterId: string }>;
+  searchParams: Promise<{ challengeId?: string }>;
+}) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
   const { chapterId } = await params;
+  const { challengeId } = await searchParams;
   const chapter = await prisma.chapter.findUnique({
     where: { id: chapterId },
     include: {
@@ -65,6 +72,7 @@ export default async function LessonPage({ params }: { params: Promise<{ chapter
         note: notesByVerseId[v.id] ?? "",
       }))}
       exercises={exercises}
+      challengeId={challengeId}
     />
   );
 }
