@@ -133,7 +133,7 @@ export default function PodcastCourseView({ courseName, streak, freezeCount, xpT
                 </a>
               )}
             </div>
-            {episode.summary && <p className="text-sm text-slate-500 dark:text-slate-400">{episode.summary}</p>}
+            {episode.summary && <EpisodeSummary text={episode.summary} />}
             <div className="flex gap-3 flex-wrap">
               <ModeButton
                 href={`/podcast/${episode.id}/CONTENT`}
@@ -176,6 +176,31 @@ export default function PodcastCourseView({ courseName, streak, freezeCount, xpT
         )}
       </div>
     </div>
+  );
+}
+
+const SUMMARY_TRUNCATE_LENGTH = 220;
+
+function EpisodeSummary({ text }: { text: string }) {
+  const [expanded, setExpanded] = useState(false);
+
+  if (text.length <= SUMMARY_TRUNCATE_LENGTH) {
+    return <p className="text-sm text-slate-500 dark:text-slate-400">{text}</p>;
+  }
+
+  // Knip af op een woordgrens, niet halverwege een woord.
+  const truncated = text.slice(0, SUMMARY_TRUNCATE_LENGTH).replace(/\s+\S*$/, "");
+
+  return (
+    <p className="text-sm text-slate-500 dark:text-slate-400">
+      {expanded ? text : `${truncated}…`}{" "}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="text-brand-600 dark:text-brand-300 font-bold hover:underline"
+      >
+        {expanded ? "Lees minder" : "Lees meer"}
+      </button>
+    </p>
   );
 }
 
