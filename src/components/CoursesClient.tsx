@@ -25,12 +25,20 @@ const TYPE_LABELS: Record<CourseView["type"], string> = {
 export default function CoursesClient() {
   const router = useRouter();
   const [courses, setCourses] = useState<CourseView[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [activatingId, setActivatingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/courses")
-      .then((r) => r.json())
-      .then((d) => setCourses(d.courses ?? []));
+      .then(async (r) => {
+        const data = await r.json().catch(() => null);
+        if (!r.ok) {
+          throw new Error(data?.error ?? `Er ging iets mis (${r.status}).`);
+        }
+        return data;
+      })
+      .then((d) => setCourses(d.courses ?? []))
+      .catch((e) => setLoadError(e instanceof Error ? e.message : "Er ging iets mis."));
   }, []);
 
   async function activate(courseId: string) {
@@ -41,6 +49,17 @@ export default function CoursesClient() {
       router.push("/dashboard");
       router.refresh();
     }
+  }
+
+  if (loadError) {
+    return (
+      <div className="max-w-md mx-auto card text-center flex flex-col gap-3">
+        <p className="text-red-600 dark:text-red-400 font-semibold">{loadError}</p>
+        <button className="btn-secondary self-center" onClick={() => window.location.reload()}>
+          Opnieuw proberen
+        </button>
+      </div>
+    );
   }
 
   if (!courses) {
@@ -55,6 +74,16 @@ export default function CoursesClient() {
           Kies hoe je door het Boek van Mormon wil gaan. Je voortgang per cursus blijft bewaard als je wisselt.
         </p>
       </div>
+
+      {courses.length === 0 && (
+        <div className="card text-center flex flex-col gap-2">
+          <p className="font-bold dark:text-slate-100">Nog geen cursussen beschikbaar</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Er is nog geen content geïmporteerd (of de admin moet <code>npm run db:seed</code> nog (opnieuw) draaien
+            na een update) — cursussen worden daarbij automatisch aangemaakt.
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3">
         {courses.map((course) => {
