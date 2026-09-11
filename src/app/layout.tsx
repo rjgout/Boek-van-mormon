@@ -37,7 +37,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   href="/courses"
                   className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                 >
-                  Lessen
+                  Cursussen
                 </Link>
                 <Link
                   href="/friends"

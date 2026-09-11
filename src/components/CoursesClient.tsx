@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface CourseView {
@@ -23,7 +22,6 @@ const TYPE_LABELS: Record<CourseView["type"], string> = {
 };
 
 export default function CoursesClient() {
-  const router = useRouter();
   const [courses, setCourses] = useState<CourseView[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activatingId, setActivatingId] = useState<string | null>(null);
@@ -44,11 +42,15 @@ export default function CoursesClient() {
   async function activate(courseId: string) {
     setActivatingId(courseId);
     const res = await fetch(`/api/courses/${courseId}/activate`, { method: "POST" });
-    setActivatingId(null);
     if (res.ok) {
-      router.push("/dashboard");
-      router.refresh();
+      // Bewust een volledige paginanavigatie i.p.v. router.push+refresh: die
+      // combinatie liet het dashboard soms nog de vorige actieve cursus tonen
+      // totdat je nog een keer heen-en-weer navigeerde (client-side
+      // router-cache). Een harde navigatie haalt de server-data altijd vers op.
+      window.location.href = "/dashboard";
+      return;
     }
+    setActivatingId(null);
   }
 
   if (loadError) {

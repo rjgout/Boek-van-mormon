@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const items = [
-  { href: "/courses", label: "Lessen", icon: "📖" },
+  { href: "/courses", label: "Cursussen", icon: "📖" },
   { href: "/friends", label: "Vrienden", icon: "👥" },
   { href: "/competition", label: "Competitie", icon: "🏆" },
   { href: "/live", label: "Live", icon: "⚔️" },
