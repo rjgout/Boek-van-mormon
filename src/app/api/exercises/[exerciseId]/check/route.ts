@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/db";
+import { getCurrentUser } from "@/lib/session";
+import { isAnswerCorrect, isWordBankCorrect } from "@/lib/exerciseGen";
+
+const schema = z.object({ given: z.array(z.string()).min(1) });
+
+// Losse, directe correctheidscheck per oefening — zodat de gebruiker meteen
+// na het antwoorden (vóór "Doorgaan") ziet of het goed was, in plaats van
+// pas aan het einde van de hele les. Schrijft bewust niets weg: het
+// definitieve ExerciseAttempt-record en de score/XP-berekening gebeuren nog
+// steeds in /api/chapters/[chapterId]/submit, ook na een leermoment-retry.
+export async function POST(req: NextRequest, { params }: { params: Promise<{ exerciseId: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const { exerciseId } = await params;
+  const body = await req.json().catch(() => null);
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Ongeldige invoer" }, { status: 400 });
+  }
+
+  const exercise = await prisma.exercise.findUnique({ where: { id: exerciseId } });
+  if (!exercise) {
+    return NextResponse.json({ error: "Oefening niet gevonden" }, { status: 404 });
+  }
+
+  const accepted = JSON.parse(exercise.answers) as string[];
+  const correct =
+    exercise.type === "WORD_BANK"
+      ? isWordBankCorrect(parsed.data.given, accepted)
+      : isAnswerCorrect(parsed.data.given[0] ?? "", accepted);
+
+  return NextResponse.json({ correct, correctAnswer: accepted });
+}

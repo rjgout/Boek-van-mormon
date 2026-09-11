@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { generateFillBlank, generateWordBank, generateTrueFalse } from "../src/lib/exerciseGen";
+import { generateFillBlank, generateWordBank, generateTrueFalse, buildDistractorPool } from "../src/lib/exerciseGen";
 import type { SeedBook } from "./content";
 
 /**
@@ -35,12 +35,14 @@ export async function importBooks(prisma: PrismaClient, books: SeedBook[]) {
         verseIds.push(verse.id);
       }
 
+      const distractorPool = buildDistractorPool(seedChapter.verses);
+
       let exerciseOrder = 0;
       for (let i = 0; i < seedChapter.verses.length; i++) {
         const verseRef = `${seedBook.name} ${seedChapter.number}:${i + 1}`;
         const sourceVerseId = verseIds[i];
 
-        const fillBlank = generateFillBlank(seedChapter.verses[i], verseRef, i);
+        const fillBlank = generateFillBlank(seedChapter.verses[i], verseRef, i, distractorPool);
         if (fillBlank) {
           await prisma.exercise.create({
             data: {
@@ -51,6 +53,15 @@ export async function importBooks(prisma: PrismaClient, books: SeedBook[]) {
               sourceVerseId,
               prompt: fillBlank.prompt,
               answers: JSON.stringify(fillBlank.answers),
+              options: fillBlank.options
+                ? {
+                    create: fillBlank.options.map((label, order) => ({
+                      label,
+                      isCorrect: fillBlank.answers.includes(label.toLowerCase()),
+                      order,
+                    })),
+                  }
+                : undefined,
             },
           });
         }

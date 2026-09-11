@@ -24,6 +24,10 @@ model User {
   searchableByEmail Boolean @default(false)
   displayName  String
   passwordHash String
+  // De allereerste registratie op een verse installatie wordt automatisch
+  // admin (zie /api/auth/register); daarna kan een admin dit bij andere
+  // gebruikers aan/uit zetten via /adminbackend.
+  isAdmin      Boolean  @default(false)
   createdAt    DateTime @default(now())
 
   @@unique([handle, discriminator])

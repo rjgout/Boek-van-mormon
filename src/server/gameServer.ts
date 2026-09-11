@@ -18,6 +18,7 @@ interface GameExercise {
   prompt: string;
   answers: string[];
   wordBank?: string[];
+  options?: string[];
 }
 
 interface RoomPlayer {
@@ -74,6 +75,7 @@ function sanitizeExercise(ex: GameExercise) {
     prompt: ex.prompt,
     blanks: ex.answers.length,
     wordBank: ex.wordBank,
+    options: ex.options,
   };
 }
 
@@ -81,6 +83,7 @@ async function loadExercises(chapterId: string): Promise<GameExercise[]> {
   const rows = await prisma.exercise.findMany({
     where: { chapterId, status: "APPROVED" },
     orderBy: { order: "asc" },
+    include: { options: { orderBy: { order: "asc" } } },
   });
   return rows.map((r) => ({
     id: r.id,
@@ -89,6 +92,7 @@ async function loadExercises(chapterId: string): Promise<GameExercise[]> {
     prompt: r.prompt,
     answers: JSON.parse(r.answers) as string[],
     wordBank: r.wordBank ? (JSON.parse(r.wordBank) as string[]) : undefined,
+    options: r.options.length > 0 ? r.options.map((o) => o.label) : undefined,
   }));
 }
 

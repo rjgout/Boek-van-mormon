@@ -57,6 +57,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 >
                   Live spel
                 </Link>
+                {user.isAdmin && (
+                  <Link
+                    href="/adminbackend"
+                    className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                  >
+                    Admin
+                  </Link>
+                )}
                 <ThemeToggle />
                 <NavUserBadges
                   streak={user.currentStreak}

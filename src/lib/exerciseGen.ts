@@ -1,5 +1,13 @@
-// Genereert oefeningen uit brontekst. Bewust GEEN multiple choice: de gebruiker
-// typt het ontbrekende woord zelf in, of legt woorden in de juiste volgorde.
+// Genereert oefeningen uit brontekst. Altijd keuze-gebaseerd (multiple choice
+// / woorden aantikken) — nooit typen, zodat spelling nooit in de weg zit.
+
+// Vaste noodgreep-distractoren voor als een hoofdstuk te weinig eigen
+// woorden heeft om als afleider te dienen (garandeert altijd genoeg opties).
+const GENERIC_DISTRACTORS = [
+  "profeet", "verbond", "geloof", "wildernis", "koning", "priester",
+  "gerechtigheid", "gehoorzaam", "gebed", "visioen", "zwaard", "tempel",
+  "gebod", "getuigenis", "bekering", "openbaring",
+];
 
 const STOPWORDS = new Set([
   "de", "het", "een", "en", "van", "ik", "dat", "is", "in", "zijn", "op", "te",
@@ -15,6 +23,18 @@ export interface GeneratedExercise {
   prompt: string;
   answers: string[];
   wordBank?: string[];
+  /** Keuzeopties voor FILL_BLANK (bevat het juiste antwoord, geschud). */
+  options?: string[];
+}
+
+/** Deterministische shuffle (zelfde patroon als generateWordBank hieronder). */
+function shuffleWithSeed<T>(items: T[], seed: number): T[] {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = (seed * 31 + i * 17) % (i + 1);
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 // Bekende namen in de demo-parafrases; gebruikt om een vals statement te
@@ -37,8 +57,28 @@ function eligibleWords(text: string): { word: string; index: number }[] {
   return eligible;
 }
 
-/** Kiest een woord uit de zin en vervangt het door een streepjeslijn. */
-export function generateFillBlank(verseText: string, verseRef: string, seed = 0): GeneratedExercise | null {
+/** Verzamelt kandidaat-afleiders uit alle verzen van een hoofdstuk, voor generateFillBlank. */
+export function buildDistractorPool(verseTexts: string[]): string[] {
+  const words = new Set<string>();
+  for (const text of verseTexts) {
+    for (const { word } of eligibleWords(text)) words.add(word);
+  }
+  return [...words];
+}
+
+/**
+ * Kiest een woord uit de zin en vervangt het door een streepjeslijn. Levert
+ * ook `options` op (het juiste woord + 3 afleiders) zodat de gebruiker kan
+ * kiezen in plaats van typen — `distractorPool` zijn kandidaat-afleiders uit
+ * de rest van het hoofdstuk, aangevuld met een vaste woordenlijst als dat er
+ * te weinig zijn.
+ */
+export function generateFillBlank(
+  verseText: string,
+  verseRef: string,
+  seed = 0,
+  distractorPool: string[] = []
+): GeneratedExercise | null {
   const candidates = eligibleWords(verseText);
   if (candidates.length === 0) return null;
   const pick = candidates[seed % candidates.length];
@@ -46,11 +86,20 @@ export function generateFillBlank(verseText: string, verseRef: string, seed = 0)
   const target = tokens[pick.index];
   const answer = cleanWord(target);
   tokens[pick.index] = target.replace(answer, "____");
+
+  const lowerAnswer = answer.toLowerCase();
+  const distractorCandidates = Array.from(
+    new Set([...distractorPool, ...GENERIC_DISTRACTORS].map(cleanWord).filter(Boolean))
+  ).filter((w) => w.toLowerCase() !== lowerAnswer);
+  const distractors = shuffleWithSeed(distractorCandidates, seed).slice(0, 3);
+  const options = shuffleWithSeed([answer, ...distractors], seed + 7);
+
   return {
     type: "FILL_BLANK",
     verseRef,
     prompt: tokens.join(" "),
-    answers: [answer.toLowerCase()],
+    answers: [lowerAnswer],
+    options,
   };
 }
 
@@ -70,11 +119,7 @@ export function generateWordBank(verseText: string, verseRef: string, seed = 0):
   const blankMarker = `[${span.map(() => "____").join(" ")}]`;
   const prompt = `${before} ${blankMarker} ${after}`.trim();
 
-  const shuffled = [...span];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = (seed * 31 + i * 17) % (i + 1);
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
+  const shuffled = shuffleWithSeed(span, seed);
 
   return {
     type: "WORD_BANK",

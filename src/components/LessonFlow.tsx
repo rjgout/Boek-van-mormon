@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
+import { normalizeAnswer } from "@/lib/exerciseGen";
 
 interface Exercise {
   id: string;
@@ -12,6 +13,7 @@ interface Exercise {
   prompt: string;
   blanks: number;
   wordBank?: string[];
+  options?: string[];
 }
 
 interface VerseView {
@@ -32,11 +34,12 @@ interface Props {
   exercises: Exercise[];
 }
 
-type Phase = "read" | "exercises" | "summary";
+type Phase = "read" | "exercises" | "review" | "summary";
 
 interface SubmittedAnswer {
   exerciseId: string;
   given: string[];
+  correct: boolean;
 }
 
 interface SummaryResult {
@@ -61,10 +64,13 @@ export default function LessonFlow({ chapterId, bookName, chapterNumber, nextCha
   const [phase, setPhase] = useState<Phase>("read");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<SubmittedAnswer[]>([]);
+  const [reviewQueue, setReviewQueue] = useState<string[]>([]);
+  const [reviewPos, setReviewPos] = useState(0);
   const [summary, setSummary] = useState<SummaryResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const current = exercises[index];
+  const exerciseById = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises]);
 
   // Registreer dat dit hoofdstuk gelezen wordt, los van of de quiz erna
   // wordt afgemaakt (nodig voor "ga verder waar je gebleven was" en om
@@ -91,14 +97,44 @@ export default function LessonFlow({ chapterId, bookName, chapterNumber, nextCha
     setPhase("summary");
   }
 
-  function onExerciseDone(given: string[]) {
-    const next = [...answers, { exerciseId: current.id, given }];
+  function onExerciseDone(given: string[], correct: boolean) {
+    const next = [...answers, { exerciseId: current.id, given, correct }];
     setAnswers(next);
     if (index + 1 < exercises.length) {
       setIndex(index + 1);
     } else {
-      finishExercises(next);
+      const wrongIds = next.filter((a) => !a.correct).map((a) => a.exerciseId);
+      if (wrongIds.length > 0) {
+        setReviewQueue(wrongIds);
+        setReviewPos(0);
+        setPhase("review");
+      } else {
+        finishExercises(next);
+      }
     }
+  }
+
+  function advanceReview(latestAnswers: SubmittedAnswer[]) {
+    if (reviewPos + 1 < reviewQueue.length) {
+      setReviewPos(reviewPos + 1);
+    } else {
+      finishExercises(latestAnswers);
+    }
+  }
+
+  function onReviewDone(given: string[], correct: boolean) {
+    const currentId = reviewQueue[reviewPos];
+    const updated = answers.map((a) => (a.exerciseId === currentId ? { ...a, given, correct } : a));
+    setAnswers(updated);
+    advanceReview(updated);
+  }
+
+  function skipCurrentReview() {
+    advanceReview(answers);
+  }
+
+  function skipAllReview() {
+    finishExercises(answers);
   }
 
   if (phase === "read") {
@@ -118,6 +154,40 @@ export default function LessonFlow({ chapterId, bookName, chapterNumber, nextCha
       <div className="max-w-2xl mx-auto flex flex-col gap-6">
         <ProgressBar current={index} total={exercises.length} />
         <ExerciseCard key={current.id} exercise={current} onDone={onExerciseDone} disabled={submitting} />
+      </div>
+    );
+  }
+
+  if (phase === "review") {
+    const reviewExercise = exerciseById.get(reviewQueue[reviewPos]);
+    if (!reviewExercise) {
+      finishExercises(answers);
+      return null;
+    }
+    return (
+      <div className="max-w-2xl mx-auto flex flex-col gap-6">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-xl font-extrabold text-brand-800 dark:text-brand-300">
+            Leermomenten ({reviewPos + 1}/{reviewQueue.length})
+          </h2>
+          <button
+            className="text-sm font-bold text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+            onClick={skipAllReview}
+            disabled={submitting}
+          >
+            Alles overslaan →
+          </button>
+        </div>
+        <p className="text-slate-500 dark:text-slate-400 text-sm -mt-2">
+          Deze had je niet goed. Wil je het nog een keer proberen?
+        </p>
+        <ExerciseCard
+          key={reviewExercise.id}
+          exercise={reviewExercise}
+          onDone={onReviewDone}
+          onSkip={skipCurrentReview}
+          disabled={submitting}
+        />
       </div>
     );
   }
@@ -286,18 +356,28 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
   );
 }
 
+function formatCorrectAnswer(type: Exercise["type"], correctAnswer: string[]): string {
+  if (type === "TRUE_FALSE") return correctAnswer[0] === "true" ? "Waar" : "Niet waar";
+  return correctAnswer.join(" ");
+}
+
 function ExerciseCard({
   exercise,
   onDone,
+  onSkip,
   disabled,
 }: {
   exercise: Exercise;
-  onDone: (given: string[]) => void;
+  onDone: (given: string[], correct: boolean) => void;
+  onSkip?: () => void;
   disabled: boolean;
 }) {
   const [checked, setChecked] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [wasCorrect, setWasCorrect] = useState(false);
-  const [textAnswer, setTextAnswer] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState<string[] | null>(null);
+  const [givenAnswer, setGivenAnswer] = useState<string[]>([]);
+  const [choice, setChoice] = useState<string | null>(null);
   const [placed, setPlaced] = useState<{ word: string; poolIndex: number }[]>([]);
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<"true" | "false" | null>(null);
 
@@ -308,27 +388,60 @@ function ExerciseCard({
 
   const promptParts = exercise.prompt.split(/____/);
 
-  function check() {
-    setChecked(true);
-    if (exercise.type === "FILL_BLANK") {
-      // De server bepaalt de echte correctheid; hier tonen we alvast feedback.
-      setWasCorrect(textAnswer.trim().length > 0);
-    } else if (exercise.type === "TRUE_FALSE") {
-      setWasCorrect(trueFalseAnswer !== null);
-    } else {
-      setWasCorrect(placed.length === exercise.blanks);
+  const canCheck =
+    exercise.type === "FILL_BLANK"
+      ? choice !== null
+      : exercise.type === "TRUE_FALSE"
+        ? trueFalseAnswer !== null
+        : placed.length === exercise.blanks;
+
+  async function check() {
+    if (checking || checked) return;
+    const given =
+      exercise.type === "FILL_BLANK"
+        ? [choice ?? ""]
+        : exercise.type === "TRUE_FALSE"
+          ? [trueFalseAnswer ?? "true"]
+          : placed.map((p) => p.word);
+
+    setChecking(true);
+    try {
+      const res = await fetch(`/api/exercises/${exercise.id}/check`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ given }),
+      });
+      const data = await res.json();
+      setWasCorrect(Boolean(data.correct));
+      setCorrectAnswer(Array.isArray(data.correctAnswer) ? data.correctAnswer : null);
+      setGivenAnswer(given);
+    } catch {
+      setWasCorrect(false);
+      setCorrectAnswer(null);
+      setGivenAnswer(given);
+    } finally {
+      setChecking(false);
+      setChecked(true);
     }
   }
 
   function next() {
-    if (exercise.type === "FILL_BLANK") {
-      onDone([textAnswer]);
-    } else if (exercise.type === "TRUE_FALSE") {
-      onDone([trueFalseAnswer ?? "true"]);
-    } else {
-      onDone(placed.map((p) => p.word));
-    }
+    onDone(givenAnswer, wasCorrect);
   }
+
+  const feedback = checked && (
+    <p
+      className={`rounded-xl px-3 py-2 font-bold text-sm ${
+        wasCorrect
+          ? "bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-300"
+          : "bg-red-50 dark:bg-slate-700 text-red-500 dark:text-red-400"
+      }`}
+    >
+      {wasCorrect
+        ? "Goed gedaan! ✅"
+        : `Niet helemaal — het juiste antwoord was: ${formatCorrectAnswer(exercise.type, correctAnswer ?? [])}`}
+    </p>
+  );
 
   if (exercise.type === "TRUE_FALSE") {
     return (
@@ -336,27 +449,45 @@ function ExerciseCard({
         <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
         <p className="text-xl leading-relaxed dark:text-slate-100">{exercise.prompt}</p>
         <div className="flex gap-3">
-          {(["true", "false"] as const).map((value) => (
-            <button
-              key={value}
-              disabled={checked}
-              onClick={() => setTrueFalseAnswer(value)}
-              className={`btn flex-1 ${
-                trueFalseAnswer === value
-                  ? "bg-brand-500 text-white"
-                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-2 border-slate-200 dark:border-slate-600"
-              }`}
-            >
-              {value === "true" ? "✅ Waar" : "❌ Niet waar"}
-            </button>
-          ))}
+          {(["true", "false"] as const).map((value) => {
+            const isCorrectValue = checked && correctAnswer?.[0] === value;
+            const isWrongPick = checked && trueFalseAnswer === value && !isCorrectValue;
+            return (
+              <button
+                key={value}
+                disabled={checked}
+                onClick={() => setTrueFalseAnswer(value)}
+                className={`btn flex-1 border-2 ${
+                  isCorrectValue
+                    ? "bg-brand-500 text-white border-brand-500"
+                    : isWrongPick
+                      ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300 border-red-400"
+                      : trueFalseAnswer === value
+                        ? "bg-brand-500 text-white border-brand-500"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600"
+                }`}
+              >
+                {value === "true" ? "✅ Waar" : "❌ Niet waar"}
+              </button>
+            );
+          })}
         </div>
-        <FooterControls checked={checked} canCheck={trueFalseAnswer !== null} disabled={disabled} onCheck={check} onNext={next} />
+        {feedback}
+        <FooterControls
+          checked={checked}
+          checking={checking}
+          canCheck={canCheck}
+          disabled={disabled}
+          onCheck={check}
+          onNext={next}
+          onSkip={onSkip}
+        />
       </div>
     );
   }
 
   if (exercise.type === "FILL_BLANK") {
+    const options = exercise.options ?? [];
     return (
       <div className="card flex flex-col gap-5">
         <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
@@ -365,30 +496,46 @@ function ExerciseCard({
             <span key={i}>
               {part}
               {i < promptParts.length - 1 && (
-                <input
-                  autoFocus
-                  disabled={checked}
-                  value={textAnswer}
-                  onChange={(e) => setTextAnswer(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && !checked && textAnswer && check()}
-                  className={`inline-block w-32 mx-1 text-center border-b-2 outline-none bg-transparent font-bold dark:text-slate-100 ${
-                    checked
-                      ? wasCorrect
-                        ? "border-brand-500 text-brand-600 dark:text-brand-300"
-                        : "border-red-400 text-red-500 animate-shake"
-                      : "border-slate-300 dark:border-slate-600 focus:border-brand-400"
-                  }`}
-                />
+                <span className="inline-block mx-1 px-3 py-0.5 rounded-lg border-b-2 border-dashed border-brand-400 font-bold text-brand-500 dark:text-brand-300">
+                  {checked ? choice ?? "…" : "____"}
+                </span>
               )}
             </span>
           ))}
         </p>
+        <div className="grid grid-cols-2 gap-3">
+          {options.map((opt) => {
+            const isCorrectOption = checked && correctAnswer && normalizeAnswer(opt) === normalizeAnswer(correctAnswer[0] ?? "");
+            const isWrongPick = checked && choice === opt && !isCorrectOption;
+            return (
+              <button
+                key={opt}
+                disabled={checked}
+                onClick={() => setChoice(opt)}
+                className={`btn text-left border-2 ${
+                  isCorrectOption
+                    ? "bg-brand-500 text-white border-brand-500"
+                    : isWrongPick
+                      ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-300 border-red-400"
+                      : choice === opt
+                        ? "bg-brand-500 text-white border-brand-500"
+                        : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600 hover:border-brand-300"
+                }`}
+              >
+                {opt}
+              </button>
+            );
+          })}
+        </div>
+        {feedback}
         <FooterControls
           checked={checked}
-          canCheck={textAnswer.trim().length > 0}
+          checking={checking}
+          canCheck={canCheck}
           disabled={disabled}
           onCheck={check}
           onNext={next}
+          onSkip={onSkip}
         />
       </div>
     );
@@ -429,12 +576,15 @@ function ExerciseCard({
         ))}
       </div>
 
+      {feedback}
       <FooterControls
         checked={checked}
-        canCheck={placed.length === exercise.blanks}
+        checking={checking}
+        canCheck={canCheck}
         disabled={disabled}
         onCheck={check}
         onNext={next}
+        onSkip={onSkip}
       />
     </div>
   );
@@ -442,22 +592,39 @@ function ExerciseCard({
 
 function FooterControls({
   checked,
+  checking,
   canCheck,
   disabled,
   onCheck,
   onNext,
+  onSkip,
 }: {
   checked: boolean;
+  checking: boolean;
   canCheck: boolean;
   disabled: boolean;
   onCheck: () => void;
   onNext: () => void;
+  onSkip?: () => void;
 }) {
   if (!checked) {
     return (
-      <button className="btn-primary self-end" disabled={!canCheck || disabled} onClick={onCheck}>
-        Controleer
-      </button>
+      <div className="flex items-center justify-between gap-3">
+        {onSkip ? (
+          <button
+            className="text-sm font-bold text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300"
+            disabled={disabled}
+            onClick={onSkip}
+          >
+            Sla over
+          </button>
+        ) : (
+          <span />
+        )}
+        <button className="btn-primary" disabled={!canCheck || disabled || checking} onClick={onCheck}>
+          {checking ? "Controleren..." : "Controleer"}
+        </button>
+      </div>
     );
   }
   return (

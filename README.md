@@ -17,9 +17,12 @@ van een specifieke cloud-hostingprovider.
 - **Reader**: hoofdstukken lezen met een duidelijk kruimelpad (Boek → Hoofdstuk),
   instelbare lettergrootte, donkere modus, bladwijzers, highlights, eigen
   notities per vers, en een zoekfunctie over de hele tekst.
-- **Oefeningen**: invullen, woorden in de juiste volgorde slepen, en
-  waar/niet-waar — bewust **geen** oefening die uitsluitend uit multiple
-  choice bestaat. Elke oefening is gekoppeld aan een concreet vers
+- **Oefeningen**: ontbrekend woord kiezen uit meerkeuze-opties, woorden in de
+  juiste volgorde aantikken, en waar/niet-waar — bewust **nooit typen**, zodat
+  spelling nooit in de weg zit. Je ziet direct per vraag of het goed was
+  (met het juiste antwoord erbij) vóórdat je doorgaat, en aan het einde van
+  de les een "Leermomenten"-scherm om gemiste vragen nog eens te proberen
+  (of over te slaan). Elke oefening is gekoppeld aan een concreet vers
   (`sourceVerseId`) en heeft een content-status (`APPROVED`/`DRAFT`/...) als
   fundament voor een latere handmatige-of-AI-controleworkflow.
 - **XP**: elke mutatie is een auditbare `XPTransaction` (niet zomaar een
@@ -43,6 +46,10 @@ van een specifieke cloud-hostingprovider.
 - **Privacy**: alleen functioneel noodzakelijke cookies (geen tracking, dus
   geen cookiebanner nodig), een privacy- en cookiebeleid, en zelf je account
   + alle gegevens kunnen verwijderen.
+- **Adminbeheer** (`/adminbackend`): de allereerste registratie op een verse
+  installatie wordt automatisch admin (geen aparte setup-stap nodig); die
+  admin kan daarna andere gebruikers admin maken via een simpel
+  gebruikersoverzicht.
 
 ## Snel starten met Docker (aanbevolen)
 

@@ -13,7 +13,11 @@ export default async function LessonPage({ params }: { params: Promise<{ chapter
     include: {
       book: true,
       verses: { orderBy: { number: "asc" } },
-      exercises: { orderBy: { order: "asc" }, where: { status: "APPROVED" } },
+      exercises: {
+        orderBy: { order: "asc" },
+        where: { status: "APPROVED" },
+        include: { options: { orderBy: { order: "asc" } } },
+      },
     },
   });
   if (!chapter) redirect("/dashboard");
@@ -43,6 +47,7 @@ export default async function LessonPage({ params }: { params: Promise<{ chapter
     prompt: e.prompt,
     blanks: (JSON.parse(e.answers) as string[]).length,
     wordBank: e.wordBank ? (JSON.parse(e.wordBank) as string[]) : undefined,
+    options: e.options.length > 0 ? e.options.map((o) => o.label) : undefined,
   }));
 
   return (

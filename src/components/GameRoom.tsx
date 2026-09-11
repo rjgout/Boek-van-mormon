@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { getSocket } from "@/lib/socketClient";
+import { normalizeAnswer } from "@/lib/exerciseGen";
 
 interface LobbyPlayer {
   userId: string;
@@ -19,6 +20,7 @@ interface QuestionData {
   prompt: string;
   blanks: number;
   wordBank?: string[];
+  options?: string[];
   timeLimitMs: number;
 }
 
@@ -38,7 +40,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
   const [correctAnswer, setCorrectAnswer] = useState<string[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [textAnswer, setTextAnswer] = useState("");
+  const [choice, setChoice] = useState("");
   const [placed, setPlaced] = useState<{ word: string; poolIndex: number }[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [invited, setInvited] = useState<Set<string>>(new Set());
@@ -57,7 +59,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
       setQuestion(data);
       setCorrectAnswer(null);
       setSubmitted(false);
-      setTextAnswer("");
+      setChoice("");
       setPlaced([]);
       setAnsweredCount({ answered: 0, total: players.length });
       setPhase("question");
@@ -114,7 +116,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
 
   function submitAnswer() {
     if (!question) return;
-    const given = question.type === "WORD_BANK" ? placed.map((p) => p.word) : [textAnswer];
+    const given = question.type === "WORD_BANK" ? placed.map((p) => p.word) : [choice];
     socket.emit("submit_answer", { given });
     setSubmitted(true);
   }
@@ -213,23 +215,44 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
           <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{question.verseRef}</p>
 
           {question.type === "FILL_BLANK" ? (
-            <p className="text-xl leading-relaxed">
-              {promptParts.map((part, i) => (
-                <span key={i}>
-                  {part}
-                  {i < promptParts.length - 1 && (
-                    <input
-                      autoFocus
+            <>
+              <p className="text-xl leading-relaxed">
+                {promptParts.map((part, i) => (
+                  <span key={i}>
+                    {part}
+                    {i < promptParts.length - 1 && (
+                      <span className="inline-block mx-1 px-3 py-0.5 rounded-lg border-b-2 border-dashed border-brand-400 font-bold text-brand-500">
+                        {choice || "____"}
+                      </span>
+                    )}
+                  </span>
+                ))}
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {(question.options ?? []).map((opt) => {
+                  const isCorrectOption = phase === "reveal" && correctAnswer && normalizeAnswer(opt) === normalizeAnswer(correctAnswer[0] ?? "");
+                  const isWrongPick = phase === "reveal" && choice === opt && !isCorrectOption;
+                  return (
+                    <button
+                      key={opt}
                       disabled={submitted || phase === "reveal"}
-                      value={textAnswer}
-                      onChange={(e) => setTextAnswer(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && !submitted && textAnswer && submitAnswer()}
-                      className="inline-block w-32 mx-1 text-center border-b-2 border-slate-300 focus:border-brand-400 outline-none bg-transparent font-bold"
-                    />
-                  )}
-                </span>
-              ))}
-            </p>
+                      onClick={() => setChoice(opt)}
+                      className={`btn text-left border-2 ${
+                        isCorrectOption
+                          ? "bg-brand-500 text-white border-brand-500"
+                          : isWrongPick
+                            ? "bg-red-100 text-red-600 border-red-400"
+                            : choice === opt
+                              ? "bg-brand-500 text-white border-brand-500"
+                              : "bg-white dark:bg-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-600 hover:border-brand-300"
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
           ) : (
             <>
               <p className="text-xl leading-relaxed">{question.prompt}</p>
@@ -263,7 +286,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
           {phase === "question" && !submitted && (
             <button
               className="btn-primary self-end"
-              disabled={question.type === "WORD_BANK" ? placed.length !== question.blanks : textAnswer.trim().length === 0}
+              disabled={question.type === "WORD_BANK" ? placed.length !== question.blanks : choice.length === 0}
               onClick={submitAnswer}
             >
               Verstuur

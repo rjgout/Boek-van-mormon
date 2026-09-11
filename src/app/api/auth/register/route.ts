@@ -34,6 +34,11 @@ export async function POST(req: NextRequest) {
 
   const passwordHash = await hashPassword(password);
 
+  // De allereerste registratie op een verse installatie wordt automatisch
+  // admin, zodat er zonder handmatige databasetoegang altijd een beheerder
+  // is voor /adminbackend. Daarna kan die andere gebruikers admin maken.
+  const isFirstUser = (await prisma.user.count()) === 0;
+
   // handle+discriminator is uniek, handle alleen niet — bij een botsing
   // (zeldzaam: 1 op 100.000 voor exact dezelfde combinatie) proberen we
   // gewoon een nieuw willekeurig nummer.
@@ -41,7 +46,7 @@ export async function POST(req: NextRequest) {
     const discriminator = generateDiscriminator();
     try {
       const user = await prisma.user.create({
-        data: { email, handle, discriminator, displayName, passwordHash },
+        data: { email, handle, discriminator, displayName, passwordHash, isAdmin: isFirstUser },
       });
       const token = await createSessionToken(user.id);
       const res = NextResponse.json({ id: user.id, tag: formatTag(user.handle, user.discriminator) });
