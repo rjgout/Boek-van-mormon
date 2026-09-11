@@ -26,6 +26,10 @@ COPY tsconfig.json ./
 COPY server.ts ./
 COPY src ./src
 COPY prisma ./prisma
+# Statische bestanden (bv. de kindercursus-afbeeldingen in public/kids/images)
+# worden niet in .next meegebundeld — zonder deze COPY draait de app prima,
+# maar 404en al zulke bestanden in productie.
+COPY public ./public
 RUN npm prune --omit=dev
 
 EXPOSE 3000
