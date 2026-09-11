@@ -44,10 +44,10 @@ export default function CoursesClient() {
     const res = await fetch(`/api/courses/${courseId}/activate`, { method: "POST" });
     if (res.ok) {
       // Bewust een volledige paginanavigatie i.p.v. router.push+refresh: die
-      // combinatie liet het dashboard soms nog de vorige actieve cursus tonen
-      // totdat je nog een keer heen-en-weer navigeerde (client-side
+      // combinatie liet de vorige pagina soms nog de vorige actieve cursus
+      // tonen totdat je nog een keer heen-en-weer navigeerde (client-side
       // router-cache). Een harde navigatie haalt de server-data altijd vers op.
-      window.location.href = "/dashboard";
+      window.location.href = `/courses/${courseId}`;
       return;
     }
     setActivatingId(null);
@@ -125,7 +125,7 @@ export default function CoursesClient() {
 
               <div className="flex gap-3">
                 {course.isActive ? (
-                  <Link href="/dashboard" className="btn-primary self-start">
+                  <Link href={`/courses/${course.id}`} className="btn-primary self-start">
                     Ga verder →
                   </Link>
                 ) : (
