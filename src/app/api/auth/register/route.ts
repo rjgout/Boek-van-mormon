@@ -4,6 +4,10 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { createSessionToken, hashPassword, SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth";
 import { generateDiscriminator, formatTag, HANDLE_REGEX, HANDLE_MIN_LENGTH, HANDLE_MAX_LENGTH } from "@/lib/handle";
+import { createAuthToken } from "@/lib/authTokens";
+import { isEmailConfigured, sendMail } from "@/lib/email";
+import { verifyEmailTemplate } from "@/lib/emailTemplates";
+import { getBaseUrl } from "@/lib/baseUrl";
 
 const schema = z.object({
   email: z.string().trim().toLowerCase().email("Vul een geldig e-mailadres in."),
@@ -50,6 +54,17 @@ export async function POST(req: NextRequest) {
       const user = await prisma.user.create({
         data: { email, handle, discriminator, displayName, passwordHash, isAdmin: isFirstUser },
       });
+
+      // Best-effort: als er geen (werkende) e-mailconfiguratie is, blijft
+      // emailVerifiedAt gewoon leeg en wordt bevestiging nergens afgedwongen
+      // (zie dashboard/page.tsx) — dus geen registratie die vastloopt.
+      if (await isEmailConfigured()) {
+        const rawToken = await createAuthToken(user.id, "EMAIL_VERIFY");
+        const link = `${getBaseUrl(req)}/verify-email?token=${rawToken}`;
+        const { subject, html, text } = verifyEmailTemplate(link);
+        await sendMail({ to: user.email, subject, html, text });
+      }
+
       const token = await createSessionToken(user.id);
       const res = NextResponse.json({ id: user.id, tag: formatTag(user.handle, user.discriminator) });
       res.cookies.set(SESSION_COOKIE, token, sessionCookieOptions);

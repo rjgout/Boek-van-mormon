@@ -33,6 +33,10 @@ services:
       # browser een Secure-cookie negeert zonder https. Weer op "false"
       # zetten (of de regel weghalen) zodra je via je https-domein test.
       ALLOW_INSECURE_COOKIES: "false"
+      # Optioneel: alleen nodig als de links in bevestigings-/resetmails niet
+      # vanzelf het juiste adres krijgen (zie .env.example). SMTP-instellingen
+      # zelf stel je in via /adminbackend in de app, niet hier.
+      # APP_URL: "https://bom.jouwdomein.nl"
     depends_on:
       bom-db:
         condition: service_healthy

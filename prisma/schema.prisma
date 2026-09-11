@@ -37,6 +37,10 @@ model User {
   // gebruiker om na inloggen eerst zelf een nieuw wachtwoord te kiezen
   // voordat de rest van de app bereikbaar is (zie dashboard/page.tsx).
   mustChangePassword Boolean @default(false)
+  // null = nog niet bevestigd. Wordt alleen afgedwongen (zie dashboard/page.tsx)
+  // als er een werkende e-mailconfiguratie is (EmailSettings.enabled) — anders
+  // zou niemand ooit voorbij de bevestigingspagina komen.
+  emailVerifiedAt DateTime?
   createdAt    DateTime @default(now())
 
   @@unique([handle, discriminator])
@@ -67,6 +71,48 @@ model User {
 
   hostedGames  LiveGame[]       @relation("GameHost")
   gamePlayers  LiveGamePlayer[]
+
+  authTokens   AuthToken[]
+}
+
+enum AuthTokenType {
+  EMAIL_VERIFY
+  PASSWORD_RESET
+}
+
+// Eenmalige, verlopende tokens voor e-mailbevestiging en wachtwoordreset.
+// Er wordt alleen een sha256-hash van het token opgeslagen — de ruwe waarde
+// staat alleen (kortstondig) in de link in de e-mail zelf. Zie src/lib/authTokens.ts.
+model AuthToken {
+  id        String        @id @default(cuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String        @unique
+  type      AuthTokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  @@index([userId, type])
+}
+
+// Eén (singleton, id="singleton") rij met de uitgaande-mail-configuratie,
+// beheerd door een admin via /adminbackend — bewust GEEN env-var-only opzet,
+// zodat dit zonder herdeployen aan te passen is. Kan elke SMTP-dienst zijn
+// (Microsoft 365, Gmail-app-wachtwoord, een eigen mailserver, ...).
+model EmailSettings {
+  id             String   @id @default("singleton")
+  enabled        Boolean  @default(false)
+  smtpHost       String?
+  smtpPort       Int      @default(587)
+  smtpSecure     Boolean  @default(false) // true = impliciete TLS (poort 465), false = STARTTLS (587)
+  smtpUsername   String?
+  // AES-256-GCM-versleuteld met een sleutel afgeleid van SESSION_SECRET (zie
+  // src/lib/crypto.ts) — nooit als platte tekst opgeslagen.
+  smtpPasswordEnc String?
+  fromEmail      String?
+  fromName       String?
+  updatedAt      DateTime @updatedAt
 }
 
 // --- Content: Boek van Mormon structuur --------------------------------

@@ -54,6 +54,11 @@ export default function LoginPage() {
         </button>
       </form>
       <p className="text-sm text-slate-500 dark:text-slate-400 mt-4">
+        <Link href="/forgot-password" className="text-brand-600 font-bold">
+          Wachtwoord vergeten?
+        </Link>
+      </p>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
         Nog geen account?{" "}
         <Link href="/register" className="text-brand-600 font-bold">
           Maak er een aan

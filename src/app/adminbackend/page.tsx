@@ -1,14 +1,16 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
+import { getEmailSettingsView } from "@/lib/email";
 import AdminUsersClient from "@/components/AdminUsersClient";
+import EmailSettingsClient from "@/components/EmailSettingsClient";
 
 export default async function AdminBackendPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   if (!user.isAdmin) redirect("/dashboard");
 
-  const [users, userCount, bookCount, chapterCount, exerciseCount] = await Promise.all([
+  const [users, userCount, bookCount, chapterCount, exerciseCount, emailSettings] = await Promise.all([
     prisma.user.findMany({
       orderBy: { createdAt: "asc" },
       select: {
@@ -27,6 +29,7 @@ export default async function AdminBackendPage() {
     prisma.book.count(),
     prisma.chapter.count(),
     prisma.exercise.count(),
+    getEmailSettingsView(),
   ]);
 
   return (
@@ -47,6 +50,8 @@ export default async function AdminBackendPage() {
         initialUsers={users.map((u) => ({ ...u, createdAt: u.createdAt.toISOString() }))}
         currentUserId={user.id}
       />
+
+      <EmailSettingsClient initial={emailSettings} />
     </div>
   );
 }

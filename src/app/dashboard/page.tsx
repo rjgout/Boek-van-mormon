@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
+import { isEmailConfigured } from "@/lib/email";
 import SearchBar from "@/components/SearchBar";
 
 const WORDS_PER_MINUTE = 130; // rustig lees-/nadenktempo
@@ -10,6 +11,12 @@ export default async function DashboardPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   if (user.mustChangePassword) redirect("/change-password");
+  // Alleen afdwingen als er een werkende e-mailconfiguratie is — anders zou
+  // niemand ooit voorbij deze pagina komen (zie /adminbackend voor de
+  // e-mailinstellingen).
+  if (!user.emailVerifiedAt && !user.isDemoSeed && (await isEmailConfigured())) {
+    redirect("/verify-email");
+  }
 
   const [books, pendingRequests] = await Promise.all([
     prisma.book.findMany({

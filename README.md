@@ -8,7 +8,12 @@ van een specifieke cloud-hostingprovider.
 
 ## Functionaliteit
 
-- **Accounts & sessies**: registreren/inloggen/account verwijderen (AVG) via een httpOnly session-cookie.
+- **Accounts & sessies**: registreren/inloggen/account verwijderen (AVG) via
+  een httpOnly session-cookie. Zelf je wachtwoord resetten via "Wachtwoord
+  vergeten?" op de inlogpagina (mailt een resetlink) en accountbevestiging
+  per e-mail bij registratie — beide werken pas zodra een admin e-mail heeft
+  geconfigureerd (zie **Adminbeheer** hieronder); zonder die configuratie
+  werkt de app gewoon door zonder ergens op te blokkeren.
 - **Privacyvriendelijke gebruikersnaam**: je gebruikersnaam wordt bij registratie
   automatisch aangevuld met een uniek nummer (bv. `Jan#83173`), zodat
   iedereen dezelfde naam kan kiezen en je nooit je e-mailadres hoeft te
@@ -50,10 +55,17 @@ van een specifieke cloud-hostingprovider.
   verse installatie wordt automatisch admin (geen aparte setup-stap nodig,
   en demo-accounts uit `db:seed` tellen hier niet voor mee); die admin ziet
   een overzicht met statistieken (gebruikers/boeken/hoofdstukken/oefeningen),
-  kan andere gebruikers admin maken, en kan een wachtwoordreset voor een
-  gebruiker initiëren (er is geen e-mailflow — de admin geeft het getoonde
-  tijdelijke wachtwoord zelf door; de gebruiker moet er bij de eerstvolgende
-  login direct een eigen wachtwoord voor kiezen).
+  kan andere gebruikers admin maken, kan zelf een wachtwoordreset voor een
+  gebruiker initiëren (toont eenmalig een tijdelijk wachtwoord om zelf door
+  te geven; de gebruiker moet er bij de eerstvolgende login direct een eigen
+  wachtwoord voor kiezen), en beheert daar ook de **e-mailinstellingen**:
+  een generieke SMTP-configuratie (host/poort/gebruiker/wachtwoord/afzender)
+  die met elke dienst werkt — een Microsoft 365-mailbox, Gmail met een
+  app-wachtwoord, of een eigen mailserver — gebruikt voor accountbevestiging
+  en de "wachtwoord vergeten"-mail. Het wachtwoord wordt versleuteld
+  opgeslagen (afgeleid van `SESSION_SECRET`), er is een "testmail versturen"-
+  knop, en zonder (werkende) configuratie wordt nergens op e-mailbevestiging
+  geblokkeerd.
 
 ## Snel starten met Docker (aanbevolen)
 
