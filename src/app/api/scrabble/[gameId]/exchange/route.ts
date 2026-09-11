@@ -1,0 +1,20 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { getCurrentUser } from "@/lib/session";
+import { exchangeTiles } from "@/lib/scrabbleGame";
+
+const schema = z.object({ letters: z.array(z.string().length(1)).min(1).max(7) });
+
+export async function POST(req: NextRequest, { params }: { params: Promise<{ gameId: string }> }) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const { gameId } = await params;
+  const body = await req.json().catch(() => null);
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: "Ongeldige invoer" }, { status: 400 });
+
+  const result = await exchangeTiles(gameId, user.id, parsed.data.letters);
+  if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
+  return NextResponse.json({ ok: true });
+}

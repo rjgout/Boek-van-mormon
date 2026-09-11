@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface ChapterOption {
   id: string;
@@ -53,6 +54,17 @@ export default function LiveLobbyForm() {
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-8">
       <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Live spel</h1>
+
+      <div className="card flex flex-col gap-3">
+        <h2 className="font-extrabold dark:text-slate-100">🔤 Nieuw: Woordspel</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Een Scrabble-variant met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,
+          net als Wordfeud.
+        </p>
+        <Link href="/scrabble" className="btn-secondary self-start">
+          Woordspel openen
+        </Link>
+      </div>
 
       <form onSubmit={createGame} className="card flex flex-col gap-4">
         <h2 className="font-extrabold">Nieuw spel starten</h2>

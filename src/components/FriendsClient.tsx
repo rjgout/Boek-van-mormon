@@ -181,9 +181,12 @@ export default function FriendsClient() {
                   🔥 {f.currentStreak} streak · ⭐ {f.xpTotal} XP
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Link href={`/challenges?friend=${f.id}`} className="btn-secondary !px-3 !py-1.5">
                   ⚔️ Daag uit
+                </Link>
+                <Link href={`/scrabble?friend=${f.id}`} className="btn-secondary !px-3 !py-1.5">
+                  🔤 Woordspel
                 </Link>
                 <button
                   className="btn-ice !px-3 !py-1.5"

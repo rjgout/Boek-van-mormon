@@ -143,6 +143,66 @@ export async function notifyChallengeYourTurn(userId: string, opponentDisplayNam
   });
 }
 
+export async function notifyScrabbleInvite(receiverUserId: string, senderDisplayName: string): Promise<void> {
+  const url = `${getAppUrl()}/scrabble`;
+  const text = `${senderDisplayName} daagt je uit voor een woordspel!`;
+  await notifyUser({
+    userId: receiverUserId,
+    subject: text,
+    emailHtml: emailWrap(text, url, "Bekijk het woordspel"),
+    emailText: `${text} ${url}`,
+    pushTitle: "Nieuw woordspel! 🔤",
+    pushBody: text,
+    url: "/scrabble",
+  });
+}
+
+export async function notifyScrabbleDeclined(senderUserId: string, receiverDisplayName: string): Promise<void> {
+  const url = `${getAppUrl()}/scrabble`;
+  const text = `${receiverDisplayName} heeft je woordspel-uitdaging geweigerd.`;
+  await notifyUser({
+    userId: senderUserId,
+    subject: "Je woordspel-uitdaging is geweigerd",
+    emailHtml: emailWrap(text, url, "Bekijk woordspellen"),
+    emailText: `${text} ${url}`,
+    pushTitle: "Uitdaging geweigerd",
+    pushBody: text,
+    url: "/scrabble",
+  });
+}
+
+export async function notifyScrabbleYourTurn(userId: string, opponentDisplayName: string): Promise<void> {
+  const url = `${getAppUrl()}/scrabble`;
+  const text = `${opponentDisplayName} heeft gespeeld — jij bent aan de beurt!`;
+  await notifyUser({
+    userId,
+    subject: text,
+    emailHtml: emailWrap(text, url, "Speel je beurt"),
+    emailText: `${text} ${url}`,
+    pushTitle: "Jij bent aan de beurt! 🔤",
+    pushBody: text,
+    url: "/scrabble",
+  });
+}
+
+export async function notifyScrabbleFinished(userId: string, opponentDisplayName: string, won: boolean, tied: boolean): Promise<void> {
+  const url = `${getAppUrl()}/scrabble`;
+  const text = tied
+    ? `Gelijkspel tegen ${opponentDisplayName}!`
+    : won
+      ? `Je hebt het woordspel gewonnen van ${opponentDisplayName}! 🎉`
+      : `Je hebt het woordspel verloren van ${opponentDisplayName}.`;
+  await notifyUser({
+    userId,
+    subject: `Woordspel afgerond: ${text}`,
+    emailHtml: emailWrap(text, url, "Bekijk het resultaat"),
+    emailText: `${text} ${url}`,
+    pushTitle: "Woordspel afgerond",
+    pushBody: text,
+    url: "/scrabble",
+  });
+}
+
 /** Zoekt de zojuist behaalde achievement-slugs (zie StudyResult.newAchievements) op en notificeert er per stuk over. */
 export async function notifyNewAchievements(userId: string, slugs: string[]): Promise<void> {
   if (slugs.length === 0) return;

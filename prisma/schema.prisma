@@ -10,49 +10,47 @@ datasource db {
 // --- Accounts ---------------------------------------------------------
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id                 String    @id @default(cuid())
+  email              String    @unique
   // handle+discriminator vormen samen de unieke, doorzoekbare "tag"
   // (bv. "Jan#12345") — bewust NIET uniek op zichzelf, zodat mensen niet
   // hun e-mailadres hoeven te delen om gevonden te worden. Zie
   // src/lib/handle.ts voor het genereren/parsen van deze tag.
-  handle          String
-  discriminator   String // 5 cijfers, bv. "04213"
+  handle             String
+  discriminator      String // 5 cijfers, bv. "04213"
   // Standaard UIT: alleen als een gebruiker dit expliciet aanzet, kan diens
   // exacte e-mailadres gebruikt worden om ze te vinden bij het toevoegen
   // van vrienden (zie /api/users/search).
-  searchableByEmail Boolean @default(false)
-  displayName  String
-  passwordHash String
+  searchableByEmail  Boolean   @default(false)
+  displayName        String
+  passwordHash       String
   // De allereerste ECHTE registratie op een verse installatie wordt
   // automatisch admin (zie /api/auth/register); daarna kan een admin dit
   // bij andere gebruikers aan/uit zetten via /adminbackend.
-  isAdmin      Boolean  @default(false)
+  isAdmin            Boolean   @default(false)
   // Zet prisma/seed.ts op demo-accounts (anna/bram/carla). Telt bewust niet
   // mee voor "eerste registratie is admin" — anders wordt op het aanbevolen
   // installatiepad (eerst db:seed, dan pas je eigen account aanmaken) per
   // ongeluk een demo-account admin in plaats van je eigen account.
-  isDemoSeed   Boolean  @default(false)
+  isDemoSeed         Boolean   @default(false)
   // Gezet door een admin-wachtwoordreset (/adminbackend); dwingt de
   // gebruiker om na inloggen eerst zelf een nieuw wachtwoord te kiezen
   // voordat de rest van de app bereikbaar is (zie dashboard/page.tsx).
-  mustChangePassword Boolean @default(false)
+  mustChangePassword Boolean   @default(false)
   // null = nog niet bevestigd. Wordt alleen afgedwongen (zie dashboard/page.tsx)
   // als er een werkende e-mailconfiguratie is (EmailSettings.enabled) — anders
   // zou niemand ooit voorbij de bevestigingspagina komen.
-  emailVerifiedAt DateTime?
-  createdAt    DateTime @default(now())
-
-  @@unique([handle, discriminator])
+  emailVerifiedAt    DateTime?
+  createdAt          DateTime  @default(now())
 
   // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
   // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes
   // is dat FreezeTransaction. Zie src/lib/xp.ts en src/lib/streak.ts.
-  xpTotal        Int       @default(0)
-  currentStreak  Int       @default(0)
-  longestStreak  Int       @default(0)
-  lastStudyDate  String? // yyyy-mm-dd, in de dag-bucket van de gebruiker
-  freezeCount    Int       @default(0)
+  xpTotal       Int     @default(0)
+  currentStreak Int     @default(0)
+  longestStreak Int     @default(0)
+  lastStudyDate String? // yyyy-mm-dd, in de dag-bucket van de gebruiker
+  freezeCount   Int     @default(0)
 
   // Notificaties: allebei standaard UIT (zelfde privacy-by-default-principe
   // als searchableByEmail hierboven) — een gebruiker moet er zelf voor
@@ -62,12 +60,12 @@ model User {
   // gebeurtenistypes (dagelijkse herinnering, vriendschapsverzoek,
   // achievement, wekelijkse competitie-uitslag, uitdagingen) — geen aparte
   // instelling per type, dat vroeg de gebruiker niet.
-  emailNotificationsEnabled Boolean @default(false)
-  pushNotificationsEnabled  Boolean @default(false)
+  emailNotificationsEnabled    Boolean @default(false)
+  pushNotificationsEnabled     Boolean @default(false)
   // "HH:MM", geïnterpreteerd in de lokale tijd van de server/container (er
   // is nergens in deze app een per-gebruiker tijdzone bijgehouden — zie
   // dayKey() in src/lib/dates.ts die ook al bewust op UTC-dagbuckets werkt).
-  dailyReminderTime String @default("20:00")
+  dailyReminderTime            String  @default("20:00")
   // Voorkomen dat de in-process scheduler (zie src/lib/scheduler.ts) dezelfde
   // dag/week twee keer een herinnering/uitslag stuurt.
   lastDailyReminderSentDate    String?
@@ -77,25 +75,29 @@ model User {
   challengesSent     Challenge[]        @relation("ChallengeSender")
   challengesReceived Challenge[]        @relation("ChallengeReceiver")
 
-  progress          ChapterProgress[]
-  readingSessions   ReadingSession[]
-  attempts          ExerciseAttempt[]
-  freezeTx          FreezeTransaction[] @relation("FreezeOwner")
-  freezeTxRelated   FreezeTransaction[] @relation("FreezeRelated")
-  xpTx              XPTransaction[]
-  weeklyScores      WeeklyScore[]
-  bookmarks         Bookmark[]
-  highlights        Highlight[]
-  notes             Note[]
-  achievements      UserAchievement[]
+  scrabbleGamesAsPlayer1 ScrabbleGame[] @relation("ScrabblePlayer1")
+  scrabbleGamesAsPlayer2 ScrabbleGame[] @relation("ScrabblePlayer2")
+  scrabbleMoves          ScrabbleMove[]
+
+  progress        ChapterProgress[]
+  readingSessions ReadingSession[]
+  attempts        ExerciseAttempt[]
+  freezeTx        FreezeTransaction[] @relation("FreezeOwner")
+  freezeTxRelated FreezeTransaction[] @relation("FreezeRelated")
+  xpTx            XPTransaction[]
+  weeklyScores    WeeklyScore[]
+  bookmarks       Bookmark[]
+  highlights      Highlight[]
+  notes           Note[]
+  achievements    UserAchievement[]
 
   sentFriendReqs     Friendship[] @relation("FriendSender")
   receivedFriendReqs Friendship[] @relation("FriendReceiver")
 
-  hostedGames  LiveGame[]       @relation("GameHost")
-  gamePlayers  LiveGamePlayer[]
+  hostedGames LiveGame[]       @relation("GameHost")
+  gamePlayers LiveGamePlayer[]
 
-  authTokens   AuthToken[]
+  authTokens AuthToken[]
 
   // De cursus die momenteel "Vandaag" op het dashboard bepaalt. Losse
   // voortgang per cursus blijft bewaard in UserCourseProgress, dus
@@ -108,6 +110,8 @@ model User {
   podcastProgress PodcastEpisodeProgress[]
   kidsAttempts    KidsExerciseAttempt[]
   kidsProgress    KidsStoryProgress[]
+
+  @@unique([handle, discriminator])
 }
 
 enum AuthTokenType {
@@ -136,18 +140,18 @@ model AuthToken {
 // zodat dit zonder herdeployen aan te passen is. Kan elke SMTP-dienst zijn
 // (Microsoft 365, Gmail-app-wachtwoord, een eigen mailserver, ...).
 model EmailSettings {
-  id             String   @id @default("singleton")
-  enabled        Boolean  @default(false)
-  smtpHost       String?
-  smtpPort       Int      @default(587)
-  smtpSecure     Boolean  @default(false) // true = impliciete TLS (poort 465), false = STARTTLS (587)
-  smtpUsername   String?
+  id              String   @id @default("singleton")
+  enabled         Boolean  @default(false)
+  smtpHost        String?
+  smtpPort        Int      @default(587)
+  smtpSecure      Boolean  @default(false) // true = impliciete TLS (poort 465), false = STARTTLS (587)
+  smtpUsername    String?
   // AES-256-GCM-versleuteld met een sleutel afgeleid van SESSION_SECRET (zie
   // src/lib/crypto.ts) — nooit als platte tekst opgeslagen.
   smtpPasswordEnc String?
-  fromEmail      String?
-  fromName       String?
-  updatedAt      DateTime @updatedAt
+  fromEmail       String?
+  fromName        String?
+  updatedAt       DateTime @updatedAt
 }
 
 // --- Content: Boek van Mormon structuur --------------------------------
@@ -162,16 +166,16 @@ model Book {
 }
 
 model Chapter {
-  id       String   @id @default(cuid())
-  bookId   String
-  book     Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  number   Int
-  order    Int
-  verses          Verse[]
-  exercises       Exercise[]
-  progress        ChapterProgress[]
-  liveGames       LiveGame[]
-  readingSessions ReadingSession[]
+  id                   String               @id @default(cuid())
+  bookId               String
+  book                 Book                 @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  number               Int
+  order                Int
+  verses               Verse[]
+  exercises            Exercise[]
+  progress             ChapterProgress[]
+  liveGames            LiveGame[]
+  readingSessions      ReadingSession[]
   courseChapters       CourseChapter[]
   courseProgressCursor UserCourseProgress[]
   challenges           Challenge[]
@@ -228,14 +232,14 @@ model CourseChapter {
 // Blijft bestaan als je naar een andere cursus wisselt, zodat je nooit je
 // plek kwijtraakt (zie User.activeCourseId hierboven).
 model UserCourseProgress {
-  id               String    @id @default(cuid())
+  id               String   @id @default(cuid())
   userId           String
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   courseId         String
-  course           Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course           Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   currentChapterId String? // null = cursus uitgelezen (of nog niet gestart, bij FREE_CHOICE)
-  currentChapter   Chapter?  @relation(fields: [currentChapterId], references: [id], onDelete: SetNull)
-  lastActivityAt   DateTime  @default(now())
+  currentChapter   Chapter? @relation(fields: [currentChapterId], references: [id], onDelete: SetNull)
+  lastActivityAt   DateTime @default(now())
 
   @@unique([userId, courseId])
 }
@@ -249,13 +253,13 @@ model UserCourseProgress {
 // en de twee modi hebben allebei hun eigen voortgang, als aparte "lessen".
 
 model PodcastEpisode {
-  id          String   @id @default(cuid())
-  number      Int      @unique
+  id          String    @id @default(cuid())
+  number      Int       @unique
   title       String
   summary     String?
   listenUrl   String?
   publishedAt DateTime?
-  order       Int      @default(0)
+  order       Int       @default(0)
 
   exercises PodcastExercise[]
   progress  PodcastEpisodeProgress[]
@@ -270,16 +274,16 @@ enum PodcastExerciseMode {
 // begrijpend-lezen-oefeningen bij boekhoofdstukken, kan dit niet automatisch
 // uit een transcript gegenereerd worden.
 model PodcastExercise {
-  id         String              @id @default(cuid())
-  episodeId  String
-  episode    PodcastEpisode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
-  mode       PodcastExerciseMode
-  order      Int
-  type       ExerciseType
-  prompt     String
-  answers    String // JSON-array van geaccepteerde antwoorden
-  wordBank   String? // JSON-array voor SEQUENCE-opgaven
-  options    PodcastExerciseOption[]
+  id        String                  @id @default(cuid())
+  episodeId String
+  episode   PodcastEpisode          @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  mode      PodcastExerciseMode
+  order     Int
+  type      ExerciseType
+  prompt    String
+  answers   String // JSON-array van geaccepteerde antwoorden
+  wordBank  String? // JSON-array voor SEQUENCE-opgaven
+  options   PodcastExerciseOption[]
 
   attempts PodcastExerciseAttempt[]
 }
@@ -336,9 +340,9 @@ model KidsStory {
 }
 
 model KidsExercise {
-  id       String       @id @default(cuid())
+  id       String               @id @default(cuid())
   storyId  String
-  story    KidsStory    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  story    KidsStory            @relation(fields: [storyId], references: [id], onDelete: Cascade)
   order    Int
   type     ExerciseType
   prompt   String
@@ -391,13 +395,13 @@ model Verse {
   number    Int
   text      String
 
-  people    VersePerson[]
-  places    VersePlace[]
-  topics    VerseTopic[]
-  bookmarks Bookmark[]
+  people     VersePerson[]
+  places     VersePlace[]
+  topics     VerseTopic[]
+  bookmarks  Bookmark[]
   highlights Highlight[]
-  notes     Note[]
-  exercises Exercise[]
+  notes      Note[]
+  exercises  Exercise[]
 
   @@unique([chapterId, number])
 }
@@ -546,15 +550,15 @@ enum ContentStatus {
 }
 
 model Exercise {
-  id            String        @id @default(cuid())
+  id            String           @id @default(cuid())
   chapterId     String
-  chapter       Chapter       @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter       Chapter          @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   order         Int
   type          ExerciseType
-  status        ContentStatus @default(APPROVED)
+  status        ContentStatus    @default(APPROVED)
   verseRef      String // bv. "1 Nephi 3:7"
   sourceVerseId String?
-  sourceVerse   Verse?        @relation(fields: [sourceVerseId], references: [id], onDelete: SetNull)
+  sourceVerse   Verse?           @relation(fields: [sourceVerseId], references: [id], onDelete: SetNull)
   prompt        String // tekst met "____" op de plek van het weggelaten woord, of de stelling bij TRUE_FALSE
   answers       String // JSON-array van geaccepteerde antwoorden (of ["true"]/["false"])
   wordBank      String? // JSON-array van keuzewoorden voor WORD_BANK type
@@ -662,15 +666,15 @@ enum FreezeTxType {
 }
 
 model FreezeTransaction {
-  id         String       @id @default(cuid())
-  userId     String
-  user       User         @relation("FreezeOwner", fields: [userId], references: [id], onDelete: Cascade)
-  type       FreezeTxType
-  amount     Int
-  relatedId  String?
-  related    User?        @relation("FreezeRelated", fields: [relatedId], references: [id], onDelete: SetNull)
-  reason     String?
-  createdAt  DateTime     @default(now())
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation("FreezeOwner", fields: [userId], references: [id], onDelete: Cascade)
+  type      FreezeTxType
+  amount    Int
+  relatedId String?
+  related   User?        @relation("FreezeRelated", fields: [relatedId], references: [id], onDelete: SetNull)
+  reason    String?
+  createdAt DateTime     @default(now())
 }
 
 // --- Vrienden -------------------------------------------------------------
@@ -728,14 +732,14 @@ enum LiveGameStatus {
 }
 
 model LiveGame {
-  id        String         @id @default(cuid())
-  code      String         @unique
+  id        String           @id @default(cuid())
+  code      String           @unique
   hostId    String
-  host      User           @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
+  host      User             @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
   chapterId String
-  chapter   Chapter        @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  status    LiveGameStatus @default(LOBBY)
-  createdAt DateTime       @default(now())
+  chapter   Chapter          @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  status    LiveGameStatus   @default(LOBBY)
+  createdAt DateTime         @default(now())
   players   LiveGamePlayer[]
 }
 
@@ -810,4 +814,69 @@ model Challenge {
 
   @@index([receiverId])
   @@index([senderId])
+}
+
+// --- Woordspel (Scrabble-variant, alleen woorden uit het Boek van Mormon) --
+//
+// Asynchroon en 1-op-1, net als Challenge hierboven (à la Wordfeud: elke
+// speler doet zijn zet wanneer het uitkomt) — geen realtime lobby zoals
+// LiveGame. Het bord/de racks/de zak staan als JSON in deze ene rij, wat
+// hier prima is: er is maar één actieve "lezer/schrijver" tegelijk (wie er
+// nu aan de beurt is), dus geen concurrency-risico zoals bij een
+// gedeelde realtime state.
+enum ScrabbleGameStatus {
+  PENDING
+  DECLINED
+  ACTIVE
+  FINISHED
+}
+
+model ScrabbleGame {
+  id        String             @id @default(cuid())
+  player1Id String
+  player1   User               @relation("ScrabblePlayer1", fields: [player1Id], references: [id], onDelete: Cascade)
+  player2Id String
+  player2   User               @relation("ScrabblePlayer2", fields: [player2Id], references: [id], onDelete: Cascade)
+  status    ScrabbleGameStatus @default(PENDING)
+
+  board       String // JSON: 15x15-grid, elke cel null of {letter, isBlank}
+  bag         String // JSON: array van nog te trekken letters (trekvolgorde = array-volgorde)
+  player1Rack String // JSON: array van huidige letters op het rek (max. 7)
+  player2Rack String // JSON: array van huidige letters op het rek (max. 7)
+
+  player1Score      Int     @default(0)
+  player2Score      Int     @default(0)
+  // null zolang status PENDING is; wordt bij ACCEPTED gezet op de uitnodiger
+  // (die trekt als eerste, zoals gebruikelijk).
+  turnUserId        String?
+  // Aantal ACHTEREENVOLGENDE beurten zonder plaatsing (pas of wissel) —
+  // bij een ingestelde drempel eindigt de partij daarmee ook zonder dat de
+  // zak leeg hoeft te zijn (voorkomt een oneindig vastgelopen partij).
+  consecutivePasses Int     @default(0)
+  winnerUserId      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  moves ScrabbleMove[]
+
+  @@index([player1Id])
+  @@index([player2Id])
+}
+
+model ScrabbleMove {
+  id     String       @id @default(cuid())
+  gameId String
+  game   ScrabbleGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  userId String
+  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type        String // "PLACE" | "EXCHANGE" | "PASS"
+  tilesPlaced String? // JSON: [{row, col, letter, isBlank}] — alleen bij PLACE
+  wordsFormed String? // JSON: string[] — alleen bij PLACE, voor de zetgeschiedenis
+  score       Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([gameId])
 }
