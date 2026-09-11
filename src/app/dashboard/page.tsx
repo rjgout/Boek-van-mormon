@@ -19,16 +19,20 @@ export default async function DashboardPage() {
     redirect("/verify-email");
   }
 
-  // "Van voor naar achter" en de podcastcursus hebben allebei al hun eigen
-  // pagina (/courses/[courseId]); de overige cursustypes vallen nog terug op
-  // deze generieke weergave hieronder, tot ze ook een eigen pagina krijgen
-  // (zie de cursus-voor-cursus-migratie).
+  // "Van voor naar achter", de podcastcursus en de kindercursus hebben
+  // allemaal al hun eigen pagina (/courses/[courseId]); de overige
+  // cursustypes vallen nog terug op deze generieke weergave hieronder, tot
+  // ze ook een eigen pagina krijgen (zie de cursus-voor-cursus-migratie).
   if (user.activeCourseId) {
     const activeCourseType = await prisma.course.findUnique({
       where: { id: user.activeCourseId },
       select: { type: true },
     });
-    if (activeCourseType?.type === "FRONT_TO_BACK" || activeCourseType?.type === "PODCAST") {
+    if (
+      activeCourseType?.type === "FRONT_TO_BACK" ||
+      activeCourseType?.type === "PODCAST" ||
+      activeCourseType?.type === "KIDS"
+    ) {
       redirect(`/courses/${user.activeCourseId}`);
     }
   }

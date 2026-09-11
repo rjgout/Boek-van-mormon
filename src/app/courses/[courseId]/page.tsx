@@ -5,6 +5,7 @@ import { isEmailConfigured } from "@/lib/email";
 import { advanceCourseProgress } from "@/lib/courses";
 import FrontToBackCourseView from "@/components/FrontToBackCourseView";
 import PodcastCourseView from "@/components/PodcastCourseView";
+import KidsCourseView from "@/components/KidsCourseView";
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ courseId: string }> }) {
   const user = await getCurrentUser();
@@ -65,6 +66,33 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             bomCompleted: bomProgress?.completed ?? false,
             bomBestScore: bomProgress ? bomProgress.bestScore : null,
             hasBomExercises: episode.exercises.some((e) => e.mode === "BOM_CONNECTION"),
+          };
+        })}
+      />
+    );
+  }
+
+  if (course.type === "KIDS") {
+    const stories = await prisma.kidsStory.findMany({
+      orderBy: { order: "asc" },
+      include: { progress: { where: { userId: user.id } } },
+    });
+
+    return (
+      <KidsCourseView
+        courseName={course.name}
+        streak={user.currentStreak}
+        freezeCount={user.freezeCount}
+        xpTotal={user.xpTotal}
+        stories={stories.map((story) => {
+          const images = JSON.parse(story.images) as string[];
+          return {
+            id: story.id,
+            number: story.number,
+            title: story.title,
+            image: images[0] ?? null,
+            completed: story.progress[0]?.completed ?? false,
+            bestScore: story.progress[0] ? story.progress[0].bestScore : null,
           };
         })}
       />

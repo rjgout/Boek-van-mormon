@@ -83,6 +83,8 @@ model User {
 
   podcastAttempts PodcastExerciseAttempt[]
   podcastProgress PodcastEpisodeProgress[]
+  kidsAttempts    KidsExerciseAttempt[]
+  kidsProgress    KidsStoryProgress[]
 }
 
 enum AuthTokenType {
@@ -167,6 +169,8 @@ enum CourseType {
   // Singleton (net als FREE_CHOICE): geen CourseChapter-rijen, alle
   // PodcastEpisode-rijen horen er impliciet bij. Zie src/lib/courses.ts.
   PODCAST
+  // Singleton, net als PODCAST: alle KidsStory-rijen horen er impliciet bij.
+  KIDS
 }
 
 model Course {
@@ -289,6 +293,71 @@ model PodcastEpisodeProgress {
   completedAt DateTime?
 
   @@unique([userId, episodeId, mode])
+}
+
+// "Verhalen uit het Boek van Mormon" (kindercursus, o.b.v. het gelijknamige
+// officiële kinderboek — met toestemming gebruikt, zie prisma/kidsContent.ts
+// en prisma/importKids.ts). Eigen modelfamilie, net als Podcast*, omdat een
+// KidsStory geen echt Chapter/Verse is.
+model KidsStory {
+  id     String @id @default(cuid())
+  number Int    @unique
+  title  String
+  text   String
+  images String // JSON-array van afbeeldings-URL's (public/kids/images)
+  order  Int    @default(0)
+
+  exercises KidsExercise[]
+  progress  KidsStoryProgress[]
+}
+
+model KidsExercise {
+  id       String       @id @default(cuid())
+  storyId  String
+  story    KidsStory    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  order    Int
+  type     ExerciseType
+  prompt   String
+  answers  String // JSON-array van geaccepteerde antwoorden
+  wordBank String? // JSON-array voor WORD_BANK-opgaven
+  options  KidsExerciseOption[]
+
+  attempts KidsExerciseAttempt[]
+}
+
+model KidsExerciseOption {
+  id         String       @id @default(cuid())
+  exerciseId String
+  exercise   KidsExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  label      String // leeg voor IMAGE_CHOICE (dan telt alleen imageUrl)
+  imageUrl   String? // gezet voor IMAGE_CHOICE-opties
+  isCorrect  Boolean      @default(false)
+  order      Int          @default(0)
+}
+
+model KidsExerciseAttempt {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   KidsExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  givenText  String
+  correct    Boolean
+  createdAt  DateTime     @default(now())
+}
+
+model KidsStoryProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  storyId     String
+  story       KidsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  completed   Boolean   @default(false)
+  bestScore   Int       @default(0)
+  xpEarned    Int       @default(0)
+  completedAt DateTime?
+
+  @@unique([userId, storyId])
 }
 
 model Verse {
@@ -439,6 +508,10 @@ enum ExerciseType {
   // gegenereerd uit brontekst — zie src/lib/exerciseGen.ts).
   MULTIPLE_CHOICE // vrije vraag + N keuzeopties (QuestionOption), bv. kernboodschap/motivatie/wie-zei-dit
   SEQUENCE // zet gebeurtenis-samenvattingen in de juiste volgorde; zelfde databron als WORD_BANK (answers/wordBank)
+  // Zelfde mechaniek als MULTIPLE_CHOICE, maar de keuzeopties zijn
+  // afbeeldingen (KidsExerciseOption.imageUrl) i.p.v. tekst. Zie de
+  // kindercursus in prisma/kidsContent.ts.
+  IMAGE_CHOICE
 }
 
 enum ContentStatus {
@@ -519,6 +592,8 @@ enum XPReason {
   // Eén van de twee modi (inhoud/verband met het Boek van Mormon) van een
   // podcastaflevering afgerond. Zie completePodcastLesson.
   PODCAST_LESSON_COMPLETED
+  // Een verhaal uit de kindercursus afgerond. Zie completeKidsStory.
+  KIDS_STORY_COMPLETED
 }
 
 model XPTransaction {

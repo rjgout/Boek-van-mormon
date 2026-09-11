@@ -114,6 +114,13 @@ docker exec bom-game npm run db:import -- /pad/naar/bestand.json
 (kopieer het bestand eerst de container in met `docker cp`). Zie de
 comments in `prisma/import.ts` voor het verwachte JSON-formaat.
 
+De tekst en illustraties van de kindercursus komen uit **"Verhalen uit het
+Boek van Mormon"** (© 1980, 1988, 1999 De Kerk van Jezus Christus van de
+Heiligen der Laatste Dagen; illustraties: Jerry Thompson en Robert T.
+Barrett) — met toestemming gebruikt, in tegenstelling tot de hoofdtekst van
+het Boek van Mormon zelf. Deel dit dus niet zomaar verder met een instantie
+die deze toestemming niet apart geregeld heeft.
+
 ## Architectuur
 
 | Container    | Rol                                                                 | Persistent? |
@@ -200,6 +207,17 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
   "oefeningen volgen nog" totdat daar begrijpend-lezen-vragen voor zijn
   geschreven. Is de feed niet bereikbaar, dan wordt dat alleen gelogd; de rest
   van `db:seed` gaat gewoon door.
+
+  Er is ook een **kindercursus** ("Verhalen uit het Boek van Mormon"),
+  gebaseerd op het gelijknamige officiële, geïllustreerde kinderboek van de
+  kerk (met toestemming gebruikt — zie **Auteursrecht** hieronder). Alle 54
+  verhalen staan erin, elk met een paar automatisch gegenereerde
+  FILL_BLANK/WORD_BANK/TRUE_FALSE-vraagjes uit de verhaaltekst zelf, plus één
+  plaatjesspel per verhaal (`IMAGE_CHOICE`): welke van vier afbeeldingen
+  (één van dit verhaal, drie afleiders van andere verhalen) hoort hierbij?
+  De content staat in `prisma/kidsManifest.json` (tekst + afbeeldingspaden,
+  geëxtraheerd uit de PDF) en wordt geïmporteerd door `prisma/importKids.ts`.
+
   Thema- en personencursussen (op basis van het al aanwezige `Topic`/`Person`-
   datamodel), een leesplan-met-einddatum, een herhalingscursus en een
   bladwijzers-cursus staan gepland maar zijn nog niet gebouwd.

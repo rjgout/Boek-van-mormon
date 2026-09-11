@@ -37,9 +37,15 @@ export function shuffleWithSeed<T>(items: T[], seed: number): T[] {
   return shuffled;
 }
 
-// Bekende namen in de demo-parafrases; gebruikt om een vals statement te
-// maken voor TRUE_FALSE-oefeningen (naam vervangen door een andere naam).
-const KNOWN_NAMES = ["Nephi", "Laman", "Lemuel", "Sam", "Lehi", "Alma", "Zarahemla", "Jeruzalem", "Laban"];
+// Bekende namen (demo-parafrases + kindercursus); gebruikt om een vals
+// statement te maken voor TRUE_FALSE-oefeningen (naam vervangen door een
+// andere naam uit deze lijst).
+const KNOWN_NAMES = [
+  "Nephi", "Laman", "Lemuel", "Lemuël", "Sam", "Lehi", "Alma", "Zarahemla", "Jeruzalem", "Laban",
+  "Mosiah", "Benjamin", "Zeniff", "Abinadi", "Noach", "Limhi", "Ammon", "Lamoni", "Aäron", "Korihor",
+  "Moroni", "Helaman", "Pahoran", "Hagoth", "Samuël", "Mormon", "Ether", "Jared", "Sariah", "Jakob",
+  "Enos", "Sherem", "Zerahemnah", "Shiblon", "Corianton", "Joseph",
+];
 
 function cleanWord(raw: string): string {
   return raw.replace(/^[^a-zA-ZÀ-ÿ]+|[^a-zA-ZÀ-ÿ]+$/g, "");

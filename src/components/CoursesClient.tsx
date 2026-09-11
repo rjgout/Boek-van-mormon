@@ -6,7 +6,7 @@ import Link from "next/link";
 interface CourseView {
   id: string;
   slug: string;
-  type: "FRONT_TO_BACK" | "FREE_CHOICE" | "BY_BOOK";
+  type: "FRONT_TO_BACK" | "FREE_CHOICE" | "BY_BOOK" | "PODCAST" | "KIDS";
   name: string;
   description: string | null;
   totalChapters: number;
@@ -19,6 +19,8 @@ const TYPE_LABELS: Record<CourseView["type"], string> = {
   FRONT_TO_BACK: "Van voor naar achter",
   FREE_CHOICE: "Vrije keuze",
   BY_BOOK: "Per boek",
+  PODCAST: "Podcast",
+  KIDS: "Voor kinderen",
 };
 
 export default function CoursesClient() {

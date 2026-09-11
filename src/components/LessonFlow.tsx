@@ -6,7 +6,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
 import { normalizeAnswer } from "@/lib/exerciseGen";
 
-export type ExerciseType = "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE";
+export type ExerciseType = "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE" | "IMAGE_CHOICE";
 
 export interface Exercise {
   id: string;
@@ -394,7 +394,7 @@ export function ExerciseCard({
   const promptParts = exercise.prompt.split(/____/);
 
   const canCheck =
-    exercise.type === "FILL_BLANK" || exercise.type === "MULTIPLE_CHOICE"
+    exercise.type === "FILL_BLANK" || exercise.type === "MULTIPLE_CHOICE" || exercise.type === "IMAGE_CHOICE"
       ? choice !== null
       : exercise.type === "TRUE_FALSE"
         ? trueFalseAnswer !== null
@@ -403,7 +403,7 @@ export function ExerciseCard({
   async function check() {
     if (checking || checked) return;
     const given =
-      exercise.type === "FILL_BLANK" || exercise.type === "MULTIPLE_CHOICE"
+      exercise.type === "FILL_BLANK" || exercise.type === "MULTIPLE_CHOICE" || exercise.type === "IMAGE_CHOICE"
         ? [choice ?? ""]
         : exercise.type === "TRUE_FALSE"
           ? [trueFalseAnswer ?? "true"]
@@ -444,7 +444,9 @@ export function ExerciseCard({
     >
       {wasCorrect
         ? "Goed gedaan! ✅"
-        : `Niet helemaal — het juiste antwoord was: ${formatCorrectAnswer(exercise.type, correctAnswer ?? [])}`}
+        : exercise.type === "IMAGE_CHOICE"
+          ? "Niet helemaal — de juiste afbeelding staat hierboven omlijnd."
+          : `Niet helemaal — het juiste antwoord was: ${formatCorrectAnswer(exercise.type, correctAnswer ?? [])}`}
     </p>
   );
 
@@ -589,6 +591,51 @@ export function ExerciseCard({
                 }`}
               >
                 {opt}
+              </button>
+            );
+          })}
+        </div>
+        {feedback}
+        <FooterControls
+          checked={checked}
+          checking={checking}
+          canCheck={canCheck}
+          disabled={disabled}
+          onCheck={check}
+          onNext={next}
+          onSkip={onSkip}
+        />
+      </div>
+    );
+  }
+
+  if (exercise.type === "IMAGE_CHOICE") {
+    const options = exercise.options ?? [];
+    return (
+      <div className="card flex flex-col gap-5">
+        <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{exercise.verseRef}</p>
+        <p className="text-xl leading-relaxed dark:text-slate-100">{exercise.prompt}</p>
+        <div className="grid grid-cols-2 gap-3">
+          {options.map((opt) => {
+            const isCorrectOption = checked && correctAnswer && normalizeAnswer(opt) === normalizeAnswer(correctAnswer[0] ?? "");
+            const isWrongPick = checked && choice === opt && !isCorrectOption;
+            return (
+              // eslint-disable-next-line @next/next/no-img-element
+              <button
+                key={opt}
+                disabled={checked}
+                onClick={() => setChoice(opt)}
+                className={`rounded-2xl overflow-hidden border-4 transition ${
+                  isCorrectOption
+                    ? "border-brand-500"
+                    : isWrongPick
+                      ? "border-red-400"
+                      : choice === opt
+                        ? "border-brand-500"
+                        : "border-transparent hover:border-brand-300"
+                }`}
+              >
+                <img src={opt} alt="" className="w-full h-auto block" />
               </button>
             );
           })}
