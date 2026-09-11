@@ -368,11 +368,14 @@ export function ExerciseCard({
   onDone,
   onSkip,
   disabled,
+  checkEndpoint,
 }: {
   exercise: Exercise;
   onDone: (given: string[], correct: boolean) => void;
   onSkip?: () => void;
   disabled: boolean;
+  /** Standaard /api/exercises/{id}/check — voor bv. podcastoefeningen kan een ander endpoint meegegeven worden. */
+  checkEndpoint?: string;
 }) {
   const [checked, setChecked] = useState(false);
   const [checking, setChecking] = useState(false);
@@ -391,7 +394,7 @@ export function ExerciseCard({
   const promptParts = exercise.prompt.split(/____/);
 
   const canCheck =
-    exercise.type === "FILL_BLANK"
+    exercise.type === "FILL_BLANK" || exercise.type === "MULTIPLE_CHOICE"
       ? choice !== null
       : exercise.type === "TRUE_FALSE"
         ? trueFalseAnswer !== null
@@ -400,7 +403,7 @@ export function ExerciseCard({
   async function check() {
     if (checking || checked) return;
     const given =
-      exercise.type === "FILL_BLANK"
+      exercise.type === "FILL_BLANK" || exercise.type === "MULTIPLE_CHOICE"
         ? [choice ?? ""]
         : exercise.type === "TRUE_FALSE"
           ? [trueFalseAnswer ?? "true"]
@@ -408,7 +411,7 @@ export function ExerciseCard({
 
     setChecking(true);
     try {
-      const res = await fetch(`/api/exercises/${exercise.id}/check`, {
+      const res = await fetch(checkEndpoint ?? `/api/exercises/${exercise.id}/check`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ given }),

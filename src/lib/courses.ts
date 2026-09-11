@@ -2,6 +2,7 @@ import type { PrismaClient } from "@prisma/client";
 
 export const FRONT_TO_BACK_SLUG = "voor-naar-achter";
 export const FREE_CHOICE_SLUG = "vrije-keuze";
+export const PODCAST_SLUG = "podcast";
 
 /**
  * Bouwt de structurele cursussen (van-voor-naar-achter, vrije keuze, en één
@@ -64,6 +65,21 @@ export async function syncCourses(db: PrismaClient): Promise<void> {
       await db.courseChapter.createMany({ data: rows });
     }
   }
+
+  // Singleton, net als vrije keuze: geen CourseChapter-rijen — de
+  // PodcastEpisode-rijen (zie prisma/importPodcast.ts) horen er impliciet
+  // allemaal bij.
+  await db.course.upsert({
+    where: { slug: PODCAST_SLUG },
+    update: { name: "Geloof je dat ook? podcast", order: 2 + books.length },
+    create: {
+      slug: PODCAST_SLUG,
+      type: "PODCAST",
+      name: "Geloof je dat ook? podcast",
+      description: "Elke aflevering: vragen over de aflevering zelf, en de brug naar het Boek van Mormon.",
+      order: 2 + books.length,
+    },
+  });
 }
 
 /**

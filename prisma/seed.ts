@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { seedBooks } from "./content";
 import { importBooks } from "./importContent";
+import { podcastEpisodes } from "./podcastContent";
+import { importPodcastEpisodes } from "./importPodcast";
 
 const prisma = new PrismaClient();
 
@@ -25,6 +27,9 @@ const achievementDefs = [
 async function main() {
   console.log("Seeding boeken, hoofdstukken, verzen en oefeningen (demo-inhoud)...");
   await importBooks(prisma, seedBooks);
+
+  console.log("Seeding podcastafleveringen...");
+  await importPodcastEpisodes(prisma, podcastEpisodes);
 
   console.log("Seeding achievements...");
   for (const def of achievementDefs) {

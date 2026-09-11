@@ -252,6 +252,85 @@ export async function completeQuickPractice(userId: string, correctCount: number
   });
 }
 
+/**
+ * Rondt één van de twee modi (CONTENT/BOM_CONNECTION) van een
+ * podcastaflevering af — zelfde soort boekhouding als completeLesson, maar
+ * tegen PodcastEpisodeProgress i.p.v. ChapterProgress. Raakt bewust geen
+ * UserCourseProgress: bij één aflevering is er nog geen "volgende" om naar
+ * door te schuiven.
+ */
+export async function completePodcastLesson(
+  userId: string,
+  episodeId: string,
+  mode: "CONTENT" | "BOM_CONNECTION",
+  scorePercent: number,
+  xpForThisAttempt: number
+): Promise<StudyResult> {
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.podcastEpisodeProgress.findUnique({
+      where: { userId_episodeId_mode: { userId, episodeId, mode } },
+    });
+    const wasAlreadyCompleted = existing?.completed ?? false;
+    const nowCompleted = wasAlreadyCompleted || scorePercent >= PASS_THRESHOLD;
+
+    await tx.podcastEpisodeProgress.upsert({
+      where: { userId_episodeId_mode: { userId, episodeId, mode } },
+      create: {
+        userId,
+        episodeId,
+        mode,
+        completed: nowCompleted,
+        bestScore: scorePercent,
+        xpEarned: xpForThisAttempt,
+        completedAt: nowCompleted ? new Date() : null,
+      },
+      update: {
+        completed: nowCompleted,
+        bestScore: Math.max(existing?.bestScore ?? 0, scorePercent),
+        xpEarned: { increment: xpForThisAttempt },
+        completedAt: !wasAlreadyCompleted && nowCompleted ? new Date() : undefined,
+      },
+    });
+
+    const daily = await applyDailyStreak(tx, userId);
+    const freezeCount = daily.freezeCountBeforeMilestone + daily.freezesEarned;
+
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        currentStreak: daily.currentStreak,
+        longestStreak: daily.longestStreak,
+        lastStudyDate: daily.today,
+        freezeCount,
+      },
+    });
+
+    if (daily.freezesEarned > 0) {
+      await tx.freezeTransaction.create({
+        data: { userId, type: "EARNED", amount: daily.freezesEarned, reason: "Mijlpaal bereikt" },
+      });
+    }
+
+    await awardXp(tx, userId, xpForThisAttempt, "PODCAST_LESSON_COMPLETED", { episodeId, mode, scorePercent });
+    await applyWeeklyXp(tx, userId, xpForThisAttempt);
+
+    const newAchievements = await checkAndAwardAchievements(tx, userId);
+
+    return {
+      xpEarned: xpForThisAttempt,
+      chapterCompleted: nowCompleted,
+      scorePercent,
+      currentStreak: daily.currentStreak,
+      longestStreak: daily.longestStreak,
+      streakBroken: daily.streakBroken,
+      freezeUsed: daily.freezeUsed,
+      freezesEarned: daily.freezesEarned,
+      freezeCount,
+      newAchievements,
+    };
+  });
+}
+
 /** Geeft een streak freeze weg aan een vriend. */
 export async function giftFreeze(fromUserId: string, toUserId: string) {
   if (fromUserId === toUserId) {

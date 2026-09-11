@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { isEmailConfigured } from "@/lib/email";
 import { advanceCourseProgress } from "@/lib/courses";
 import FrontToBackCourseView from "@/components/FrontToBackCourseView";
+import PodcastCourseView from "@/components/PodcastCourseView";
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ courseId: string }> }) {
   const user = await getCurrentUser();
@@ -33,6 +34,37 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
     },
   });
   if (!course) redirect("/courses");
+
+  if (course.type === "PODCAST") {
+    const episodes = await prisma.podcastEpisode.findMany({
+      orderBy: { order: "asc" },
+      include: { progress: { where: { userId: user.id } } },
+    });
+
+    return (
+      <PodcastCourseView
+        courseName={course.name}
+        streak={user.currentStreak}
+        freezeCount={user.freezeCount}
+        xpTotal={user.xpTotal}
+        episodes={episodes.map((episode) => {
+          const contentProgress = episode.progress.find((p) => p.mode === "CONTENT");
+          const bomProgress = episode.progress.find((p) => p.mode === "BOM_CONNECTION");
+          return {
+            id: episode.id,
+            number: episode.number,
+            title: episode.title,
+            summary: episode.summary,
+            listenUrl: episode.listenUrl,
+            contentCompleted: contentProgress?.completed ?? false,
+            contentBestScore: contentProgress ? contentProgress.bestScore : null,
+            bomCompleted: bomProgress?.completed ?? false,
+            bomBestScore: bomProgress ? bomProgress.bestScore : null,
+          };
+        })}
+      />
+    );
+  }
 
   // Alleen "van voor naar achter" heeft hier al zijn eigen weergave — de
   // andere cursustypes volgen in latere fases (zie /dashboard voor hun

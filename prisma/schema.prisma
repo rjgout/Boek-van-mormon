@@ -80,6 +80,9 @@ model User {
   activeCourseId String?
   activeCourse   Course?              @relation("ActiveCourse", fields: [activeCourseId], references: [id], onDelete: SetNull)
   courseProgress UserCourseProgress[]
+
+  podcastAttempts PodcastExerciseAttempt[]
+  podcastProgress PodcastEpisodeProgress[]
 }
 
 enum AuthTokenType {
@@ -161,6 +164,9 @@ enum CourseType {
   FRONT_TO_BACK
   FREE_CHOICE
   BY_BOOK
+  // Singleton (net als FREE_CHOICE): geen CourseChapter-rijen, alle
+  // PodcastEpisode-rijen horen er impliciet bij. Zie src/lib/courses.ts.
+  PODCAST
 }
 
 model Course {
@@ -204,6 +210,85 @@ model UserCourseProgress {
   lastActivityAt   DateTime  @default(now())
 
   @@unique([userId, courseId])
+}
+
+// --- Podcastcursus ("Geloof je dat ook?") ----------------------------------
+//
+// Elke aflevering krijgt twee losse, onafhankelijk af te ronden "modi":
+// CONTENT (over de aflevering zelf) en BOM_CONNECTION (de brug naar het
+// Boek van Mormon). Bewust een apart model in plaats van Chapter/Exercise
+// hergebruiken — een aflevering heeft geen verzen, wel een titel/luisterlink,
+// en de twee modi hebben allebei hun eigen voortgang, als aparte "lessen".
+
+model PodcastEpisode {
+  id          String   @id @default(cuid())
+  number      Int      @unique
+  title       String
+  summary     String?
+  listenUrl   String?
+  publishedAt DateTime?
+  order       Int      @default(0)
+
+  exercises PodcastExercise[]
+  progress  PodcastEpisodeProgress[]
+}
+
+enum PodcastExerciseMode {
+  CONTENT
+  BOM_CONNECTION
+}
+
+// Handmatig geschreven (zie prisma/podcastContent.ts) — net als de
+// begrijpend-lezen-oefeningen bij boekhoofdstukken, kan dit niet automatisch
+// uit een transcript gegenereerd worden.
+model PodcastExercise {
+  id         String              @id @default(cuid())
+  episodeId  String
+  episode    PodcastEpisode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  mode       PodcastExerciseMode
+  order      Int
+  type       ExerciseType
+  prompt     String
+  answers    String // JSON-array van geaccepteerde antwoorden
+  wordBank   String? // JSON-array voor SEQUENCE-opgaven
+  options    PodcastExerciseOption[]
+
+  attempts PodcastExerciseAttempt[]
+}
+
+model PodcastExerciseOption {
+  id         String          @id @default(cuid())
+  exerciseId String
+  exercise   PodcastExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  label      String
+  isCorrect  Boolean         @default(false)
+  order      Int             @default(0)
+}
+
+model PodcastExerciseAttempt {
+  id         String          @id @default(cuid())
+  userId     String
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   PodcastExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  givenText  String
+  correct    Boolean
+  createdAt  DateTime        @default(now())
+}
+
+model PodcastEpisodeProgress {
+  id          String              @id @default(cuid())
+  userId      String
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episodeId   String
+  episode     PodcastEpisode      @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  mode        PodcastExerciseMode
+  completed   Boolean             @default(false)
+  bestScore   Int                 @default(0)
+  xpEarned    Int                 @default(0)
+  completedAt DateTime?
+
+  @@unique([userId, episodeId, mode])
 }
 
 model Verse {
@@ -431,6 +516,9 @@ enum XPReason {
   // "Snelle ronde": korte, chapter-loze oefensessie die wel je dagstreak
   // redt maar geen hoofdstuk-cursus vooruit helpt. Zie completeQuickPractice.
   QUICK_PRACTICE
+  // Eén van de twee modi (inhoud/verband met het Boek van Mormon) van een
+  // podcastaflevering afgerond. Zie completePodcastLesson.
+  PODCAST_LESSON_COMPLETED
 }
 
 model XPTransaction {

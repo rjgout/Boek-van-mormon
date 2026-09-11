@@ -175,11 +175,16 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 - Het datamodel heeft al `Person`/`Place`/`Topic` (en de koppeltabellen naar
   verzen) als fundament, maar er zijn nog geen profielpagina's of
   thema-filters gebouwd.
-- **Cursussen**: drie manieren om door de content te gaan — van voor naar
-  achter (één vaste volgorde door alles), vrije keuze, en per boek — waartussen
-  je op `/courses` kan wisselen zonder je voortgang te verliezen. Een cursus
+- **Cursussen**: naast de drie manieren om door de boekcontent te gaan — van
+  voor naar achter (één vaste volgorde door alles), vrije keuze, en per boek —
+  staat er nu ook een **podcastcursus** (`Geloof je dat ook? podcast`). Elke
+  aflevering krijgt twee losse oefenrondes: "Inhoud van de aflevering" en
+  "Verband met het Boek van Mormon" (de laatste koppelt de aflevering aan een
+  passend hoofdstuk — voor aflevering 127 is dat de bestaande Alma 5-content).
+  Je kan op `/courses` wisselen zonder je voortgang te verliezen; een cursus
   wisselen verandert alleen welk hoofdstuk het dashboard als "Vandaag"
-  voorstelt; de vrije boek/hoofdstuk-lijst daaronder blijft altijd bereikbaar.
+  voorstelt, of stuurt je (bij de podcastcursus) naar de afleveringenlijst.
+  De vrije boek/hoofdstuk-lijst daaronder blijft altijd bereikbaar.
   Thema- en personencursussen (op basis van het al aanwezige `Topic`/`Person`-
   datamodel), een leesplan-met-einddatum, een herhalingscursus en een
   bladwijzers-cursus staan gepland maar zijn nog niet gebouwd.
@@ -193,8 +198,8 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
   zetten). Deze worden bewust **niet** automatisch gegenereerd — zie
   `ComprehensionExercise` in `prisma/content.ts` voor het handmatige formaat.
 - Geen AI-contentworkflow (het `status`-veld op `Exercise` staat er wel klaar
-  voor), geen podcastkoppeling, en nog geen extra spelmodi naast het
-  Schriftduel (verspuzzel/blitz/streak battle e.d.).
+  voor), en nog geen extra spelmodi naast het Schriftduel (verspuzzel/blitz/
+  streak battle e.d.).
 
 ## Zelf hosten op een Synology NAS (Docker + Cloudflare Tunnel)
 
