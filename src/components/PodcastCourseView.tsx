@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Link from "next/link";
 
 interface EpisodeView {
@@ -22,7 +25,44 @@ interface Props {
   episodes: EpisodeView[];
 }
 
+type StatusFilter = "ALL" | "DONE" | "PARTIAL" | "TODO";
+
+const FILTERS: { value: StatusFilter; label: string }[] = [
+  { value: "ALL", label: "Alle" },
+  { value: "DONE", label: "100% klaar" },
+  { value: "PARTIAL", label: "Deels gedaan" },
+  { value: "TODO", label: "Nog te doen" },
+];
+
+const PAGE_SIZE = 10;
+
+function episodeStatus(episode: EpisodeView): StatusFilter {
+  const availableCount = (episode.hasContentExercises ? 1 : 0) + (episode.hasBomExercises ? 1 : 0);
+  if (availableCount === 0) return "TODO";
+  const completedCount = (episode.hasContentExercises && episode.contentCompleted ? 1 : 0) + (episode.hasBomExercises && episode.bomCompleted ? 1 : 0);
+  if (completedCount === availableCount) return "DONE";
+  if (completedCount > 0) return "PARTIAL";
+  return "TODO";
+}
+
 export default function PodcastCourseView({ courseName, streak, freezeCount, xpTotal, episodes }: Props) {
+  const [filter, setFilter] = useState<StatusFilter>("ALL");
+  const [page, setPage] = useState(1);
+
+  const filtered = useMemo(() => {
+    if (filter === "ALL") return episodes;
+    return episodes.filter((e) => episodeStatus(e) === filter);
+  }, [episodes, filter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pageEpisodes = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  function selectFilter(value: StatusFilter) {
+    setFilter(value);
+    setPage(1);
+  }
+
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4">
@@ -48,10 +88,35 @@ export default function PodcastCourseView({ courseName, streak, freezeCount, xpT
       </div>
 
       <div className="flex flex-col gap-6">
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex gap-2 flex-wrap">
+            {FILTERS.map((f) => (
+              <button
+                key={f.value}
+                onClick={() => selectFilter(f.value)}
+                className={`rounded-full px-4 py-1.5 text-sm font-bold border-2 transition ${
+                  filter === f.value
+                    ? "bg-brand-500 text-white border-brand-500"
+                    : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:border-brand-300"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-slate-400 dark:text-slate-500">
+            {filtered.length} aflevering{filtered.length === 1 ? "" : "en"}
+          </p>
+        </div>
+
         {episodes.length === 0 && (
           <p className="text-slate-400 dark:text-slate-500">Er zijn nog geen afleveringen beschikbaar.</p>
         )}
-        {episodes.map((episode) => (
+        {episodes.length > 0 && filtered.length === 0 && (
+          <p className="text-slate-400 dark:text-slate-500">Geen afleveringen in dit filter.</p>
+        )}
+
+        {pageEpisodes.map((episode) => (
           <div key={episode.id} className="card flex flex-col gap-3 max-w-xl">
             <div className="flex items-center justify-between gap-3 flex-wrap">
               <h2 className="font-extrabold text-lg dark:text-slate-100">
@@ -87,6 +152,28 @@ export default function PodcastCourseView({ courseName, streak, freezeCount, xpT
             </div>
           </div>
         ))}
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-4">
+            <button
+              className="btn-secondary !px-3 !py-1.5"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(currentPage - 1)}
+            >
+              ← Vorige
+            </button>
+            <span className="text-sm text-slate-500 dark:text-slate-400">
+              Pagina {currentPage} van {totalPages}
+            </span>
+            <button
+              className="btn-secondary !px-3 !py-1.5"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(currentPage + 1)}
+            >
+              Volgende →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
