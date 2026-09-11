@@ -70,6 +70,28 @@ export default function CoursesClient() {
     return <p className="text-center text-slate-400 dark:text-slate-500">Laden...</p>;
   }
 
+  // Alle BY_BOOK-cursussen (één per boek — inmiddels alle 15) worden hier
+  // gebundeld tot één "Per boek"-kaart i.p.v. 15 losse kaarten; die kaart
+  // linkt naar /courses/per-boek waar je het specifieke boek kiest. Zo
+  // blijft dit overzicht overzichtelijk ongeacht hoeveel boeken er zijn.
+  const byBookCourses = courses.filter((c) => c.type === "BY_BOOK");
+  const activeBook = byBookCourses.find((c) => c.isActive) ?? null;
+  const byBookTotalChapters = byBookCourses.reduce((sum, c) => sum + c.totalChapters, 0);
+  const byBookCompletedCount = byBookCourses.reduce((sum, c) => sum + c.completedCount, 0);
+
+  let byBookCardRendered = false;
+  const items: Array<{ kind: "course"; course: CourseView } | { kind: "by-book" }> = [];
+  for (const course of courses) {
+    if (course.type === "BY_BOOK") {
+      if (!byBookCardRendered) {
+        byBookCardRendered = true;
+        items.push({ kind: "by-book" });
+      }
+      continue;
+    }
+    items.push({ kind: "course", course });
+  }
+
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
       <div>
@@ -90,7 +112,61 @@ export default function CoursesClient() {
       )}
 
       <div className="flex flex-col gap-3">
-        {courses.map((course) => {
+        {items.map((item) => {
+          if (item.kind === "by-book") {
+            const pct =
+              byBookTotalChapters > 0 ? Math.round((byBookCompletedCount / byBookTotalChapters) * 100) : 0;
+            return (
+              <div
+                key="by-book"
+                className={`card flex flex-col gap-3 ${activeBook ? "ring-2 ring-brand-400" : ""}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
+                      {TYPE_LABELS.BY_BOOK}
+                    </p>
+                    <h2 className="font-extrabold text-lg dark:text-slate-100">Per boek</h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      Kies een boek en ga daar hoofdstuk voor hoofdstuk doorheen. {byBookCourses.length} boeken
+                      beschikbaar.
+                    </p>
+                  </div>
+                  {activeBook && (
+                    <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
+                      Actief
+                    </span>
+                  )}
+                </div>
+
+                {byBookTotalChapters > 0 && (
+                  <div className="flex flex-col gap-1">
+                    <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div className="h-full bg-brand-500" style={{ width: `${pct}%` }} />
+                    </div>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      {byBookCompletedCount} / {byBookTotalChapters} hoofdstukken voltooid
+                      {activeBook && ` — bezig met: ${activeBook.name}`}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex gap-3">
+                  {activeBook ? (
+                    <Link href={`/courses/${activeBook.id}`} className="btn-primary self-start">
+                      Ga verder →
+                    </Link>
+                  ) : (
+                    <Link href="/courses/per-boek" className="btn-secondary self-start">
+                      Kies een boek
+                    </Link>
+                  )}
+                </div>
+              </div>
+            );
+          }
+
+          const course = item.course;
           const pct =
             course.totalChapters > 0 ? Math.round((course.completedCount / course.totalChapters) * 100) : 0;
           return (
