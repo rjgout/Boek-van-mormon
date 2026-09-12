@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/session";
@@ -8,11 +8,41 @@ import ThemeScript from "@/components/ThemeScript";
 import ThemeToggle from "@/components/ThemeToggle";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 
+// PWA: manifest + icons zijn wat een browser nodig heeft om "toevoegen aan
+// startscherm"/installeren aan te bieden (samen met de service worker, zie
+// ServiceWorkerRegister hieronder en public/sw.js). appleWebApp is nodig
+// omdat iOS Safari het standaard manifest niet volgt voor het beginscherm.
 export const metadata: Metadata = {
   title: `${APP_NAME} — Boek van Mormon`,
   description: APP_TAGLINE,
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#1c8a3f",
+  // Nodig zodat env(safe-area-inset-*) (zie BottomNav) daadwerkelijk de
+  // inkeping/homeindicator-ruimte teruggeeft i.p.v. altijd 0 — anders valt
+  // de onderste navigatie in een geïnstalleerde iOS-PWA samen met de
+  // homeindicator.
+  viewportFit: "cover",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -92,10 +122,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             )}
           </div>
         </header>
-        <main className="mx-auto max-w-5xl px-4 py-8 pb-24 sm:pb-8">{children}</main>
+        <main className="mx-auto max-w-5xl px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-8">{children}</main>
         <Footer />
         {user && <BottomNav />}
         {user && <InviteListener />}
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

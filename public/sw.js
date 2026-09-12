@@ -1,6 +1,14 @@
-// Minimale service worker, alleen voor Web Push — geen offline-caching (die
-// complexiteit is hier niet nodig, dit dient uitsluitend om pushnotificaties
-// te kunnen tonen terwijl de app niet open is).
+// Service worker voor Web Push + PWA-installeerbaarheid. Bewust GEEN
+// offline-caching van pagina's/data: dit is een dynamische, ingelogde app
+// (lessen, voortgang, live spel, woordspel) — content cachen zou al snel
+// verouderde of verkeerde (andere-gebruiker-achtige) data tonen. De
+// fetch-listener hieronder is daarom een kale doorgeefluik, alleen om aan
+// installeerbaarheidscriteria (Chrome "toevoegen aan startscherm") te
+// voldoen; hij verandert het netwerkgedrag niet.
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request));
+});
 
 self.addEventListener("push", (event) => {
   let data = { title: "Geloof je dat ook?", body: "", url: "/" };

@@ -15,7 +15,12 @@ const items = [
 export default function BottomNav() {
   return (
     <nav
-      className="sm:hidden fixed bottom-0 inset-x-0 z-20 bg-white/95 dark:bg-slate-800/95 backdrop-blur border-t border-slate-100 dark:border-slate-700 flex justify-around py-1"
+      // pb-[...] i.p.v. py-1 voor de onderkant: telt de homeindicator-ruimte
+      // van een geïnstalleerde iOS-PWA (env(safe-area-inset-bottom), zie ook
+      // viewportFit: "cover" in layout.tsx) op bij de gewone 0.25rem padding,
+      // zodat de navigatie daar nooit onder valt. In een gewone browsertab
+      // is die env()-waarde 0, dus daar verandert niets.
+      className="sm:hidden fixed bottom-0 inset-x-0 z-20 bg-white/95 dark:bg-slate-800/95 backdrop-blur border-t border-slate-100 dark:border-slate-700 flex justify-around pt-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))]"
       aria-label="Hoofdnavigatie"
     >
       {items.map((item) => (
