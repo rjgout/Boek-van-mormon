@@ -124,6 +124,10 @@ export default function ProfileClient() {
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
+      <Link href="/feedback" className="btn-secondary self-start">
+        💬 Feedback geven
+      </Link>
+
       <div className="card flex flex-col gap-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>

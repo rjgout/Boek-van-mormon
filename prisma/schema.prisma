@@ -111,6 +111,8 @@ model User {
   kidsAttempts    KidsExerciseAttempt[]
   kidsProgress    KidsStoryProgress[]
 
+  feedbackReports Feedback[]
+
   @@unique([handle, discriminator])
 }
 
@@ -879,4 +881,36 @@ model ScrabbleMove {
   createdAt DateTime @default(now())
 
   @@index([gameId])
+}
+
+// --- Feedback -----------------------------------------------------------
+
+enum FeedbackStatus {
+  NEW
+  IN_PROGRESS
+  DONE
+  WONT_DO
+}
+
+// Een melding vanuit de profielpagina, met optioneel een screenshot. Wordt
+// bij aanmaken gemaild naar de beheerder (zie src/lib/feedback.ts); die kan
+// de status vanuit die mail bijwerken via een tokenlink (respondToken,
+// geen login nodig — vandaar een apart, niet-giswaar token in plaats van
+// het gewone id) of vanuit /adminbackend. De indiener ziet de bijgewerkte
+// status terug op zijn eigen /feedback-pagina.
+model Feedback {
+  id           String         @id @default(cuid())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message      String
+  // data-URL (base64), al verkleind/gecomprimeerd door de client vóór
+  // verzenden — geen apart bestandsopslagsysteem nodig voor dit volume.
+  screenshot   String?
+  status       FeedbackStatus @default(NEW)
+  respondToken String         @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }

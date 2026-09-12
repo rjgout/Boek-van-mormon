@@ -5,6 +5,7 @@ import { getEmailSettingsView } from "@/lib/email";
 import AdminUsersClient from "@/components/AdminUsersClient";
 import EmailSettingsClient from "@/components/EmailSettingsClient";
 import ReseedClient from "@/components/ReseedClient";
+import FeedbackAdminClient from "@/components/FeedbackAdminClient";
 
 export default async function AdminBackendPage() {
   const user = await getCurrentUser();
@@ -55,6 +56,8 @@ export default async function AdminBackendPage() {
       />
 
       <EmailSettingsClient initial={emailSettings} />
+
+      <FeedbackAdminClient />
     </div>
   );
 }

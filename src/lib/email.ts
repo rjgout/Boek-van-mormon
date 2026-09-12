@@ -96,6 +96,8 @@ interface SendMailInput {
   subject: string;
   html: string;
   text: string;
+  // Voor bv. een bijgevoegde screenshot bij feedback (zie src/lib/feedback.ts).
+  attachments?: { filename: string; content: Buffer; contentType?: string }[];
 }
 
 /** Geeft {ok:false} terug (i.p.v. te gooien) als er geen werkende configuratie is — de aanroeper beslist dan zelf hoe daarmee om te gaan. */
@@ -110,6 +112,7 @@ export async function sendMail(input: SendMailInput): Promise<{ ok: boolean; err
       subject: input.subject,
       html: input.html,
       text: input.text,
+      attachments: input.attachments,
     });
     return { ok: true };
   } catch (e) {
