@@ -44,6 +44,10 @@ export default function ProfileClient() {
   const [savingPrivacy, setSavingPrivacy] = useState(false);
   const [savingNotifications, setSavingNotifications] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
+  const [editingHandle, setEditingHandle] = useState(false);
+  const [handleInput, setHandleInput] = useState("");
+  const [savingHandle, setSavingHandle] = useState(false);
+  const [handleError, setHandleError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -105,6 +109,35 @@ export default function ProfileClient() {
     if (!data) return;
     setData({ ...data, dailyReminderTime: time });
     await saveAccountPatch({ dailyReminderTime: time });
+  }
+
+  function startEditingHandle() {
+    if (!data) return;
+    setHandleInput(data.handle);
+    setHandleError(null);
+    setEditingHandle(true);
+  }
+
+  async function saveHandle() {
+    if (!data) return;
+    setSavingHandle(true);
+    setHandleError(null);
+    const res = await fetch("/api/account", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ handle: handleInput }),
+    });
+    const body = await res.json().catch(() => ({}));
+    setSavingHandle(false);
+    if (!res.ok) {
+      setHandleError(body.error ?? "Kon de gebruikersnaam niet opslaan.");
+      return;
+    }
+    // Het nummer erachter kies je niet zelf — het systeem behoudt je huidige
+    // nummer waar mogelijk, of loot een nieuwe bij een botsing (zie
+    // /api/account). Hier gewoon overnemen wat de server teruggeeft.
+    setData({ ...data, handle: body.handle, discriminator: body.discriminator });
+    setEditingHandle(false);
   }
 
   async function deleteAccount() {
@@ -175,6 +208,42 @@ export default function ProfileClient() {
 
       <section className="card flex flex-col gap-3">
         <h2 className="font-extrabold text-lg dark:text-slate-100">Account</h2>
+
+        {!editingHandle ? (
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-sm dark:text-slate-200">
+              Gebruikersnaam: <strong>{formatTag(data.handle, data.discriminator)}</strong>
+            </span>
+            <button className="btn-secondary !px-3 !py-1.5" onClick={startEditingHandle}>
+              Wijzigen
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            <label className="flex items-center gap-2 flex-wrap">
+              <input
+                className="input !w-auto"
+                value={handleInput}
+                onChange={(e) => setHandleInput(e.target.value)}
+                maxLength={24}
+              />
+              <span className="text-slate-400 dark:text-slate-500">#{data.discriminator}</span>
+            </label>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              Het nummer erachter kies je niet zelf — dat blijft door het systeem bepaald.
+            </p>
+            {handleError && <p className="text-sm text-red-600 dark:text-red-400">{handleError}</p>}
+            <div className="flex gap-2">
+              <button className="btn-primary !px-3 !py-1.5" disabled={savingHandle} onClick={saveHandle}>
+                {savingHandle ? "Bezig..." : "Opslaan"}
+              </button>
+              <button className="btn-secondary !px-3 !py-1.5" onClick={() => setEditingHandle(false)}>
+                Annuleren
+              </button>
+            </div>
+          </div>
+        )}
+
         <Link href="/change-password" className="btn-secondary self-start">
           Wachtwoord wijzigen
         </Link>

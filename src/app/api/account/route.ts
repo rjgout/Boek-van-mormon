@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { SESSION_COOKIE, hashPassword, verifyPassword } from "@/lib/auth";
+import { generateDiscriminator, HANDLE_REGEX, HANDLE_MIN_LENGTH, HANDLE_MAX_LENGTH } from "@/lib/handle";
 
 const patchSchema = z.object({
+  handle: z
+    .string()
+    .trim()
+    .min(HANDLE_MIN_LENGTH, `Gebruikersnaam moet minstens ${HANDLE_MIN_LENGTH} tekens zijn.`)
+    .max(HANDLE_MAX_LENGTH, `Gebruikersnaam mag maximaal ${HANDLE_MAX_LENGTH} tekens zijn.`)
+    .regex(HANDLE_REGEX, "Alleen letters, cijfers, spaties, - en _ toegestaan.")
+    .optional(),
   searchableByEmail: z.boolean().optional(),
   emailNotificationsEnabled: z.boolean().optional(),
   pushNotificationsEnabled: z.boolean().optional(),
@@ -13,6 +22,8 @@ const patchSchema = z.object({
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Ongeldig tijdstip")
     .optional(),
 });
+
+const MAX_DISCRIMINATOR_ATTEMPTS = 25;
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, "Vul je huidige (of tijdelijke) wachtwoord in."),
@@ -58,12 +69,36 @@ export async function PATCH(req: NextRequest) {
   if (Object.keys(parsed.data).length === 0) {
     return NextResponse.json({ error: "Niets om op te slaan" }, { status: 400 });
   }
+  const { handle, ...rest } = parsed.data;
 
-  await prisma.user.update({
-    where: { id: user.id },
-    data: parsed.data,
-  });
-  return NextResponse.json({ ok: true });
+  if (handle === undefined) {
+    await prisma.user.update({ where: { id: user.id }, data: rest });
+    return NextResponse.json({ ok: true });
+  }
+
+  // De gebruikersnaam (handle) kies je zelf, het nummer erachter
+  // (discriminator) nooit — dat blijft altijd door het systeem bepaald,
+  // net als bij registreren (zie /api/auth/register). Bij een naamswijziging
+  // proberen we eerst je huidige nummer te behouden; alleen als die
+  // combinatie toevallig al door iemand anders gebruikt wordt, loot het
+  // systeem een nieuw nummer (net zo lang tot er een vrije combinatie is).
+  const candidates = [user.discriminator, ...Array.from({ length: MAX_DISCRIMINATOR_ATTEMPTS }, generateDiscriminator)];
+  for (const discriminator of candidates) {
+    try {
+      await prisma.user.update({ where: { id: user.id }, data: { handle, discriminator, ...rest } });
+      return NextResponse.json({ ok: true, handle, discriminator });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+        continue; // discriminator-botsing voor deze handle, probeer opnieuw
+      }
+      throw e;
+    }
+  }
+
+  return NextResponse.json(
+    { error: "Kon geen unieke gebruikersnaam aanmaken, probeer een andere gebruikersnaam." },
+    { status: 409 }
+  );
 }
 
 // AVG: een gebruiker moet zijn account (en alle bijbehorende gegevens)
