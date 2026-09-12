@@ -66,9 +66,9 @@ export async function runSeed(client: PrismaClient, log: (msg: string) => void =
   // --- Demo-gebruikers zodat vrienden/competitie/live game meteen te testen zijn ---
   const demoPassword = await bcrypt.hash("demo1234", 10);
   const demoUsers = [
-    { email: "anna@example.com", handle: "anna", discriminator: "00001", displayName: "Anna" },
-    { email: "bram@example.com", handle: "bram", discriminator: "00001", displayName: "Bram" },
-    { email: "carla@example.com", handle: "carla", discriminator: "00001", displayName: "Carla" },
+    { email: "anna@example.com", handle: "anna", discriminator: "01", displayName: "Anna" },
+    { email: "bram@example.com", handle: "bram", discriminator: "01", displayName: "Bram" },
+    { email: "carla@example.com", handle: "carla", discriminator: "01", displayName: "Carla" },
   ];
 
   const createdUsers = [];
@@ -93,6 +93,6 @@ export async function runSeed(client: PrismaClient, log: (msg: string) => void =
     create: { senderId: carla.id, receiverId: anna.id, status: "PENDING" },
   });
 
-  log("Demo-gebruikers: anna#00001/bram#00001/carla#00001 (wachtwoord: demo1234)");
+  log("Demo-gebruikers: anna#01/bram#01/carla#01 (wachtwoord: demo1234)");
   log("Seed klaar.");
 }

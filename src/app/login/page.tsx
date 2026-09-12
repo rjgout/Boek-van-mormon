@@ -35,7 +35,7 @@ export default function LoginPage() {
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           className="input"
-          placeholder="E-mailadres of gebruikersnaam#0000"
+          placeholder="E-mailadres of gebruikersnaam#00"
           required
           value={form.identifier}
           onChange={(e) => setForm({ ...form, identifier: e.target.value })}
@@ -65,7 +65,7 @@ export default function LoginPage() {
         </Link>
       </p>
       <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
-        Demo-account: gebruikersnaam "anna#00001", wachtwoord "demo1234".
+        Demo-account: gebruikersnaam "anna#01", wachtwoord "demo1234".
       </p>
     </div>
   );

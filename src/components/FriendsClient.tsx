@@ -104,7 +104,7 @@ export default function FriendsClient() {
       <div className="card flex flex-col gap-3">
         <input
           className="input"
-          placeholder="Zoek op gebruikersnaam (Naam#12345) of, als iemand dat heeft aangezet, e-mailadres"
+          placeholder="Zoek op gebruikersnaam (Naam#42) of, als iemand dat heeft aangezet, e-mailadres"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const { identifier, password } = parsed.data;
 
   // Inloggen kan met e-mailadres, of met de volledige unieke tag
-  // ("Handle#12345") — de kale handle alleen is niet uniek genoeg.
+  // ("Handle#42") — de kale handle alleen is niet uniek genoeg.
   const tag = parseTag(identifier);
   const user = tag
     ? await prisma.user.findFirst({

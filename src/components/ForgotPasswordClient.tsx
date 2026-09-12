@@ -46,13 +46,13 @@ export default function ForgotPasswordClient() {
     <div className="max-w-md mx-auto card">
       <h1 className="text-2xl font-extrabold mb-2 text-brand-800 dark:text-brand-300">Wachtwoord vergeten</h1>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-        Vul je e-mailadres of gebruikersnaam (Naam#0000) in — we sturen je een link om een nieuw wachtwoord in te
+        Vul je e-mailadres of gebruikersnaam (Naam#00) in — we sturen je een link om een nieuw wachtwoord in te
         stellen.
       </p>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
         <input
           className="input"
-          placeholder="E-mailadres of gebruikersnaam#0000"
+          placeholder="E-mailadres of gebruikersnaam#00"
           required
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}

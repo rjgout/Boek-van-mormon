@@ -75,7 +75,7 @@ export default function RegisterPage() {
             onChange={(e) => setForm({ ...form, handle: e.target.value })}
           />
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-            Je krijgt er automatisch een uniek nummer achter, bv. "{form.handle || "Naam"}#12345" — zo kan iedereen
+            Je krijgt er automatisch een uniek nummer achter, bv. "{form.handle || "Naam"}#42" — zo kan iedereen
             dezelfde gebruikersnaam kiezen en hoef je nooit je e-mailadres te delen om gevonden te worden.
           </p>
         </div>

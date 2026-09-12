@@ -7,7 +7,7 @@ import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
 interface Entry {
   rank: number;
   userId: string;
-  displayName: string;
+  handle: string;
   xp: number;
   tier: LeagueTier;
   isMe: boolean;
@@ -87,7 +87,7 @@ export default function LeaderboardClient() {
               <div className="flex items-center gap-3">
                 <span className="w-8 text-center text-lg">{MEDALS[e.rank - 1] ?? e.rank}</span>
                 <span className="dark:text-slate-100">
-                  {e.displayName} {e.isMe && <span className="text-brand-500 dark:text-brand-300">(jij)</span>}
+                  {e.handle} {e.isMe && <span className="text-brand-500 dark:text-brand-300">(jij)</span>}
                 </span>
               </div>
               <span className="text-gold-600 dark:text-gold-400 font-bold">{e.xp} XP</span>

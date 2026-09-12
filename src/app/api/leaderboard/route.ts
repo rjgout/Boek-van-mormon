@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       ...(scope === "league" ? { tier: myTier } : {}),
       ...(userIds ? { userId: { in: userIds } } : {}),
     },
-    include: { user: { select: { id: true, displayName: true } } },
+    include: { user: { select: { id: true, handle: true } } },
     orderBy: { xp: "desc" },
   });
 
@@ -39,10 +39,13 @@ export async function GET(req: NextRequest) {
     scope,
     myTier,
     hasActivityThisWeek: Boolean(myScore),
+    // Bewust de handle (gekozen gebruikersnaam) i.p.v. displayName (echte
+    // naam) — die is hier nergens voor nodig (zoeken gaat via handle#discri-
+    // minator, niet op naam), dus geen reden om 'm hier te tonen.
     entries: scores.map((s, i) => ({
       rank: i + 1,
       userId: s.user.id,
-      displayName: s.user.displayName,
+      handle: s.user.handle,
       xp: s.xp,
       tier: s.tier,
       isMe: s.user.id === user.id,

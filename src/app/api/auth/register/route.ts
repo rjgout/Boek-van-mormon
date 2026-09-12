@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
   const defaultCourse = await prisma.course.findUnique({ where: { slug: FRONT_TO_BACK_SLUG } });
 
   // handle+discriminator is uniek, handle alleen niet — bij een botsing
-  // (zeldzaam: 1 op 100.000 voor exact dezelfde combinatie) proberen we
-  // gewoon een nieuw willekeurig nummer.
+  // (1 op 100 voor exact dezelfde combinatie) proberen we gewoon een
+  // nieuw willekeurig nummer.
   for (let attempt = 0; attempt < MAX_DISCRIMINATOR_ATTEMPTS; attempt++) {
     const discriminator = generateDiscriminator();
     try {

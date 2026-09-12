@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   let matches;
   const tag = parseTag(q);
   if (tag) {
-    // Exacte tag "Handle#12345" — altijd vindbaar, dit is de bedoelde,
+    // Exacte tag "Handle#42" — altijd vindbaar, dit is de bedoelde,
     // privacyvriendelijke manier om iemand te zoeken zonder e-mailadres.
     matches = await prisma.user.findMany({
       where: { handle: { equals: tag.handle, mode: "insensitive" }, discriminator: tag.discriminator },
