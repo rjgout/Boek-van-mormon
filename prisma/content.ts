@@ -31,6 +31,7 @@ export interface SeedChapter {
   number: number;
   verses: string[];
   comprehension?: ComprehensionExercise[];
+  heading?: string;
 }
 
 export interface SeedBook {
@@ -40,6 +41,15 @@ export interface SeedBook {
 }
 
 import bomContent from "./bomContent.json";
+import bomChapterHeadings from "./bomChapterHeadings.json";
+
+// De officiële hoofdstukkop (samenvatting + jaartal, bv. "Ongeveer 600 v.C.")
+// die boven elk hoofdstuk staat — apart bestand omdat dit, anders dan de
+// verzen, uit een tweede extractieslag komt (zie het "Raad het hoofdstuk"-
+// spel, src/lib/chapterGuess.ts, waar dit als introtekst dient).
+const headingByChapter = new Map<string, string>(
+  (bomChapterHeadings as [string, number, string][]).map(([slug, number, heading]) => [`${slug}:${number}`, heading])
+);
 
 // Handmatig geschreven begrijpend-lezen-oefeningen bij een paar hoofdstukken
 // (zie ComprehensionExercise hierboven) — blijven thematisch kloppen op de
@@ -77,6 +87,7 @@ export const seedBooks: SeedBook[] = (bomContent as SeedBook[]).map((book) => ({
   ...book,
   chapters: book.chapters.map((chapter) => {
     const comprehension = comprehensionByChapter[`${book.slug}:${chapter.number}`];
-    return comprehension ? { ...chapter, comprehension } : chapter;
+    const heading = headingByChapter.get(`${book.slug}:${chapter.number}`);
+    return { ...chapter, ...(comprehension ? { comprehension } : {}), ...(heading ? { heading } : {}) };
   }),
 }));

@@ -31,8 +31,8 @@ export async function importBooks(
       const seedChapter = seedBook.chapters[chapterOrder];
       const chapter = await prisma.chapter.upsert({
         where: { bookId_number: { bookId: book.id, number: seedChapter.number } },
-        update: { order: chapterOrder },
-        create: { bookId: book.id, number: seedChapter.number, order: chapterOrder },
+        update: { order: chapterOrder, heading: seedChapter.heading },
+        create: { bookId: book.id, number: seedChapter.number, order: chapterOrder, heading: seedChapter.heading },
       });
 
       await prisma.exercise.deleteMany({ where: { chapterId: chapter.id } });

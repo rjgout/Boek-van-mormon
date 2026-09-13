@@ -180,6 +180,11 @@ model Chapter {
   book                 Book                 @relation(fields: [bookId], references: [id], onDelete: Cascade)
   number               Int
   order                Int
+  // De officiële hoofdstukkop (samenvatting + jaartal, bv. "Ongeveer 600
+  // v.C.") die boven het hoofdstuk staat — apart van de verzen zelf, en
+  // gebruikt als introtekst bij "Raad het hoofdstuk" (zie
+  // src/lib/chapterGuess.ts). Optioneel omdat niet elke seed-bron 'm heeft.
+  heading              String?
   verses               Verse[]
   exercises            Exercise[]
   progress             ChapterProgress[]

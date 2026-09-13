@@ -198,7 +198,7 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
       </div>
 
       <div className="card flex flex-col gap-5">
-        <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Lees dit vers — welk hoofdstuk is dit?</p>
+        <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Lees deze hoofdstukkop — welk hoofdstuk is dit?</p>
         <p className="text-xl leading-relaxed italic">&ldquo;{question.introText}&rdquo;</p>
 
         {hint?.bookName && !answered && (

@@ -32,10 +32,14 @@ export async function getChapterLabel(chapterId: string): Promise<ChapterLabel |
   return map.get(chapterId) ?? null;
 }
 
-// Het "intro"-tekstje dat je te lezen krijgt = vers 1 van het hoofdstuk (er
-// is geen apart hoofdstuk-opschrift in de data) — oplopend gesorteerd zodat
-// dit ook werkt als een hoofdstuk ooit niet met versnummer 1 zou beginnen.
+// Het "intro"-tekstje dat je te lezen krijgt = de officiële hoofdstukkop
+// (samenvatting + jaartal, zie Chapter.heading) — dat is wat er in het echte
+// Boek van Mormon boven het hoofdstuk staat, dus ook wat iemand die het boek
+// kent zou herkennen. Val terug op vers 1 voor het (in de praktijk niet
+// voorkomende) geval dat een hoofdstuk geen heading heeft.
 export async function getChapterIntro(chapterId: string): Promise<string> {
+  const chapter = await prisma.chapter.findUnique({ where: { id: chapterId } });
+  if (chapter?.heading) return chapter.heading;
   const verse = await prisma.verse.findFirst({ where: { chapterId }, orderBy: { number: "asc" } });
   return verse?.text ?? "";
 }
