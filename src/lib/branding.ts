@@ -1,0 +1,28 @@
+import { prisma } from "@/lib/db";
+
+export interface BrandingView {
+  logoDataUrl: string | null;
+  faviconDataUrl: string | null;
+}
+
+const DATA_URL_RE = /^data:image\/(png|jpeg|jpg|webp|svg\+xml|x-icon|vnd\.microsoft\.icon);base64,/;
+// Ruime maar niet oneindige bovengrens — dit is een klein huisstijl-plaatje,
+// geen gebruikersbestand (zie Feedback.screenshot voor dezelfde aanpak).
+const MAX_DATA_URL_LENGTH = 2 * 1024 * 1024;
+
+export function isValidBrandingDataUrl(value: string): boolean {
+  return DATA_URL_RE.test(value) && value.length <= MAX_DATA_URL_LENGTH;
+}
+
+export async function getBranding(): Promise<BrandingView> {
+  const row = await prisma.brandingSettings.findUnique({ where: { id: "singleton" } });
+  return { logoDataUrl: row?.logoDataUrl ?? null, faviconDataUrl: row?.faviconDataUrl ?? null };
+}
+
+export async function updateBranding(patch: Partial<BrandingView>): Promise<void> {
+  await prisma.brandingSettings.upsert({
+    where: { id: "singleton" },
+    create: { id: "singleton", ...patch },
+    update: patch,
+  });
+}

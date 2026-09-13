@@ -50,8 +50,13 @@ export default function FeedbackAdminClient() {
   }
 
   return (
-    <section className="card flex flex-col gap-4">
-      <h2 className="font-extrabold text-lg dark:text-slate-100">Feedback</h2>
+    <details className="group card flex flex-col gap-4">
+      <summary className="font-extrabold text-lg dark:text-slate-100 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
+        Feedback
+        <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+          ▾
+        </span>
+      </summary>
 
       {!reports ? (
         <p className="text-slate-400 dark:text-slate-500">Laden...</p>
@@ -99,6 +104,6 @@ export default function FeedbackAdminClient() {
           ))}
         </div>
       )}
-    </section>
+    </details>
   );
 }

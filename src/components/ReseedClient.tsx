@@ -21,16 +21,20 @@ export default function ReseedClient() {
   }
 
   return (
-    <div className="card flex flex-col gap-4">
-      <div>
-        <h2 className="font-extrabold">Content opnieuw laden</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Zet de nieuwste content (boeken/hoofdstukken/oefeningen, podcastafleveringen, achievements) in de database —
-          hetzelfde als <code>npm run db:seed</code>, maar dan zonder terminal. Bestaande gebruikers, voortgang,
-          streaks en scores blijven ongemoeid; er wordt alleen content toegevoegd of bijgewerkt. Doe dit na elke
-          update die nieuwe content toevoegt (bv. een nieuwe podcastaflevering).
-        </p>
-      </div>
+    <details className="group card flex flex-col gap-4">
+      <summary className="font-extrabold cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
+        Content opnieuw laden
+        <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+          ▾
+        </span>
+      </summary>
+
+      <p className="text-sm text-slate-500 dark:text-slate-400">
+        Zet de nieuwste content (boeken/hoofdstukken/oefeningen, podcastafleveringen, achievements) in de database —
+        hetzelfde als <code>npm run db:seed</code>, maar dan zonder terminal. Bestaande gebruikers, voortgang,
+        streaks en scores blijven ongemoeid; er wordt alleen content toegevoegd of bijgewerkt. Doe dit na elke
+        update die nieuwe content toevoegt (bv. een nieuwe podcastaflevering).
+      </p>
 
       <button className="btn-primary self-start" disabled={running} onClick={run}>
         {running ? "Bezig..." : "Content opnieuw laden"}
@@ -43,6 +47,6 @@ export default function ReseedClient() {
           {logs.join("\n")}
         </pre>
       )}
-    </div>
+    </details>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/session";
+import { getBranding } from "@/lib/branding";
 import NavUserBadges from "@/components/NavUserBadges";
 import InviteListener from "@/components/InviteListener";
 import ThemeScript from "@/components/ThemeScript";
@@ -15,24 +16,36 @@ import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 // startscherm"/installeren aan te bieden (samen met de service worker, zie
 // ServiceWorkerRegister hieronder en public/sw.js). appleWebApp is nodig
 // omdat iOS Safari het standaard manifest niet volgt voor het beginscherm.
-export const metadata: Metadata = {
-  title: `${APP_NAME} — Boek van Mormon`,
-  description: APP_TAGLINE,
-  manifest: "/manifest.webmanifest",
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
-    ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: APP_NAME,
-  },
-};
+// Dynamisch (i.p.v. een statische export) omdat een admin via
+// /adminbackend een eigen favicon kan instellen (zie src/lib/branding.ts).
+export async function generateMetadata(): Promise<Metadata> {
+  const { faviconDataUrl } = await getBranding();
+
+  return {
+    title: `${APP_NAME} — Boek van Mormon`,
+    description: APP_TAGLINE,
+    manifest: "/manifest.webmanifest",
+    icons: {
+      // Een eigen favicon vervangt de standaard-set volledig — anders kiest
+      // de browser soms toch de hogere-resolutie standaard-PNG's in plaats
+      // van het eigen icoon. /api/branding/favicon serveert 'm rechtstreeks
+      // (of verwijst door naar het standaardbestand als er geen is ingesteld).
+      icon: faviconDataUrl
+        ? [{ url: "/api/branding/favicon", sizes: "any" }]
+        : [
+            { url: "/favicon.ico", sizes: "any" },
+            { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+            { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+          ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: APP_NAME,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -46,7 +59,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser();
+  const [user, { logoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
 
   return (
     <html lang="nl" suppressHydrationWarning>
@@ -57,8 +70,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <header className="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-100 dark:border-slate-800">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg">
-              <span aria-hidden>📖</span>
-              {APP_NAME}
+              {logoDataUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoDataUrl} alt={APP_NAME} className="h-8 w-auto" />
+              ) : (
+                <>
+                  <span aria-hidden>📖</span>
+                  {APP_NAME}
+                </>
+              )}
             </Link>
 
             {user ? (

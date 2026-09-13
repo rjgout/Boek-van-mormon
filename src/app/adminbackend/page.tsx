@@ -6,6 +6,7 @@ import AdminUsersClient from "@/components/AdminUsersClient";
 import EmailSettingsClient from "@/components/EmailSettingsClient";
 import ReseedClient from "@/components/ReseedClient";
 import FeedbackAdminClient from "@/components/FeedbackAdminClient";
+import AdminBrandingClient from "@/components/AdminBrandingClient";
 
 export default async function AdminBackendPage() {
   const user = await getCurrentUser();
@@ -56,6 +57,8 @@ export default async function AdminBackendPage() {
       />
 
       <EmailSettingsClient initial={emailSettings} />
+
+      <AdminBrandingClient />
 
       <FeedbackAdminClient />
     </div>

@@ -60,8 +60,13 @@ export default function AdminUsersClient({
   }
 
   return (
-    <div className="card overflow-x-auto">
-      <h2 className="font-extrabold mb-4">Gebruikers ({users.length})</h2>
+    <details className="group card overflow-x-auto">
+      <summary className="font-extrabold mb-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
+        Gebruikers ({users.length})
+        <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+          ▾
+        </span>
+      </summary>
       {error && <p className="text-red-600 dark:text-red-400 text-sm font-semibold mb-3">{error}</p>}
       <table className="w-full text-sm">
         <thead>
@@ -145,6 +150,6 @@ export default function AdminUsersClient({
           ))}
         </tbody>
       </table>
-    </div>
+    </details>
   );
 }

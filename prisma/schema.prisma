@@ -933,3 +933,17 @@ model Feedback {
 
   @@index([userId])
 }
+
+// --- Huisstijl -----------------------------------------------------------
+
+// Singleton (net als EmailSettings/PushSettings): optioneel eigen logo +
+// favicon, in te stellen via /adminbackend. Als data-URL opgeslagen —
+// zelfde reden als Feedback.screenshot hierboven, geen apart
+// bestandsopslagsysteem nodig. Is logoDataUrl gezet, dan vervangt dat de
+// tekst+emoji in de header (zie layout.tsx); faviconDataUrl vervangt op
+// dezelfde manier het standaard favicon.ico (zie /api/branding/favicon).
+model BrandingSettings {
+  id             String  @id @default("singleton")
+  logoDataUrl    String?
+  faviconDataUrl String?
+}

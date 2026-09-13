@@ -61,14 +61,18 @@ export default function EmailSettingsClient({ initial }: { initial: EmailSetting
   }
 
   return (
-    <div className="card flex flex-col gap-4">
-      <div>
-        <h2 className="font-extrabold">E-mailinstellingen</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Voor accountbevestiging en "wachtwoord vergeten"-links. Elke SMTP-dienst werkt — bv. een Microsoft 365-mailbox
-          (smtp.office365.com, poort 587), Gmail met een app-wachtwoord, of je eigen mailserver.
-        </p>
-      </div>
+    <details className="group card flex flex-col gap-4">
+      <summary className="font-extrabold cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
+        E-mailinstellingen
+        <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+          ▾
+        </span>
+      </summary>
+
+      <p className="text-sm text-slate-500 dark:text-slate-400">
+        Voor accountbevestiging en "wachtwoord vergeten"-links. Elke SMTP-dienst werkt — bv. een Microsoft 365-mailbox
+        (smtp.office365.com, poort 587), Gmail met een app-wachtwoord, of je eigen mailserver.
+      </p>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         <label className="flex items-center gap-2 text-sm font-bold dark:text-slate-200">
@@ -147,6 +151,6 @@ export default function EmailSettingsClient({ initial }: { initial: EmailSetting
           </button>
         </div>
       </form>
-    </div>
+    </details>
   );
 }
