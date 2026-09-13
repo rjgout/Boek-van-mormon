@@ -75,7 +75,7 @@ interface MoveView {
   id: string;
   playerName: string;
   isMine: boolean;
-  type: "PLACE" | "EXCHANGE" | "PASS";
+  type: "PLACE" | "EXCHANGE" | "PASS" | "FORFEIT";
   wordsFormed: string[];
   score: number;
   createdAt: string;
@@ -237,6 +237,20 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
     load();
   }
 
+  async function submitForfeit() {
+    if (!window.confirm("Weet je zeker dat je wil opgeven? Je tegenstander wordt dan automatisch winnaar.")) return;
+    setBusy(true);
+    setMessage(null);
+    const res = await fetch(`/api/scrabble/${gameId}/forfeit`, { method: "POST" });
+    setBusy(false);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setMessage(body.error ?? "Kon niet opgeven.");
+      return;
+    }
+    load();
+  }
+
   return (
     <div className="max-w-3xl mx-auto flex flex-col gap-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -389,6 +403,17 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
               Wacht tot {game.opponent.displayName} heeft gespeeld.
             </p>
           )}
+
+          {/* Opgeven mag altijd, ook als je niet aan de beurt bent. */}
+          <div className="flex justify-center pt-1 border-t border-slate-100 dark:border-slate-700">
+            <button
+              className="btn-secondary !px-3 !py-1.5 !text-red-500 !border-red-200 mt-2"
+              disabled={busy}
+              onClick={submitForfeit}
+            >
+              Opgeven
+            </button>
+          </div>
         </div>
       )}
 
@@ -404,7 +429,9 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
                     ? m.wordsFormed.join(", ")
                     : m.type === "EXCHANGE"
                       ? "wisselde letters"
-                      : "paste"}
+                      : m.type === "FORFEIT"
+                        ? "gaf op"
+                        : "paste"}
                 </span>
                 {m.type === "PLACE" && <span className="font-bold">+{m.score}</span>}
               </div>

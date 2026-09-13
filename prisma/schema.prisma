@@ -811,6 +811,10 @@ model Challenge {
   senderCompletedAt   DateTime?
   receiverScore       Int?
   receiverCompletedAt DateTime?
+  // null zolang status niet FINISHED is, of bij een gelijkspel. Bij een
+  // normale afronding (beide gespeeld) de speler met de hoogste score; bij
+  // opgeven altijd de andere speler, ongeacht scores (zie forfeitChallenge).
+  winnerUserId String?
 
   createdAt DateTime @default(now())
 

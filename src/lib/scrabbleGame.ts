@@ -291,3 +291,37 @@ export async function passTurn(gameId: string, userId: string): Promise<ActionRe
   }
   return { ok: true };
 }
+
+/**
+ * Opgeven — mag altijd, ook als je niet aan de beurt bent (in
+ * tegenstelling tot plaatsen/wisselen/passen, die alleen mogen als
+ * turnUserId === userId). De ander wordt direct winnaar, ongeacht scores.
+ */
+export async function forfeitGame(gameId: string, userId: string): Promise<ActionResult> {
+  const game = await prisma.scrabbleGame.findUnique({
+    where: { id: gameId },
+    include: { player1: true, player2: true },
+  });
+  if (!game) return { ok: false, error: "Spel niet gevonden." };
+  if (game.status !== "ACTIVE") return { ok: false, error: "Dit spel is niet actief." };
+  const isPlayer1 = userId === game.player1Id;
+  if (!isPlayer1 && userId !== game.player2Id) return { ok: false, error: "Je speelt niet mee in dit spel." };
+
+  const opponentId = isPlayer1 ? game.player2Id : game.player1Id;
+  const myName = isPlayer1 ? game.player1.displayName : game.player2.displayName;
+  const opponentName = isPlayer1 ? game.player2.displayName : game.player1.displayName;
+
+  await prisma.$transaction([
+    prisma.scrabbleGame.update({
+      where: { id: gameId },
+      data: { status: "FINISHED", winnerUserId: opponentId, turnUserId: null },
+    }),
+    prisma.scrabbleMove.create({ data: { gameId, userId, type: "FORFEIT", score: 0 } }),
+  ]);
+
+  await Promise.allSettled([
+    notifyScrabbleFinished(opponentId, myName, true, false),
+    notifyScrabbleFinished(userId, opponentName, false, false),
+  ]);
+  return { ok: true };
+}

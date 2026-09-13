@@ -14,6 +14,8 @@ interface ChallengeView {
   myScore: number | null;
   opponentScore: number | null;
   hasPlayed: boolean;
+  won: boolean | null;
+  tied: boolean | null;
   createdAt: string;
 }
 
@@ -88,6 +90,12 @@ export default function ChallengesClient() {
 
   function play(c: ChallengeView) {
     router.push(`/lesson/${c.chapterId}?challengeId=${c.id}`);
+  }
+
+  async function forfeit(id: string) {
+    if (!window.confirm("Weet je zeker dat je wil opgeven? Je tegenstander wordt dan automatisch winnaar.")) return;
+    await fetch(`/api/challenges/${id}/forfeit`, { method: "POST" });
+    load();
   }
 
   if (!challenges || !friends || !chapters) return <p className="text-slate-400 dark:text-slate-500">Laden...</p>;
@@ -175,13 +183,18 @@ export default function ChallengesClient() {
                 <span className="dark:text-slate-100">
                   Tegen <strong>{c.opponent.displayName}</strong> op {c.bookName} {c.chapterNumber}
                 </span>
-                {c.hasPlayed ? (
-                  <span className="text-sm text-slate-400 dark:text-slate-500">Wachten op tegenstander...</span>
-                ) : (
-                  <button className="btn-primary !px-3 !py-1.5" onClick={() => play(c)}>
-                    Speel je beurt
+                <div className="flex items-center gap-2">
+                  {c.hasPlayed ? (
+                    <span className="text-sm text-slate-400 dark:text-slate-500">Wachten op tegenstander...</span>
+                  ) : (
+                    <button className="btn-primary !px-3 !py-1.5" onClick={() => play(c)}>
+                      Speel je beurt
+                    </button>
+                  )}
+                  <button className="btn-secondary !px-3 !py-1.5 !text-red-500 !border-red-200" onClick={() => forfeit(c.id)}>
+                    Opgeven
                   </button>
-                )}
+                </div>
               </div>
             ))}
           </div>
@@ -213,13 +226,9 @@ export default function ChallengesClient() {
                   </span>
                 ) : (
                   <span>
-                    {c.bookName} {c.chapterNumber} tegen {c.opponent.displayName}: jij {c.myScore}% —{" "}
-                    {c.opponent.displayName} {c.opponentScore}%{" "}
-                    {c.myScore !== null && c.opponentScore !== null && (
-                      <strong>
-                        {c.myScore > c.opponentScore ? "🎉 gewonnen" : c.myScore < c.opponentScore ? "verloren" : "gelijkspel"}
-                      </strong>
-                    )}
+                    {c.bookName} {c.chapterNumber} tegen {c.opponent.displayName}: jij {c.myScore ?? "–"}% —{" "}
+                    {c.opponent.displayName} {c.opponentScore ?? "–"}%{" "}
+                    <strong>{c.tied ? "gelijkspel" : c.won ? "🎉 gewonnen" : "verloren"}</strong>
                   </span>
                 )}
               </div>

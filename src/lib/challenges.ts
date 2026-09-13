@@ -34,10 +34,11 @@ export async function recordChallengeAttempt(userId: string, challengeId: string
   });
 
   if (opponentAlreadyPlayed) {
-    await prisma.challenge.update({ where: { id: challengeId }, data: { status: "FINISHED" } });
     const senderScore = updated.senderScore ?? 0;
     const receiverScore = updated.receiverScore ?? scorePercent;
     const tied = senderScore === receiverScore;
+    const winnerUserId = tied ? null : senderScore > receiverScore ? challenge.senderId : challenge.receiverId;
+    await prisma.challenge.update({ where: { id: challengeId }, data: { status: "FINISHED", winnerUserId } });
     await Promise.allSettled([
       notifyChallengeFinished(challenge.senderId, challenge.receiver.displayName, senderScore > receiverScore, tied),
       notifyChallengeFinished(challenge.receiverId, challenge.sender.displayName, receiverScore > senderScore, tied),
@@ -47,4 +48,34 @@ export async function recordChallengeAttempt(userId: string, challengeId: string
     const playerName = isSender ? challenge.sender.displayName : challenge.receiver.displayName;
     await notifyChallengeYourTurn(opponentId, playerName).catch(() => {});
   }
+}
+
+/**
+ * Opgeven in een lopende uitdaging — mag altijd, ongeacht of je zelf al
+ * gespeeld hebt (er is toch geen "beurt"-concept zoals bij het woordspel:
+ * beide spelers spelen onafhankelijk van elkaar). De ander wordt direct
+ * winnaar, ongeacht scores.
+ */
+export async function forfeitChallenge(userId: string, challengeId: string): Promise<{ ok: true } | { ok: false; error: string }> {
+  const challenge = await prisma.challenge.findUnique({
+    where: { id: challengeId },
+    include: { sender: true, receiver: true },
+  });
+  if (!challenge) return { ok: false, error: "Uitdaging niet gevonden." };
+  if (challenge.status !== "ACCEPTED") return { ok: false, error: "Deze uitdaging loopt niet meer." };
+
+  const isSender = challenge.senderId === userId;
+  const isReceiver = challenge.receiverId === userId;
+  if (!isSender && !isReceiver) return { ok: false, error: "Je speelt niet mee in deze uitdaging." };
+
+  const opponentId = isSender ? challenge.receiverId : challenge.senderId;
+  const opponentName = isSender ? challenge.receiver.displayName : challenge.sender.displayName;
+  const selfName = isSender ? challenge.sender.displayName : challenge.receiver.displayName;
+
+  await prisma.challenge.update({ where: { id: challengeId }, data: { status: "FINISHED", winnerUserId: opponentId } });
+  await Promise.allSettled([
+    notifyChallengeFinished(opponentId, selfName, true, false),
+    notifyChallengeFinished(userId, opponentName, false, false),
+  ]);
+  return { ok: true };
 }

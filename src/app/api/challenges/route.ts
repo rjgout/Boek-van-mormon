@@ -41,6 +41,8 @@ export async function GET() {
         myScore,
         opponentScore,
         hasPlayed: myCompletedAt !== null,
+        won: c.status === "FINISHED" ? c.winnerUserId === user.id : null,
+        tied: c.status === "FINISHED" ? c.winnerUserId === null : null,
         createdAt: c.createdAt,
       };
     }),
