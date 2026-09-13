@@ -81,14 +81,17 @@ export default function ShopClient() {
         <div className="flex items-center gap-2 flex-wrap">
           <label className="flex items-center gap-2 text-sm dark:text-slate-200">
             Aantal
-            <input
-              type="number"
-              min={1}
-              max={1000}
+            <select
               className="input !w-20 text-center"
               value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, Math.min(1000, Number(e.target.value) || 1)))}
-            />
+              onChange={(e) => setQuantity(Number(e.target.value))}
+            >
+              {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
           </label>
           <button className="btn-primary !px-4 !py-2" disabled={buying || !canAfford} onClick={buy}>
             {buying ? "Bezig..." : `Koop voor ${cost} XP`}
