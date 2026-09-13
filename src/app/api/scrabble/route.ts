@@ -14,8 +14,8 @@ export async function GET() {
     where: { OR: [{ player1Id: user.id }, { player2Id: user.id }] },
     orderBy: { updatedAt: "desc" },
     include: {
-      player1: { select: { id: true, displayName: true } },
-      player2: { select: { id: true, displayName: true } },
+      player1: { select: { id: true, handle: true } },
+      player2: { select: { id: true, handle: true } },
     },
   });
 
@@ -27,7 +27,7 @@ export async function GET() {
         id: g.id,
         status: g.status,
         isSender: isPlayer1,
-        opponent: { id: opponent.id, displayName: opponent.displayName },
+        opponent: { id: opponent.id, displayName: opponent.handle },
         myScore: isPlayer1 ? g.player1Score : g.player2Score,
         opponentScore: isPlayer1 ? g.player2Score : g.player1Score,
         isMyTurn: g.status === "ACTIVE" && g.turnUserId === user.id,

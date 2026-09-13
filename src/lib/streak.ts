@@ -98,8 +98,14 @@ async function applyDailyStreak(tx: Tx, userId: string): Promise<DailyStreakResu
   };
 }
 
-/** Wekelijkse competitie-XP bijwerken (of de rij voor deze week aanmaken). */
-async function applyWeeklyXp(tx: Tx, userId: string, xp: number): Promise<void> {
+/**
+ * Wekelijkse competitie-XP bijwerken (of de rij voor deze week aanmaken).
+ * Geëxporteerd zodat elke plek die XP toekent óf afschrijft (zie
+ * src/lib/shop.ts — hints kopen kost XP) de divisiestand in sync houdt met
+ * de echte XP-balans; anders loopt "XP" in de winkel en "XP" in de
+ * competitie uiteen zodra iemand XP uitgeeft.
+ */
+export async function applyWeeklyXp(tx: Tx, userId: string, xp: number): Promise<void> {
   const weekStart = weekStartKey();
   const existing = await tx.weeklyScore.findUnique({ where: { userId_weekStart: { userId, weekStart } } });
   if (existing) {

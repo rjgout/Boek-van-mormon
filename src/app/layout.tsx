@@ -126,7 +126,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   streak={user.currentStreak}
                   freezes={user.freezeCount}
                   xp={user.xpTotal}
-                  displayName={user.displayName}
+                  displayName={user.handle}
                 />
               </nav>
             ) : (

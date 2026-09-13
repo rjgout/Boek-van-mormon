@@ -8,7 +8,6 @@ interface FriendUser {
   id: string;
   handle: string;
   discriminator: string;
-  displayName: string;
   xpTotal: number;
   currentStreak: number;
 }
@@ -23,7 +22,6 @@ interface SearchResult {
   id: string;
   handle: string;
   discriminator: string;
-  displayName: string;
 }
 
 export default function FriendsClient() {
@@ -115,9 +113,7 @@ export default function FriendsClient() {
           <div className="flex flex-col gap-2">
             {results.map((r) => (
               <div key={r.id} className="flex items-center justify-between !py-2">
-                <span className="dark:text-slate-100">
-                  {r.displayName} <span className="text-slate-400 dark:text-slate-500">({formatTag(r.handle, r.discriminator)})</span>
-                </span>
+                <span className="dark:text-slate-100">{formatTag(r.handle, r.discriminator)}</span>
                 <button
                   className="btn-secondary !px-3 !py-1.5"
                   disabled={sentTo.has(r.id)}
@@ -138,7 +134,7 @@ export default function FriendsClient() {
           <div className="flex flex-col gap-2">
             {data.incoming.map(({ friendshipId, from }) => (
               <div key={friendshipId} className="card flex items-center justify-between !py-3">
-                <span className="font-bold">{from.displayName} ({formatTag(from.handle, from.discriminator)})</span>
+                <span className="font-bold">{formatTag(from.handle, from.discriminator)}</span>
                 <div className="flex gap-2">
                   <button className="btn-primary !px-3 !py-1.5" onClick={() => respond(friendshipId, "accept")}>
                     Accepteren
@@ -159,7 +155,7 @@ export default function FriendsClient() {
           <div className="flex flex-col gap-2">
             {data.outgoing.map(({ friendshipId, to }) => (
               <div key={friendshipId} className="card !py-3 text-slate-500 dark:text-slate-400">
-                Wachten op {to.displayName} ({formatTag(to.handle, to.discriminator)})
+                Wachten op {formatTag(to.handle, to.discriminator)}
               </div>
             ))}
           </div>
@@ -173,10 +169,7 @@ export default function FriendsClient() {
           {data.friends.map((f) => (
             <div key={f.id} className="card flex items-center justify-between !py-3">
               <div>
-                <div className="font-bold">
-                  {f.displayName}{" "}
-                  <span className="text-slate-400 dark:text-slate-500 font-normal">({formatTag(f.handle, f.discriminator)})</span>
-                </div>
+                <div className="font-bold">{formatTag(f.handle, f.discriminator)}</div>
                 <div className="text-xs text-slate-400 dark:text-slate-500">
                   🔥 {f.currentStreak} streak · ⭐ {f.xpTotal} XP
                 </div>

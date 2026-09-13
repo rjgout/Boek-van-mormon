@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ShopData {
   xpTotal: number;
@@ -9,6 +10,7 @@ interface ShopData {
 }
 
 export default function ShopClient() {
+  const router = useRouter();
   const [data, setData] = useState<ShopData | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [buying, setBuying] = useState(false);
@@ -39,6 +41,9 @@ export default function ShopClient() {
     }
     setData({ xpTotal: body.xpTotal, hintBalance: body.hintBalance, hintPriceXp: data.hintPriceXp });
     setMessage({ type: "ok", text: `${quantity} hint${quantity > 1 ? "s" : ""} gekocht! 💡` });
+    // De XP-badge in de header is server-gerenderd (layout.tsx) en anders
+    // pas bij de volgende paginanavigatie ververst.
+    router.refresh();
   }
 
   if (!data) return <p className="text-slate-400 dark:text-slate-500 text-center">Laden...</p>;

@@ -17,7 +17,7 @@ interface GameView {
 
 interface FriendOption {
   id: string;
-  displayName: string;
+  handle: string;
 }
 
 export default function ScrabbleListClient() {
@@ -102,7 +102,7 @@ export default function ScrabbleListClient() {
               <option value="">Kies een vriend...</option>
               {friends.map((f) => (
                 <option key={f.id} value={f.id}>
-                  {f.displayName}
+                  {f.handle}
                 </option>
               ))}
             </select>

@@ -8,7 +8,7 @@ export async function GET() {
     id: user.id,
     handle: user.handle,
     discriminator: user.discriminator,
-    displayName: user.displayName,
+    displayName: user.handle,
     xpTotal: user.xpTotal,
     currentStreak: user.currentStreak,
     longestStreak: user.longestStreak,

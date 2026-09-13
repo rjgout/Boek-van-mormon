@@ -322,7 +322,7 @@ export function initGameServer(httpServer: HttpServer) {
       return;
     }
     socket.data.userId = user.id;
-    socket.data.displayName = user.displayName;
+    socket.data.displayName = user.handle;
     socket.join(`user:${user.id}`);
 
     socket.on("join_game", async ({ code }: { code: string }) => {
@@ -387,7 +387,7 @@ export function initGameServer(httpServer: HttpServer) {
       if (!player) {
         player = {
           userId: user.id,
-          displayName: user.displayName,
+          displayName: user.handle,
           socketIds: new Set(),
           score: 0,
           correctCount: 0,
@@ -498,7 +498,7 @@ export function initGameServer(httpServer: HttpServer) {
       if (!friendship) return;
       ioInstance?.to(`user:${toUserId}`).emit("game_invite", {
         code: game.code,
-        fromDisplayName: user.displayName,
+        fromDisplayName: user.handle,
       });
     });
 

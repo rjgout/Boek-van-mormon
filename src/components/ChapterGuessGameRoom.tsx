@@ -32,7 +32,7 @@ interface ChapterOption {
 
 interface Friend {
   id: string;
-  displayName: string;
+  handle: string;
 }
 
 interface HintResult {
@@ -233,7 +233,7 @@ export default function ChapterGuessGameRoom({ code, myUserId }: { code: string;
             <ul className="flex flex-col gap-2">
               {nonPlayerFriends.map((f) => (
                 <li key={f.id} className="flex items-center justify-between">
-                  <span>{f.displayName}</span>
+                  <span>{f.handle}</span>
                   <button className="btn-secondary !px-3 !py-1.5" disabled={invited.has(f.id)} onClick={() => inviteFriend(f.id)}>
                     {invited.has(f.id) ? "Uitgenodigd" : "Nodig uit"}
                   </button>

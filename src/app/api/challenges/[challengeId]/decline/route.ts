@@ -17,6 +17,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ challe
   }
 
   await prisma.challenge.update({ where: { id: challengeId }, data: { status: "DECLINED" } });
-  notifyChallengeDeclined(challenge.senderId, challenge.receiver.displayName).catch(() => {});
+  notifyChallengeDeclined(challenge.senderId, challenge.receiver.handle).catch(() => {});
   return NextResponse.json({ ok: true });
 }

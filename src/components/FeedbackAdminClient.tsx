@@ -22,7 +22,7 @@ interface ReportView {
   screenshot: string | null;
   status: string;
   createdAt: string;
-  user: { displayName: string; email: string; handle: string; discriminator: string };
+  user: { email: string; handle: string; discriminator: string };
 }
 
 export default function FeedbackAdminClient() {
@@ -69,10 +69,8 @@ export default function FeedbackAdminClient() {
               <div className="flex items-start justify-between gap-2 flex-wrap">
                 <div>
                   <p className="font-bold text-sm dark:text-slate-100">
-                    {r.user.displayName}{" "}
-                    <span className="font-normal text-slate-400 dark:text-slate-500">
-                      ({r.user.handle}#{r.user.discriminator}, {r.user.email})
-                    </span>
+                    {r.user.handle}#{r.user.discriminator}{" "}
+                    <span className="font-normal text-slate-400 dark:text-slate-500">({r.user.email})</span>
                   </p>
                   <p className="text-xs text-slate-400 dark:text-slate-500">
                     {new Date(r.createdAt).toLocaleString("nl-NL")}

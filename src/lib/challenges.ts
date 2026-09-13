@@ -40,12 +40,12 @@ export async function recordChallengeAttempt(userId: string, challengeId: string
     const winnerUserId = tied ? null : senderScore > receiverScore ? challenge.senderId : challenge.receiverId;
     await prisma.challenge.update({ where: { id: challengeId }, data: { status: "FINISHED", winnerUserId } });
     await Promise.allSettled([
-      notifyChallengeFinished(challenge.senderId, challenge.receiver.displayName, senderScore > receiverScore, tied),
-      notifyChallengeFinished(challenge.receiverId, challenge.sender.displayName, receiverScore > senderScore, tied),
+      notifyChallengeFinished(challenge.senderId, challenge.receiver.handle, senderScore > receiverScore, tied),
+      notifyChallengeFinished(challenge.receiverId, challenge.sender.handle, receiverScore > senderScore, tied),
     ]);
   } else {
     const opponentId = isSender ? challenge.receiverId : challenge.senderId;
-    const playerName = isSender ? challenge.sender.displayName : challenge.receiver.displayName;
+    const playerName = isSender ? challenge.sender.handle : challenge.receiver.handle;
     await notifyChallengeYourTurn(opponentId, playerName).catch(() => {});
   }
 }
@@ -69,8 +69,8 @@ export async function forfeitChallenge(userId: string, challengeId: string): Pro
   if (!isSender && !isReceiver) return { ok: false, error: "Je speelt niet mee in deze uitdaging." };
 
   const opponentId = isSender ? challenge.receiverId : challenge.senderId;
-  const opponentName = isSender ? challenge.receiver.displayName : challenge.sender.displayName;
-  const selfName = isSender ? challenge.sender.displayName : challenge.receiver.displayName;
+  const opponentName = isSender ? challenge.receiver.handle : challenge.sender.handle;
+  const selfName = isSender ? challenge.sender.handle : challenge.receiver.handle;
 
   await prisma.challenge.update({ where: { id: challengeId }, data: { status: "FINISHED", winnerUserId: opponentId } });
   await Promise.allSettled([

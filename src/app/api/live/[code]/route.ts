@@ -11,8 +11,8 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ cod
     where: { code: code.toUpperCase() },
     include: {
       chapter: { include: { book: true } },
-      host: { select: { id: true, displayName: true } },
-      players: { include: { user: { select: { id: true, displayName: true } } } },
+      host: { select: { id: true, handle: true } },
+      players: { include: { user: { select: { id: true, handle: true } } } },
     },
   });
   if (!game) return NextResponse.json({ error: "Spel niet gevonden." }, { status: 404 });
@@ -26,7 +26,7 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ cod
     level: game.level,
     questionCount: game.questionCount,
     hostId: game.hostId,
-    hostName: game.host.displayName,
-    players: game.players.map((p) => ({ userId: p.userId, displayName: p.user.displayName, score: p.score })),
+    hostName: game.host.handle,
+    players: game.players.map((p) => ({ userId: p.userId, displayName: p.user.handle, score: p.score })),
   });
 }

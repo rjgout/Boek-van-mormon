@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     data: { senderId: user.id, receiverId: target.id, status: "PENDING" },
   });
 
-  notifyFriendRequest(target.id, user.displayName).catch(() => {});
+  notifyFriendRequest(target.id, user.handle).catch(() => {});
 
   return NextResponse.json({ id: friendship.id });
 }

@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: "", handle: "", displayName: "", password: "" });
+  const [form, setForm] = useState({ email: "", handle: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [createdTag, setCreatedTag] = useState<string | null>(null);
@@ -59,13 +59,6 @@ export default function RegisterPage() {
     <div className="max-w-md mx-auto card">
       <h1 className="text-2xl font-extrabold mb-6 text-brand-800 dark:text-brand-300">Account maken</h1>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <input
-          className="input"
-          placeholder="Naam"
-          required
-          value={form.displayName}
-          onChange={(e) => setForm({ ...form, displayName: e.target.value })}
-        />
         <div>
           <input
             className="input"
@@ -75,7 +68,7 @@ export default function RegisterPage() {
             onChange={(e) => setForm({ ...form, handle: e.target.value })}
           />
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-            Je krijgt er automatisch een uniek nummer achter, bv. "{form.handle || "Naam"}#42" — zo kan iedereen
+            Je krijgt er automatisch een uniek nummer achter, bv. "{form.handle || "Voorbeeld"}#42" — zo kan iedereen
             dezelfde gebruikersnaam kiezen en hoef je nooit je e-mailadres te delen om gevonden te worden.
           </p>
         </div>

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { awardXp } from "@/lib/xp";
+import { applyWeeklyXp } from "@/lib/streak";
 
 // Eerste (en vooralsnog enige) artikel in de winkel: een hint, inwisselbaar
 // tegen XP. Het hint-tegoed dat dit oplevert (User.hintBalance) is los van
@@ -25,6 +26,10 @@ export async function buyHints(userId: string, quantity: number): Promise<BuyHin
         throw new InsufficientXpError();
       }
       await awardXp(tx, userId, -cost, "HINT_PURCHASED", { quantity });
+      // Zonder dit bleef de divisiestand (WeeklyScore) op het oude, hogere
+      // XP-bedrag staan na een aankoop — die wordt normaal alleen door
+      // les-achtige "complete*"-functies in streak.ts bijgewerkt.
+      await applyWeeklyXp(tx, userId, -cost);
       return tx.user.update({
         where: { id: userId },
         data: { hintBalance: { increment: quantity } },

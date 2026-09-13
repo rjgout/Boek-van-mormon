@@ -51,7 +51,7 @@ export async function createInvite(senderId: string, receiverId: string): Promis
     },
   });
 
-  notifyScrabbleInvite(receiverId, sender.displayName).catch(() => {});
+  notifyScrabbleInvite(receiverId, sender.handle).catch(() => {});
   return { id: game.id };
 }
 
@@ -80,7 +80,7 @@ export async function acceptInvite(gameId: string, userId: string): Promise<Acti
 
   // Uitnodiger speelt als eerste, en krijgt dus nu meteen een "jij bent aan
   // de beurt"-melding — met de naam van de speler die zojuist accepteerde.
-  notifyScrabbleYourTurn(game.player1Id, game.player2.displayName).catch(() => {});
+  notifyScrabbleYourTurn(game.player1Id, game.player2.handle).catch(() => {});
   return { ok: true };
 }
 
@@ -90,7 +90,7 @@ export async function declineInvite(gameId: string, userId: string): Promise<Act
   if (game.status !== "PENDING") return { ok: false, error: "Deze uitnodiging is al beantwoord." };
 
   await prisma.scrabbleGame.update({ where: { id: gameId }, data: { status: "DECLINED" } });
-  notifyScrabbleDeclined(game.player1Id, game.player2.displayName).catch(() => {});
+  notifyScrabbleDeclined(game.player1Id, game.player2.handle).catch(() => {});
   return { ok: true };
 }
 
@@ -189,8 +189,8 @@ export async function placeMove(
     }),
   ]);
 
-  const myName = isPlayer1 ? game.player1.displayName : game.player2.displayName;
-  const opponentName = isPlayer1 ? game.player2.displayName : game.player1.displayName;
+  const myName = isPlayer1 ? game.player1.handle : game.player2.handle;
+  const opponentName = isPlayer1 ? game.player2.handle : game.player1.handle;
   if (finished) {
     const tied = winnerUserId === null;
     await Promise.allSettled([
@@ -250,7 +250,7 @@ export async function exchangeTiles(gameId: string, userId: string, letters: str
     prisma.scrabbleMove.create({ data: { gameId, userId, type: "EXCHANGE", score: 0 } }),
   ]);
 
-  const myName = isPlayer1 ? game.player1.displayName : game.player2.displayName;
+  const myName = isPlayer1 ? game.player1.handle : game.player2.handle;
   notifyScrabbleYourTurn(opponentId, myName).catch(() => {});
   return { ok: true };
 }
@@ -289,8 +289,8 @@ export async function passTurn(gameId: string, userId: string): Promise<ActionRe
     prisma.scrabbleMove.create({ data: { gameId, userId, type: "PASS", score: 0 } }),
   ]);
 
-  const myName = isPlayer1 ? game.player1.displayName : game.player2.displayName;
-  const opponentName = isPlayer1 ? game.player2.displayName : game.player1.displayName;
+  const myName = isPlayer1 ? game.player1.handle : game.player2.handle;
+  const opponentName = isPlayer1 ? game.player2.handle : game.player1.handle;
   if (finished) {
     const tied = winnerUserId === null;
     await Promise.allSettled([
@@ -319,8 +319,8 @@ export async function forfeitGame(gameId: string, userId: string): Promise<Actio
   if (!isPlayer1 && userId !== game.player2Id) return { ok: false, error: "Je speelt niet mee in dit spel." };
 
   const opponentId = isPlayer1 ? game.player2Id : game.player1Id;
-  const myName = isPlayer1 ? game.player1.displayName : game.player2.displayName;
-  const opponentName = isPlayer1 ? game.player2.displayName : game.player1.displayName;
+  const myName = isPlayer1 ? game.player1.handle : game.player2.handle;
+  const opponentName = isPlayer1 ? game.player2.handle : game.player1.handle;
 
   await prisma.$transaction([
     prisma.scrabbleGame.update({

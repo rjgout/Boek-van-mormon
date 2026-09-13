@@ -42,14 +42,14 @@ export async function createFeedback(userId: string, message: string, screenshot
 
   sendMail({
     to: FEEDBACK_ADMIN_EMAIL,
-    subject: `Nieuwe feedback van ${user.displayName} — ${APP_NAME}`,
+    subject: `Nieuwe feedback van ${user.handle} — ${APP_NAME}`,
     html: `
-      <p><strong>${escapeHtml(user.displayName)}</strong> (${escapeHtml(user.email)}) stuurde feedback:</p>
+      <p><strong>${escapeHtml(user.handle)}</strong> (${escapeHtml(user.email)}) stuurde feedback:</p>
       <p style="white-space:pre-wrap">${escapeHtml(message)}</p>
       ${parsed ? "<p>(screenshot als bijlage toegevoegd)</p>" : ""}
       <p><a href="${url}">Bekijk de melding en update de status →</a></p>
     `,
-    text: `${user.displayName} (${user.email}) stuurde feedback:\n\n${message}\n\nBekijk de melding en update de status: ${url}`,
+    text: `${user.handle} (${user.email}) stuurde feedback:\n\n${message}\n\nBekijk de melding en update de status: ${url}`,
     attachments: parsed ? [{ filename: "screenshot.jpg", content: parsed.buffer, contentType: parsed.contentType }] : undefined,
   }).catch(() => {});
 

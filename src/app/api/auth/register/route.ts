@@ -18,7 +18,6 @@ const schema = z.object({
     .min(HANDLE_MIN_LENGTH, `Gebruikersnaam moet minstens ${HANDLE_MIN_LENGTH} tekens zijn.`)
     .max(HANDLE_MAX_LENGTH, `Gebruikersnaam mag maximaal ${HANDLE_MAX_LENGTH} tekens zijn.`)
     .regex(HANDLE_REGEX, "Alleen letters, cijfers, spaties, - en _ toegestaan."),
-  displayName: z.string().trim().min(1, "Vul een naam in.").max(40),
   password: z.string().min(8, "Wachtwoord moet minstens 8 tekens zijn."),
 });
 
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
   }
-  const { email, handle, displayName, password } = parsed.data;
+  const { email, handle, password } = parsed.data;
 
   const existingEmail = await prisma.user.findUnique({ where: { email } });
   if (existingEmail) {
@@ -62,7 +61,11 @@ export async function POST(req: NextRequest) {
           email,
           handle,
           discriminator,
-          displayName,
+          // Geen apart "echte naam"-veld meer — de gebruikersnaam (handle)
+          // is overal de enige identiteit. displayName blijft als kolom
+          // bestaan (nog op praktisch elke plek gelezen) maar krijgt hier
+          // gewoon dezelfde waarde als handle.
+          displayName: handle,
           passwordHash,
           isAdmin: isFirstUser,
           activeCourseId: defaultCourse?.id,

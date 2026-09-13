@@ -25,7 +25,7 @@ export async function GET() {
   const earnedByAchievementId = new Map(earned.map((e) => [e.achievementId, e.earnedAt]));
 
   return NextResponse.json({
-    displayName: user.displayName,
+    displayName: user.handle,
     handle: user.handle,
     discriminator: user.discriminator,
     email: user.email,

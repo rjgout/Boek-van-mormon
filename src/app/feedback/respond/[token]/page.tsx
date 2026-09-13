@@ -8,7 +8,7 @@ export default async function FeedbackRespondPage({ params }: { params: Promise<
   const { token } = await params;
   const feedback = await prisma.feedback.findUnique({
     where: { respondToken: token },
-    include: { user: { select: { displayName: true, email: true } } },
+    include: { user: { select: { handle: true, email: true } } },
   });
 
   if (!feedback) {
@@ -22,7 +22,7 @@ export default async function FeedbackRespondPage({ params }: { params: Promise<
   return (
     <FeedbackRespondClient
       token={token}
-      submitterName={feedback.user.displayName}
+      submitterName={feedback.user.handle}
       submitterEmail={feedback.user.email}
       message={feedback.message}
       screenshot={feedback.screenshot}

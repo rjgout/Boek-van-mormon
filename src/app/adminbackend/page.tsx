@@ -21,7 +21,6 @@ export default async function AdminBackendPage() {
         email: true,
         handle: true,
         discriminator: true,
-        displayName: true,
         isAdmin: true,
         xpTotal: true,
         currentStreak: true,

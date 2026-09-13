@@ -8,7 +8,6 @@ interface AdminUser {
   email: string;
   handle: string;
   discriminator: string;
-  displayName: string;
   isAdmin: boolean;
   xpTotal: number;
   currentStreak: number;
@@ -71,8 +70,7 @@ export default function AdminUsersClient({
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left text-xs font-bold uppercase text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-700">
-            <th className="py-2 pr-3">Naam</th>
-            <th className="py-2 pr-3">Tag</th>
+            <th className="py-2 pr-3">Gebruikersnaam</th>
             <th className="py-2 pr-3">E-mail</th>
             <th className="py-2 pr-3">XP</th>
             <th className="py-2 pr-3">Streak</th>
@@ -85,10 +83,9 @@ export default function AdminUsersClient({
             <Fragment key={u.id}>
               <tr className="border-b border-slate-50 dark:border-slate-800">
                 <td className="py-2 pr-3 font-bold dark:text-slate-100">
-                  {u.displayName}
+                  {formatTag(u.handle, u.discriminator)}
                   {u.id === currentUserId && <span className="text-brand-500 dark:text-brand-300 font-normal"> (jij)</span>}
                 </td>
-                <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{formatTag(u.handle, u.discriminator)}</td>
                 <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{u.email}</td>
                 <td className="py-2 pr-3 dark:text-slate-200">{u.xpTotal}</td>
                 <td className="py-2 pr-3 dark:text-slate-200">🔥 {u.currentStreak}</td>
@@ -124,8 +121,8 @@ export default function AdminUsersClient({
               </tr>
               {revealedPasswords[u.id] && (
                 <tr className="bg-gold-50 dark:bg-slate-700">
-                  <td colSpan={8} className="py-2 px-3 text-sm">
-                    Tijdelijk wachtwoord voor <strong>{u.displayName}</strong>:{" "}
+                  <td colSpan={7} className="py-2 px-3 text-sm">
+                    Tijdelijk wachtwoord voor <strong>{u.handle}</strong>:{" "}
                     <code className="bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono">
                       {revealedPasswords[u.id]}
                     </code>{" "}

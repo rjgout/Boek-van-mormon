@@ -10,9 +10,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ gameId:
   const game = await prisma.scrabbleGame.findUnique({
     where: { id: gameId },
     include: {
-      player1: { select: { id: true, displayName: true } },
-      player2: { select: { id: true, displayName: true } },
-      moves: { orderBy: { createdAt: "asc" }, include: { user: { select: { displayName: true } } } },
+      player1: { select: { id: true, handle: true } },
+      player2: { select: { id: true, handle: true } },
+      moves: { orderBy: { createdAt: "asc" }, include: { user: { select: { handle: true } } } },
     },
   });
   if (!game || (game.player1Id !== user.id && game.player2Id !== user.id)) {
@@ -40,12 +40,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ gameId:
     // useHint in src/lib/scrabbleGame.ts voor de volgorde waarin ze opgaan.
     myHintCredits: (isPlayer1 ? game.player1HintCredits : game.player2HintCredits) + user.hintBalance,
     isMyTurn: game.status === "ACTIVE" && game.turnUserId === user.id,
-    opponent: { id: opponent.id, displayName: opponent.displayName },
+    opponent: { id: opponent.id, displayName: opponent.handle },
     won: game.status === "FINISHED" ? game.winnerUserId === user.id : null,
     tied: game.status === "FINISHED" ? game.winnerUserId === null : null,
     moves: game.moves.map((m) => ({
       id: m.id,
-      playerName: m.user.displayName,
+      playerName: m.user.handle,
       isMine: m.userId === user.id,
       type: m.type,
       wordsFormed: m.wordsFormed ? (JSON.parse(m.wordsFormed) as string[]) : [],

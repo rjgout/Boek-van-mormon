@@ -14,7 +14,6 @@ export async function GET() {
       email: true,
       handle: true,
       discriminator: true,
-      displayName: true,
       isAdmin: true,
       xpTotal: true,
       currentStreak: true,

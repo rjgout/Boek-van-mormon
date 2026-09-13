@@ -24,16 +24,16 @@ export async function GET() {
     prisma.challenge.findMany({
       where: { OR: [{ senderId: user.id }, { receiverId: user.id }], status: { in: ["PENDING", "ACCEPTED"] } },
       include: {
-        sender: { select: { id: true, displayName: true } },
-        receiver: { select: { id: true, displayName: true } },
+        sender: { select: { id: true, handle: true } },
+        receiver: { select: { id: true, handle: true } },
         chapter: { include: { book: true } },
       },
     }),
     prisma.scrabbleGame.findMany({
       where: { OR: [{ player1Id: user.id }, { player2Id: user.id }], status: { in: ["PENDING", "ACTIVE"] } },
       include: {
-        player1: { select: { id: true, displayName: true } },
-        player2: { select: { id: true, displayName: true } },
+        player1: { select: { id: true, handle: true } },
+        player2: { select: { id: true, handle: true } },
       },
     }),
     prisma.liveGame.findMany({
@@ -57,7 +57,7 @@ export async function GET() {
       (isSender ? invitesSent : invitesReceived).push({
         kind: "challenge",
         id: c.id,
-        opponentName: opponent.displayName,
+        opponentName: opponent.handle,
         label,
         link: "/challenges",
         myTurn: null,
@@ -67,7 +67,7 @@ export async function GET() {
       activeGames.push({
         kind: "challenge",
         id: c.id,
-        opponentName: opponent.displayName,
+        opponentName: opponent.handle,
         label,
         link: "/challenges",
         myTurn: myCompletedAt === null,
@@ -82,7 +82,7 @@ export async function GET() {
       (isPlayer1 ? invitesSent : invitesReceived).push({
         kind: "scrabble",
         id: g.id,
-        opponentName: opponent.displayName,
+        opponentName: opponent.handle,
         label: "Woordspel",
         link: "/scrabble",
         myTurn: null,
@@ -91,7 +91,7 @@ export async function GET() {
       activeGames.push({
         kind: "scrabble",
         id: g.id,
-        opponentName: opponent.displayName,
+        opponentName: opponent.handle,
         label: "Woordspel",
         link: `/scrabble/${g.id}`,
         myTurn: g.turnUserId === user.id,

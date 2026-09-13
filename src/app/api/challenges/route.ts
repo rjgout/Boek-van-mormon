@@ -17,8 +17,8 @@ export async function GET() {
     where: { OR: [{ senderId: user.id }, { receiverId: user.id }] },
     orderBy: { createdAt: "desc" },
     include: {
-      sender: { select: { id: true, displayName: true, handle: true, discriminator: true } },
-      receiver: { select: { id: true, displayName: true, handle: true, discriminator: true } },
+      sender: { select: { id: true, handle: true, discriminator: true } },
+      receiver: { select: { id: true, handle: true, discriminator: true } },
       chapter: { include: { book: true } },
     },
   });
@@ -37,7 +37,7 @@ export async function GET() {
         bookName: c.chapter.book.name,
         chapterNumber: c.chapter.number,
         chapterId: c.chapterId,
-        opponent: { id: opponent.id, displayName: opponent.displayName },
+        opponent: { id: opponent.id, displayName: opponent.handle },
         myScore,
         opponentScore,
         hasPlayed: myCompletedAt !== null,
@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
     data: { senderId: user.id, receiverId: friendUserId, chapterId, status: "PENDING" },
   });
 
-  notifyChallengeReceived(friendUserId, user.displayName, chapter.book.name, chapter.number).catch(() => {});
+  notifyChallengeReceived(friendUserId, user.handle, chapter.book.name, chapter.number).catch(() => {});
 
   return NextResponse.json({ id: challenge.id });
 }

@@ -9,8 +9,8 @@ export async function GET() {
   const friendships = await prisma.friendship.findMany({
     where: { OR: [{ senderId: user.id }, { receiverId: user.id }] },
     include: {
-      sender: { select: { id: true, handle: true, discriminator: true, displayName: true, xpTotal: true, currentStreak: true } },
-      receiver: { select: { id: true, handle: true, discriminator: true, displayName: true, xpTotal: true, currentStreak: true } },
+      sender: { select: { id: true, handle: true, discriminator: true, xpTotal: true, currentStreak: true } },
+      receiver: { select: { id: true, handle: true, discriminator: true, xpTotal: true, currentStreak: true } },
     },
     orderBy: { createdAt: "desc" },
   });

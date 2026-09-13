@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { parseTag } from "@/lib/handle";
 
-const SELECT = { id: true, handle: true, discriminator: true, displayName: true } as const;
+const SELECT = { id: true, handle: true, discriminator: true } as const;
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();

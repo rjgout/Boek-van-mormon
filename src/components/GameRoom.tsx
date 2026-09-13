@@ -26,7 +26,7 @@ interface QuestionData {
 
 interface Friend {
   id: string;
-  displayName: string;
+  handle: string;
 }
 
 type Phase = "connecting" | "lobby" | "question" | "reveal" | "finished" | "error";
@@ -170,7 +170,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
             <ul className="flex flex-col gap-2">
               {nonPlayerFriends.map((f) => (
                 <li key={f.id} className="flex items-center justify-between">
-                  <span>{f.displayName}</span>
+                  <span>{f.handle}</span>
                   <button
                     className="btn-secondary !px-3 !py-1.5"
                     disabled={invited.has(f.id)}
