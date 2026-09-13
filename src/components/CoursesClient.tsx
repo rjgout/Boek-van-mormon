@@ -220,6 +220,10 @@ export default function CoursesClient() {
           );
         })}
       </div>
+
+      <Link href="/tools" className="btn-secondary self-center">
+        🧰 Hulpmiddelen
+      </Link>
     </div>
   );
 }
