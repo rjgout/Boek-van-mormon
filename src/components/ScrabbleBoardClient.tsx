@@ -90,6 +90,7 @@ interface GameState {
   bagCount: number;
   myScore: number;
   opponentScore: number;
+  myHintCredits: number;
   isMyTurn: boolean;
   opponent: { id: string; displayName: string };
   won: boolean | null;
@@ -106,6 +107,8 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
   const [exchangeIndices, setExchangeIndices] = useState<number[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [hintIndices, setHintIndices] = useState<number[]>([]);
+  const [hintSecondsLeft, setHintSecondsLeft] = useState(0);
 
   // `resetLocalState` staat standaard aan (initieel laden, en na je eigen
   // zet/wissel/pas — dan IS de lokale selectie/plaatsing achterhaald). De
@@ -125,8 +128,22 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
       setSelectedRackIndex(null);
       setExchangeMode(false);
       setExchangeIndices([]);
+      setHintIndices([]);
+      setHintSecondsLeft(0);
     }
   }, [gameId]);
+
+  // Telt de 10 seconden af waarin de hint zichtbaar blijft; daarna
+  // verdwijnt de highlight vanzelf weer (de knop blijft verder gewoon
+  // bruikbaar zodra er weer tegoed is).
+  useEffect(() => {
+    if (hintSecondsLeft <= 0) {
+      if (hintIndices.length > 0) setHintIndices([]);
+      return;
+    }
+    const t = setTimeout(() => setHintSecondsLeft((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [hintSecondsLeft, hintIndices.length]);
 
   useEffect(() => {
     load();
@@ -237,6 +254,22 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
     load();
   }
 
+  async function requestHint() {
+    if (busy || hintSecondsLeft > 0) return;
+    setBusy(true);
+    setMessage(null);
+    const res = await fetch(`/api/scrabble/${gameId}/hint`, { method: "POST" });
+    const body = await res.json().catch(() => ({}));
+    setBusy(false);
+    if (!res.ok) {
+      setMessage(body.error ?? "Kon geen hint geven.");
+      return;
+    }
+    setHintIndices(body.usedIndices ?? []);
+    setHintSecondsLeft(10);
+    setGame((g) => (g ? { ...g, myHintCredits: g.myHintCredits - 1 } : g));
+  }
+
   async function submitForfeit() {
     if (!window.confirm("Weet je zeker dat je wil opgeven? Je tegenstander wordt dan automatisch winnaar.")) return;
     setBusy(true);
@@ -342,6 +375,7 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
               const used = usedRackIndices.has(i);
               const selectedForPlace = selectedRackIndex === i;
               const selectedForExchange = exchangeIndices.includes(i);
+              const hinted = hintIndices.includes(i);
               return (
                 <button
                   key={i}
@@ -354,7 +388,9 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
                       ? "opacity-30 bg-amber-100 dark:bg-amber-900 border-transparent"
                       : selectedForPlace || selectedForExchange
                         ? "bg-brand-200 dark:bg-brand-700 border-brand-500"
-                        : "bg-amber-100 dark:bg-amber-800 border-amber-300 dark:border-amber-600"
+                        : hinted
+                          ? "bg-yellow-200 dark:bg-yellow-600 border-yellow-500 ring-4 ring-yellow-400 dark:ring-yellow-300"
+                          : "bg-amber-100 dark:bg-amber-800 border-amber-300 dark:border-amber-600"
                   }`}
                 >
                   {letter === BLANK ? "★" : letter}
@@ -404,13 +440,17 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
             </p>
           )}
 
-          {/* Opgeven mag altijd, ook als je niet aan de beurt bent. */}
-          <div className="flex justify-center pt-1 border-t border-slate-100 dark:border-slate-700">
+          {/* Hint en Opgeven mogen altijd, ook als je niet aan de beurt bent. */}
+          <div className="flex justify-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-700 mt-2">
             <button
-              className="btn-secondary !px-3 !py-1.5 !text-red-500 !border-red-200 mt-2"
-              disabled={busy}
-              onClick={submitForfeit}
+              className="btn-secondary !px-3 !py-1.5"
+              disabled={busy || hintSecondsLeft > 0 || game.myHintCredits <= 0}
+              onClick={requestHint}
+              title="Highlight letters op je rek waarmee je een woord kan maken"
             >
+              💡 {hintSecondsLeft > 0 ? `Hint actief... ${hintSecondsLeft}s` : `Hint (${game.myHintCredits})`}
+            </button>
+            <button className="btn-secondary !px-3 !py-1.5 !text-red-500 !border-red-200" disabled={busy} onClick={submitForfeit}>
               Opgeven
             </button>
           </div>

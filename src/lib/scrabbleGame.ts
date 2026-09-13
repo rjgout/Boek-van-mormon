@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { emptyBoard, type Board } from "@/lib/scrabble/board";
 import { createBag, drawTiles, consumeFromRack, letterValue, shuffle, RACK_SIZE, BLANK } from "@/lib/scrabble/tiles";
 import { validateAndScoreMove, type Placement } from "@/lib/scrabble/engine";
+import { findHint } from "@/lib/scrabble/hint";
 import { notifyScrabbleInvite, notifyScrabbleDeclined, notifyScrabbleYourTurn, notifyScrabbleFinished } from "@/lib/notify";
 
 // Aantal opeenvolgende beurten zonder plaatsing (pas/wissel) waarna een
@@ -158,8 +159,18 @@ export async function placeMove(
         board: JSON.stringify(board),
         bag: JSON.stringify(bag),
         ...(isPlayer1
-          ? { player1Rack: JSON.stringify(newRack), player1Score: myScore, player2Score: opponentScore }
-          : { player2Rack: JSON.stringify(newRack), player2Score: myScore, player1Score: opponentScore }),
+          ? {
+              player1Rack: JSON.stringify(newRack),
+              player1Score: myScore,
+              player2Score: opponentScore,
+              player1HintCredits: { increment: 1 },
+            }
+          : {
+              player2Rack: JSON.stringify(newRack),
+              player2Score: myScore,
+              player1Score: opponentScore,
+              player2HintCredits: { increment: 1 },
+            }),
         turnUserId: finished ? null : opponentId,
         consecutivePasses: 0,
         status: finished ? "FINISHED" : "ACTIVE",
@@ -324,4 +335,44 @@ export async function forfeitGame(gameId: string, userId: string): Promise<Actio
     notifyScrabbleFinished(userId, opponentName, false, false),
   ]);
   return { ok: true };
+}
+
+export interface HintActionResult {
+  ok: boolean;
+  error?: string;
+  word?: string;
+  usedIndices?: number[];
+}
+
+/**
+ * Hint gebruiken — mag altijd, ook als je niet aan de beurt bent (je vraagt
+ * iets over je EIGEN rek, dat verandert niet buiten je beurt om). Kost één
+ * hint-tegoed, dat je verdient door zelf een woord te spelen (zie
+ * placeMove hierboven). Geen tegoed of geen spelbaar woord gevonden? Dan
+ * wordt er niets afgeschreven.
+ */
+export async function useHint(gameId: string, userId: string): Promise<HintActionResult> {
+  const game = await prisma.scrabbleGame.findUnique({ where: { id: gameId } });
+  if (!game) return { ok: false, error: "Spel niet gevonden." };
+  if (game.status !== "ACTIVE") return { ok: false, error: "Dit spel is niet actief." };
+  const isPlayer1 = userId === game.player1Id;
+  if (!isPlayer1 && userId !== game.player2Id) return { ok: false, error: "Je speelt niet mee in dit spel." };
+
+  const credits = isPlayer1 ? game.player1HintCredits : game.player2HintCredits;
+  if (credits <= 0) {
+    return { ok: false, error: "Je hebt nog geen hint verdiend — speel eerst een woord." };
+  }
+
+  const rack = parseRack(isPlayer1 ? game.player1Rack : game.player2Rack);
+  const hint = findHint(rack);
+  if (!hint) {
+    return { ok: false, error: "Geen woord gevonden met je huidige letters." };
+  }
+
+  await prisma.scrabbleGame.update({
+    where: { id: gameId },
+    data: isPlayer1 ? { player1HintCredits: { decrement: 1 } } : { player2HintCredits: { decrement: 1 } },
+  });
+
+  return { ok: true, word: hint.word, usedIndices: hint.usedIndices };
 }

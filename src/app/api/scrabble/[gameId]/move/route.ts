@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getCurrentUser } from "@/lib/session";
 import { placeMove } from "@/lib/scrabbleGame";
 import { BOARD_SIZE } from "@/lib/scrabble/board";
+import { RACK_SIZE } from "@/lib/scrabble/tiles";
 
 const schema = z.object({
   placements: z
@@ -15,7 +16,7 @@ const schema = z.object({
       })
     )
     .min(1)
-    .max(7),
+    .max(RACK_SIZE),
 });
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ gameId: string }> }) {

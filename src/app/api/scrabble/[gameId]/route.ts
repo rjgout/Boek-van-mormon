@@ -36,6 +36,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ gameId:
     bagCount: bag.length,
     myScore: isPlayer1 ? game.player1Score : game.player2Score,
     opponentScore: isPlayer1 ? game.player2Score : game.player1Score,
+    myHintCredits: isPlayer1 ? game.player1HintCredits : game.player2HintCredits,
     isMyTurn: game.status === "ACTIVE" && game.turnUserId === user.id,
     opponent: { id: opponent.id, displayName: opponent.displayName },
     won: game.status === "FINISHED" ? game.winnerUserId === user.id : null,

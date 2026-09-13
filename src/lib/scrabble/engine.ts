@@ -91,7 +91,7 @@ function scoreSpan(testBoard: Board, span: Span, newCells: Set<string>): FormedW
  */
 export function validateAndScoreMove(board: Board, placements: Placement[]): MoveValidation {
   if (placements.length === 0) return { ok: false, error: "Geen letters geplaatst." };
-  if (placements.length > 7) return { ok: false, error: "Te veel letters in één beurt." };
+  if (placements.length > RACK_SIZE) return { ok: false, error: "Te veel letters in één beurt." };
 
   for (const p of placements) {
     if (!inBounds(p.row, p.col)) return { ok: false, error: "Plaatsing buiten het bord." };

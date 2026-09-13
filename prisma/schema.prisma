@@ -861,6 +861,14 @@ model ScrabbleGame {
   consecutivePasses Int     @default(0)
   winnerUserId      String?
 
+  // Alleen woorden uit het Boek van Mormon mogen blijkt lastiger dan gedacht
+  // — elke geslaagde plaatsing (PLACE) levert +1 hint-tegoed op, dat een
+  // hint (letters highlighten die samen een woord vormen) verzilvert. Begint
+  // op 0: pas na je eerste geslaagde woord krijg je er één. Zie
+  // src/lib/scrabble/hint.ts.
+  player1HintCredits Int @default(0)
+  player2HintCredits Int @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

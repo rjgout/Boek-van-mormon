@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/session";
 import { exchangeTiles } from "@/lib/scrabbleGame";
+import { RACK_SIZE } from "@/lib/scrabble/tiles";
 
-const schema = z.object({ letters: z.array(z.string().length(1)).min(1).max(7) });
+const schema = z.object({ letters: z.array(z.string().length(1)).min(1).max(RACK_SIZE) });
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ gameId: string }> }) {
   const user = await getCurrentUser();
