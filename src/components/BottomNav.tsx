@@ -5,6 +5,7 @@ const items = [
   { href: "/friends", label: "Vrienden", icon: "👥" },
   { href: "/competition", label: "Competitie", icon: "🏆" },
   { href: "/live", label: "Live", icon: "🎮" },
+  { href: "/shop", label: "Winkel", icon: "🛒" },
   { href: "/profile", label: "Profiel", icon: "🙂" },
 ];
 

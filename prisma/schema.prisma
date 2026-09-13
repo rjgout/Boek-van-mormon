@@ -51,6 +51,11 @@ model User {
   longestStreak Int     @default(0)
   lastStudyDate String? // yyyy-mm-dd, in de dag-bucket van de gebruiker
   freezeCount   Int     @default(0)
+  // Met XP gekochte hints (zie src/lib/shop.ts) — een los, algemeen tegoed
+  // bovenop de per-partij verdiende hint-tegoeden bij het Woordspel
+  // (ScrabbleGame.player1/2HintCredits): overal inzetbaar waar hints
+  // gebruikt kunnen worden, niet gebonden aan één spel.
+  hintBalance   Int     @default(0)
 
   // Notificaties: allebei standaard UIT (zelfde privacy-by-default-principe
   // als searchableByEmail hierboven) — een gebruiker moet er zelf voor
@@ -624,6 +629,8 @@ enum XPReason {
   PODCAST_LESSON_COMPLETED
   // Een verhaal uit de kindercursus afgerond. Zie completeKidsStory.
   KIDS_STORY_COMPLETED
+  // Negatief bedrag: XP ingewisseld voor hints in de winkel. Zie src/lib/shop.ts.
+  HINT_PURCHASED
 }
 
 model XPTransaction {

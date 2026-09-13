@@ -358,9 +358,18 @@ export async function useHint(gameId: string, userId: string): Promise<HintActio
   const isPlayer1 = userId === game.player1Id;
   if (!isPlayer1 && userId !== game.player2Id) return { ok: false, error: "Je speelt niet mee in dit spel." };
 
-  const credits = isPlayer1 ? game.player1HintCredits : game.player2HintCredits;
-  if (credits <= 0) {
-    return { ok: false, error: "Je hebt nog geen hint verdiend — speel eerst een woord." };
+  // Verdiende (per-partij) tegoed gaat eerst op; pas als dat leeg is wordt
+  // er geput uit het algemene, met XP gekochte tegoed (User.hintBalance,
+  // zie src/lib/shop.ts) — dat is overal inzetbaar, niet aan dit spel
+  // gebonden.
+  const gameCredits = isPlayer1 ? game.player1HintCredits : game.player2HintCredits;
+  const useGameCredit = gameCredits > 0;
+
+  if (!useGameCredit) {
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    if (user.hintBalance <= 0) {
+      return { ok: false, error: "Je hebt geen hint beschikbaar — speel eerst een woord, of koop er een in de winkel." };
+    }
   }
 
   const rack = parseRack(isPlayer1 ? game.player1Rack : game.player2Rack);
@@ -369,10 +378,14 @@ export async function useHint(gameId: string, userId: string): Promise<HintActio
     return { ok: false, error: "Geen woord gevonden met je huidige letters." };
   }
 
-  await prisma.scrabbleGame.update({
-    where: { id: gameId },
-    data: isPlayer1 ? { player1HintCredits: { decrement: 1 } } : { player2HintCredits: { decrement: 1 } },
-  });
+  if (useGameCredit) {
+    await prisma.scrabbleGame.update({
+      where: { id: gameId },
+      data: isPlayer1 ? { player1HintCredits: { decrement: 1 } } : { player2HintCredits: { decrement: 1 } },
+    });
+  } else {
+    await prisma.user.update({ where: { id: userId }, data: { hintBalance: { decrement: 1 } } });
+  }
 
   return { ok: true, word: hint.word, usedIndices: hint.usedIndices };
 }
