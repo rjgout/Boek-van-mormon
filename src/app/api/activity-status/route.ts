@@ -100,11 +100,16 @@ export async function GET() {
   }
 
   for (const lg of liveGames) {
+    const suffix = lg.status === "LOBBY" ? " (lobby)" : "";
+    const label =
+      lg.mode === "CHAPTER_GUESS"
+        ? `Live spel — Raad het hoofdstuk${suffix}`
+        : `Live spel — ${lg.chapter?.book.name} ${lg.chapter?.number}${suffix}`;
     activeGames.push({
       kind: "live",
       id: lg.id,
       opponentName: null,
-      label: `Live spel — ${lg.chapter.book.name} ${lg.chapter.number}${lg.status === "LOBBY" ? " (lobby)" : ""}`,
+      label,
       link: `/live/${lg.code}`,
       myTurn: null,
     });

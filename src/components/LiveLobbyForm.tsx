@@ -67,6 +67,17 @@ export default function LiveLobbyForm() {
       </div>
 
       <div className="card flex flex-col gap-3">
+        <h2 className="font-extrabold dark:text-slate-100">🔎 Nieuw: Raad het hoofdstuk</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Lees het eerste vers van een hoofdstuk en raad welk hoofdstuk het is — kies zelf je niveau, alleen of live
+          met vrienden.
+        </p>
+        <Link href="/chapter-guess" className="btn-secondary self-start">
+          Raad het hoofdstuk openen
+        </Link>
+      </div>
+
+      <div className="card flex flex-col gap-3">
         <h2 className="font-extrabold dark:text-slate-100">🔤 Nieuw: Woordspel</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Een Scrabble-variant met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,

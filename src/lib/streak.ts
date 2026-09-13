@@ -252,6 +252,58 @@ export async function completeQuickPractice(userId: string, correctCount: number
   });
 }
 
+const XP_PER_CORRECT_CHAPTER_GUESS = 5;
+
+/**
+ * Rondt een potje "Raad het hoofdstuk" af (alleen of live, zie
+ * src/lib/chapterGuess.ts en src/server/gameServer.ts) — zelfde opzet als
+ * completeQuickPractice: geen vaste cursus/hoofdstuk om aan te haken, dus
+ * alleen de dagstreak en XP.
+ */
+export async function completeChapterGuess(userId: string, correctCount: number, total: number): Promise<StudyResult> {
+  return prisma.$transaction(async (tx) => {
+    const daily = await applyDailyStreak(tx, userId);
+    const freezeCount = daily.freezeCountBeforeMilestone + daily.freezesEarned;
+
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        currentStreak: daily.currentStreak,
+        longestStreak: daily.longestStreak,
+        lastStudyDate: daily.today,
+        freezeCount,
+      },
+    });
+
+    if (daily.freezesEarned > 0) {
+      await tx.freezeTransaction.create({
+        data: { userId, type: "EARNED", amount: daily.freezesEarned, reason: "Mijlpaal bereikt" },
+      });
+    }
+
+    const xp = correctCount * XP_PER_CORRECT_CHAPTER_GUESS;
+    if (xp > 0) {
+      await awardXp(tx, userId, xp, "CHAPTER_GUESS_COMPLETED", { correctCount, total });
+      await applyWeeklyXp(tx, userId, xp);
+    }
+
+    const newAchievements = await checkAndAwardAchievements(tx, userId);
+
+    return {
+      xpEarned: xp,
+      chapterCompleted: false,
+      scorePercent: total === 0 ? 0 : Math.round((correctCount / total) * 100),
+      currentStreak: daily.currentStreak,
+      longestStreak: daily.longestStreak,
+      streakBroken: daily.streakBroken,
+      freezeUsed: daily.freezeUsed,
+      freezesEarned: daily.freezesEarned,
+      freezeCount,
+      newAchievements,
+    };
+  });
+}
+
 /**
  * Rondt één van de twee modi (CONTENT/BOM_CONNECTION) van een
  * podcastaflevering af — zelfde soort boekhouding als completeLesson, maar

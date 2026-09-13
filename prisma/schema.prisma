@@ -102,6 +102,8 @@ model User {
   hostedGames LiveGame[]       @relation("GameHost")
   gamePlayers LiveGamePlayer[]
 
+  chapterGuessGames ChapterGuessGame[]
+
   authTokens AuthToken[]
 
   // De cursus die momenteel "Vandaag" op het dashboard bepaalt. Losse
@@ -631,6 +633,9 @@ enum XPReason {
   KIDS_STORY_COMPLETED
   // Negatief bedrag: XP ingewisseld voor hints in de winkel. Zie src/lib/shop.ts.
   HINT_PURCHASED
+  // "Raad het hoofdstuk" — zowel alleen als live met vrienden. Zie
+  // completeChapterGuess in src/lib/streak.ts.
+  CHAPTER_GUESS_COMPLETED
 }
 
 model XPTransaction {
@@ -740,16 +745,28 @@ enum LiveGameStatus {
   FINISHED
 }
 
+// EXERCISES = het bestaande hoofdstuk-oefeningen-duel (chapterId verplicht).
+// CHAPTER_GUESS = "Raad het hoofdstuk" (zie ChapterGuessGame hieronder) —
+// niet aan één hoofdstuk gebonden, dus chapterId blijft dan leeg en level/
+// questionCount zijn juist wel gezet.
+enum LiveGameMode {
+  EXERCISES
+  CHAPTER_GUESS
+}
+
 model LiveGame {
-  id        String           @id @default(cuid())
-  code      String           @unique
-  hostId    String
-  host      User             @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
-  chapterId String
-  chapter   Chapter          @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  status    LiveGameStatus   @default(LOBBY)
-  createdAt DateTime         @default(now())
-  players   LiveGamePlayer[]
+  id            String             @id @default(cuid())
+  code          String             @unique
+  hostId        String
+  host          User               @relation("GameHost", fields: [hostId], references: [id], onDelete: Cascade)
+  mode          LiveGameMode       @default(EXERCISES)
+  chapterId     String?
+  chapter       Chapter?           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  level         ChapterGuessLevel?
+  questionCount Int?
+  status        LiveGameStatus     @default(LOBBY)
+  createdAt     DateTime           @default(now())
+  players       LiveGamePlayer[]
 }
 
 model LiveGamePlayer {
@@ -762,6 +779,63 @@ model LiveGamePlayer {
   joinedAt DateTime @default(now())
 
   @@unique([gameId, userId])
+}
+
+// --- Raad het hoofdstuk ------------------------------------------------------
+//
+// Je krijgt het eerste vers van een willekeurig hoofdstuk te lezen en moet
+// raden welk hoofdstuk dat is. BEGINNER kiest uit 4 opties, ADVANCED/EXPERT
+// selecteert zelf boek + hoofdstuknummer (en bevestigt die keuze) — EXPERT is
+// verder gelijk aan ADVANCED maar zonder hints. Speelbaar alleen (dit model)
+// of live met vrienden (zie LiveGame.mode CHAPTER_GUESS, dat dezelfde
+// spelregels via de socket-server implementeert in src/server/gameServer.ts).
+
+enum ChapterGuessLevel {
+  BEGINNER
+  ADVANCED
+  EXPERT
+}
+
+enum ChapterGuessGameStatus {
+  IN_PROGRESS
+  FINISHED
+}
+
+model ChapterGuessGame {
+  id            String                 @id @default(cuid())
+  userId        String
+  user          User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level         ChapterGuessLevel
+  questionCount Int
+  currentIndex  Int                    @default(0)
+  // Per-spel verdiend hint-tegoed (net als ScrabbleGame.player1HintCredits) —
+  // +1 bij elk juist antwoord (behalve op EXPERT, waar sowieso geen hints
+  // mogen). Op = eerst dit tegoed, dan pas User.hintBalance (gekocht in de
+  // winkel), zie useChapterGuessHint in src/lib/chapterGuess.ts.
+  hintCredits   Int                    @default(0)
+  status        ChapterGuessGameStatus @default(IN_PROGRESS)
+  questions     ChapterGuessQuestion[]
+  createdAt     DateTime               @default(now())
+  finishedAt    DateTime?
+}
+
+model ChapterGuessQuestion {
+  id     String           @id @default(cuid())
+  gameId String
+  game   ChapterGuessGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  order  Int // 0-gebaseerde positie binnen dit spel
+
+  // Geen Prisma-relatie naar Chapter voor deze twee velden: dit is
+  // vergankelijke rondestaat (het juiste antwoord, geheim tot beantwoord),
+  // geen duurzame koppeling die cascade-gedrag nodig heeft.
+  chapterId String // het juiste antwoord
+  optionIds String? // JSON: 4 hoofdstuk-ids (incl. chapterId), alleen bij BEGINNER
+
+  hintUsed          Boolean  @default(false)
+  answeredChapterId String?
+  correct           Boolean?
+
+  @@unique([gameId, order])
 }
 
 // --- Notificaties (e-mail + browser push) ----------------------------------
@@ -821,7 +895,7 @@ model Challenge {
   // null zolang status niet FINISHED is, of bij een gelijkspel. Bij een
   // normale afronding (beide gespeeld) de speler met de hoogste score; bij
   // opgeven altijd de andere speler, ongeacht scores (zie forfeitChallenge).
-  winnerUserId String?
+  winnerUserId        String?
 
   createdAt DateTime @default(now())
 

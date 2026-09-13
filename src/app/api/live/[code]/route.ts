@@ -20,8 +20,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ cod
   return NextResponse.json({
     code: game.code,
     status: game.status,
+    mode: game.mode,
     chapterId: game.chapterId,
-    chapterLabel: `${game.chapter.book.name} ${game.chapter.number}`,
+    chapterLabel: game.chapter ? `${game.chapter.book.name} ${game.chapter.number}` : null,
+    level: game.level,
+    questionCount: game.questionCount,
     hostId: game.hostId,
     hostName: game.host.displayName,
     players: game.players.map((p) => ({ userId: p.userId, displayName: p.user.displayName, score: p.score })),

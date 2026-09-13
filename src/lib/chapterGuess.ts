@@ -1,0 +1,292 @@
+import { prisma } from "@/lib/db";
+import { shuffle } from "@/lib/scrabble/tiles";
+import { completeChapterGuess } from "@/lib/streak";
+import type { ChapterGuessLevel } from "@prisma/client";
+
+export const QUESTION_COUNT_OPTIONS = [5, 10, 15] as const;
+export const BEGINNER_OPTION_COUNT = 4;
+
+export interface ChapterLabel {
+  chapterId: string;
+  bookId: string;
+  bookName: string;
+  number: number;
+  label: string;
+}
+
+export async function labelsFor(chapterIds: string[]): Promise<Map<string, ChapterLabel>> {
+  const chapters = await prisma.chapter.findMany({
+    where: { id: { in: chapterIds } },
+    include: { book: true },
+  });
+  return new Map(
+    chapters.map((c) => [
+      c.id,
+      { chapterId: c.id, bookId: c.bookId, bookName: c.book.name, number: c.number, label: `${c.book.name} ${c.number}` },
+    ])
+  );
+}
+
+export async function getChapterLabel(chapterId: string): Promise<ChapterLabel | null> {
+  const map = await labelsFor([chapterId]);
+  return map.get(chapterId) ?? null;
+}
+
+// Het "intro"-tekstje dat je te lezen krijgt = vers 1 van het hoofdstuk (er
+// is geen apart hoofdstuk-opschrift in de data) — oplopend gesorteerd zodat
+// dit ook werkt als een hoofdstuk ooit niet met versnummer 1 zou beginnen.
+export async function getChapterIntro(chapterId: string): Promise<string> {
+  const verse = await prisma.verse.findFirst({ where: { chapterId }, orderBy: { number: "asc" } });
+  return verse?.text ?? "";
+}
+
+export async function pickRandomChapterIds(count: number, excludeIds: string[] = []): Promise<string[]> {
+  const all = await prisma.chapter.findMany({ where: { id: { notIn: excludeIds } }, select: { id: true } });
+  return shuffle(all.map((c) => c.id)).slice(0, count);
+}
+
+export async function buildBeginnerOptionIds(correctChapterId: string): Promise<string[]> {
+  const wrong = await pickRandomChapterIds(BEGINNER_OPTION_COUNT - 1, [correctChapterId]);
+  return shuffle([correctChapterId, ...wrong]);
+}
+
+export interface QuestionView {
+  index: number;
+  total: number;
+  introText: string;
+  options: ChapterLabel[] | null; // alleen bij BEGINNER
+  hintUsed: boolean;
+}
+
+async function buildQuestionView(
+  question: { order: number; chapterId: string; optionIds: string | null; hintUsed: boolean },
+  total: number
+): Promise<QuestionView> {
+  const introText = await getChapterIntro(question.chapterId);
+  let options: ChapterLabel[] | null = null;
+  if (question.optionIds) {
+    const ids = JSON.parse(question.optionIds) as string[];
+    const labels = await labelsFor(ids);
+    options = ids.map((id) => labels.get(id)!).filter(Boolean);
+  }
+  return { index: question.order, total, introText, options, hintUsed: question.hintUsed };
+}
+
+export async function createChapterGuessGame(userId: string, level: ChapterGuessLevel, questionCount: number) {
+  const chapterIds = await pickRandomChapterIds(questionCount);
+
+  const game = await prisma.$transaction(async (tx) => {
+    const created = await tx.chapterGuessGame.create({
+      data: { userId, level, questionCount },
+    });
+    for (let order = 0; order < chapterIds.length; order++) {
+      const chapterId = chapterIds[order];
+      const optionIds = level === "BEGINNER" ? await buildBeginnerOptionIds(chapterId) : null;
+      await tx.chapterGuessQuestion.create({
+        data: { gameId: created.id, order, chapterId, optionIds: optionIds ? JSON.stringify(optionIds) : null },
+      });
+    }
+    return created;
+  });
+
+  return getChapterGuessGameView(game.id, userId);
+}
+
+export interface ChapterGuessGameView {
+  gameId: string;
+  level: ChapterGuessLevel;
+  questionCount: number;
+  currentIndex: number;
+  hintCredits: number;
+  status: "IN_PROGRESS" | "FINISHED";
+  question: QuestionView | null;
+  summary: { correctCount: number; total: number } | null;
+}
+
+export async function getChapterGuessGameView(gameId: string, userId: string): Promise<ChapterGuessGameView | { error: string }> {
+  const game = await prisma.chapterGuessGame.findUnique({ where: { id: gameId } });
+  if (!game || game.userId !== userId) return { error: "Spel niet gevonden." };
+
+  if (game.status === "FINISHED") {
+    const correctCount = await prisma.chapterGuessQuestion.count({ where: { gameId, correct: true } });
+    return {
+      gameId: game.id,
+      level: game.level,
+      questionCount: game.questionCount,
+      currentIndex: game.currentIndex,
+      hintCredits: game.hintCredits,
+      status: "FINISHED",
+      question: null,
+      summary: { correctCount, total: game.questionCount },
+    };
+  }
+
+  const question = await prisma.chapterGuessQuestion.findUnique({
+    where: { gameId_order: { gameId, order: game.currentIndex } },
+  });
+  if (!question) return { error: "Vraag niet gevonden." };
+
+  return {
+    gameId: game.id,
+    level: game.level,
+    questionCount: game.questionCount,
+    currentIndex: game.currentIndex,
+    hintCredits: game.hintCredits,
+    status: "IN_PROGRESS",
+    question: await buildQuestionView(question, game.questionCount),
+    summary: null,
+  };
+}
+
+export interface AnswerResult {
+  correct: boolean;
+  correctChapter: ChapterLabel;
+  finished: boolean;
+  nextQuestion: QuestionView | null;
+  summary: { correctCount: number; total: number; xpEarned: number; currentStreak: number; newAchievements: string[] } | null;
+}
+
+export async function submitChapterGuessAnswer(
+  gameId: string,
+  userId: string,
+  chosenChapterId: string
+): Promise<AnswerResult | { error: string }> {
+  const game = await prisma.chapterGuessGame.findUnique({ where: { id: gameId } });
+  if (!game || game.userId !== userId) return { error: "Spel niet gevonden." };
+  if (game.status !== "IN_PROGRESS") return { error: "Dit spel is al afgelopen." };
+
+  const question = await prisma.chapterGuessQuestion.findUnique({
+    where: { gameId_order: { gameId, order: game.currentIndex } },
+  });
+  if (!question) return { error: "Vraag niet gevonden." };
+  if (question.answeredChapterId !== null) return { error: "Deze vraag is al beantwoord." };
+
+  const correct = chosenChapterId === question.chapterId;
+  const correctChapter = await getChapterLabel(question.chapterId);
+  if (!correctChapter) return { error: "Hoofdstuk niet gevonden." };
+
+  const nextIndex = game.currentIndex + 1;
+  const finished = nextIndex >= game.questionCount;
+
+  await prisma.$transaction(async (tx) => {
+    await tx.chapterGuessQuestion.update({
+      where: { id: question.id },
+      data: { answeredChapterId: chosenChapterId, correct },
+    });
+    await tx.chapterGuessGame.update({
+      where: { id: gameId },
+      data: {
+        currentIndex: nextIndex,
+        // Geen hint-tegoed meer op EXPERT: hints mogen daar toch niet gebruikt worden.
+        hintCredits: correct && game.level !== "EXPERT" ? { increment: 1 } : undefined,
+        status: finished ? "FINISHED" : undefined,
+        finishedAt: finished ? new Date() : undefined,
+      },
+    });
+  });
+
+  if (finished) {
+    const correctCount = await prisma.chapterGuessQuestion.count({ where: { gameId, correct: true } });
+    const result = await completeChapterGuess(userId, correctCount, game.questionCount);
+    return {
+      correct,
+      correctChapter,
+      finished: true,
+      nextQuestion: null,
+      summary: {
+        correctCount,
+        total: game.questionCount,
+        xpEarned: result.xpEarned,
+        currentStreak: result.currentStreak,
+        newAchievements: result.newAchievements,
+      },
+    };
+  }
+
+  const nextQuestionRow = await prisma.chapterGuessQuestion.findUnique({
+    where: { gameId_order: { gameId, order: nextIndex } },
+  });
+  const nextQuestion = nextQuestionRow ? await buildQuestionView(nextQuestionRow, game.questionCount) : null;
+
+  return { correct, correctChapter, finished: false, nextQuestion, summary: null };
+}
+
+export interface HintResult {
+  eliminatedChapterId?: string; // BEGINNER
+  bookId?: string; // ADVANCED
+  bookName?: string; // ADVANCED
+}
+
+export async function useChapterGuessHint(gameId: string, userId: string): Promise<HintResult | { error: string }> {
+  const game = await prisma.chapterGuessGame.findUnique({ where: { id: gameId } });
+  if (!game || game.userId !== userId) return { error: "Spel niet gevonden." };
+  if (game.status !== "IN_PROGRESS") return { error: "Dit spel is al afgelopen." };
+  if (game.level === "EXPERT") return { error: "Hints zijn niet beschikbaar op expert-niveau." };
+
+  const question = await prisma.chapterGuessQuestion.findUnique({
+    where: { gameId_order: { gameId, order: game.currentIndex } },
+  });
+  if (!question) return { error: "Vraag niet gevonden." };
+  if (question.hintUsed) return { error: "Je hebt voor deze vraag al een hint gebruikt." };
+
+  // Zelfde twee-traps-verbruik als bij het Woordspel: eerst het per-spel
+  // verdiende tegoed, pas daarna het algemene, gekochte tegoed
+  // (User.hintBalance, zie src/lib/shop.ts).
+  const useGameCredit = game.hintCredits > 0;
+  if (!useGameCredit) {
+    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
+    if (user.hintBalance <= 0) {
+      return { error: "Je hebt geen hint beschikbaar — geef eerst een goed antwoord, of koop er een in de winkel." };
+    }
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.chapterGuessQuestion.update({ where: { id: question.id }, data: { hintUsed: true } });
+    if (useGameCredit) {
+      await tx.chapterGuessGame.update({ where: { id: gameId }, data: { hintCredits: { decrement: 1 } } });
+    } else {
+      await tx.user.update({ where: { id: userId }, data: { hintBalance: { decrement: 1 } } });
+    }
+  });
+
+  const optionIds = question.optionIds ? (JSON.parse(question.optionIds) as string[]) : null;
+  return computeHintEffect(game.level, question.chapterId, optionIds, await getChapterLabel(question.chapterId));
+}
+
+// Wat een hint onthult — gedeeld tussen deze (DB-backed, alleen-spelen)
+// hint-functie hierboven en de live-varianten in src/server/gameServer.ts,
+// zodat "wat een hint doet" op precies één plek staat.
+export function computeHintEffect(
+  level: ChapterGuessLevel,
+  correctChapterId: string,
+  optionIds: string[] | null,
+  correctChapter: ChapterLabel | null
+): HintResult {
+  if (level === "BEGINNER") {
+    const wrongIds = (optionIds ?? []).filter((id) => id !== correctChapterId);
+    const eliminatedChapterId = wrongIds[Math.floor(Math.random() * wrongIds.length)];
+    return { eliminatedChapterId };
+  }
+  return { bookId: correctChapter?.bookId, bookName: correctChapter?.bookName };
+}
+
+// Genereert een volledige, in-het-geheugen vragenlijst voor een live potje
+// (zie src/server/gameServer.ts) — geen database-rijen per vraag nodig zoals
+// bij het alleen-spelen-spel, want een live kamer leeft toch al alleen in het
+// geheugen van het proces (net als de bestaande hoofdstuk-oefeningen-race).
+export interface LiveQuestionSeed {
+  chapterId: string;
+  introText: string;
+  optionIds: string[] | null; // alleen bij BEGINNER
+}
+
+export async function generateChapterGuessQuestions(level: ChapterGuessLevel, count: number): Promise<LiveQuestionSeed[]> {
+  const chapterIds = await pickRandomChapterIds(count);
+  const questions: LiveQuestionSeed[] = [];
+  for (const chapterId of chapterIds) {
+    const introText = await getChapterIntro(chapterId);
+    const optionIds = level === "BEGINNER" ? await buildBeginnerOptionIds(chapterId) : null;
+    questions.push({ chapterId, introText, optionIds });
+  }
+  return questions;
+}

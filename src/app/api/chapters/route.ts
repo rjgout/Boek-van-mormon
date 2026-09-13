@@ -16,6 +16,9 @@ export async function GET() {
       id: c.id,
       label: `${c.book.name} ${c.number}`,
       exerciseCount: c._count.exercises,
+      bookId: c.bookId,
+      bookName: c.book.name,
+      number: c.number,
     }))
   );
 }
