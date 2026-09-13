@@ -56,6 +56,17 @@ export default function LiveLobbyForm() {
       <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Live spel</h1>
 
       <div className="card flex flex-col gap-3">
+        <h2 className="font-extrabold dark:text-slate-100">⚔️ Uitdagingen</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Daag een vriend uit op een hoofdstuk: jullie spelen allebei wanneer het uitkomt, en zien daarna wie beter
+          scoorde.
+        </p>
+        <Link href="/challenges" className="btn-secondary self-start">
+          Uitdagingen openen
+        </Link>
+      </div>
+
+      <div className="card flex flex-col gap-3">
         <h2 className="font-extrabold dark:text-slate-100">🔤 Nieuw: Woordspel</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Een Scrabble-variant met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,
