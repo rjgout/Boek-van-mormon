@@ -1,0 +1,23 @@
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+import { getCurrentUser } from "@/lib/session";
+import { submitGuess } from "@/lib/wordGame";
+import { notifyNewAchievements } from "@/lib/notify";
+
+const schema = z.object({ guess: z.string().trim().min(1) });
+
+export async function POST(req: NextRequest) {
+  const user = await getCurrentUser();
+  if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
+
+  const body = await req.json().catch(() => null);
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: "Ongeldige invoer" }, { status: 400 });
+
+  const result = await submitGuess(user.id, parsed.data.guess);
+  if ("error" in result) return NextResponse.json(result, { status: 400 });
+
+  notifyNewAchievements(user.id, result.newAchievements).catch(() => {});
+
+  return NextResponse.json(result);
+}

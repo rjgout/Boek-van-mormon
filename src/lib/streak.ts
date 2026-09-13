@@ -311,6 +311,56 @@ export async function completeChapterGuess(userId: string, correctCount: number,
 }
 
 /**
+ * Rondt een potje van het dagelijkse woordspel af (zie src/lib/wordGame.ts)
+ * — zowel bij winst als verlies telt meespelen als "vandaag gestudeerd"
+ * (net als completeQuickPractice/completeChapterGuess), maar XP is hier al
+ * vooraf berekend (xpForWin, afhankelijk van het aantal pogingen) i.p.v.
+ * een vast bedrag per correct antwoord — bij verlies dus 0.
+ */
+export async function completeWordGame(userId: string, xpEarned: number): Promise<StudyResult> {
+  return prisma.$transaction(async (tx) => {
+    const daily = await applyDailyStreak(tx, userId);
+    const freezeCount = daily.freezeCountBeforeMilestone + daily.freezesEarned;
+
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        currentStreak: daily.currentStreak,
+        longestStreak: daily.longestStreak,
+        lastStudyDate: daily.today,
+        freezeCount,
+      },
+    });
+
+    if (daily.freezesEarned > 0) {
+      await tx.freezeTransaction.create({
+        data: { userId, type: "EARNED", amount: daily.freezesEarned, reason: "Mijlpaal bereikt" },
+      });
+    }
+
+    if (xpEarned > 0) {
+      await awardXp(tx, userId, xpEarned, "WORD_GAME_WON", { xpEarned });
+      await applyWeeklyXp(tx, userId, xpEarned);
+    }
+
+    const newAchievements = await checkAndAwardAchievements(tx, userId);
+
+    return {
+      xpEarned,
+      chapterCompleted: false,
+      scorePercent: xpEarned > 0 ? 100 : 0,
+      currentStreak: daily.currentStreak,
+      longestStreak: daily.longestStreak,
+      streakBroken: daily.streakBroken,
+      freezeUsed: daily.freezeUsed,
+      freezesEarned: daily.freezesEarned,
+      freezeCount,
+      newAchievements,
+    };
+  });
+}
+
+/**
  * Rondt één van de twee modi (CONTENT/BOM_CONNECTION) van een
  * podcastaflevering af — zelfde soort boekhouding als completeLesson, maar
  * tegen PodcastEpisodeProgress i.p.v. ChapterProgress. Raakt bewust geen

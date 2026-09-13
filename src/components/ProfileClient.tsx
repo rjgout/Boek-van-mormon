@@ -25,6 +25,10 @@ interface ProfileData {
   emailNotificationsEnabled: boolean;
   pushNotificationsEnabled: boolean;
   dailyReminderTime: string;
+  notifyDailyReminder: boolean;
+  notifySocial: boolean;
+  notifyAchievements: boolean;
+  notifyWordGame: boolean;
   xpTotal: number;
   currentStreak: number;
   longestStreak: number;
@@ -124,6 +128,17 @@ export default function ProfileClient() {
     if (!data) return;
     setData({ ...data, dailyReminderTime: time });
     await saveAccountPatch({ dailyReminderTime: time });
+  }
+
+  async function toggleCategory(
+    field: "notifyDailyReminder" | "notifySocial" | "notifyAchievements" | "notifyWordGame"
+  ) {
+    if (!data) return;
+    const next = !data[field];
+    setData({ ...data, [field]: next });
+    setSavingNotifications(true);
+    await saveAccountPatch({ [field]: next });
+    setSavingNotifications(false);
   }
 
   function startEditingHandle() {
@@ -267,8 +282,9 @@ export default function ProfileClient() {
       <section className="card flex flex-col gap-3">
         <h2 className="font-extrabold text-lg dark:text-slate-100">Notificaties</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Voor: dagelijkse herinnering, vriendschapsverzoeken, prestaties, wekelijkse competitie-uitslag en
-          uitdagingen. Staan standaard allebei uit — zet aan wat je wil ontvangen.
+          Voor: dagelijkse herinnering, vriendschapsverzoeken, prestaties, wekelijkse competitie-uitslag,
+          uitdagingen en het woord van de dag. E-mail en push staan standaard allebei uit — zet aan wat je wil
+          ontvangen, en kies hieronder voor welke soorten meldingen dat dan geldt.
         </p>
 
         <label className="flex items-start gap-3 cursor-pointer">
@@ -320,6 +336,56 @@ export default function ProfileClient() {
             onChange={(e) => changeReminderTime(e.target.value)}
           />
         </label>
+
+        <div className="border-t border-slate-100 dark:border-slate-700 pt-3 mt-1 flex flex-col gap-2">
+          <p className="text-sm font-semibold dark:text-slate-200">Waarover wil je meldingen ontvangen?</p>
+
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 accent-brand-500"
+              checked={data.notifyDailyReminder}
+              onChange={() => toggleCategory("notifyDailyReminder")}
+              disabled={savingNotifications}
+            />
+            <span className="text-sm dark:text-slate-200">Dagelijkse herinnering om te oefenen</span>
+          </label>
+
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 accent-brand-500"
+              checked={data.notifySocial}
+              onChange={() => toggleCategory("notifySocial")}
+              disabled={savingNotifications}
+            />
+            <span className="text-sm dark:text-slate-200">
+              Sociaal — vriendschapsverzoeken, uitdagingen en woordspel-uitnodigingen
+            </span>
+          </label>
+
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 accent-brand-500"
+              checked={data.notifyAchievements}
+              onChange={() => toggleCategory("notifyAchievements")}
+              disabled={savingNotifications}
+            />
+            <span className="text-sm dark:text-slate-200">Prestaties en wekelijkse competitie-uitslag</span>
+          </label>
+
+          <label className="flex items-start gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 accent-brand-500"
+              checked={data.notifyWordGame}
+              onChange={() => toggleCategory("notifyWordGame")}
+              disabled={savingNotifications}
+            />
+            <span className="text-sm dark:text-slate-200">Woord van de dag — elke dag om 18:00 uur</span>
+          </label>
+        </div>
       </section>
 
       <section className="card flex flex-col gap-3">

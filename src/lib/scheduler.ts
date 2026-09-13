@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/db";
-import { dayKey, weekStartKey } from "@/lib/dates";
+import { dayKey, weekStartKey, amsterdamNow } from "@/lib/dates";
 import { resolveStartingTier, TIER_ORDER } from "@/lib/leagues";
-import { notifyDailyReminder, notifyWeeklyResult } from "@/lib/notify";
+import { notifyDailyReminder, notifyWeeklyResult, notifyWordGame } from "@/lib/notify";
 import { TIER_LABELS } from "@/lib/leagues";
+import { wordGameDayKey } from "@/lib/wordGame";
 
 const TICK_MS = 60_000;
 // Vast (niet instelbaar) moment voor de wekelijkse uitslag — dit is geen
@@ -88,6 +89,35 @@ async function runWeeklyResultTick(): Promise<void> {
   }
 }
 
+/**
+ * Stuurt, precies om 18:00 Nederlandse tijd (het moment waarop het woord van
+ * de dag wisselt, zie wordGameDayKey in src/lib/wordGame.ts), een melding
+ * naar iedereen die dat aan heeft staan. lastWordGameNotifiedDate voorkomt
+ * dubbel versturen, net als bij de dagelijkse herinnering hierboven — met
+ * dagKey ipv HH:MM-vergelijking, want de wisseling zelf gebeurt al op een
+ * vast tijdstip.
+ */
+async function runWordGameNotificationTick(): Promise<void> {
+  const now = new Date();
+  const amsterdam = amsterdamNow(now);
+  if (amsterdam.hour !== 18 || amsterdam.minute !== 0) return;
+
+  const today = wordGameDayKey(now);
+  const candidates = await prisma.user.findMany({
+    where: {
+      OR: [{ emailNotificationsEnabled: true }, { pushNotificationsEnabled: true }],
+      notifyWordGame: true,
+      AND: [{ OR: [{ lastWordGameNotifiedDate: null }, { lastWordGameNotifiedDate: { not: today } }] }],
+    },
+    select: { id: true },
+  });
+
+  for (const user of candidates) {
+    await notifyWordGame(user.id).catch(() => {});
+    await prisma.user.update({ where: { id: user.id }, data: { lastWordGameNotifiedDate: today } }).catch(() => {});
+  }
+}
+
 let started = false;
 
 /** Start de in-process schedulers — bewust geen losse cron-infrastructuur (zie ook src/lib/leagues.ts). Eenmalig aan te roepen vanuit server.ts. */
@@ -97,5 +127,6 @@ export function startNotificationSchedulers(): void {
   setInterval(() => {
     runDailyReminderTick().catch((e) => console.error("Dagelijkse herinnering mislukt:", e));
     runWeeklyResultTick().catch((e) => console.error("Wekelijkse uitslag mislukt:", e));
+    runWordGameNotificationTick().catch((e) => console.error("Woord-van-de-dag-melding mislukt:", e));
   }, TICK_MS);
 }

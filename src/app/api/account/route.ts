@@ -21,6 +21,10 @@ const patchSchema = z.object({
     .string()
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Ongeldig tijdstip")
     .optional(),
+  notifyDailyReminder: z.boolean().optional(),
+  notifySocial: z.boolean().optional(),
+  notifyAchievements: z.boolean().optional(),
+  notifyWordGame: z.boolean().optional(),
 });
 
 const MAX_DISCRIMINATOR_ATTEMPTS = 25;

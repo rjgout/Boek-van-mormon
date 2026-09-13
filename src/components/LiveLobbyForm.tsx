@@ -88,6 +88,17 @@ export default function LiveLobbyForm() {
         </Link>
       </div>
 
+      <div className="card flex flex-col gap-3">
+        <h2 className="font-extrabold dark:text-slate-100">🟩 Nieuw: Woord van de dag</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Lingo/Wordle met alleen 5-letterwoorden uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één
+          poging per dag, en het telt mee voor je streak.
+        </p>
+        <Link href="/word-game" className="btn-secondary self-start">
+          Woord van de dag openen
+        </Link>
+      </div>
+
       <form onSubmit={createGame} className="card flex flex-col gap-4">
         <h2 className="font-extrabold">Nieuw spel starten</h2>
         <select className="input" value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
