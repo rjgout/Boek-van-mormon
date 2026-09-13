@@ -31,7 +31,9 @@ export const LETTER_DISTRIBUTION: Record<string, { count: number; value: number 
   [BLANK]: { count: 2, value: 0 },
 };
 
-export const RACK_SIZE = 7;
+// Dubbel zo groot als het officiële Scrabble-rek (7) — maakt het spel
+// makkelijker: meer keuze uit letters om een woord mee te vinden.
+export const RACK_SIZE = 14;
 
 export function letterValue(letter: string): number {
   return LETTER_DISTRIBUTION[letter]?.value ?? 0;

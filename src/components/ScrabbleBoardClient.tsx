@@ -107,7 +107,12 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
+  // `resetLocalState` staat standaard aan (initieel laden, en na je eigen
+  // zet/wissel/pas — dan IS de lokale selectie/plaatsing achterhaald). De
+  // achtergrond-polling hieronder geeft bewust `false` mee: anders werd een
+  // net neergelegd (nog niet verzonden) woord om de 8 seconden weer van het
+  // bord geveegd, ruim voordat je 'm kon afronden of indienen.
+  const load = useCallback(async (resetLocalState = true) => {
     const res = await fetch(`/api/scrabble/${gameId}`);
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
@@ -115,18 +120,21 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
       return;
     }
     setGame(await res.json());
-    setPending([]);
-    setSelectedRackIndex(null);
-    setExchangeMode(false);
-    setExchangeIndices([]);
+    if (resetLocalState) {
+      setPending([]);
+      setSelectedRackIndex(null);
+      setExchangeMode(false);
+      setExchangeIndices([]);
+    }
   }, [gameId]);
 
   useEffect(() => {
     load();
     // Lichte polling: dit is een asynchroon (niet realtime) spel, maar als
     // beide spelers toevallig tegelijk kijken, wil je elkaars zet wel zonder
-    // handmatig verversen zien verschijnen.
-    const interval = setInterval(load, 8000);
+    // handmatig verversen zien verschijnen. Laat je eigen, nog niet
+    // ingediende plaatsing/selectie met rust (zie hierboven).
+    const interval = setInterval(() => load(false), 8000);
     return () => clearInterval(interval);
   }, [load]);
 

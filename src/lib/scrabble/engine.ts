@@ -1,5 +1,5 @@
 import { BOARD_SIZE, CENTER, BOARD_LAYOUT, type Board } from "./board";
-import { letterValue } from "./tiles";
+import { letterValue, RACK_SIZE } from "./tiles";
 import { isValidWord } from "./dictionary";
 
 export interface Placement {
@@ -177,7 +177,7 @@ export function validateAndScoreMove(board: Board, placements: Placement[]): Mov
   }
 
   let score = words.reduce((sum, w) => sum + w.score, 0);
-  if (placements.length === 7) score += 50; // bingo: het hele rek in één beurt gebruikt
+  if (placements.length === RACK_SIZE) score += 50; // bingo: het hele rek in één beurt gebruikt
 
   return { ok: true, result: { score, words } };
 }
