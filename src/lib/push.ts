@@ -62,8 +62,19 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
   const subscriptions = await prisma.pushSubscription.findMany({ where: { userId } });
   if (subscriptions.length === 0) return;
 
-  const { publicKey, privateKey } = await getVapidKeys();
-  webpush.setVapidDetails(`mailto:noreply@localhost`, publicKey, privateKey);
+  let publicKey: string, privateKey: string;
+  try {
+    ({ publicKey, privateKey } = await getVapidKeys());
+  } catch (e) {
+    // Zou hier nooit mogen mislukken, maar zonder log is een kapotte
+    // ENCRYPTION_KEY (na bv. een omgevingswijziging) onzichtbaar: elke
+    // pushnotificatie verdwijnt dan stil, terwijl e-mail gewoon door blijft
+    // werken — precies het soort "push doet niks, mail wel" dat lastig te
+    // vinden is zonder deze regel.
+    console.error("Kon geen VAPID-sleutelpaar ophalen — pushnotificatie overgeslagen:", e);
+    return;
+  }
+  webpush.setVapidDetails(`mailto:raphael@gout.nl`, publicKey, privateKey);
 
   await Promise.all(
     subscriptions.map(async (sub) => {
@@ -76,7 +87,21 @@ export async function sendPushToUser(userId: string, payload: PushPayload): Prom
         const statusCode = (e as { statusCode?: number })?.statusCode;
         if (statusCode === 404 || statusCode === 410) {
           await prisma.pushSubscription.delete({ where: { id: sub.id } }).catch(() => {});
+          return;
         }
+        // Bewust wél loggen (in tegenstelling tot de verlopen-subscriptie-
+        // case hierboven, die verwacht is): dit is de enige plek waar een
+        // mislukte pushverzending zichtbaar wordt. Zonder deze log verdwijnt
+        // elke andere fout (VAPID-probleem, endpoint tijdelijk onbereikbaar,
+        // te grote payload, ...) spoorloos — de aanroepende flow (les
+        // afronden, vriendschapsverzoek, ...) mag hier terecht niet op
+        // wachten/breken, maar dat mag niet betekenen dat de fout nergens
+        // terug te vinden is.
+        const body = (e as { body?: string })?.body;
+        console.error(
+          `Pushnotificatie mislukt voor subscriptie ${sub.id} (endpoint: ${sub.endpoint}):`,
+          statusCode ? `HTTP ${statusCode}${body ? ` — ${body}` : ""}` : e
+        );
       }
     })
   );

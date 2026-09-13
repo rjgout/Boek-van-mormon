@@ -44,6 +44,8 @@ export default function ProfileClient() {
   const [savingPrivacy, setSavingPrivacy] = useState(false);
   const [savingNotifications, setSavingNotifications] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
+  const [testingPush, setTestingPush] = useState(false);
+  const [pushTestMessage, setPushTestMessage] = useState<string | null>(null);
   const [editingHandle, setEditingHandle] = useState(false);
   const [handleInput, setHandleInput] = useState("");
   const [savingHandle, setSavingHandle] = useState(false);
@@ -103,6 +105,19 @@ export default function ProfileClient() {
       setPushError(e instanceof Error ? e.message : "Kon pushnotificaties niet in-/uitschakelen.");
     }
     setSavingNotifications(false);
+  }
+
+  async function sendTestPush() {
+    setTestingPush(true);
+    setPushTestMessage(null);
+    const res = await fetch("/api/push/test", { method: "POST" });
+    const body = await res.json().catch(() => ({}));
+    setTestingPush(false);
+    setPushTestMessage(
+      res.ok
+        ? "Testmelding verstuurd — komt 'm niet aan? Wacht een minuutje en check of je telefoon niet in een stille/focus-modus staat."
+        : (body.error ?? "Kon geen testmelding versturen.")
+    );
   }
 
   async function changeReminderTime(time: string) {
@@ -286,6 +301,15 @@ export default function ProfileClient() {
           </span>
         </label>
         {pushError && <p className="text-sm text-red-600 dark:text-red-400">{pushError}</p>}
+
+        {data.pushNotificationsEnabled && (
+          <div className="flex flex-col gap-1 items-start">
+            <button className="btn-secondary !px-3 !py-1.5" disabled={testingPush} onClick={sendTestPush}>
+              {testingPush ? "Bezig..." : "Stuur testmelding"}
+            </button>
+            {pushTestMessage && <p className="text-xs text-slate-500 dark:text-slate-400">{pushTestMessage}</p>}
+          </div>
+        )}
 
         <label className="flex items-center gap-3">
           <span className="text-sm dark:text-slate-200">Dagelijkse herinnering rond</span>
