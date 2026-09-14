@@ -7,6 +7,7 @@ import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
 import { formatTag } from "@/lib/handle";
 import { enableBrowserPush, disableBrowserPush, isPushSupported } from "@/lib/pushClient";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface AchievementView {
   slug: string;
@@ -244,6 +245,11 @@ export default function ProfileClient() {
 
       <section className="card flex flex-col gap-3">
         <h2 className="font-extrabold text-lg dark:text-slate-100">Account</h2>
+
+        <div className="flex items-center gap-3">
+          <span className="text-sm dark:text-slate-200">Weergave (licht/donker)</span>
+          <ThemeToggle />
+        </div>
 
         {!editingHandle ? (
           <div className="flex items-center gap-3 flex-wrap">

@@ -6,7 +6,6 @@ import { getBranding } from "@/lib/branding";
 import NavUserBadges from "@/components/NavUserBadges";
 import InviteListener from "@/components/InviteListener";
 import ThemeScript from "@/components/ThemeScript";
-import ThemeToggle from "@/components/ThemeToggle";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
@@ -126,7 +125,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     Admin
                   </Link>
                 )}
-                <ThemeToggle />
                 <NavUserBadges
                   streak={user.currentStreak}
                   freezes={user.freezeCount}
@@ -136,7 +134,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </nav>
             ) : (
               <nav className="flex items-center gap-2">
-                <ThemeToggle />
                 <Link href="/login" className="btn-secondary !px-4 !py-2">
                   Inloggen
                 </Link>
