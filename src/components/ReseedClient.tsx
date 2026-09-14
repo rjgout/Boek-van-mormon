@@ -1,24 +1,75 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+type ReseedJobStatus = "idle" | "running" | "done" | "error";
+
+interface ReseedJobState {
+  status: ReseedJobStatus;
+  logs: string[];
+  error: string | null;
+  startedAt: string | null;
+  finishedAt: string | null;
+}
+
+const POLL_MS = 1500;
 
 export default function ReseedClient() {
-  const [running, setRunning] = useState(false);
-  const [logs, setLogs] = useState<string[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [job, setJob] = useState<ReseedJobState | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  async function run() {
-    setRunning(true);
-    setError(null);
-    setLogs(null);
-    const res = await fetch("/api/admin/reseed", { method: "POST" });
-    const data = await res.json().catch(() => ({}));
-    setRunning(false);
-    setLogs(data.logs ?? null);
-    if (!res.ok) {
-      setError(data.error ?? "Er ging iets mis.");
+  function stopPolling() {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
     }
   }
+
+  async function fetchStatus() {
+    try {
+      const res = await fetch("/api/admin/reseed");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Kon status niet ophalen.");
+      setJob(data.job as ReseedJobState);
+      setLoadError(null);
+      if (data.job.status !== "running") stopPolling();
+      return data.job as ReseedJobState;
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : "Kon status niet ophalen.");
+      return null;
+    }
+  }
+
+  function startPolling() {
+    if (pollRef.current) return; // al aan het pollen
+    pollRef.current = setInterval(fetchStatus, POLL_MS);
+  }
+
+  // Bij het openen (of heropenen na navigeren) meteen de actuele status
+  // ophalen — die leeft op de server, dus dit werkt ook als een vorige run
+  // gestart is vanaf een andere pagina/tab of vóór een page-refresh.
+  useEffect(() => {
+    fetchStatus().then((initial) => {
+      if (initial?.status === "running") startPolling();
+    });
+    return stopPolling;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function run() {
+    setLoadError(null);
+    const res = await fetch("/api/admin/reseed", { method: "POST" });
+    const data = await res.json().catch(() => null);
+    if (!res.ok || !data) {
+      setLoadError(data?.error ?? "Er ging iets mis.");
+      return;
+    }
+    setJob(data.job as ReseedJobState);
+    if (data.job.status === "running") startPolling();
+  }
+
+  const running = job?.status === "running";
 
   return (
     <details className="group card flex flex-col gap-4">
@@ -33,18 +84,34 @@ export default function ReseedClient() {
         Zet de nieuwste content (boeken/hoofdstukken/oefeningen, podcastafleveringen, achievements) in de database —
         hetzelfde als <code>npm run db:seed</code>, maar dan zonder terminal. Bestaande gebruikers, voortgang,
         streaks en scores blijven ongemoeid; er wordt alleen content toegevoegd of bijgewerkt. Doe dit na elke
-        update die nieuwe content toevoegt (bv. een nieuwe podcastaflevering).
+        update die nieuwe content toevoegt (bv. een nieuwe podcastaflevering). Dit kan een tijdje duren — de balk
+        hieronder blijft staan totdat het écht klaar is, ook als je ondertussen naar een andere pagina gaat en
+        terugkomt.
       </p>
 
       <button className="btn-primary self-start" disabled={running} onClick={run}>
         {running ? "Bezig..." : "Content opnieuw laden"}
       </button>
 
-      {error && <p className="text-sm font-semibold text-red-600 dark:text-red-400">{error}</p>}
+      {running && (
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700" aria-hidden>
+          <div className="h-full w-1/3 rounded-full bg-brand-500 animate-indeterminate" />
+        </div>
+      )}
 
-      {logs && logs.length > 0 && (
+      {loadError && <p className="text-sm font-semibold text-red-600 dark:text-red-400">{loadError}</p>}
+      {job?.status === "error" && (
+        <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+          {job.error ?? "Content laden is mislukt."}
+        </p>
+      )}
+      {job?.status === "done" && (
+        <p className="text-sm font-semibold text-brand-700 dark:text-brand-400">Klaar — content is bijgewerkt.</p>
+      )}
+
+      {job && job.logs.length > 0 && (
         <pre className="text-xs bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-xl p-3 overflow-x-auto whitespace-pre-wrap">
-          {logs.join("\n")}
+          {job.logs.join("\n")}
         </pre>
       )}
     </details>

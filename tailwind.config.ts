@@ -42,10 +42,16 @@ const config: Config = {
           "25%": { transform: "translateX(-6px)" },
           "75%": { transform: "translateX(6px)" },
         },
+        indeterminate: {
+          "0%": { transform: "translateX(-60%) scaleX(0.4)" },
+          "50%": { transform: "translateX(20%) scaleX(0.6)" },
+          "100%": { transform: "translateX(110%) scaleX(0.4)" },
+        },
       },
       animation: {
         pop: "pop 0.2s ease-out",
         shake: "shake 0.3s ease-in-out",
+        indeterminate: "indeterminate 1.3s ease-in-out infinite",
       },
     },
   },
