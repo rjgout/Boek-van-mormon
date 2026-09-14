@@ -52,6 +52,7 @@ interface AnswerResult {
   correctChapter: ChapterLabel;
   finished: boolean;
   nextQuestion: QuestionView | null;
+  hintCredits: number;
   summary: Summary | null;
 }
 
@@ -59,6 +60,7 @@ interface HintResult {
   eliminatedChapterId?: string;
   bookId?: string;
   bookName?: string;
+  hintCredits: number;
 }
 
 export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
@@ -113,6 +115,7 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
       return;
     }
     setFeedback(data);
+    setGame((g) => (g ? { ...g, hintCredits: data.hintCredits } : g));
     if (data.finished) setFinalSummary(data.summary);
   }
 
@@ -135,6 +138,7 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
       return;
     }
     setHint(data);
+    setGame((g) => (g ? { ...g, hintCredits: data.hintCredits } : g));
     if (data.bookId) setPickedBookId(data.bookId);
   }
 

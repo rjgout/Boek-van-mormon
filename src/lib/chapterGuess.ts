@@ -153,6 +153,7 @@ export interface AnswerResult {
   correctChapter: ChapterLabel;
   finished: boolean;
   nextQuestion: QuestionView | null;
+  hintCredits: number;
   summary: { correctCount: number; total: number; xpEarned: number; currentStreak: number; newAchievements: string[] } | null;
 }
 
@@ -177,6 +178,8 @@ export async function submitChapterGuessAnswer(
 
   const nextIndex = game.currentIndex + 1;
   const finished = nextIndex >= game.questionCount;
+  const earnsHintCredit = correct && game.level !== "EXPERT";
+  const hintCredits = game.hintCredits + (earnsHintCredit ? 1 : 0);
 
   await prisma.$transaction(async (tx) => {
     await tx.chapterGuessQuestion.update({
@@ -188,7 +191,7 @@ export async function submitChapterGuessAnswer(
       data: {
         currentIndex: nextIndex,
         // Geen hint-tegoed meer op EXPERT: hints mogen daar toch niet gebruikt worden.
-        hintCredits: correct && game.level !== "EXPERT" ? { increment: 1 } : undefined,
+        hintCredits: earnsHintCredit ? { increment: 1 } : undefined,
         status: finished ? "FINISHED" : undefined,
         finishedAt: finished ? new Date() : undefined,
       },
@@ -203,6 +206,7 @@ export async function submitChapterGuessAnswer(
       correctChapter,
       finished: true,
       nextQuestion: null,
+      hintCredits,
       summary: {
         correctCount,
         total: game.questionCount,
@@ -218,7 +222,7 @@ export async function submitChapterGuessAnswer(
   });
   const nextQuestion = nextQuestionRow ? await buildQuestionView(nextQuestionRow, game.questionCount) : null;
 
-  return { correct, correctChapter, finished: false, nextQuestion, summary: null };
+  return { correct, correctChapter, finished: false, nextQuestion, hintCredits, summary: null };
 }
 
 export interface HintResult {
@@ -227,7 +231,10 @@ export interface HintResult {
   bookName?: string; // ADVANCED
 }
 
-export async function useChapterGuessHint(gameId: string, userId: string): Promise<HintResult | { error: string }> {
+export async function useChapterGuessHint(
+  gameId: string,
+  userId: string
+): Promise<(HintResult & { hintCredits: number }) | { error: string }> {
   const game = await prisma.chapterGuessGame.findUnique({ where: { id: gameId } });
   if (!game || game.userId !== userId) return { error: "Spel niet gevonden." };
   if (game.status !== "IN_PROGRESS") return { error: "Dit spel is al afgelopen." };
@@ -246,6 +253,7 @@ export async function useChapterGuessHint(gameId: string, userId: string): Promi
   // kunnen verbruiken, of — als we de vraag zouden claimen vóórdat we weten
   // of er een tegoed is — de vraag permanent kunnen "opbranden" zonder dat
   // er ooit een hint is gegeven.
+  let usedGameCredit = false;
   try {
     await prisma.$transaction(async (tx) => {
       const claimed = await tx.chapterGuessQuestion.updateMany({
@@ -261,7 +269,9 @@ export async function useChapterGuessHint(gameId: string, userId: string): Promi
         where: { id: gameId, hintCredits: { gt: 0 } },
         data: { hintCredits: { decrement: 1 } },
       });
-      if (gameCreditResult.count === 0) {
+      if (gameCreditResult.count > 0) {
+        usedGameCredit = true;
+      } else {
         const userCreditResult = await tx.user.updateMany({
           where: { id: userId, hintBalance: { gt: 0 } },
           data: { hintBalance: { decrement: 1 } },
@@ -277,8 +287,14 @@ export async function useChapterGuessHint(gameId: string, userId: string): Promi
     throw e;
   }
 
+  // Alleen het per-spel tegoed (game.hintCredits, wat de knop op het scherm
+  // toont) kan hier zijn afgeschreven — een aftrek van het algemene,
+  // gekochte tegoed (User.hintBalance) verandert dat getal niet.
+  const hintCredits = usedGameCredit ? game.hintCredits - 1 : game.hintCredits;
+
   const optionIds = question.optionIds ? (JSON.parse(question.optionIds) as string[]) : null;
-  return computeHintEffect(game.level, question.chapterId, optionIds, await getChapterLabel(question.chapterId));
+  const effect = computeHintEffect(game.level, question.chapterId, optionIds, await getChapterLabel(question.chapterId));
+  return { ...effect, hintCredits };
 }
 
 // Wat een hint onthult — gedeeld tussen deze (DB-backed, alleen-spelen)
