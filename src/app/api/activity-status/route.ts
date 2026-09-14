@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 
 interface ActivityItem {
-  kind: "challenge" | "scrabble" | "live";
+  kind: "challenge" | "scrabble" | "live" | "chapter-guess-solo";
   id: string;
   opponentName: string | null;
   label: string;
@@ -12,15 +12,19 @@ interface ActivityItem {
 }
 
 // Alles wat een gebruiker "open" heeft staan over de asynchrone spellen
-// heen (Uitdagingen, Woordspel) en het realtime Live spel: openstaande
-// uitnodigingen (ontvangen/verstuurd) en partijen die nog lopen. Gebruikt
-// door ActiveGamesBanner bovenaan /live ("Spelen"), zodat je dat ook ziet
-// zonder eerst de losse spelpagina's zelf te hoeven checken.
+// heen (Uitdagingen, Woordspel), het realtime Live spel, en een eigen
+// "Raad het hoofdstuk"-potje (alleen spelen) dat nog niet is uitgespeeld:
+// openstaande uitnodigingen (ontvangen/verstuurd) en partijen die nog
+// lopen. Gebruikt door ActiveGamesBanner bovenaan /live ("Spelen"), zodat
+// je dat ook ziet zonder eerst de losse spelpagina's zelf te hoeven
+// checken — en, voor het alleen-spelen-potje, zodat je terug kunt naar een
+// spel waar je middenin zat na het navigeren naar een andere pagina (die
+// URL zelf onthoud je anders nergens).
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
 
-  const [challenges, scrabbleGames, liveGames] = await Promise.all([
+  const [challenges, scrabbleGames, liveGames, soloChapterGuessGames] = await Promise.all([
     prisma.challenge.findMany({
       where: { OR: [{ senderId: user.id }, { receiverId: user.id }], status: { in: ["PENDING", "ACCEPTED"] } },
       include: {
@@ -42,6 +46,10 @@ export async function GET() {
         OR: [{ hostId: user.id }, { players: { some: { userId: user.id } } }],
       },
       include: { chapter: { include: { book: true } } },
+    }),
+    prisma.chapterGuessGame.findMany({
+      where: { userId: user.id, status: "IN_PROGRESS" },
+      orderBy: { createdAt: "desc" },
     }),
   ]);
 
@@ -111,6 +119,18 @@ export async function GET() {
       opponentName: null,
       label,
       link: `/live/${lg.code}`,
+      myTurn: null,
+    });
+  }
+
+  const LEVEL_LABELS: Record<string, string> = { BEGINNER: "Beginner", ADVANCED: "Gevorderd", EXPERT: "Expert" };
+  for (const g of soloChapterGuessGames) {
+    activeGames.push({
+      kind: "chapter-guess-solo",
+      id: g.id,
+      opponentName: null,
+      label: `Raad het hoofdstuk (${LEVEL_LABELS[g.level]}) — vraag ${g.currentIndex + 1}/${g.questionCount}`,
+      link: `/chapter-guess/solo/${g.id}`,
       myTurn: null,
     });
   }

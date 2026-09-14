@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface ActivityItem {
-  kind: "challenge" | "scrabble" | "live";
+  kind: "challenge" | "scrabble" | "live" | "chapter-guess-solo";
   id: string;
   opponentName: string | null;
   label: string;
@@ -22,6 +22,7 @@ const KIND_ICON: Record<ActivityItem["kind"], string> = {
   challenge: "⚔️",
   scrabble: "🔤",
   live: "🎮",
+  "chapter-guess-solo": "🔎",
 };
 
 // Compacte melding bovenaan /live ("Spelen") zodat je openstaande
