@@ -130,4 +130,97 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    // Titel/samenvatting zijn hier bewust een kale placeholder: de
+    // podcastfeed-sync (src/lib/podcastFeed.ts, draait vlak na deze import
+    // in src/lib/seed.ts) overschrijft ze toch met de echte titel/omschrijving
+    // uit de RSS-feed — die is leidend qua benaming, niet dit bestand.
+    number: 128,
+    title: "Aflevering 128",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar praten Koos en Raphael in deze aflevering vooral over?",
+        options: [
+          "De halfjaarlijkse algemene conferentie van de kerk",
+          "Het vertalen van het Boek van Mormon",
+          "De geschiedenis van de zending in Utah",
+          "Het bouwen van een nieuw kerkgebouw",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoeveel sessies telt de algemene conferentie op dit moment?",
+        options: ["Vier", "Vijf", "Zes", "Acht"],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Vroeger was er ook nog een aparte sessie op zaterdagavond, die inmiddels is afgeschaft.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat kreeg Raphael ooit als 'inspiratiebron' toegewezen voor een eigen toespraak in zijn wijk?",
+        options: [
+          "Een toespraak uit een eerdere algemene conferentie",
+          "Een hoofdstuk uit het Boek van Mormon",
+          "Een lied uit het kerkliedboek",
+          "Een persoonlijk verhaal van de bisschop",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze manieren waarop Koos en Raphael vroeger de conferentie volgden in de juiste (chronologische) volgorde.",
+        items: [
+          "Uitzending via de radio",
+          "Videoband (VHS) die met de post kwam",
+          "Satellietschotel bij de wijk",
+          "Livestream via internet",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke drie voorwaarden noemt Moroni in Moroni 10 om een antwoord van God te krijgen of iets waar is?",
+        options: [
+          "Een oprecht hart, een eerlijke bedoeling en geloof in Christus",
+          "Vasten, bidden en een offergave brengen",
+          "Het boek driemaal lezen en het navertellen aan een vriend",
+          "Een droom hebben en die opschrijven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Door welke macht zegt Moroni dat die waarheid aan je geopenbaard zal worden?",
+        options: [
+          "Door de macht van de Heilige Geest",
+          "Door een engel die verschijnt",
+          "Door een droom die je 's nachts krijgt",
+          "Door een stem die je hoort in de tempel",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 10 kun je door de macht van de Heilige Geest de waarheid van alle dingen kennen, niet alleen van het Boek van Mormon.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit Moroni's aansporing in Moroni 10 in de juiste volgorde.",
+        items: [
+          "Lees de kroniek en overweeg in je hart hoe barmhartig God is geweest",
+          "Vraag God in de naam van Christus of deze dingen waar zijn",
+          "Vraag met een oprecht hart, een eerlijke bedoeling en geloof in Christus",
+          "Ontvang de waarheid geopenbaard door de macht van de Heilige Geest",
+        ],
+      },
+    ],
+  },
 ];
