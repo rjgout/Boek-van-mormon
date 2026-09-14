@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ExerciseCard, type Exercise } from "@/components/LessonFlow";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
 
@@ -81,14 +80,10 @@ export default function KidsLessonFlow({
           </div>
         )}
         <p className="text-lg leading-relaxed dark:text-slate-100 whitespace-pre-line">{text}</p>
-        {exercises.length > 0 ? (
+        {exercises.length > 0 && (
           <button className="btn-primary self-start" onClick={() => setPhase("exercises")}>
             Begin met de vragen →
           </button>
-        ) : (
-          <Link href="/courses" className="btn-secondary self-start">
-            Terug naar cursussen
-          </Link>
         )}
       </div>
     );
@@ -135,9 +130,6 @@ export default function KidsLessonFlow({
           </div>
         )}
 
-        <Link href="/courses" className="btn-primary mt-2">
-          Terug naar cursussen
-        </Link>
       </div>
     );
   }

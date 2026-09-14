@@ -71,9 +71,6 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
             <span className="font-extrabold">Geloof je dat ook?</span> podcast horen twee korte oefenrondes: één
             over de inhoud van de aflevering, en één die de brug slaat naar het Boek van Mormon.
           </p>
-          <Link href="/courses" className="text-brand-100 text-xs font-bold underline underline-offset-2 self-start">
-            Wissel cursus
-          </Link>
         </div>
       </div>
 

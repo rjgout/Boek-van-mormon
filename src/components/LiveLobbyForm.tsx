@@ -15,7 +15,6 @@ export default function LiveLobbyForm() {
   const router = useRouter();
   const [chapters, setChapters] = useState<ChapterOption[]>([]);
   const [chapterId, setChapterId] = useState("");
-  const [joinCode, setJoinCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
 
@@ -44,12 +43,6 @@ export default function LiveLobbyForm() {
       return;
     }
     router.push(`/live/${data.code}`);
-  }
-
-  function joinGame(e: FormEvent) {
-    e.preventDefault();
-    if (joinCode.trim().length === 0) return;
-    router.push(`/live/${joinCode.trim().toUpperCase()}`);
   }
 
   return (
@@ -115,20 +108,6 @@ export default function LiveLobbyForm() {
           {creating ? "Bezig..." : "Maak spel & nodig vrienden uit"}
         </button>
         {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
-      </form>
-
-      <form onSubmit={joinGame} className="card flex flex-col gap-4">
-        <h2 className="font-extrabold">Meedoen met een code</h2>
-        <input
-          className="input uppercase tracking-widest text-center font-extrabold"
-          placeholder="BIJV. AB12C"
-          value={joinCode}
-          onChange={(e) => setJoinCode(e.target.value)}
-          maxLength={6}
-        />
-        <button className="btn-ice self-start" type="submit">
-          Meedoen
-        </button>
       </form>
     </div>
   );

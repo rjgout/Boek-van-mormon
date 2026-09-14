@@ -65,21 +65,11 @@ export default function ActiveGamesBanner() {
       {activeGames.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {activeGames.map((item) => (
-            <Link
-              key={`${item.kind}-${item.id}`}
-              href={item.link}
-              className={`text-xs font-bold rounded-full px-3 py-1 flex items-center gap-1 ${
-                item.myTurn
-                  ? "bg-brand-500 text-white"
-                  : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
-              }`}
-            >
-              <span>{KIND_ICON[item.kind]}</span>
-              <span>
-                {item.opponentName ? `${item.opponentName} — ` : ""}
-                {item.label}
-                {item.myTurn ? " · jouw beurt!" : ""}
-              </span>
+            <Link key={`${item.kind}-${item.id}`} href={item.link} className={item.myTurn ? "btn-primary" : "btn-secondary"}>
+              <span className="mr-1.5">{KIND_ICON[item.kind]}</span>
+              {item.opponentName ? `${item.opponentName} — ` : ""}
+              {item.label}
+              {item.myTurn ? " · jouw beurt!" : ""}
             </Link>
           ))}
         </div>

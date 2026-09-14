@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ExerciseCard, type Exercise } from "@/components/LessonFlow";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
 
@@ -101,9 +100,6 @@ export default function PodcastLessonFlow({
           </div>
         )}
 
-        <Link href="/courses" className="btn-primary mt-2">
-          Terug naar cursussen
-        </Link>
       </div>
     );
   }

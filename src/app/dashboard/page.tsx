@@ -97,14 +97,9 @@ export default async function DashboardPage() {
 
         {todayEntry && !allDone ? (
           <div className="card bg-gradient-to-br from-brand-500 to-brand-600 text-white flex flex-col gap-3">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">
-                Vandaag{activeCourse ? ` — ${activeCourse.name}` : ""}
-              </p>
-              <Link href="/courses" className="text-brand-100 text-xs font-bold underline underline-offset-2">
-                Wissel cursus
-              </Link>
-            </div>
+            <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">
+              Vandaag{activeCourse ? ` — ${activeCourse.name}` : ""}
+            </p>
             <h2 className="text-2xl font-extrabold">
               📖 {todayEntry.book.name} {todayEntry.chapter.number}
             </h2>

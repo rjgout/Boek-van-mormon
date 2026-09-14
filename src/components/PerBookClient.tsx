@@ -60,13 +60,7 @@ export default function PerBookClient() {
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
       <div>
-        <Link
-          href="/courses"
-          className="text-sm text-brand-600 dark:text-brand-300 font-bold underline underline-offset-2"
-        >
-          ← Terug naar cursussen
-        </Link>
-        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300 mt-2">Per boek</h1>
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Per boek</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm">
           Kies een boek om daar hoofdstuk voor hoofdstuk doorheen te gaan.
         </p>

@@ -25,9 +25,6 @@ export default function KidsCourseView({ courseName, stories }: Props) {
             Korte, geïllustreerde verhalen uit het Boek van Mormon — met een plaatjesspel en simpele vraagjes.
             Kies gewoon een verhaal dat je leuk lijkt, in elke volgorde.
           </p>
-          <Link href="/courses" className="text-brand-100 text-xs font-bold underline underline-offset-2 self-start">
-            Wissel cursus
-          </Link>
         </div>
       </div>
 
