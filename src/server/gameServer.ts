@@ -236,9 +236,11 @@ async function finishGame(room: RoomState) {
       const percent = room.exercises.length === 0 ? 0 : Math.round((p.correctCount / room.exercises.length) * 100);
       const xp = Math.round(p.score / 5);
       const won = maxScore > 0 && p.score === maxScore;
-      if (xp > 0) {
-        await completeLesson(p.userId, room.chapterId!, percent, xp, won ? "LIVE_GAME_WON" : "LIVE_GAME_PLAYED").catch(() => {});
-      }
+      // Altijd aanroepen, ook bij xp === 0 (verloren met score 0): meespelen
+      // telt als vandaag gestudeerd, net als bij CHAPTER_GUESS hieronder.
+      // completeLesson/awardXp behandelen xp = 0 zelf al als no-op voor de
+      // XP-boekhouding.
+      await completeLesson(p.userId, room.chapterId!, percent, xp, won ? "LIVE_GAME_WON" : "LIVE_GAME_PLAYED").catch(() => {});
     }
   } else {
     const total = room.cgQuestions.length;

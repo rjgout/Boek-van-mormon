@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { dayKey, weekStartKey, amsterdamNow } from "@/lib/dates";
+import { dayKey, weekStartKey, amsterdamNow, type AmsterdamTime } from "@/lib/dates";
 import { resolveStartingTier, TIER_ORDER } from "@/lib/leagues";
 import { notifyDailyReminder, notifyWeeklyResult, notifyWordGame } from "@/lib/notify";
 import { TIER_LABELS } from "@/lib/leagues";
@@ -11,8 +11,18 @@ const TICK_MS = 60_000;
 // systeemmoment vlak na het einde van de vorige week.
 const WEEKLY_RESULT_TIME = "00:05";
 
-function nowHHMM(d: Date): string {
-  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+// Beide ticks hieronder vergelijken tegen een door de gebruiker gekozen of
+// vast Nederlands tijdstip (bv. "20:00"), dus moeten tegen de Nederlandse
+// wandklok getoetst worden — niet tegen de tijdzone van de servermachine
+// (die in productie gewoon UTC kan zijn), net als de woordspel-tick
+// hieronder al deed.
+function amsterdamHHMM(amsterdam: AmsterdamTime): string {
+  return `${String(amsterdam.hour).padStart(2, "0")}:${String(amsterdam.minute).padStart(2, "0")}`;
+}
+
+/** Dag van de week (0 = zondag, 1 = maandag, ...) van een Nederlandse kalenderdatum. */
+function amsterdamDayOfWeek(amsterdam: AmsterdamTime): number {
+  return new Date(Date.UTC(amsterdam.year, amsterdam.month - 1, amsterdam.day)).getUTCDay();
 }
 
 function previousWeekStart(weekStart: string): string {
@@ -30,7 +40,7 @@ function previousWeekStart(weekStart: string): string {
  */
 async function runDailyReminderTick(): Promise<void> {
   const now = new Date();
-  const time = nowHHMM(now);
+  const time = amsterdamHHMM(amsterdamNow(now));
   const today = dayKey(now);
 
   const candidates = await prisma.user.findMany({
@@ -60,7 +70,8 @@ async function runDailyReminderTick(): Promise<void> {
  */
 async function runWeeklyResultTick(): Promise<void> {
   const now = new Date();
-  if (now.getDay() !== 1 || nowHHMM(now) !== WEEKLY_RESULT_TIME) return; // maandag, vast tijdstip
+  const amsterdam = amsterdamNow(now);
+  if (amsterdamDayOfWeek(amsterdam) !== 1 || amsterdamHHMM(amsterdam) !== WEEKLY_RESULT_TIME) return; // maandag, vast tijdstip (NL)
 
   const newWeek = weekStartKey(now);
   const endedWeek = previousWeekStart(newWeek);

@@ -22,6 +22,7 @@ export const TIER_ICONS: Record<LeagueTier, string> = {
 const PROMOTE_COUNT = 3; // top N van een divisie-groep promoveert
 const DEMOTE_COUNT = 3; // onderste N degradeert
 const MIN_GROUP_SIZE_FOR_DEMOTION = 5; // te kleine groepen: niemand degradeert
+const MIN_GROUP_SIZE_FOR_PROMOTION = 5; // te kleine groepen: niemand promoveert (symmetrisch met degradatie)
 
 function previousWeekStart(weekStart: string): string {
   const d = new Date(`${weekStart}T00:00:00Z`);
@@ -55,7 +56,7 @@ export async function resolveStartingTier(
   const total = peers.length;
   const tierIndex = TIER_ORDER.indexOf(prevScore.tier);
 
-  if (rank !== -1 && rank < PROMOTE_COUNT && tierIndex < TIER_ORDER.length - 1) {
+  if (rank !== -1 && total >= MIN_GROUP_SIZE_FOR_PROMOTION && rank < PROMOTE_COUNT && tierIndex < TIER_ORDER.length - 1) {
     return TIER_ORDER[tierIndex + 1];
   }
   if (rank !== -1 && total >= MIN_GROUP_SIZE_FOR_DEMOTION && rank >= total - DEMOTE_COUNT && tierIndex > 0) {

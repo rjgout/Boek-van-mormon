@@ -56,7 +56,9 @@ const ACHIEVEMENTS: AchievementDef[] = [
         where: { userId, game: { status: "FINISHED" } },
         include: { game: { include: { players: true } } },
       });
-      return played.some((p) => p.score > 0 && p.game.players.every((other) => other.score <= p.score));
+      return played.some(
+        (p) => p.score > 0 && p.game.players.every((other) => other.userId === p.userId || other.score < p.score)
+      );
     },
   },
 ];

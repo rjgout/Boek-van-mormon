@@ -6,6 +6,12 @@ import type { ChapterGuessLevel } from "@prisma/client";
 export const QUESTION_COUNT_OPTIONS = [5, 10, 15] as const;
 export const BEGINNER_OPTION_COUNT = 4;
 
+// Interne signaal-errors om binnen een transactie (zie useChapterGuessHint)
+// af te breken met een specifieke reden, zonder de foutmelding zelf al
+// binnen de transactie te construeren.
+class HintAlreadyUsedError extends Error {}
+class NoHintCreditError extends Error {}
+
 export interface ChapterLabel {
   chapterId: string;
   bookId: string;
@@ -233,25 +239,43 @@ export async function useChapterGuessHint(gameId: string, userId: string): Promi
   if (!question) return { error: "Vraag niet gevonden." };
   if (question.hintUsed) return { error: "Je hebt voor deze vraag al een hint gebruikt." };
 
-  // Zelfde twee-traps-verbruik als bij het Woordspel: eerst het per-spel
-  // verdiende tegoed, pas daarna het algemene, gekochte tegoed
-  // (User.hintBalance, zie src/lib/shop.ts).
-  const useGameCredit = game.hintCredits > 0;
-  if (!useGameCredit) {
-    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
-    if (user.hintBalance <= 0) {
+  // Alles hieronder gebeurt in één transactie zodat het claimen van de vraag
+  // (hintUsed: false -> true) en het afschrijven van een tegoed onlosmakelijk
+  // samen slagen of samen mislukken: zonder dat zou een gelijktijdige
+  // aanvraag voor dezelfde vraag (bv. een dubbelklik) een tegoed dubbel
+  // kunnen verbruiken, of — als we de vraag zouden claimen vóórdat we weten
+  // of er een tegoed is — de vraag permanent kunnen "opbranden" zonder dat
+  // er ooit een hint is gegeven.
+  try {
+    await prisma.$transaction(async (tx) => {
+      const claimed = await tx.chapterGuessQuestion.updateMany({
+        where: { id: question.id, hintUsed: false },
+        data: { hintUsed: true },
+      });
+      if (claimed.count === 0) throw new HintAlreadyUsedError();
+
+      // Zelfde twee-traps-verbruik als bij het Woordspel: eerst het per-spel
+      // verdiende tegoed, pas daarna het algemene, gekochte tegoed
+      // (User.hintBalance, zie src/lib/shop.ts).
+      const gameCreditResult = await tx.chapterGuessGame.updateMany({
+        where: { id: gameId, hintCredits: { gt: 0 } },
+        data: { hintCredits: { decrement: 1 } },
+      });
+      if (gameCreditResult.count === 0) {
+        const userCreditResult = await tx.user.updateMany({
+          where: { id: userId, hintBalance: { gt: 0 } },
+          data: { hintBalance: { decrement: 1 } },
+        });
+        if (userCreditResult.count === 0) throw new NoHintCreditError();
+      }
+    });
+  } catch (e) {
+    if (e instanceof HintAlreadyUsedError) return { error: "Je hebt voor deze vraag al een hint gebruikt." };
+    if (e instanceof NoHintCreditError) {
       return { error: "Je hebt geen hint beschikbaar — geef eerst een goed antwoord, of koop er een in de winkel." };
     }
+    throw e;
   }
-
-  await prisma.$transaction(async (tx) => {
-    await tx.chapterGuessQuestion.update({ where: { id: question.id }, data: { hintUsed: true } });
-    if (useGameCredit) {
-      await tx.chapterGuessGame.update({ where: { id: gameId }, data: { hintCredits: { decrement: 1 } } });
-    } else {
-      await tx.user.update({ where: { id: userId }, data: { hintBalance: { decrement: 1 } } });
-    }
-  });
 
   const optionIds = question.optionIds ? (JSON.parse(question.optionIds) as string[]) : null;
   return computeHintEffect(game.level, question.chapterId, optionIds, await getChapterLabel(question.chapterId));

@@ -358,33 +358,34 @@ export async function useHint(gameId: string, userId: string): Promise<HintActio
   const isPlayer1 = userId === game.player1Id;
   if (!isPlayer1 && userId !== game.player2Id) return { ok: false, error: "Je speelt niet mee in dit spel." };
 
-  // Verdiende (per-partij) tegoed gaat eerst op; pas als dat leeg is wordt
-  // er geput uit het algemene, met XP gekochte tegoed (User.hintBalance,
-  // zie src/lib/shop.ts) — dat is overal inzetbaar, niet aan dit spel
-  // gebonden.
-  const gameCredits = isPlayer1 ? game.player1HintCredits : game.player2HintCredits;
-  const useGameCredit = gameCredits > 0;
-
-  if (!useGameCredit) {
-    const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
-    if (user.hintBalance <= 0) {
-      return { ok: false, error: "Je hebt geen hint beschikbaar — speel eerst een woord, of koop er een in de winkel." };
-    }
-  }
-
   const rack = parseRack(isPlayer1 ? game.player1Rack : game.player2Rack);
   const hint = findHint(rack);
   if (!hint) {
     return { ok: false, error: "Geen woord gevonden met je huidige letters." };
   }
 
-  if (useGameCredit) {
-    await prisma.scrabbleGame.update({
-      where: { id: gameId },
-      data: isPlayer1 ? { player1HintCredits: { decrement: 1 } } : { player2HintCredits: { decrement: 1 } },
+  // Verdiende (per-partij) tegoed gaat eerst op; pas als dat leeg is wordt
+  // er geput uit het algemene, met XP gekochte tegoed (User.hintBalance,
+  // zie src/lib/shop.ts) — dat is overal inzetbaar, niet aan dit spel
+  // gebonden. De `gt: 0`-voorwaarde in de updateMany's hieronder maakt dit
+  // race-veilig bij gelijktijdige aanvragen (bv. een dubbelklik): als een
+  // andere aanvraag het tegoed ondertussen al heeft opgemaakt, matcht de
+  // WHERE niet meer en is affected rows 0, in plaats van dat beide
+  // aanvragen op basis van een verouderde lezing allebei doorgaan.
+  const gameCreditField = isPlayer1 ? "player1HintCredits" : "player2HintCredits";
+  const gameCreditResult = await prisma.scrabbleGame.updateMany({
+    where: { id: gameId, [gameCreditField]: { gt: 0 } },
+    data: { [gameCreditField]: { decrement: 1 } },
+  });
+
+  if (gameCreditResult.count === 0) {
+    const userCreditResult = await prisma.user.updateMany({
+      where: { id: userId, hintBalance: { gt: 0 } },
+      data: { hintBalance: { decrement: 1 } },
     });
-  } else {
-    await prisma.user.update({ where: { id: userId }, data: { hintBalance: { decrement: 1 } } });
+    if (userCreditResult.count === 0) {
+      return { ok: false, error: "Je hebt geen hint beschikbaar — speel eerst een woord, of koop er een in de winkel." };
+    }
   }
 
   return { ok: true, word: hint.word, usedIndices: hint.usedIndices };

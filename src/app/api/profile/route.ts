@@ -21,7 +21,9 @@ export async function GET() {
       prisma.weeklyScore.findUnique({ where: { userId_weekStart: { userId: user.id, weekStart: weekStartKey() } } }),
     ]);
 
-  const wins = duelsWon.filter((p) => p.score > 0 && p.game.players.every((other) => other.score <= p.score)).length;
+  const wins = duelsWon.filter(
+    (p) => p.score > 0 && p.game.players.every((other) => other.userId === p.userId || other.score < p.score)
+  ).length;
   const earnedByAchievementId = new Map(earned.map((e) => [e.achievementId, e.earnedAt]));
 
   return NextResponse.json({
