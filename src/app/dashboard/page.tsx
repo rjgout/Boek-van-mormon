@@ -92,14 +92,7 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Hoi {user.handle} 👋</h1>
-          <div className="flex gap-4 text-center">
-            <MiniStat icon="🔥" value={user.currentStreak} label="Streak" color="text-orange-500" />
-            <MiniStat icon="🧊" value={user.freezeCount} label="Freezes" color="text-ice-600" />
-            <MiniStat icon="⭐" value={user.xpTotal} label="XP" color="text-gold-600" />
-          </div>
-        </div>
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Hoi {user.handle} 👋</h1>
 
         <SearchBar />
 
@@ -196,17 +189,6 @@ export default async function DashboardPage() {
           </div>
         </section>
       ))}
-    </div>
-  );
-}
-
-function MiniStat({ icon, value, label, color }: { icon: string; value: number; label: string; color: string }) {
-  return (
-    <div>
-      <div className={`text-2xl font-extrabold ${color}`}>
-        {icon} {value}
-      </div>
-      <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">{label}</div>
     </div>
   );
 }

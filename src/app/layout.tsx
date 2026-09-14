@@ -8,7 +8,6 @@ import InviteListener from "@/components/InviteListener";
 import ThemeScript from "@/components/ThemeScript";
 import ThemeToggle from "@/components/ThemeToggle";
 import BottomNav from "@/components/BottomNav";
-import Footer from "@/components/Footer";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 
@@ -91,38 +90,38 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <nav className="flex items-center gap-4">
                 <Link
                   href="/courses"
-                  className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                  className="hidden sm:inline whitespace-nowrap text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                 >
                   Cursussen
                 </Link>
                 <Link
                   href="/friends"
-                  className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                  className="hidden sm:inline whitespace-nowrap text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                 >
                   Vrienden
                 </Link>
                 <Link
                   href="/competition"
-                  className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                  className="hidden sm:inline whitespace-nowrap text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                 >
                   Competitie
                 </Link>
                 <Link
                   href="/live"
-                  className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                  className="hidden sm:inline whitespace-nowrap text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                 >
                   Live spel
                 </Link>
                 <Link
                   href="/shop"
-                  className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                  className="hidden sm:inline whitespace-nowrap text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                 >
                   Winkel
                 </Link>
                 {user.isAdmin && (
                   <Link
                     href="/adminbackend"
-                    className="hidden sm:inline text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
+                    className="hidden sm:inline whitespace-nowrap text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-300"
                   >
                     Admin
                   </Link>
@@ -149,7 +148,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </header>
         <main className="mx-auto max-w-5xl px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-8">{children}</main>
-        <Footer />
         {user && <BottomNav />}
         {user && <InviteListener />}
         <ServiceWorkerRegister />

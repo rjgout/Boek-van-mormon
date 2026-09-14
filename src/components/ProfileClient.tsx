@@ -170,6 +170,12 @@ export default function ProfileClient() {
     setEditingHandle(false);
   }
 
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+    router.refresh();
+  }
+
   async function deleteAccount() {
     setDeleting(true);
     const res = await fetch("/api/account", { method: "DELETE" });
@@ -274,9 +280,14 @@ export default function ProfileClient() {
           </div>
         )}
 
-        <Link href="/change-password" className="btn-secondary self-start">
-          Wachtwoord wijzigen
-        </Link>
+        <div className="flex gap-2 flex-wrap">
+          <Link href="/change-password" className="btn-secondary self-start">
+            Wachtwoord wijzigen
+          </Link>
+          <button className="btn-secondary self-start" onClick={logout}>
+            Uitloggen
+          </button>
+        </div>
       </section>
 
       <section className="card flex flex-col gap-3">
