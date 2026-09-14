@@ -76,6 +76,9 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
   const [chosenChapterId, setChosenChapterId] = useState<string | null>(null);
   const [hint, setHint] = useState<HintResult | null>(null);
   const [hintLoading, setHintLoading] = useState(false);
+  const [confirmingGiveUp, setConfirmingGiveUp] = useState(false);
+  const [givingUp, setGivingUp] = useState(false);
+  const [gaveUpSummary, setGaveUpSummary] = useState<{ correctCount: number; total: number } | null>(null);
 
   useEffect(() => {
     fetch(`/api/chapter-guess/${gameId}`)
@@ -142,6 +145,21 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
     if (data.bookId) setPickedBookId(data.bookId);
   }
 
+  async function giveUp() {
+    if (givingUp) return;
+    setGivingUp(true);
+    setError(null);
+    const res = await fetch(`/api/chapter-guess/${gameId}/forfeit`, { method: "POST" });
+    const data = await res.json().catch(() => ({}));
+    setGivingUp(false);
+    if (!res.ok) {
+      setError(data.error ?? "Er ging iets mis.");
+      return;
+    }
+    setConfirmingGiveUp(false);
+    setGaveUpSummary(data);
+  }
+
   if (error && !game) {
     return (
       <div className="max-w-md mx-auto card text-center flex flex-col gap-3">
@@ -155,6 +173,26 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
 
   if (!game) {
     return <p className="text-center text-slate-400 dark:text-slate-500">Laden...</p>;
+  }
+
+  if (gaveUpSummary) {
+    return (
+      <div className="max-w-md mx-auto card flex flex-col items-center gap-4 text-center animate-pop">
+        <div className="text-5xl">🏳️</div>
+        <h2 className="text-2xl font-extrabold text-slate-600 dark:text-slate-300">Je hebt opgegeven</h2>
+        <p className="text-slate-500 dark:text-slate-400">
+          Je stond op {gaveUpSummary.correctCount} / {gaveUpSummary.total} goed — geen XP voor dit potje.
+        </p>
+        <div className="flex gap-3 mt-2">
+          <Link href="/chapter-guess" className="btn-primary">
+            Nog een keer
+          </Link>
+          <Link href="/live" className="btn-secondary">
+            Terug
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   if (finalSummary) {
@@ -191,12 +229,37 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
         <span>
           Vraag {question.index + 1} / {question.total}
         </span>
-        {game.level !== "EXPERT" && (
-          <button className="btn-secondary !px-3 !py-1.5 !text-xs" disabled={hintLoading || hint !== null || answered} onClick={useHint}>
-            💡 Hint ({game.hintCredits})
+        <div className="flex items-center gap-2">
+          {game.level !== "EXPERT" && (
+            <button className="btn-secondary !px-3 !py-1.5 !text-xs" disabled={hintLoading || hint !== null || answered} onClick={useHint}>
+              💡 Hint ({game.hintCredits})
+            </button>
+          )}
+          <button
+            className="btn-secondary !px-3 !py-1.5 !text-xs !text-red-500 dark:!text-red-400"
+            disabled={givingUp}
+            onClick={() => setConfirmingGiveUp(true)}
+          >
+            🏳️ Opgeven
           </button>
-        )}
+        </div>
       </div>
+
+      {confirmingGiveUp && (
+        <div className="card !py-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-2 border-red-200 dark:border-red-900">
+          <p className="text-sm font-bold text-red-600 dark:text-red-400">
+            Weet je het zeker? Je krijgt dan geen XP voor dit potje.
+          </p>
+          <div className="flex gap-2 shrink-0">
+            <button className="btn-secondary !px-3 !py-1.5 !text-xs" disabled={givingUp} onClick={() => setConfirmingGiveUp(false)}>
+              Annuleren
+            </button>
+            <button className="btn-primary !bg-red-500 !px-3 !py-1.5 !text-xs" disabled={givingUp} onClick={giveUp}>
+              {givingUp ? "Bezig..." : "Ja, opgeven"}
+            </button>
+          </div>
+        </div>
+      )}
       <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
         <div className="h-full bg-brand-500 transition-all duration-300" style={{ width: `${(question.index / question.total) * 100}%` }} />
       </div>

@@ -237,6 +237,32 @@ export async function submitChapterGuessAnswer(
   return { correct, correctChapter, finished: false, nextQuestion, hintCredits, summary: null };
 }
 
+export interface ForfeitResult {
+  correctCount: number;
+  total: number;
+}
+
+// Opgeven: het spel wordt meteen FINISHED gezet zónder completeChapterGuess
+// aan te roepen — dat is de enige plek die XP/streak/prestaties toekent (zie
+// submitChapterGuessAnswer hierboven), dus door die aanroep hier over te
+// slaan wordt er domweg nooit een beloning uitgekeerd voor dit potje. Zo
+// "verlies" je de XP die je tot dan toe had kunnen winnen: die was toch pas
+// aan het eind toegekend, dus er hoeft niets te worden teruggeboekt.
+export async function forfeitChapterGuessGame(gameId: string, userId: string): Promise<ForfeitResult | { error: string }> {
+  const game = await prisma.chapterGuessGame.findUnique({ where: { id: gameId } });
+  if (!game || game.userId !== userId) return { error: "Spel niet gevonden." };
+  if (game.status !== "IN_PROGRESS") return { error: "Dit spel is al afgelopen." };
+
+  const correctCount = await prisma.chapterGuessQuestion.count({ where: { gameId, correct: true } });
+
+  await prisma.chapterGuessGame.update({
+    where: { id: gameId },
+    data: { status: "FINISHED", finishedAt: new Date() },
+  });
+
+  return { correctCount, total: game.questionCount };
+}
+
 export interface HintResult {
   eliminatedChapterId?: string; // BEGINNER
   bookId?: string; // ADVANCED
