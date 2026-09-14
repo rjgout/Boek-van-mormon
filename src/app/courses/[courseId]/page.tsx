@@ -48,9 +48,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
     return (
       <PodcastCourseView
         courseName={course.name}
-        streak={user.currentStreak}
-        freezeCount={user.freezeCount}
-        xpTotal={user.xpTotal}
         episodes={episodes.map((episode) => {
           const contentProgress = episode.progress.find((p) => p.mode === "CONTENT");
           const bomProgress = episode.progress.find((p) => p.mode === "BOM_CONNECTION");
@@ -81,9 +78,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
     return (
       <KidsCourseView
         courseName={course.name}
-        streak={user.currentStreak}
-        freezeCount={user.freezeCount}
-        xpTotal={user.xpTotal}
         stories={stories.map((story) => {
           const images = JSON.parse(story.images) as string[];
           return {
@@ -122,9 +116,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
     <FrontToBackCourseView
       courseName={course.name}
       currentChapterId={courseProgress?.currentChapterId ?? null}
-      streak={user.currentStreak}
-      freezeCount={user.freezeCount}
-      xpTotal={user.xpTotal}
       chapters={chapters.map((chapter) => ({
         id: chapter.id,
         number: chapter.number,

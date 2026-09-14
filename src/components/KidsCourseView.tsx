@@ -11,24 +11,14 @@ interface StoryView {
 
 interface Props {
   courseName: string;
-  streak: number;
-  freezeCount: number;
-  xpTotal: number;
   stories: StoryView[];
 }
 
-export default function KidsCourseView({ courseName, streak, freezeCount, xpTotal, stories }: Props) {
+export default function KidsCourseView({ courseName, stories }: Props) {
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">{courseName}</h1>
-          <div className="flex gap-4 text-center">
-            <MiniStat icon="🔥" value={streak} label="Streak" color="text-orange-500" />
-            <MiniStat icon="🧊" value={freezeCount} label="Freezes" color="text-ice-600" />
-            <MiniStat icon="⭐" value={xpTotal} label="XP" color="text-gold-600" />
-          </div>
-        </div>
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">{courseName}</h1>
         <div className="card bg-gradient-to-br from-brand-500 to-brand-600 text-white flex flex-col gap-2">
           <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">Over deze cursus</p>
           <p>
@@ -64,17 +54,6 @@ export default function KidsCourseView({ courseName, streak, freezeCount, xpTota
           </Link>
         ))}
       </div>
-    </div>
-  );
-}
-
-function MiniStat({ icon, value, label, color }: { icon: string; value: number; label: string; color: string }) {
-  return (
-    <div>
-      <div className={`text-2xl font-extrabold ${color}`}>
-        {icon} {value}
-      </div>
-      <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">{label}</div>
     </div>
   );
 }

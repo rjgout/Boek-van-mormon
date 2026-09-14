@@ -16,20 +16,10 @@ interface ChapterView {
 interface Props {
   courseName: string;
   currentChapterId: string | null;
-  streak: number;
-  freezeCount: number;
-  xpTotal: number;
   chapters: ChapterView[];
 }
 
-export default function FrontToBackCourseView({
-  courseName,
-  currentChapterId,
-  streak,
-  freezeCount,
-  xpTotal,
-  chapters,
-}: Props) {
+export default function FrontToBackCourseView({ courseName, currentChapterId, chapters }: Props) {
   const allDone = chapters.length > 0 && chapters.every((c) => c.completed);
   const todayChapter =
     (currentChapterId && chapters.find((c) => c.id === currentChapterId)) ||
@@ -44,14 +34,7 @@ export default function FrontToBackCourseView({
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between flex-wrap gap-3">
-          <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">{courseName}</h1>
-          <div className="flex gap-4 text-center">
-            <MiniStat icon="🔥" value={streak} label="Streak" color="text-orange-500" />
-            <MiniStat icon="🧊" value={freezeCount} label="Freezes" color="text-ice-600" />
-            <MiniStat icon="⭐" value={xpTotal} label="XP" color="text-gold-600" />
-          </div>
-        </div>
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">{courseName}</h1>
 
         {todayChapter && !allDone ? (
           <div className="card bg-gradient-to-br from-brand-500 to-brand-600 text-white flex flex-col gap-3">
@@ -138,17 +121,6 @@ export default function FrontToBackCourseView({
           );
         })}
       </div>
-    </div>
-  );
-}
-
-function MiniStat({ icon, value, label, color }: { icon: string; value: number; label: string; color: string }) {
-  return (
-    <div>
-      <div className={`text-2xl font-extrabold ${color}`}>
-        {icon} {value}
-      </div>
-      <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">{label}</div>
     </div>
   );
 }
