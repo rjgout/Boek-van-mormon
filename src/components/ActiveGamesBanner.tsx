@@ -24,7 +24,7 @@ const KIND_ICON: Record<ActivityItem["kind"], string> = {
   live: "🎮",
 };
 
-// Compacte melding op /dashboard en /courses zodat je openstaande
+// Compacte melding bovenaan /live ("Spelen") zodat je openstaande
 // uitnodigingen en lopende spellen (Uitdagingen, Woordspel, Live spel) ook
 // ziet zonder eerst naar die spelpagina's zelf te gaan. Toont niets zodra
 // er niets openstaat.

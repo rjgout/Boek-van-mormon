@@ -5,7 +5,6 @@ import { prisma } from "@/lib/db";
 import { isEmailConfigured } from "@/lib/email";
 import { advanceCourseProgress } from "@/lib/courses";
 import SearchBar from "@/components/SearchBar";
-import ActiveGamesBanner from "@/components/ActiveGamesBanner";
 
 const WORDS_PER_MINUTE = 130; // rustig lees-/nadenktempo
 
@@ -95,8 +94,6 @@ export default async function DashboardPage() {
         <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Hoi {user.handle} 👋</h1>
 
         <SearchBar />
-
-        <ActiveGamesBanner />
 
         {todayEntry && !allDone ? (
           <div className="card bg-gradient-to-br from-brand-500 to-brand-600 text-white flex flex-col gap-3">

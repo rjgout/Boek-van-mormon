@@ -4,13 +4,13 @@ const items = [
   { href: "/courses", label: "Cursussen", icon: "📖" },
   { href: "/friends", label: "Vrienden", icon: "👥" },
   { href: "/competition", label: "Competitie", icon: "🏆" },
-  { href: "/live", label: "Live", icon: "🎮" },
+  { href: "/live", label: "Spelen", icon: "🎮" },
   { href: "/shop", label: "Winkel", icon: "🛒" },
   { href: "/profile", label: "Profiel", icon: "🙂" },
 ];
 
 // Zonder dit was er op mobiel (waar de meeste gebruikers waarschijnlijk
-// zitten) geen manier om bij Vrienden/Competitie/Live te komen: die links
+// zitten) geen manier om bij Vrienden/Competitie/Spelen te komen: die links
 // stonden alleen in de header en die verdwijnt onder het "sm"-breakpoint.
 export default function BottomNav() {
   return (

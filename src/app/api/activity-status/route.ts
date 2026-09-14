@@ -14,8 +14,8 @@ interface ActivityItem {
 // Alles wat een gebruiker "open" heeft staan over de asynchrone spellen
 // heen (Uitdagingen, Woordspel) en het realtime Live spel: openstaande
 // uitnodigingen (ontvangen/verstuurd) en partijen die nog lopen. Gebruikt
-// door ActiveGamesBanner op /dashboard en /courses, zodat je dat ook ziet
-// zonder eerst naar de spelpagina's zelf te gaan.
+// door ActiveGamesBanner bovenaan /live ("Spelen"), zodat je dat ook ziet
+// zonder eerst de losse spelpagina's zelf te hoeven checken.
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });

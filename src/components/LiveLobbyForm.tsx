@@ -3,6 +3,7 @@
 import { useEffect, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import ActiveGamesBanner from "@/components/ActiveGamesBanner";
 
 interface ChapterOption {
   id: string;
@@ -53,32 +54,23 @@ export default function LiveLobbyForm() {
 
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-8">
-      <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Live spel</h1>
+      <ActiveGamesBanner />
+
+      <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Spelletjes en uitdagingen</h1>
 
       <div className="card flex flex-col gap-3">
-        <h2 className="font-extrabold dark:text-slate-100">⚔️ Uitdagingen</h2>
+        <h2 className="font-extrabold dark:text-slate-100">🟩 Woord van de dag</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Daag een vriend uit op een hoofdstuk: jullie spelen allebei wanneer het uitkomt, en zien daarna wie beter
-          scoorde.
+          Lingo/Wordle met alleen 5-letterwoorden uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één
+          poging per dag, en het telt mee voor je streak.
         </p>
-        <Link href="/challenges" className="btn-secondary self-start">
-          Uitdagingen openen
+        <Link href="/word-game" className="btn-secondary self-start">
+          Woord van de dag openen
         </Link>
       </div>
 
       <div className="card flex flex-col gap-3">
-        <h2 className="font-extrabold dark:text-slate-100">🔎 Nieuw: Raad het hoofdstuk</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Lees het eerste vers van een hoofdstuk en raad welk hoofdstuk het is — kies zelf je niveau, alleen of live
-          met vrienden.
-        </p>
-        <Link href="/chapter-guess" className="btn-secondary self-start">
-          Raad het hoofdstuk openen
-        </Link>
-      </div>
-
-      <div className="card flex flex-col gap-3">
-        <h2 className="font-extrabold dark:text-slate-100">🔤 Nieuw: Woordspel</h2>
+        <h2 className="font-extrabold dark:text-slate-100">🔤 Woordspel</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Een Scrabble-variant met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,
           net als Wordfeud.
@@ -89,13 +81,24 @@ export default function LiveLobbyForm() {
       </div>
 
       <div className="card flex flex-col gap-3">
-        <h2 className="font-extrabold dark:text-slate-100">🟩 Nieuw: Woord van de dag</h2>
+        <h2 className="font-extrabold dark:text-slate-100">🔎 Raad het hoofdstuk</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Lingo/Wordle met alleen 5-letterwoorden uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één
-          poging per dag, en het telt mee voor je streak.
+          Lees het eerste vers van een hoofdstuk en raad welk hoofdstuk het is — kies zelf je niveau, alleen of live
+          met vrienden.
         </p>
-        <Link href="/word-game" className="btn-secondary self-start">
-          Woord van de dag openen
+        <Link href="/chapter-guess" className="btn-secondary self-start">
+          Raad het hoofdstuk openen
+        </Link>
+      </div>
+
+      <div className="card flex flex-col gap-3">
+        <h2 className="font-extrabold dark:text-slate-100">⚔️ Uitdagingen</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Daag een vriend uit op een hoofdstuk: jullie spelen allebei wanneer het uitkomt, en zien daarna wie beter
+          scoorde.
+        </p>
+        <Link href="/challenges" className="btn-secondary self-start">
+          Uitdagingen openen
         </Link>
       </div>
 
