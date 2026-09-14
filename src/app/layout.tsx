@@ -37,7 +37,13 @@ export async function generateMetadata(): Promise<Metadata> {
             { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
             { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
           ],
-      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+      // iOS gebruikt voor "Voeg toe aan beginscherm" specifiek dit
+      // apple-touch-icon-icoon, niet de gewone favicon hierboven — zonder
+      // deze eigen tak zou een custom favicon dus nooit op het beginscherm
+      // van een iPhone verschijnen (zie /api/branding/apple-touch-icon).
+      apple: faviconDataUrl
+        ? [{ url: "/api/branding/apple-touch-icon", sizes: "any" }]
+        : [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     },
     appleWebApp: {
       capable: true,

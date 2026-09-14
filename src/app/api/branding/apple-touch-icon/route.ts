@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBranding, decodeBrandingDataUrl } from "@/lib/branding";
 
-// Publieke route (geen auth) die het door de admin ingestelde favicon
-// serveert als binair beeld met het juiste Content-Type — een <link
-// rel="icon"> kan niet rechtstreeks naar een data-URL uit de database
-// wijzen op een manier die browsers betrouwbaar verversen, dus dit is de
-// tussenlaag (zie generateMetadata in layout.tsx). Zonder eigen favicon
+// Zelfde idee als /api/branding/favicon, maar dan voor het icoon dat iOS
+// gebruikt bij "Voeg toe aan beginscherm": Safari negeert daarvoor de
+// gewone favicon/manifest-icons en kijkt specifiek naar <link
+// rel="apple-touch-icon"> (zie generateMetadata in layout.tsx) — zonder
+// deze eigen route zou een via de adminbackend ingesteld favicon dus nooit
+// op het beginscherm van een iPhone verschijnen. Zonder eigen favicon
 // wordt gewoon doorverwezen naar het standaardbestand.
 export async function GET(req: NextRequest) {
   const { faviconDataUrl } = await getBranding();
   const decoded = decodeBrandingDataUrl(faviconDataUrl);
   if (!decoded) {
-    return NextResponse.redirect(new URL("/favicon.ico", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/apple-touch-icon.png", req.nextUrl.origin));
   }
 
   return new NextResponse(decoded.buffer, {

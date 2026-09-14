@@ -26,3 +26,11 @@ export async function updateBranding(patch: Partial<BrandingView>): Promise<void
     update: patch,
   });
 }
+
+/** Haalt content-type + ruwe bytes uit een branding-data-URL (favicon/logo). Gedeeld door de serve-routes hieronder in /api/branding/*. */
+export function decodeBrandingDataUrl(dataUrl: string | null): { contentType: string; buffer: Buffer } | null {
+  const match = dataUrl ? /^data:([^;]+);base64,(.+)$/.exec(dataUrl) : null;
+  if (!match) return null;
+  const [, contentType, base64] = match;
+  return { contentType, buffer: Buffer.from(base64, "base64") };
+}
