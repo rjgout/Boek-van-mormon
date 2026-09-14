@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "FreezeTxType" ADD VALUE 'PURCHASED';
+
+-- AlterEnum
+ALTER TYPE "XPReason" ADD VALUE 'FREEZE_PURCHASED';

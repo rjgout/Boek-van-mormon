@@ -651,6 +651,8 @@ enum XPReason {
   KIDS_STORY_COMPLETED
   // Negatief bedrag: XP ingewisseld voor hints in de winkel. Zie src/lib/shop.ts.
   HINT_PURCHASED
+  // Negatief bedrag: XP ingewisseld voor streak freezes in de winkel. Zie src/lib/shop.ts.
+  FREEZE_PURCHASED
   // "Raad het hoofdstuk" — zowel alleen als live met vrienden. Zie
   // completeChapterGuess in src/lib/streak.ts.
   CHAPTER_GUESS_COMPLETED
@@ -698,6 +700,8 @@ enum FreezeTxType {
   AUTO_SPENT
   GIFT_SENT
   GIFT_RECEIVED
+  // Ingewisseld tegen XP in de winkel. Zie src/lib/shop.ts.
+  PURCHASED
 }
 
 model FreezeTransaction {

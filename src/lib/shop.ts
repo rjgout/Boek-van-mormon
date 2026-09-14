@@ -44,4 +44,47 @@ export async function buyHints(userId: string, quantity: number): Promise<BuyHin
   }
 }
 
+// Tweede artikel in de winkel: een streak freeze, ook inwisselbaar tegen
+// XP. Los van de freezes die je verdient op een streak-/hoofdstuk-mijlpaal
+// (zie completeLesson e.a. in src/lib/streak.ts) of cadeau krijgt van een
+// vriend (giftFreeze) — dit is gewoon een derde manier om aan User.freezeCount
+// te komen, en telt daarom net als die andere twee mee in een eigen
+// FreezeTransaction voor de audittrail.
+export const FREEZE_PRICE_XP = 1000;
+
+export type BuyFreezeResult =
+  | { ok: true; xpTotal: number; freezeCount: number }
+  | { ok: false; error: string };
+
+export async function buyFreezes(userId: string, quantity: number): Promise<BuyFreezeResult> {
+  if (!Number.isInteger(quantity) || quantity < 1) {
+    return { ok: false, error: "Ongeldig aantal." };
+  }
+  const cost = quantity * FREEZE_PRICE_XP;
+
+  try {
+    const updated = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUniqueOrThrow({ where: { id: userId } });
+      if (user.xpTotal < cost) {
+        throw new InsufficientXpError();
+      }
+      await awardXp(tx, userId, -cost, "FREEZE_PURCHASED", { quantity });
+      await applyWeeklyXp(tx, userId, -cost);
+      await tx.freezeTransaction.create({
+        data: { userId, type: "PURCHASED", amount: quantity, reason: "Gekocht in de winkel" },
+      });
+      return tx.user.update({
+        where: { id: userId },
+        data: { freezeCount: { increment: quantity } },
+      });
+    });
+    return { ok: true, xpTotal: updated.xpTotal, freezeCount: updated.freezeCount };
+  } catch (e) {
+    if (e instanceof InsufficientXpError) {
+      return { ok: false, error: `Je hebt niet genoeg XP (${cost} nodig).` };
+    }
+    throw e;
+  }
+}
+
 class InsufficientXpError extends Error {}
