@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
+import { formatElapsedDutch } from "@/lib/dates";
 import { getEmailSettingsView } from "@/lib/email";
 import AdminUsersClient from "@/components/AdminUsersClient";
 import EmailSettingsClient from "@/components/EmailSettingsClient";
@@ -24,6 +25,9 @@ export default async function AdminBackendPage() {
         isAdmin: true,
         xpTotal: true,
         currentStreak: true,
+        freezeCount: true,
+        onlineSocketCount: true,
+        lastSeenAt: true,
         createdAt: true,
       },
     }),
@@ -51,7 +55,12 @@ export default async function AdminBackendPage() {
       <ReseedClient />
 
       <AdminUsersClient
-        initialUsers={users.map((u) => ({ ...u, createdAt: u.createdAt.toISOString() }))}
+        initialUsers={users.map(({ onlineSocketCount, lastSeenAt, ...u }) => ({
+          ...u,
+          createdAt: u.createdAt.toISOString(),
+          online: onlineSocketCount > 0,
+          lastSeenLabel: onlineSocketCount > 0 ? null : lastSeenAt ? formatElapsedDutch(lastSeenAt) : "Nog nooit",
+        }))}
         currentUserId={user.id}
       />
 

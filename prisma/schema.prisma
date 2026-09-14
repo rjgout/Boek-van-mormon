@@ -42,6 +42,17 @@ model User {
   // zou niemand ooit voorbij de bevestigingspagina komen.
   emailVerifiedAt    DateTime?
   createdAt          DateTime  @default(now())
+  // Bijgehouden door de socket.io-verbinding die elke ingelogde gebruiker al
+  // op elke pagina open heeft staan (zie InviteListener.tsx en
+  // src/server/gameServer.ts), niet alleen tijdens een live spel.
+  // onlineSocketCount is het aantal open tabs/apparaten tegelijk (>0 = nu
+  // online) — bewust in de database i.p.v. in-memory in gameServer.ts, want
+  // een Next.js server component (zoals /adminbackend) draait via Next's
+  // eigen bundel en deelt geen module-geheugen met het los uitgevoerde
+  // server.ts. lastSeenAt is het moment van de laatste connect/disconnect,
+  // voor "hoe lang geleden" op het adminoverzicht.
+  onlineSocketCount  Int       @default(0)
+  lastSeenAt         DateTime?
 
   // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
   // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes

@@ -300,6 +300,16 @@ function registerAnswer(room: RoomState, userId: string, given: string[]) {
 export function initGameServer(httpServer: HttpServer) {
   ioInstance = new SocketIOServer(httpServer, { path: "/socket.io" });
 
+  // Een net gestarte instantie heeft per definitie nog geen enkele
+  // socket-verbinding, dus elke oude telling hier is die van vóór een
+  // herstart (crash of deploy) die nooit een disconnect-event kreeg. Zonder
+  // deze reset zou zo'n gebruiker voor altijd "online" blijven staan op
+  // /adminbackend. Gaat (net als de rest van dit bestand, zie de
+  // Redis-adapter hieronder) uit van precies één draaiende instantie.
+  prisma.user.updateMany({ data: { onlineSocketCount: 0 } }).catch((err) => {
+    console.error("Kon onlineSocketCount niet resetten bij opstarten:", err);
+  });
+
   // Redis-adapter voor Socket.io: alle room-broadcasts (lobby/vraag/reveal)
   // lopen hierdoor via Redis pub/sub. Nu draait er één bom-game-instantie,
   // maar dit is wat het mogelijk maakt om later zonder herbouw meerdere
@@ -326,6 +336,13 @@ export function initGameServer(httpServer: HttpServer) {
     socket.data.userId = user.id;
     socket.data.displayName = user.handle;
     socket.join(`user:${user.id}`);
+
+    // Aanwezigheid voor het adminoverzicht (/adminbackend): zie de opmerking
+    // bij User.onlineSocketCount in schema.prisma voor waarom dit in de
+    // database staat i.p.v. in-memory.
+    await prisma.user
+      .update({ where: { id: user.id }, data: { onlineSocketCount: { increment: 1 }, lastSeenAt: new Date() } })
+      .catch(() => {});
 
     socket.on("join_game", async ({ code }: { code: string }) => {
       const upperCode = code.toUpperCase();
@@ -505,6 +522,21 @@ export function initGameServer(httpServer: HttpServer) {
     });
 
     socket.on("disconnect", () => {
+      prisma.user
+        .update({
+          where: { id: user.id },
+          // Nooit onder 0: bij een servercrash met nog "open" tellingen (zie
+          // de reset bij het opstarten in initGameServer hieronder) zou een
+          // losse late disconnect anders negatief kunnen tellen.
+          data: { onlineSocketCount: { decrement: 1 }, lastSeenAt: new Date() },
+        })
+        .then(async (updated) => {
+          if (updated.onlineSocketCount < 0) {
+            await prisma.user.update({ where: { id: user.id }, data: { onlineSocketCount: 0 } });
+          }
+        })
+        .catch(() => {});
+
       const code = socket.data.gameCode as string | undefined;
       if (!code) return;
       const room = rooms.get(code);

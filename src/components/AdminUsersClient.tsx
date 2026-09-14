@@ -11,6 +11,10 @@ interface AdminUser {
   isAdmin: boolean;
   xpTotal: number;
   currentStreak: number;
+  freezeCount: number;
+  online: boolean;
+  // null als `online` true is — dan is er niets "geleden" te tonen.
+  lastSeenLabel: string | null;
   createdAt: string;
 }
 
@@ -58,6 +62,26 @@ export default function AdminUsersClient({
     setRevealedPasswords((prev) => ({ ...prev, [userId]: data.tempPassword }));
   }
 
+  async function deleteUser(u: AdminUser) {
+    if (
+      !confirm(
+        `Weet je zeker dat je ${formatTag(u.handle, u.discriminator)} wil verwijderen? Dit verwijdert ook al hun voortgang, XP en spellen, en kan niet ongedaan worden gemaakt.`
+      )
+    ) {
+      return;
+    }
+    setError(null);
+    setBusyId(u.id);
+    const res = await fetch(`/api/admin/users/${u.id}`, { method: "DELETE" });
+    setBusyId(null);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error ?? "Er ging iets mis.");
+      return;
+    }
+    setUsers((prev) => prev.filter((x) => x.id !== u.id));
+  }
+
   return (
     <details className="group card overflow-x-auto">
       <summary className="font-extrabold mb-4 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
@@ -72,10 +96,12 @@ export default function AdminUsersClient({
           <tr className="text-left text-xs font-bold uppercase text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-700">
             <th className="py-2 pr-3">Gebruikersnaam</th>
             <th className="py-2 pr-3">E-mail</th>
+            <th className="py-2 pr-3">Status</th>
             <th className="py-2 pr-3">XP</th>
-            <th className="py-2 pr-3">Streak</th>
+            <th className="py-2 pr-3">Reeks</th>
+            <th className="py-2 pr-3">Freezes</th>
             <th className="py-2 pr-3">Admin</th>
-            <th className="py-2" colSpan={2} />
+            <th className="py-2" colSpan={3} />
           </tr>
         </thead>
         <tbody>
@@ -87,8 +113,19 @@ export default function AdminUsersClient({
                   {u.id === currentUserId && <span className="text-brand-500 dark:text-brand-300 font-normal"> (jij)</span>}
                 </td>
                 <td className="py-2 pr-3 text-slate-500 dark:text-slate-400">{u.email}</td>
+                <td className="py-2 pr-3">
+                  {u.online ? (
+                    <span className="text-brand-600 dark:text-brand-300 font-bold flex items-center gap-1.5">
+                      <span className="inline-block w-2 h-2 rounded-full bg-brand-500" aria-hidden />
+                      Online
+                    </span>
+                  ) : (
+                    <span className="text-slate-400 dark:text-slate-500">{u.lastSeenLabel}</span>
+                  )}
+                </td>
                 <td className="py-2 pr-3 dark:text-slate-200">{u.xpTotal}</td>
                 <td className="py-2 pr-3 dark:text-slate-200">🔥 {u.currentStreak}</td>
+                <td className="py-2 pr-3 dark:text-slate-200">🧊 {u.freezeCount}</td>
                 <td className="py-2 pr-3">
                   {u.isAdmin ? (
                     <span className="text-brand-600 dark:text-brand-300 font-bold">Admin</span>
@@ -109,7 +146,7 @@ export default function AdminUsersClient({
                     </button>
                   )}
                 </td>
-                <td className="py-2">
+                <td className="py-2 pr-3">
                   <button
                     className="btn-secondary !px-3 !py-1.5 !text-xs"
                     disabled={busyId === u.id}
@@ -118,10 +155,23 @@ export default function AdminUsersClient({
                     {busyId === u.id ? "Bezig..." : "Wachtwoord resetten"}
                   </button>
                 </td>
+                <td className="py-2">
+                  {u.id === currentUserId ? (
+                    <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
+                  ) : (
+                    <button
+                      className="btn-secondary !px-3 !py-1.5 !text-xs !text-red-500 dark:!text-red-400"
+                      disabled={busyId === u.id}
+                      onClick={() => deleteUser(u)}
+                    >
+                      {busyId === u.id ? "Bezig..." : "Verwijderen"}
+                    </button>
+                  )}
+                </td>
               </tr>
               {revealedPasswords[u.id] && (
                 <tr className="bg-gold-50 dark:bg-slate-700">
-                  <td colSpan={7} className="py-2 px-3 text-sm">
+                  <td colSpan={10} className="py-2 px-3 text-sm">
                     Tijdelijk wachtwoord voor <strong>{u.handle}</strong>:{" "}
                     <code className="bg-white dark:bg-slate-800 px-2 py-0.5 rounded font-mono">
                       {revealedPasswords[u.id]}
