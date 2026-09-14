@@ -11,6 +11,13 @@ interface GuessView {
   result: LetterState[];
 }
 
+interface VerseMatch {
+  bookName: string;
+  chapterNumber: number;
+  verseNumber: number;
+  text: string;
+}
+
 interface GameView {
   dayKey: string;
   wordLength: number;
@@ -19,6 +26,7 @@ interface GameView {
   status: "IN_PROGRESS" | "WON" | "LOST";
   xpEarned: number;
   word: string | null;
+  verses: VerseMatch[];
 }
 
 const TILE_STYLES: Record<LetterState, string> = {
@@ -181,6 +189,27 @@ export default function WordGameClient() {
           <Link href="/live" className="btn-secondary mt-1">
             Terug
           </Link>
+        </div>
+      )}
+
+      {finished && game.verses.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h2 className="font-extrabold dark:text-slate-100">
+            📖 Waar &ldquo;{game.word}&rdquo; voorkomt ({game.verses.length})
+          </h2>
+          <div className="flex flex-col gap-2">
+            {game.verses.map((v, i) => (
+              <details key={i} className="group card !py-2">
+                <summary className="font-bold text-sm cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between dark:text-slate-100">
+                  {v.bookName} {v.chapterNumber}:{v.verseNumber}
+                  <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+                    ▾
+                  </span>
+                </summary>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">{v.text}</p>
+              </details>
+            ))}
+          </div>
         </div>
       )}
     </div>
