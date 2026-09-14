@@ -9,6 +9,13 @@ export function daysBetween(a: string, b: string): number {
   return Math.round((db - da) / msPerDay);
 }
 
+/** Telt `n` dagen op bij een yyyy-mm-dd dag-bucket (mag negatief). */
+export function addDays(key: string, n: number): string {
+  const d = new Date(`${key}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return dayKey(d);
+}
+
 /** Maandag van de week waarin `d` valt, als yyyy-mm-dd. */
 export function weekStartKey(d: Date = new Date()): string {
   const utc = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));

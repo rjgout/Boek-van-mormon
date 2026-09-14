@@ -1,0 +1,238 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
+type StreakDayState = "STUDIED" | "FROZEN" | "NONE" | "FUTURE";
+
+interface StreakDayView {
+  dayKey: string;
+  day: number;
+  weekday: number; // 0 = maandag ... 6 = zondag
+  state: StreakDayState;
+}
+
+interface StreakMonthView {
+  year: number;
+  month: number;
+  days: StreakDayView[];
+  daysStudied: number;
+  freezesUsed: number;
+}
+
+interface StreakOverview {
+  currentStreak: number;
+  longestStreak: number;
+  freezeCount: number;
+  month: StreakMonthView;
+}
+
+const WEEKDAY_LABELS = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+
+function todayKey(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function monthLabel(year: number, month: number): string {
+  return new Intl.DateTimeFormat("nl-NL", { month: "long", year: "numeric", timeZone: "UTC" }).format(
+    new Date(Date.UTC(year, month - 1, 1))
+  );
+}
+
+function isActive(day: StreakDayView | null): boolean {
+  return !!day && (day.state === "STUDIED" || day.state === "FROZEN");
+}
+
+export default function StreakClient() {
+  const [overview, setOverview] = useState<StreakOverview | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  function load(year?: number, month?: number) {
+    const params = new URLSearchParams();
+    if (year !== undefined) params.set("year", String(year));
+    if (month !== undefined) params.set("month", String(month));
+    const qs = params.toString();
+    fetch(`/api/streak${qs ? `?${qs}` : ""}`)
+      .then(async (r) => {
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error ?? "Kon de reeks niet laden.");
+        setOverview(data);
+      })
+      .catch((e) => setError(e instanceof Error ? e.message : "Er ging iets mis."));
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  if (error) {
+    return (
+      <div className="max-w-md mx-auto card text-center flex flex-col gap-3">
+        <p className="text-red-600 dark:text-red-400 font-semibold">{error}</p>
+        <Link href="/dashboard" className="btn-secondary self-center">
+          Terug
+        </Link>
+      </div>
+    );
+  }
+
+  if (!overview) {
+    return <p className="text-center text-slate-400 dark:text-slate-500">Laden...</p>;
+  }
+
+  const { month } = overview;
+  const now = new Date();
+  const isCurrentMonth = month.year === now.getUTCFullYear() && month.month === now.getUTCMonth() + 1;
+
+  function goToMonth(delta: number) {
+    let y = month.year;
+    let m = month.month + delta;
+    if (m < 1) {
+      m = 12;
+      y -= 1;
+    } else if (m > 12) {
+      m = 1;
+      y += 1;
+    }
+    load(y, m);
+  }
+
+  // Kalendergrid: eerste week vullen met lege cellen tot aan de weekdag van
+  // dag 1, zodat de kolommen (Ma..Zo) kloppen.
+  const weeks: (StreakDayView | null)[][] = [];
+  let week: (StreakDayView | null)[] = new Array(month.days[0]?.weekday ?? 0).fill(null);
+  for (const d of month.days) {
+    week.push(d);
+    if (week.length === 7) {
+      weeks.push(week);
+      week = [];
+    }
+  }
+  if (week.length > 0) {
+    while (week.length < 7) week.push(null);
+    weeks.push(week);
+  }
+
+  const today = todayKey();
+
+  return (
+    <div className="max-w-xl mx-auto flex flex-col gap-6">
+      <div>
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">🔥 Reeks</h1>
+      </div>
+
+      <div className="card flex items-center gap-6">
+        <div className="text-6xl" aria-hidden>
+          🔥
+        </div>
+        <div>
+          <div className="text-5xl font-extrabold text-orange-500 leading-none">{overview.currentStreak}</div>
+          <div className="text-slate-500 dark:text-slate-400 font-bold mt-1">dagen geoefend!</div>
+        </div>
+      </div>
+
+      <div className="card flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+        <span className="text-2xl" aria-hidden>
+          🔥
+        </span>
+        <p>
+          Behoud je <span className="font-bold text-orange-500">reeks</span> door elke dag te oefenen! Mis je een dag,
+          dan wordt automatisch een beschikbare freeze ingezet — heb je geen freeze meer, dan breekt je reeks.
+        </p>
+      </div>
+
+      <div className="flex gap-4 justify-center text-center">
+        <div className="card !py-3 !px-5">
+          <div className="text-xl font-extrabold text-brand-600 dark:text-brand-300">{overview.longestStreak}</div>
+          <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Langste reeks</div>
+        </div>
+        <div className="card !py-3 !px-5">
+          <div className="text-xl font-extrabold text-ice-600 dark:text-ice-400">🧊 {overview.freezeCount}</div>
+          <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Freezes</div>
+        </div>
+      </div>
+
+      <div className="card flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <button className="btn-secondary !px-3 !py-1.5" onClick={() => goToMonth(-1)} aria-label="Vorige maand">
+            ‹
+          </button>
+          <h2 className="font-extrabold text-lg capitalize dark:text-slate-100">{monthLabel(month.year, month.month)}</h2>
+          <button
+            className="btn-secondary !px-3 !py-1.5 disabled:opacity-30"
+            onClick={() => goToMonth(1)}
+            disabled={isCurrentMonth}
+            aria-label="Volgende maand"
+          >
+            ›
+          </button>
+        </div>
+
+        <div className="flex gap-4 justify-center text-center">
+          <div className="rounded-xl bg-brand-50 dark:bg-slate-700 !py-2 px-4">
+            <div className="font-extrabold text-brand-700 dark:text-brand-300">🔥 {month.daysStudied}</div>
+            <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Dagen geoefend</div>
+          </div>
+          <div className="rounded-xl bg-ice-50 dark:bg-slate-700 !py-2 px-4">
+            <div className="font-extrabold text-ice-600 dark:text-ice-400">🧊 {month.freezesUsed}</div>
+            <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Bevriezingen gebruikt</div>
+          </div>
+        </div>
+
+        <div>
+          <div className="grid grid-cols-7 text-center text-xs font-bold text-slate-400 dark:text-slate-500 mb-2">
+            {WEEKDAY_LABELS.map((d) => (
+              <div key={d}>{d}</div>
+            ))}
+          </div>
+          <div className="flex flex-col gap-1.5">
+            {weeks.map((w, i) => (
+              <div key={i} className="flex h-10">
+                {w.map((d, j) => {
+                  if (!d) return <div key={j} className="flex-1" />;
+
+                  const active = isActive(d);
+                  const prevActive = j > 0 ? isActive(w[j - 1]) : false;
+                  const nextActive = j < 6 ? isActive(w[j + 1]) : false;
+                  const isToday = d.dayKey === today;
+
+                  if (active) {
+                    return (
+                      <div key={j} className="flex-1 relative">
+                        <div
+                          className={`absolute inset-y-0.5 flex items-center justify-center bg-gradient-to-b from-orange-400 to-red-500 text-white font-extrabold text-sm ${
+                            prevActive ? "left-0" : "left-1 rounded-l-full"
+                          } ${nextActive ? "right-0" : "right-1 rounded-r-full"} ${
+                            isToday ? "ring-2 ring-offset-1 ring-orange-300 dark:ring-offset-slate-800" : ""
+                          }`}
+                        >
+                          {d.state === "FROZEN" ? "🧊" : d.day}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div key={j} className="flex-1 flex items-center justify-center">
+                      <div
+                        className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold ${
+                          isToday
+                            ? "border-2 border-orange-400 text-orange-500"
+                            : d.state === "FUTURE"
+                              ? "text-slate-300 dark:text-slate-600"
+                              : "text-slate-400 dark:text-slate-500"
+                        }`}
+                      >
+                        {d.day}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

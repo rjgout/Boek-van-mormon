@@ -212,14 +212,14 @@ export default function ProfileClient() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <Stat value={`🔥 ${data.currentStreak}`} label="Streak" />
+          <Stat value={`🔥 ${data.currentStreak}`} label="Reeks" href="/streak" />
           <Stat value={`⭐ ${data.xpTotal}`} label="XP" />
           <Stat value={`🧊 ${data.freezeCount}`} label="Freezes" />
           <Stat value={`📖 ${data.chaptersCompleted}`} label="Hoofdstukken" />
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center text-sm text-slate-500 dark:text-slate-400">
-          <Stat value={data.longestStreak.toString()} label="Langste streak" small />
+          <Stat value={data.longestStreak.toString()} label="Langste reeks" small />
           <Stat value={`${data.duelsWon}/${data.duelsPlayed}`} label="Duels gewonnen" small />
           <Stat value={earnedCount.toString()} label="Achievements" small />
         </div>
@@ -453,11 +453,19 @@ export default function ProfileClient() {
   );
 }
 
-function Stat({ value, label, small }: { value: string; label: string; small?: boolean }) {
-  return (
-    <div>
+function Stat({ value, label, small, href }: { value: string; label: string; small?: boolean; href?: string }) {
+  const content = (
+    <>
       <div className={small ? "font-extrabold dark:text-slate-100" : "text-xl font-extrabold dark:text-slate-100"}>{value}</div>
       <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">{label}</div>
-    </div>
+    </>
   );
+  if (href) {
+    return (
+      <Link href={href} className="block hover:opacity-75">
+        {content}
+      </Link>
+    );
+  }
+  return <div>{content}</div>;
 }

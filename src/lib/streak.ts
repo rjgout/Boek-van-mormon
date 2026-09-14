@@ -1,6 +1,6 @@
 import type { XPReason, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { dayKey, daysBetween, weekStartKey } from "@/lib/dates";
+import { addDays, dayKey, daysBetween, weekStartKey } from "@/lib/dates";
 import { awardXp } from "@/lib/xp";
 import { resolveStartingTier } from "@/lib/leagues";
 import { checkAndAwardAchievements } from "@/lib/achievements";
@@ -39,10 +39,10 @@ interface DailyStreakResult {
  * De kern van "vandaag geldt als gestudeerd" — gedeeld tussen een volledig
  * afgeronde les (completeLesson) en een korte, hoofdstukloze oefenronde
  * (completeQuickPractice), zodat beide op dezelfde manier de streak
- * bijhouden. Schrijft de AUTO_SPENT-freezetransactie al weg indien van
- * toepassing, maar laat het definitieve user.update en de eventuele
- * EARNED-freezetransactie aan de aanroeper (die kan er zelf nog een
- * hoofdstuk-mijlpaal freeze bovenop doen).
+ * bijhouden. Schrijft de AUTO_SPENT-freezetransactie en de StreakDay-rijen
+ * (zie /streak) al weg indien van toepassing, maar laat het definitieve
+ * user.update en de eventuele EARNED-freezetransactie aan de aanroeper (die
+ * kan er zelf nog een hoofdstuk-mijlpaal freeze bovenop doen).
  */
 async function applyDailyStreak(tx: Tx, userId: string): Promise<DailyStreakResult> {
   const user = await tx.user.findUniqueOrThrow({ where: { id: userId } });
@@ -53,6 +53,7 @@ async function applyDailyStreak(tx: Tx, userId: string): Promise<DailyStreakResu
   let freezeUsed = false;
   let streakBroken = false;
   let freezeCount = user.freezeCount;
+  const frozenDayKeys: string[] = [];
 
   if (alreadyStudiedToday) {
     // al gestudeerd vandaag: streak blijft gelijk
@@ -60,22 +61,54 @@ async function applyDailyStreak(tx: Tx, userId: string): Promise<DailyStreakResu
     currentStreak = 1;
   } else {
     const gap = daysBetween(user.lastStudyDate, today);
-    if (gap === 1) {
+    const missedDays = gap - 1;
+    if (missedDays <= 0) {
+      // gap === 1: aansluitende dag, niets gemist
       currentStreak += 1;
-    } else if (gap === 2 && freezeCount > 0) {
-      // precies 1 dag gemist: een streak freeze redt de streak
-      freezeCount -= 1;
+    } else if (freezeCount >= missedDays) {
+      // Genoeg freezes om elke gemiste dag te overbruggen — de reeks loopt
+      // door, maar het getal telt (net als bij een gewone aansluitende dag)
+      // maar met 1 op, niet met het aantal gemiste dagen: freezes tellen
+      // bewust niet mee in het reeksgetal (zie ook de kalender op /streak,
+      // waar die dagen apart als FROZEN staan, niet als STUDIED).
+      for (let i = 1; i <= missedDays; i++) {
+        frozenDayKeys.push(addDays(user.lastStudyDate, i));
+      }
+      freezeCount -= missedDays;
       freezeUsed = true;
       currentStreak += 1;
       await tx.freezeTransaction.create({
-        data: { userId, type: "AUTO_SPENT", amount: -1, reason: `Streak beschermd op ${today}` },
+        data: {
+          userId,
+          type: "AUTO_SPENT",
+          amount: -missedDays,
+          reason: `Streak beschermd op ${today} (${missedDays} dag${missedDays > 1 ? "en" : ""} gemist)`,
+        },
       });
     } else {
+      // Niet genoeg freezes om ALLE gemiste dagen te overbruggen: er blijft
+      // dan sowieso minstens één echte gemiste dag over, dus breekt de reeks
+      // — en worden er ook geen freezes "voor niets" verbruikt.
       streakBroken = currentStreak > 0;
       currentStreak = 1;
     }
   }
   const longestStreak = Math.max(user.longestStreak, currentStreak);
+
+  if (!alreadyStudiedToday) {
+    for (const fk of frozenDayKeys) {
+      await tx.streakDay.upsert({
+        where: { userId_dayKey: { userId, dayKey: fk } },
+        create: { userId, dayKey: fk, status: "FROZEN" },
+        update: { status: "FROZEN" },
+      });
+    }
+    await tx.streakDay.upsert({
+      where: { userId_dayKey: { userId, dayKey: today } },
+      create: { userId, dayKey: today, status: "STUDIED" },
+      update: { status: "STUDIED" },
+    });
+  }
 
   let freezesEarned = 0;
   const streakMilestoneHit =

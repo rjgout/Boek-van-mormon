@@ -1,0 +1,90 @@
+import { prisma } from "@/lib/db";
+import { dayKey } from "@/lib/dates";
+
+export type StreakDayState = "STUDIED" | "FROZEN" | "NONE" | "FUTURE";
+
+export interface StreakDayView {
+  dayKey: string;
+  day: number; // 1-31
+  weekday: number; // 0 = maandag ... 6 = zondag
+  state: StreakDayState;
+}
+
+export interface StreakMonthView {
+  year: number;
+  month: number; // 1-12
+  days: StreakDayView[];
+  daysStudied: number; // FROZEN telt hier bewust niet in mee, zie schema
+  freezesUsed: number;
+}
+
+function pad(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+/** maandag = 0 ... zondag = 6 (i.p.v. JS's search zondag = 0). */
+function mondayFirstWeekday(year: number, month: number, day: number): number {
+  const jsDay = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+  return jsDay === 0 ? 6 : jsDay - 1;
+}
+
+export async function getStreakMonth(userId: string, year: number, month: number): Promise<StreakMonthView> {
+  const daysInMonth = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const startKey = `${year}-${pad(month)}-01`;
+  const endKey = `${year}-${pad(month)}-${pad(daysInMonth)}`;
+
+  const rows = await prisma.streakDay.findMany({
+    where: { userId, dayKey: { gte: startKey, lte: endKey } },
+    select: { dayKey: true, status: true },
+  });
+  const byDay = new Map(rows.map((r) => [r.dayKey, r.status]));
+  const todayKey = dayKey();
+
+  const days: StreakDayView[] = [];
+  let daysStudied = 0;
+  let freezesUsed = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dk = `${year}-${pad(month)}-${pad(d)}`;
+    const found = byDay.get(dk);
+    let state: StreakDayState;
+    if (found === "STUDIED") {
+      state = "STUDIED";
+      daysStudied++;
+    } else if (found === "FROZEN") {
+      state = "FROZEN";
+      freezesUsed++;
+    } else if (dk > todayKey) {
+      state = "FUTURE";
+    } else {
+      state = "NONE";
+    }
+    days.push({ dayKey: dk, day: d, weekday: mondayFirstWeekday(year, month, d), state });
+  }
+
+  return { year, month, days, daysStudied, freezesUsed };
+}
+
+export interface StreakOverview {
+  currentStreak: number;
+  longestStreak: number;
+  freezeCount: number;
+  month: StreakMonthView;
+}
+
+export async function getStreakOverview(userId: string, year?: number, month?: number): Promise<StreakOverview> {
+  const user = await prisma.user.findUniqueOrThrow({
+    where: { id: userId },
+    select: { currentStreak: true, longestStreak: true, freezeCount: true },
+  });
+
+  const now = new Date();
+  const y = year ?? now.getUTCFullYear();
+  const m = month ?? now.getUTCMonth() + 1;
+
+  return {
+    currentStreak: user.currentStreak,
+    longestStreak: user.longestStreak,
+    freezeCount: user.freezeCount,
+    month: await getStreakMonth(userId, y, m),
+  };
+}

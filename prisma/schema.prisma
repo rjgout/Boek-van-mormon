@@ -132,6 +132,7 @@ model User {
   kidsProgress    KidsStoryProgress[]
 
   feedbackReports Feedback[]
+  streakDays      StreakDay[]
 
   @@unique([handle, discriminator])
 }
@@ -714,6 +715,28 @@ model FreezeTransaction {
   related   User?        @relation("FreezeRelated", fields: [relatedId], references: [id], onDelete: SetNull)
   reason    String?
   createdAt DateTime     @default(now())
+}
+
+// Eén rij per dag die meetelt voor de reeks-kalender (zie /streak): STUDIED
+// voor een dag waarop echt geoefend is, FROZEN voor een gemiste dag die
+// automatisch door een streak freeze is overbrugd (zie applyDailyStreak in
+// src/lib/streak.ts). Een dag zonder rij hier telt als niet geoefend. Los
+// van User.currentStreak/lastStudyDate (die blijven de snelle cache voor
+// "wat is mijn streak nu") — dit is puur de geschiedenis voor de kalender.
+enum StreakDayStatus {
+  STUDIED
+  FROZEN
+}
+
+model StreakDay {
+  id        String          @id @default(cuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dayKey    String // yyyy-mm-dd, dezelfde dag-bucket als User.lastStudyDate
+  status    StreakDayStatus
+  createdAt DateTime        @default(now())
+
+  @@unique([userId, dayKey])
 }
 
 // --- Vrienden -------------------------------------------------------------

@@ -125,12 +125,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     Admin
                   </Link>
                 )}
-                <NavUserBadges
-                  streak={user.currentStreak}
-                  freezes={user.freezeCount}
-                  xp={user.xpTotal}
-                  displayName={user.handle}
-                />
+                <NavUserBadges streak={user.currentStreak} xp={user.xpTotal} displayName={user.handle} />
               </nav>
             ) : (
               <nav className="flex items-center gap-2">
