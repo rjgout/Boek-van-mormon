@@ -3,7 +3,7 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { isEmailConfigured } from "@/lib/email";
 import { advanceCourseProgress } from "@/lib/courses";
-import FrontToBackCourseView from "@/components/FrontToBackCourseView";
+import ChapterListCourseView from "@/components/ChapterListCourseView";
 import PodcastCourseView from "@/components/PodcastCourseView";
 import KidsCourseView from "@/components/KidsCourseView";
 
@@ -94,13 +94,12 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
     );
   }
 
-  // Alleen "van voor naar achter" heeft hier al zijn eigen weergave — de
-  // andere cursustypes volgen in latere fases (zie /dashboard voor hun
-  // huidige, generieke weergave).
-  if (course.type !== "FRONT_TO_BACK") {
-    redirect("/dashboard");
-  }
-
+  // De resterende cursustypes (van voor naar achter, vrije keuze, elke
+  // per-boek-cursus) zijn alledrie simpelweg "een lijst hoofdstukken" (zie
+  // ChapterListCourseView) — elk met hun eigen pagina, hun eigen "Vandaag"-
+  // hoofdstuk en (bij meerdere boeken) hun eigen inklapbare secties, ook al
+  // deelt een los hoofdstuk zijn afrondingsstatus (ChapterProgress) altijd
+  // met elke andere cursus die het ook bevat — dat is bewust zo.
   let courseProgress = await prisma.userCourseProgress.findUnique({
     where: { userId_courseId: { userId: user.id, courseId: course.id } },
   });
@@ -114,9 +113,10 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   const chapters = course.chapters.map((cc) => cc.chapter);
 
   return (
-    <FrontToBackCourseView
+    <ChapterListCourseView
       courseName={course.name}
       currentChapterId={courseProgress?.currentChapterId ?? null}
+      sequential={course.type !== "FREE_CHOICE"}
       chapters={chapters.map((chapter) => ({
         id: chapter.id,
         number: chapter.number,

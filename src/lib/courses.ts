@@ -19,7 +19,7 @@ export async function syncCourses(db: PrismaClient): Promise<void> {
     include: { chapters: { orderBy: { order: "asc" } } },
   });
 
-  await db.course.upsert({
+  const freeChoice = await db.course.upsert({
     where: { slug: FREE_CHOICE_SLUG },
     update: { name: "Vrije keuze", order: 0 },
     create: {
@@ -30,6 +30,20 @@ export async function syncCourses(db: PrismaClient): Promise<void> {
       order: 0,
     },
   });
+  // Zelfde volledige hoofdstuklijst als "van voor naar achter" (alleen de
+  // volgorde van het join-record — ChapterListCourseView vergrendelt bij
+  // FREE_CHOICE toch niets, zie sequential daar), zodat deze cursus zijn
+  // eigen pagina heeft i.p.v. terug te vallen op de generieke dashboard-
+  // weergave.
+  await db.courseChapter.deleteMany({ where: { courseId: freeChoice.id } });
+  const freeChoiceRows = books.flatMap((book) => book.chapters).map((chapter, order) => ({
+    courseId: freeChoice.id,
+    chapterId: chapter.id,
+    order,
+  }));
+  if (freeChoiceRows.length > 0) {
+    await db.courseChapter.createMany({ data: freeChoiceRows });
+  }
 
   const frontToBack = await db.course.upsert({
     where: { slug: FRONT_TO_BACK_SLUG },

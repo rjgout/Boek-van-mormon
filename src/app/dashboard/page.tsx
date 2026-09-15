@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { isEmailConfigured } from "@/lib/email";
-import { advanceCourseProgress } from "@/lib/courses";
 import SearchBar from "@/components/SearchBar";
 
 const WORDS_PER_MINUTE = 130; // rustig lees-/nadenktempo
@@ -25,25 +24,14 @@ export default async function DashboardPage() {
   // herstarten kan via de knop op de profielpagina.
   if (!user.onboardingSeenAt) redirect("/onboarding");
 
-  // "Van voor naar achter", de podcastcursus en de kindercursus hebben
-  // allemaal al hun eigen pagina (/courses/[courseId]); de overige
-  // cursustypes vallen nog terug op deze generieke weergave hieronder, tot
-  // ze ook een eigen pagina krijgen (zie de cursus-voor-cursus-migratie).
+  // Elk cursustype heeft inmiddels zijn eigen pagina (/courses/[courseId]) —
+  // alleen wie nog helemaal geen cursus geactiveerd heeft, valt terug op de
+  // generieke weergave hieronder (het hele Boek van Mormon, ongeacht cursus).
   if (user.activeCourseId) {
-    const activeCourseType = await prisma.course.findUnique({
-      where: { id: user.activeCourseId },
-      select: { type: true },
-    });
-    if (
-      activeCourseType?.type === "FRONT_TO_BACK" ||
-      activeCourseType?.type === "PODCAST" ||
-      activeCourseType?.type === "KIDS"
-    ) {
-      redirect(`/courses/${user.activeCourseId}`);
-    }
+    redirect(`/courses/${user.activeCourseId}`);
   }
 
-  const [books, pendingRequests, activeCourse] = await Promise.all([
+  const [books, pendingRequests] = await Promise.all([
     prisma.book.findMany({
       orderBy: { order: "asc" },
       include: {
@@ -58,35 +46,17 @@ export default async function DashboardPage() {
       },
     }),
     prisma.friendship.count({ where: { receiverId: user.id, status: "PENDING" } }),
-    user.activeCourseId ? prisma.course.findUnique({ where: { id: user.activeCourseId } }) : null,
   ]);
 
   const allChapters = books.flatMap((book) =>
     book.chapters.map((chapter) => ({ book, chapter, progress: chapter.progress[0] }))
   );
 
-  // "Vandaag" volgt de actieve cursus (behalve bij vrije keuze, waar je zelf
-  // kiest): het volgende hoofdstuk in die cursus, of anders — geen actieve
-  // cursus, cursus uitgelezen, of vrije keuze — het eerste onvoltooide
-  // hoofdstuk over alles heen.
-  let todayChapterId: string | null = null;
-  if (activeCourse && activeCourse.type !== "FREE_CHOICE") {
-    let courseProgress = await prisma.userCourseProgress.findUnique({
-      where: { userId_courseId: { userId: user.id, courseId: activeCourse.id } },
-    });
-    if (!courseProgress) {
-      await advanceCourseProgress(prisma, user.id, activeCourse.id);
-      courseProgress = await prisma.userCourseProgress.findUnique({
-        where: { userId_courseId: { userId: user.id, courseId: activeCourse.id } },
-      });
-    }
-    todayChapterId = courseProgress?.currentChapterId ?? null;
-  }
-
+  // Wordt alleen getoond zolang er geen cursus geactiveerd is (zie de
+  // redirect hierboven) — dan is er ook geen cursus om "Vandaag" op te laten
+  // volgen, dus gewoon het eerste onvoltooide hoofdstuk over alles heen.
   const todayEntry =
-    (todayChapterId && allChapters.find((c) => c.chapter.id === todayChapterId)) ||
-    allChapters.find((c) => !(c.progress?.completed ?? false)) ||
-    allChapters[allChapters.length - 1];
+    allChapters.find((c) => !(c.progress?.completed ?? false)) ?? allChapters[allChapters.length - 1];
   const todayWordCount = todayEntry?.chapter.verses.reduce((sum, v) => sum + v.text.split(/\s+/).length, 0) ?? 0;
   const estimatedMinutes = Math.max(1, Math.round(todayWordCount / WORDS_PER_MINUTE));
   const xpAvailable = (todayEntry?.chapter._count.exercises ?? 0) * 10;
@@ -103,9 +73,7 @@ export default async function DashboardPage() {
 
         {todayEntry && !allDone ? (
           <div className="card bg-gradient-to-br from-brand-500 to-brand-600 text-white flex flex-col gap-3">
-            <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">
-              Vandaag{activeCourse ? ` — ${activeCourse.name}` : ""}
-            </p>
+            <p className="text-brand-100 font-bold uppercase text-xs tracking-wide">Vandaag</p>
             <h2 className="text-2xl font-extrabold">
               📖 {todayEntry.book.name} {todayEntry.chapter.number}
             </h2>
