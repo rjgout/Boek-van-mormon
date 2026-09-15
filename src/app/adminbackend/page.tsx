@@ -8,6 +8,7 @@ import AdminUsersClient from "@/components/AdminUsersClient";
 import EmailSettingsClient from "@/components/EmailSettingsClient";
 import ReseedClient from "@/components/ReseedClient";
 import FeedbackAdminClient from "@/components/FeedbackAdminClient";
+import AdminChangelogClient from "@/components/AdminChangelogClient";
 import AdminBrandingClient from "@/components/AdminBrandingClient";
 import AdminLeagueSettingsClient from "@/components/AdminLeagueSettingsClient";
 
@@ -74,6 +75,8 @@ export default async function AdminBackendPage() {
       <AdminBrandingClient />
 
       <FeedbackAdminClient />
+
+      <AdminChangelogClient />
     </div>
   );
 }

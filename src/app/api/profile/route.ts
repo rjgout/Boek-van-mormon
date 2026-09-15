@@ -72,6 +72,7 @@ export async function GET() {
     notifySocial: user.notifySocial,
     notifyAchievements: user.notifyAchievements,
     notifyWordGame: user.notifyWordGame,
+    changelogEnabled: user.changelogEnabled,
     xpTotal: user.xpTotal,
     currentStreak: user.currentStreak,
     longestStreak: user.longestStreak,

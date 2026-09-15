@@ -25,6 +25,7 @@ const patchSchema = z.object({
   notifySocial: z.boolean().optional(),
   notifyAchievements: z.boolean().optional(),
   notifyWordGame: z.boolean().optional(),
+  changelogEnabled: z.boolean().optional(),
 });
 
 const MAX_DISCRIMINATOR_ATTEMPTS = 25;

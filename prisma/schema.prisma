@@ -67,6 +67,20 @@ model User {
   // krijgen — alleen nieuwe registraties na deze wijziging doorlopen 'm.
   onboardingSeenAt   DateTime?
 
+  // Changelog ("Wat is er nieuw?", zie /adminbackend en het profiel): staat
+  // standaard AAN maar is door de gebruiker zelf uit/aan te zetten op het
+  // profiel — staat 'm uit, dan verschijnt de pop-up bij het inloggen (zie
+  // ChangelogPopup.tsx) nooit, maar de lijst blijft daar altijd handmatig
+  // terug te vinden. changelogSeenAt bepaalt wat "nieuw" is (elk item met een
+  // latere createdAt); @default(now()) zorgt dat een gloednieuwe registratie
+  // de bestaande geschiedenis niet meteen als nieuw te zien krijgt (zelfde
+  // motivatie als onboardingSeenAt hierboven). Bestaande gebruikers krijgen
+  // deze kolom bij de migratie gevuld met het moment van migreren (via de
+  // kolom-default zelf, zie migration.sql) — ook zij dus geen plotselinge
+  // stapel "nieuw" bij het uitrollen van deze feature.
+  changelogEnabled Boolean  @default(true)
+  changelogSeenAt  DateTime @default(now())
+
   // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
   // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes
   // is dat FreezeTransaction. Zie src/lib/xp.ts en src/lib/streak.ts.
@@ -1287,6 +1301,21 @@ model Feedback {
   updatedAt DateTime @updatedAt
 
   @@index([userId])
+}
+
+// Nieuws/wijzigingen die een admin publiceert via /adminbackend — de eerste
+// echte lijst-achtige (niet-singleton) admin-content in de app; zie
+// User.changelogEnabled/changelogSeenAt voor hoe een gebruiker dit te zien
+// krijgt. Bewust platte tekst (geen markdown-rendering) om geen nieuwe
+// afhankelijkheid toe te voegen voor iets dat prima met regeleinden werkt.
+model ChangelogEntry {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
 }
 
 // --- Huisstijl -----------------------------------------------------------

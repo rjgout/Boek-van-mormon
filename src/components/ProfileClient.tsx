@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { LeagueTier } from "@prisma/client";
@@ -30,6 +30,7 @@ interface ProfileData {
   notifySocial: boolean;
   notifyAchievements: boolean;
   notifyWordGame: boolean;
+  changelogEnabled: boolean;
   xpTotal: number;
   currentStreak: number;
   longestStreak: number;
@@ -140,7 +141,7 @@ export default function ProfileClient() {
   }
 
   async function toggleCategory(
-    field: "notifyDailyReminder" | "notifySocial" | "notifyAchievements" | "notifyWordGame"
+    field: "notifyDailyReminder" | "notifySocial" | "notifyAchievements" | "notifyWordGame" | "changelogEnabled"
   ) {
     if (!data) return;
     const next = !data[field];
@@ -456,6 +457,12 @@ export default function ProfileClient() {
         </div>
       </section>
 
+      <ChangelogSection
+        enabled={data.changelogEnabled}
+        saving={savingNotifications}
+        onToggle={() => toggleCategory("changelogEnabled")}
+      />
+
       <section className="card flex flex-col gap-3">
         <h2 className="font-extrabold text-lg dark:text-slate-100">Privacy</h2>
         <label className="flex items-start gap-3 cursor-pointer">
@@ -501,6 +508,70 @@ export default function ProfileClient() {
         )}
       </section>
     </div>
+  );
+}
+
+interface ChangelogEntryView {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+}
+
+// Inklapbaar (kan een lange geschiedenis worden) en dubbel doel: de aan/uit-
+// schakelaar staat er samen met de volledige lijst in, zodat je 'm ook kan
+// terugvinden als je 'm hebt uitgezet. De lijst wordt pas opgehaald zodra dit
+// echt wordt opengeklapt (geen extra verzoek bij elk profielbezoek); dat
+// openklappen markeert de changelog meteen als gezien, net als de "Gelezen"-
+// knop in de pop-up (ChangelogPopup.tsx) dat doet.
+function ChangelogSection({ enabled, saving, onToggle }: { enabled: boolean; saving: boolean; onToggle: () => void }) {
+  const [entries, setEntries] = useState<ChangelogEntryView[] | null>(null);
+
+  async function handleToggleOpen(e: SyntheticEvent<HTMLDetailsElement>) {
+    if (!e.currentTarget.open || entries) return;
+    const res = await fetch("/api/changelog");
+    if (res.ok) setEntries((await res.json()).entries);
+    fetch("/api/changelog/seen", { method: "POST" }).catch(() => {});
+  }
+
+  return (
+    <details className="group card flex flex-col gap-3" onToggle={handleToggleOpen}>
+      <summary className="font-extrabold text-lg dark:text-slate-100 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
+        Wat is er nieuw?
+        <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+          ▾
+        </span>
+      </summary>
+
+      <label className="flex items-start gap-3 cursor-pointer">
+        <input type="checkbox" className="mt-1 h-5 w-5 accent-brand-500" checked={enabled} onChange={onToggle} disabled={saving} />
+        <span className="text-sm dark:text-slate-200">
+          Toon een melding bij het inloggen zodra er iets nieuws is.
+          <br />
+          <span className="text-slate-400 dark:text-slate-500">
+            Ook uitgeschakeld kun je de changelog hieronder altijd terugvinden.
+          </span>
+        </span>
+      </label>
+
+      <div className="border-t border-slate-100 dark:border-slate-700 pt-3 flex flex-col gap-3">
+        {!entries ? (
+          <p className="text-slate-400 dark:text-slate-500 text-sm">Laden...</p>
+        ) : entries.length === 0 ? (
+          <p className="text-slate-400 dark:text-slate-500 text-sm">Nog geen changelog-items.</p>
+        ) : (
+          entries.map((entry) => (
+            <div key={entry.id}>
+              <p className="font-bold text-sm dark:text-slate-100">{entry.title}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">
+                {new Date(entry.createdAt).toLocaleDateString("nl-NL")}
+              </p>
+              <p className="text-sm whitespace-pre-wrap dark:text-slate-200">{entry.body}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </details>
   );
 }
 

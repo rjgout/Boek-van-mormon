@@ -7,6 +7,7 @@ import { getBranding } from "@/lib/branding";
 import { cacheDetectedAppUrl } from "@/lib/baseUrl";
 import NavUserBadges from "@/components/NavUserBadges";
 import InviteListener from "@/components/InviteListener";
+import ChangelogPopup from "@/components/ChangelogPopup";
 import ThemeScript from "@/components/ThemeScript";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
@@ -158,6 +159,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <main className="mx-auto max-w-5xl px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-8">{children}</main>
         {user && <BottomNav />}
         {user && <InviteListener />}
+        {user && <ChangelogPopup />}
         <ServiceWorkerRegister />
       </body>
     </html>
