@@ -191,15 +191,71 @@ async function loadExercises(chapterId: string): Promise<GameExercise[]> {
   }));
 }
 
-function broadcastLobby(room: RoomState) {
-  ioInstance?.to(room.code).emit("lobby_update", {
+function lobbyPayload(room: RoomState) {
+  return {
     hostId: room.hostId,
     status: room.status,
     mode: room.mode,
     level: room.level,
     diceMode: room.diceMode,
     players: serializePlayers(room),
-  });
+  };
+}
+
+function broadcastLobby(room: RoomState) {
+  ioInstance?.to(room.code).emit("lobby_update", lobbyPayload(room));
+}
+
+// Stuurt een net (opnieuw) verbonden socket de huidige staat van een spel dat
+// al bezig is — nodig omdat join_game daar verder geen normale broadcast voor
+// stuurt (die zou voor de andere spelers alleen maar ruis zijn: een nieuwe
+// vraag/beurt terwijl er niks veranderd is). Zonder dit bleef een speler die
+// wegnavigeerde en terugkwam voor altijd op "Dit spel is al begonnen." hangen
+// (zie join_game hieronder), met een spel dat voor de anderen eindeloos
+// "open" bleef staan.
+function resyncSocket(socket: Socket, room: RoomState) {
+  socket.emit("lobby_update", lobbyPayload(room));
+
+  if (room.status === "FINISHED") {
+    socket.emit("game_finished", { scoreboard: serializePlayers(room), forfeitedBy: room.forfeitedBy });
+    return;
+  }
+  if (room.status !== "IN_PROGRESS") return;
+
+  if (room.mode === "FAMILY_GAME") {
+    socket.emit("family_game_started", {
+      board: room.board,
+      finishIndex: room.finishIndex,
+      diceMode: room.diceMode,
+      turnOrder: room.turnOrder,
+      scoreboard: serializePlayers(room),
+    });
+    // Een openstaande vraag/gebeurtenis leefde alleen in de React-state van de
+    // pagina die nu net opnieuw is gemount — die kaart is dus sowieso weg. Als
+    // deze socket namens de wachtende speler mag handelen (zichzelf, of de
+    // host namens een gast), slaan we die beurt over i.p.v. het spel voor
+    // iedereen te laten vastlopen (er is bewust geen aparte beurt-timer voor
+    // dit spel, zie de sessieafspraak daarover).
+    if (room.pendingTile && canActFor(room, socket, room.pendingTile.playerId)) {
+      room.pendingTile = null;
+      advanceFamilyTurn(room);
+    } else {
+      socket.emit("family_turn", { currentPlayerId: currentFamilyPlayerId(room), scoreboard: serializePlayers(room) });
+    }
+    return;
+  }
+
+  const total = totalQuestions(room);
+  if (room.questionIndex >= total) return; // staat op het punt af te ronden
+  const remaining = Math.max(0, room.timeLimitMs - (Date.now() - room.questionStartedAt));
+  if (room.mode === "EXERCISES") {
+    const exercise = room.exercises[room.questionIndex];
+    socket.emit("question", { mode: "EXERCISES", index: room.questionIndex, total, timeLimitMs: remaining, ...sanitizeExercise(exercise) });
+  } else {
+    const q = room.cgQuestions[room.questionIndex];
+    const options = q.optionIds?.map((id) => ({ id, label: room.cgChapterLabels.get(id)?.label ?? "?" }));
+    socket.emit("question", { mode: "CHAPTER_GUESS", index: room.questionIndex, total, timeLimitMs: remaining, introText: q.introText, options });
+  }
 }
 
 function askQuestion(room: RoomState) {
@@ -638,7 +694,12 @@ export function initGameServer(httpServer: HttpServer) {
         rooms.set(upperCode, room);
       }
 
-      if (room.status !== "LOBBY") {
+      let player = room.players.get(user.id);
+
+      // Een spel dat al bezig is, accepteert geen nieuwe spelers meer — maar
+      // wie er al aan meedeed (bv. na wegnavigeren en teruggekomen, of een
+      // paginaverversing) mag wél terug: zie resyncSocket hierboven.
+      if (room.status !== "LOBBY" && !player) {
         socket.emit("error_message", { message: "Dit spel is al begonnen." });
         return;
       }
@@ -646,7 +707,6 @@ export function initGameServer(httpServer: HttpServer) {
       socket.join(upperCode);
       socket.data.gameCode = upperCode;
 
-      let player = room.players.get(user.id);
       if (!player) {
         player = {
           userId: user.id,
@@ -670,7 +730,11 @@ export function initGameServer(httpServer: HttpServer) {
       }
       player.socketIds.add(socket.id);
 
-      broadcastLobby(room);
+      if (room.status === "LOBBY") {
+        broadcastLobby(room);
+      } else {
+        resyncSocket(socket, room);
+      }
     });
 
     // Alleen de host kan een gast toevoegen — gasten bestaan alleen op het

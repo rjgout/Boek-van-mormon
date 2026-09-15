@@ -120,7 +120,9 @@ export async function GET() {
     const label =
       lg.mode === "CHAPTER_GUESS"
         ? `Live spel — Raad het hoofdstuk${suffix}`
-        : `Live spel — ${lg.chapter?.book.name} ${lg.chapter?.number}${suffix}`;
+        : lg.mode === "FAMILY_GAME"
+          ? `Gezinsavond${suffix}`
+          : `Live spel — ${lg.chapter?.book.name} ${lg.chapter?.number}${suffix}`;
 
     // Een lobby waar verder niemand op gereageerd/meegedaan heeft (net
     // aangemaakt, of uitgenodigd maar nog geen reactie) is geen "sessie die
