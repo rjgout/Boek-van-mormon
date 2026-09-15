@@ -137,6 +137,7 @@ model User {
 
   hostedGames LiveGame[]       @relation("GameHost")
   gamePlayers LiveGamePlayer[]
+  gameInvites LiveGameInvite[]
 
   chapterGuessGames ChapterGuessGame[]
   wordGames         WordGame[]
@@ -978,6 +979,7 @@ model LiveGame {
   status        LiveGameStatus     @default(LOBBY)
   createdAt     DateTime           @default(now())
   players       LiveGamePlayer[]
+  invites       LiveGameInvite[]
 }
 
 model LiveGamePlayer {
@@ -988,6 +990,25 @@ model LiveGamePlayer {
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   score    Int      @default(0)
   joinedAt DateTime @default(now())
+
+  @@unique([gameId, userId])
+}
+
+// Wie is uitgenodigd voor een nog niet gestarte lobby — een uitnodiging zelf
+// is verder puur een live socketpushje (zie invite_friend in gameServer.ts),
+// maar zonder dit record zou /api/activity-status niet kunnen zien of een
+// verse, nog lege lobby al iemand heeft uitgenodigd. Dat onderscheid bepaalt
+// of zo'n lobby als "wachten op reactie" getoond wordt (met een knop om 'm
+// alsnog te beëindigen als er nooit gereageerd wordt) i.p.v. helemaal niet,
+// zie ook: een gebruiker die zojuist "Maak spel" heeft geklikt zonder nog
+// iemand uit te nodigen hoeft die sessie nergens als "actief" terug te zien.
+model LiveGameInvite {
+  id        String   @id @default(cuid())
+  gameId    String
+  game      LiveGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
   @@unique([gameId, userId])
 }

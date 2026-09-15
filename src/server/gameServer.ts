@@ -515,10 +515,40 @@ export function initGameServer(httpServer: HttpServer) {
         },
       });
       if (!friendship) return;
+      // Persistent bijgehouden (naast de live pushnotificatie hieronder) zodat
+      // /api/activity-status een nog niet geaccepteerde uitnodiging kan tonen
+      // als "wachten op reactie" — anders zou zo'n lobby na het versturen van
+      // de uitnodiging nergens meer terug te vinden zijn voor de host.
+      await prisma.liveGameInvite
+        .upsert({
+          where: { gameId_userId: { gameId: game.id, userId: toUserId } },
+          create: { gameId: game.id, userId: toUserId },
+          update: {},
+        })
+        .catch(() => {});
       ioInstance?.to(`user:${toUserId}`).emit("game_invite", {
         code: game.code,
         fromDisplayName: user.handle,
       });
+    });
+
+    // Alleen de host kan een spel dat nog niet gestart is beëindigen — nodig
+    // omdat een lobby anders eindeloos blijft "openstaan" (zie
+    // /api/activity-status) als een uitgenodigde vriend nooit reageert.
+    // Werkt vanaf elke pagina (niet alleen vanuit de lobby zelf): de code
+    // wordt expliciet meegestuurd, net als bij join_game hierboven, i.p.v.
+    // te vertrouwen op socket.data.gameCode.
+    socket.on("cancel_game", async ({ code }: { code: string }) => {
+      const upperCode = code.toUpperCase();
+      const game = await prisma.liveGame.findUnique({ where: { code: upperCode } });
+      if (!game || game.hostId !== user.id || game.status !== "LOBBY") {
+        socket.emit("error_message", { message: "Kon dit spel niet beëindigen." });
+        return;
+      }
+      await prisma.liveGame.delete({ where: { id: game.id } }).catch(() => {});
+      rooms.delete(upperCode);
+      ioInstance?.to(upperCode).emit("error_message", { message: "Dit spel is beëindigd." });
+      socket.emit("game_cancelled", { code: upperCode });
     });
 
     socket.on("disconnect", () => {

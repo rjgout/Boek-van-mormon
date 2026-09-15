@@ -160,6 +160,11 @@ export default function ChapterGuessGameRoom({ code, myUserId }: { code: string;
     setInvited((prev) => new Set(prev).add(friendId));
   }
 
+  function cancelGame() {
+    if (!window.confirm("Dit spel beëindigen? Dit kan niet ongedaan worden gemaakt.")) return;
+    socket.emit("cancel_game", { code });
+  }
+
   function submitAnswer(chapterId: string) {
     if (submitted) return;
     setChoice(chapterId);
@@ -203,16 +208,11 @@ export default function ChapterGuessGameRoom({ code, myUserId }: { code: string;
     const nonPlayerFriends = friends.filter((f) => !players.some((p) => p.userId === f.id));
     return (
       <div className="max-w-xl mx-auto flex flex-col gap-6">
-        <div className="card text-center flex flex-col gap-2">
-          <p className="text-sm text-slate-400 dark:text-slate-500 font-bold uppercase">Speelcode</p>
-          <p className="text-4xl font-extrabold tracking-[0.3em] text-brand-700 dark:text-brand-300">{code}</p>
-          <p className="text-slate-400 dark:text-slate-500 text-sm">Deel deze code met vrienden om mee te doen.</p>
-          {level && (
-            <span className="self-center text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1 mt-1">
-              🔎 Raad het hoofdstuk — {LEVEL_LABELS[level]}
-            </span>
-          )}
-        </div>
+        {level && (
+          <span className="self-center text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
+            🔎 Raad het hoofdstuk — {LEVEL_LABELS[level]}
+          </span>
+        )}
 
         <div className="card">
           <h2 className="font-extrabold mb-3">Spelers ({players.length})</h2>
@@ -244,9 +244,14 @@ export default function ChapterGuessGameRoom({ code, myUserId }: { code: string;
         )}
 
         {myUserId === hostId ? (
-          <button className="btn-primary self-center" onClick={startGame} disabled={players.length === 0}>
-            Start spel →
-          </button>
+          <div className="flex flex-col items-center gap-2">
+            <button className="btn-primary self-center" onClick={startGame} disabled={players.length === 0}>
+              Start spel →
+            </button>
+            <button className="text-red-500 dark:text-red-400 text-sm font-semibold hover:underline" onClick={cancelGame}>
+              Spel beëindigen
+            </button>
+          </div>
         ) : (
           <p className="text-center text-slate-400 dark:text-slate-500">Wachten tot de host het spel start...</p>
         )}

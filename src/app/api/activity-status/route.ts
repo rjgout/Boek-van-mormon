@@ -9,6 +9,10 @@ interface ActivityItem {
   label: string;
   link: string;
   myTurn: boolean | null;
+  // Alleen gezet bij kind "live": de speelcode, nodig om cancel_game te
+  // kunnen versturen (zie ActiveGamesBanner) zonder eerst naar de lobby te
+  // navigeren.
+  code?: string;
 }
 
 // Alles wat een gebruiker "open" heeft staan over de asynchrone spellen
@@ -45,7 +49,11 @@ export async function GET() {
         status: { in: ["LOBBY", "IN_PROGRESS"] },
         OR: [{ hostId: user.id }, { players: { some: { userId: user.id } } }],
       },
-      include: { chapter: { include: { book: true } } },
+      include: {
+        chapter: { include: { book: true } },
+        players: { select: { userId: true } },
+        invites: { include: { user: { select: { handle: true } } } },
+      },
     }),
     prisma.chapterGuessGame.findMany({
       where: { userId: user.id, status: "IN_PROGRESS" },
@@ -113,6 +121,31 @@ export async function GET() {
       lg.mode === "CHAPTER_GUESS"
         ? `Live spel — Raad het hoofdstuk${suffix}`
         : `Live spel — ${lg.chapter?.book.name} ${lg.chapter?.number}${suffix}`;
+
+    // Een lobby waar verder niemand op gereageerd/meegedaan heeft (net
+    // aangemaakt, of uitgenodigd maar nog geen reactie) is geen "sessie die
+    // je verder kan doen" — die staat de host toch al zelf op te kijken.
+    // Pas zodra er een uitnodiging openstaat, tonen we 'm (als "wachten op
+    // reactie", met een manier om 'm te beëindigen); zodra iemand echt is
+    // toegetreden is het een volwaardige actieve sessie, ongeacht status.
+    const joinedUserIds = new Set(lg.players.map((p) => p.userId));
+    if (lg.status === "LOBBY" && joinedUserIds.size <= 1) {
+      if (lg.hostId !== user.id) continue; // kan niet voorkomen gezien de WHERE hierboven, maar voor de zekerheid
+      for (const invite of lg.invites) {
+        if (joinedUserIds.has(invite.userId)) continue;
+        invitesSent.push({
+          kind: "live",
+          id: lg.id,
+          opponentName: invite.user.handle,
+          label,
+          link: `/live/${lg.code}`,
+          myTurn: null,
+          code: lg.code,
+        });
+      }
+      continue;
+    }
+
     activeGames.push({
       kind: "live",
       id: lg.id,
@@ -120,6 +153,7 @@ export async function GET() {
       label,
       link: `/live/${lg.code}`,
       myTurn: null,
+      code: lg.code,
     });
   }
 

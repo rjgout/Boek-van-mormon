@@ -44,6 +44,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
   const [placed, setPlaced] = useState<{ word: string; poolIndex: number }[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [invited, setInvited] = useState<Set<string>>(new Set());
+  const [forfeitedBy, setForfeitedBy] = useState<string | null>(null);
 
   const socket = getSocket();
 
@@ -72,8 +73,9 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
       setPlayers(data.scoreboard);
       setPhase("reveal");
     }
-    function onFinished(data: { scoreboard: LobbyPlayer[] }) {
+    function onFinished(data: { scoreboard: LobbyPlayer[]; forfeitedBy?: string }) {
       setPlayers(data.scoreboard);
+      setForfeitedBy(data.forfeitedBy ?? null);
       setPhase("finished");
     }
     function onError(data: { message: string }) {
@@ -114,6 +116,16 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
     setInvited((prev) => new Set(prev).add(friendId));
   }
 
+  function cancelGame() {
+    if (!window.confirm("Dit spel beëindigen? Dit kan niet ongedaan worden gemaakt.")) return;
+    socket.emit("cancel_game", { code });
+  }
+
+  function forfeit() {
+    if (!window.confirm("Weet je zeker dat je wil opgeven? Je tegenstander wint dan automatisch.")) return;
+    socket.emit("forfeit");
+  }
+
   function submitAnswer() {
     if (!question) return;
     const given = question.type === "WORD_BANK" ? placed.map((p) => p.word) : [choice];
@@ -145,12 +157,6 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
     const nonPlayerFriends = friends.filter((f) => !players.some((p) => p.userId === f.id));
     return (
       <div className="max-w-xl mx-auto flex flex-col gap-6">
-        <div className="card text-center flex flex-col gap-2">
-          <p className="text-sm text-slate-400 dark:text-slate-500 font-bold uppercase">Speelcode</p>
-          <p className="text-4xl font-extrabold tracking-[0.3em] text-brand-700 dark:text-brand-300">{code}</p>
-          <p className="text-slate-400 dark:text-slate-500 text-sm">Deel deze code met vrienden om mee te doen.</p>
-        </div>
-
         <div className="card">
           <h2 className="font-extrabold mb-3">Spelers ({players.length})</h2>
           <ul className="flex flex-col gap-2">
@@ -185,9 +191,14 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
         )}
 
         {myUserId === hostId ? (
-          <button className="btn-primary self-center" onClick={startGame} disabled={players.length === 0}>
-            Start spel →
-          </button>
+          <div className="flex flex-col items-center gap-2">
+            <button className="btn-primary self-center" onClick={startGame} disabled={players.length === 0}>
+              Start spel →
+            </button>
+            <button className="text-red-500 dark:text-red-400 text-sm font-semibold hover:underline" onClick={cancelGame}>
+              Spel beëindigen
+            </button>
+          </div>
         ) : (
           <p className="text-center text-slate-400 dark:text-slate-500">Wachten tot de host het spel start...</p>
         )}
@@ -210,6 +221,12 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
           )}
         </div>
         <CountdownBar key={question.index} timeLimitMs={question.timeLimitMs} active={phase === "question"} />
+
+        {phase === "question" && (
+          <button className="btn-secondary self-start !px-3 !py-1.5 !text-xs !text-red-500" onClick={forfeit}>
+            🏳️ Opgeven
+          </button>
+        )}
 
         <div className="card flex flex-col gap-5">
           <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">{question.verseRef}</p>
@@ -306,9 +323,15 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
   }
 
   if (phase === "finished") {
+    const forfeiter = players.find((p) => p.userId === forfeitedBy);
     return (
       <div className="max-w-xl mx-auto flex flex-col gap-6 items-center">
         <h1 className="text-3xl font-extrabold text-brand-800 dark:text-brand-300">🏁 Spel afgelopen!</h1>
+        {forfeiter && (
+          <p className="text-sm font-bold text-red-500 bg-red-50 dark:bg-slate-700 rounded-xl px-3 py-2">
+            {forfeiter.userId === myUserId ? "Je hebt opgegeven." : `${forfeiter.displayName} heeft opgegeven.`}
+          </p>
+        )}
         <Scoreboard players={players} myUserId={myUserId} showMedals />
         <Link href="/live" className="btn-primary">
           Nieuw spel
