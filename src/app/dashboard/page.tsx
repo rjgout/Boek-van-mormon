@@ -94,15 +94,6 @@ export default async function DashboardPage() {
         )}
 
         <div className="flex gap-3 flex-wrap text-sm">
-          <Link href="/practice" className="btn-secondary !px-3 !py-2">
-            ⚡ Snelle ronde
-          </Link>
-          <Link href="/bookmarks" className="btn-secondary !px-3 !py-2">
-            🔖 Bladwijzers
-          </Link>
-          <Link href="/competition" className="btn-secondary !px-3 !py-2">
-            🏆 Naar de competitie
-          </Link>
           {pendingRequests > 0 && (
             <Link href="/friends" className="btn-secondary !px-3 !py-2">
               👥 {pendingRequests} openstaand vriendschapsverzoek{pendingRequests > 1 ? "en" : ""}

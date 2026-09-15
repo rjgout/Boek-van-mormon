@@ -18,11 +18,21 @@ export default async function ToolsPage() {
           <div>
             <h2 className="font-extrabold text-lg dark:text-slate-100">Woordenboek</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Alle woorden uit het Boek van Mormon met hoe vaak ze voorkomen — ook handig bij Scrabble.
+              Alle woorden uit het Boek van Mormon, op letter of op lengte — ook handig bij Scrabble.
             </p>
           </div>
           <span className="text-2xl" aria-hidden>
             📚
+          </span>
+        </Link>
+
+        <Link href="/bookmarks" className="card flex items-center justify-between gap-3 hover:ring-2 hover:ring-brand-400">
+          <div>
+            <h2 className="font-extrabold text-lg dark:text-slate-100">Bladwijzers</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">De verzen die je hebt opgeslagen tijdens het lezen.</p>
+          </div>
+          <span className="text-2xl" aria-hidden>
+            🔖
           </span>
         </Link>
       </div>
