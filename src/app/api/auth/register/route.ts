@@ -8,7 +8,7 @@ import { createAuthToken } from "@/lib/authTokens";
 import { isEmailConfigured, sendMail } from "@/lib/email";
 import { verifyEmailTemplate } from "@/lib/emailTemplates";
 import { getBaseUrl } from "@/lib/baseUrl";
-import { FRONT_TO_BACK_SLUG } from "@/lib/courses";
+import { FRONT_TO_BACK_SLUG, subscribeUserToCourse } from "@/lib/courses";
 
 const schema = z.object({
   email: z.string().trim().toLowerCase().email("Vul een geldig e-mailadres in."),
@@ -71,6 +71,13 @@ export async function POST(req: NextRequest) {
           activeCourseId: defaultCourse?.id,
         },
       });
+
+      // Meteen ook in de persoonlijke cursussenlijst ("Cursussen") zetten —
+      // anders staat die leeg totdat de gebruiker toevallig een pagina
+      // bezoekt die dit lazy aanmaakt (zie subscribeUserToCourse).
+      if (defaultCourse) {
+        await subscribeUserToCourse(prisma, user.id, defaultCourse.id);
+      }
 
       // Best-effort: als er geen (werkende) e-mailconfiguratie is, blijft
       // emailVerifiedAt gewoon leeg en wordt bevestiging nergens afgedwongen

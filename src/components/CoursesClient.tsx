@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 interface CourseView {
@@ -15,6 +15,15 @@ interface CourseView {
   currentChapter: { id: string; bookName: string; number: number } | null;
 }
 
+interface CatalogCourseView {
+  id: string;
+  slug: string;
+  type: CourseView["type"];
+  name: string;
+  description: string | null;
+  totalChapters: number;
+}
+
 const TYPE_LABELS: Record<CourseView["type"], string> = {
   FRONT_TO_BACK: "Van voor naar achter",
   FREE_CHOICE: "Vrije keuze",
@@ -27,19 +36,32 @@ export default function CoursesClient() {
   const [courses, setCourses] = useState<CourseView[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activatingId, setActivatingId] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const [showCatalog, setShowCatalog] = useState(false);
+  const [catalog, setCatalog] = useState<CatalogCourseView[] | null>(null);
 
-  useEffect(() => {
+  function loadCourses() {
     fetch("/api/courses")
       .then(async (r) => {
         const data = await r.json().catch(() => null);
-        if (!r.ok) {
-          throw new Error(data?.error ?? `Er ging iets mis (${r.status}).`);
-        }
+        if (!r.ok) throw new Error(data?.error ?? `Er ging iets mis (${r.status}).`);
         return data;
       })
       .then((d) => setCourses(d.courses ?? []))
       .catch((e) => setLoadError(e instanceof Error ? e.message : "Er ging iets mis."));
-  }, []);
+  }
+
+  useEffect(loadCourses, []);
+
+  async function loadCatalog() {
+    const res = await fetch("/api/courses/catalog");
+    if (res.ok) setCatalog((await res.json()).courses);
+  }
+
+  function openCatalog() {
+    setShowCatalog(true);
+    if (!catalog) loadCatalog();
+  }
 
   async function activate(courseId: string) {
     setActivatingId(courseId);
@@ -53,6 +75,27 @@ export default function CoursesClient() {
       return;
     }
     setActivatingId(null);
+  }
+
+  async function remove(courseId: string) {
+    if (
+      !window.confirm(
+        "Deze cursus uit je lijst verwijderen? Je voortgang blijft bewaard — je kan 'm later gewoon weer toevoegen."
+      )
+    ) {
+      return;
+    }
+    setRemovingId(courseId);
+    const res = await fetch(`/api/courses/${courseId}/unsubscribe`, { method: "POST" });
+    if (res.ok) {
+      setCourses((cur) => cur?.filter((c) => c.id !== courseId) ?? null);
+      // De net verwijderde cursus hoort nu weer in de catalogus — als die al
+      // openstond, meteen verversen i.p.v. wachten tot een volgende keer
+      // openklappen.
+      setCatalog(null);
+      if (showCatalog) loadCatalog();
+    }
+    setRemovingId(null);
   }
 
   if (loadError) {
@@ -70,105 +113,31 @@ export default function CoursesClient() {
     return <p className="text-center text-slate-400 dark:text-slate-500">Laden...</p>;
   }
 
-  // Alle BY_BOOK-cursussen (één per boek — inmiddels alle 15) worden hier
-  // gebundeld tot één "Per boek"-kaart i.p.v. 15 losse kaarten; die kaart
-  // linkt naar /courses/per-boek waar je het specifieke boek kiest. Zo
-  // blijft dit overzicht overzichtelijk ongeacht hoeveel boeken er zijn.
-  const byBookCourses = courses.filter((c) => c.type === "BY_BOOK");
-  const activeBook = byBookCourses.find((c) => c.isActive) ?? null;
-  const byBookTotalChapters = byBookCourses.reduce((sum, c) => sum + c.totalChapters, 0);
-  const byBookCompletedCount = byBookCourses.reduce((sum, c) => sum + c.completedCount, 0);
-
-  let byBookCardRendered = false;
-  const items: Array<{ kind: "course"; course: CourseView } | { kind: "by-book" }> = [];
-  for (const course of courses) {
-    if (course.type === "BY_BOOK") {
-      if (!byBookCardRendered) {
-        byBookCardRendered = true;
-        items.push({ kind: "by-book" });
-      }
-      continue;
-    }
-    items.push({ kind: "course", course });
-  }
+  const hasByBookInCatalog = catalog?.some((c) => c.type === "BY_BOOK") ?? false;
+  const otherCatalogCourses = (catalog ?? []).filter((c) => c.type !== "BY_BOOK");
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Cursussen</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm">
-          Kies hoe je door het Boek van Mormon wil gaan. Je voortgang per cursus blijft bewaard als je wisselt.
+          Dit zijn jouw cursussen — je voortgang per cursus blijft bewaard als je wisselt. Wil je er nog eentje
+          proberen, voeg 'm dan toe met de knop hieronder.
         </p>
       </div>
 
       {courses.length === 0 && (
         <div className="card text-center flex flex-col gap-2">
-          <p className="font-bold dark:text-slate-100">Nog geen cursussen beschikbaar</p>
+          <p className="font-bold dark:text-slate-100">Je hebt nog geen cursussen toegevoegd</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            Er is nog geen content geïmporteerd (of de admin moet <code>npm run db:seed</code> nog (opnieuw) draaien
-            na een update) — cursussen worden daarbij automatisch aangemaakt.
+            Klik hieronder op "Voeg nieuwe cursus toe" om te beginnen.
           </p>
         </div>
       )}
 
       <div className="flex flex-col gap-3">
-        {items.map((item) => {
-          if (item.kind === "by-book") {
-            const pct =
-              byBookTotalChapters > 0 ? Math.round((byBookCompletedCount / byBookTotalChapters) * 100) : 0;
-            return (
-              <div
-                key="by-book"
-                className={`card flex flex-col gap-3 ${activeBook ? "ring-2 ring-brand-400" : ""}`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
-                      {TYPE_LABELS.BY_BOOK}
-                    </p>
-                    <h2 className="font-extrabold text-lg dark:text-slate-100">Per boek</h2>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      Kies een boek en ga daar hoofdstuk voor hoofdstuk doorheen. {byBookCourses.length} boeken
-                      beschikbaar.
-                    </p>
-                  </div>
-                  {activeBook && (
-                    <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
-                      Actief
-                    </span>
-                  )}
-                </div>
-
-                {byBookTotalChapters > 0 && (
-                  <div className="flex flex-col gap-1">
-                    <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                      <div className="h-full bg-brand-500" style={{ width: `${pct}%` }} />
-                    </div>
-                    <p className="text-xs text-slate-400 dark:text-slate-500">
-                      {byBookCompletedCount} / {byBookTotalChapters} hoofdstukken voltooid
-                      {activeBook && ` — bezig met: ${activeBook.name}`}
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex gap-3">
-                  {activeBook ? (
-                    <Link href={`/courses/${activeBook.id}`} className="btn-primary self-start">
-                      Ga verder →
-                    </Link>
-                  ) : (
-                    <Link href="/courses/per-boek" className="btn-secondary self-start">
-                      Kies een boek
-                    </Link>
-                  )}
-                </div>
-              </div>
-            );
-          }
-
-          const course = item.course;
-          const pct =
-            course.totalChapters > 0 ? Math.round((course.completedCount / course.totalChapters) * 100) : 0;
+        {courses.map((course) => {
+          const pct = course.totalChapters > 0 ? Math.round((course.completedCount / course.totalChapters) * 100) : 0;
           return (
             <div key={course.id} className={`card flex flex-col gap-3 ${course.isActive ? "ring-2 ring-brand-400" : ""}`}>
               <div className="flex items-start justify-between gap-3">
@@ -181,11 +150,20 @@ export default function CoursesClient() {
                     <p className="text-sm text-slate-500 dark:text-slate-400">{course.description}</p>
                   )}
                 </div>
-                {course.isActive && (
-                  <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
-                    Actief
-                  </span>
-                )}
+                <div className="flex flex-col items-end gap-1 shrink-0">
+                  {course.isActive && (
+                    <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
+                      Actief
+                    </span>
+                  )}
+                  <button
+                    className="text-xs text-red-500 dark:text-red-400 hover:underline"
+                    disabled={removingId === course.id}
+                    onClick={() => remove(course.id)}
+                  >
+                    Verwijderen
+                  </button>
+                </div>
               </div>
 
               {course.type !== "FREE_CHOICE" && course.totalChapters > 0 && (
@@ -220,6 +198,64 @@ export default function CoursesClient() {
           );
         })}
       </div>
+
+      {!showCatalog ? (
+        <button className="btn-secondary self-center" onClick={openCatalog}>
+          ➕ Voeg nieuwe cursus toe
+        </button>
+      ) : (
+        <div className="card flex flex-col gap-3">
+          <h2 className="font-extrabold dark:text-slate-100">Voeg nieuwe cursus toe</h2>
+          {!catalog ? (
+            <p className="text-slate-400 dark:text-slate-500">Laden...</p>
+          ) : catalog.length === 0 ? (
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Je hebt alles al toegevoegd wat er is — niets meer om te kiezen.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {otherCatalogCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="flex items-center justify-between gap-3 border border-slate-100 dark:border-slate-700 rounded-xl p-3"
+                >
+                  <div>
+                    <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
+                      {TYPE_LABELS[course.type]}
+                    </p>
+                    <p className="font-bold dark:text-slate-100">{course.name}</p>
+                    {course.description && (
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{course.description}</p>
+                    )}
+                  </div>
+                  <button
+                    className="btn-secondary !px-3 !py-1.5 shrink-0"
+                    disabled={activatingId === course.id}
+                    onClick={() => activate(course.id)}
+                  >
+                    {activatingId === course.id ? "Bezig..." : "Toevoegen"}
+                  </button>
+                </div>
+              ))}
+              {hasByBookInCatalog && (
+                <Link
+                  href="/courses/per-boek"
+                  className="flex items-center justify-between gap-3 border border-slate-100 dark:border-slate-700 rounded-xl p-3 hover:border-brand-300"
+                >
+                  <div>
+                    <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Per boek</p>
+                    <p className="font-bold dark:text-slate-100">📚 Kies een boek</p>
+                  </div>
+                  <span className="text-brand-600 dark:text-brand-300 font-bold">→</span>
+                </Link>
+              )}
+            </div>
+          )}
+          <button className="text-sm text-slate-400 dark:text-slate-500 hover:underline self-start" onClick={() => setShowCatalog(false)}>
+            Sluiten
+          </button>
+        </div>
+      )}
 
       <Link href="/tools" className="btn-secondary self-center">
         🧰 Hulpmiddelen

@@ -145,3 +145,32 @@ export async function advanceCourseProgress(
     create: { userId, courseId, currentChapterId: nextChapterId },
   });
 }
+
+/**
+ * Voegt een cursus toe aan de persoonlijke cursussenlijst van een gebruiker
+ * ("Cursussen"), of herstelt 'm na eerder verwijderen. UserCourseProgress
+ * (dus ook currentChapterId, de voortgang) blijft altijd bestaan zodra die
+ * ooit is aangemaakt — dit zet alleen `subscribed` aan, nooit uit (zie de
+ * unsubscribe-route voor het tegenovergestelde). Bij een cursus die deze
+ * gebruiker nog nooit koos, wordt voor niet-FREE_CHOICE-types meteen een
+ * eerste hoofdstuk klaargezet (via advanceCourseProgress); FREE_CHOICE
+ * heeft daar geen "volgende hoofdstuk"-concept voor, dus krijgt gewoon een
+ * kale rij.
+ */
+export async function subscribeUserToCourse(db: PrismaClient, userId: string, courseId: string): Promise<void> {
+  const existing = await db.userCourseProgress.findUnique({ where: { userId_courseId: { userId, courseId } } });
+  if (existing) {
+    if (!existing.subscribed) {
+      await db.userCourseProgress.update({ where: { userId_courseId: { userId, courseId } }, data: { subscribed: true } });
+    }
+    return;
+  }
+
+  const course = await db.course.findUnique({ where: { id: courseId } });
+  if (!course) return;
+  if (course.type === "FREE_CHOICE") {
+    await db.userCourseProgress.create({ data: { userId, courseId } });
+  } else {
+    await advanceCourseProgress(db, userId, courseId);
+  }
+}

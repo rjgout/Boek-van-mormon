@@ -293,6 +293,11 @@ model Course {
   order       Int        @default(0)
   bookId      String? // alleen gezet voor BY_BOOK
   book        Book?      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  // Door een admin uit te zetten via /adminbackend — verdwijnt dan uit ieders
+  // cursussenoverzicht/toevoeg-catalogus (zie /api/courses en
+  // /api/courses/catalog), maar bestaande voortgang blijft gewoon bestaan en
+  // een rechtstreekse link blijft werken (bewust geen harde blokkade).
+  enabled     Boolean    @default(true)
 
   chapters       CourseChapter[]
   userProgress   UserCourseProgress[]
@@ -323,6 +328,12 @@ model UserCourseProgress {
   currentChapterId String? // null = cursus uitgelezen (of nog niet gestart, bij FREE_CHOICE)
   currentChapter   Chapter? @relation(fields: [currentChapterId], references: [id], onDelete: SetNull)
   lastActivityAt   DateTime @default(now())
+  // Staat deze cursus in de persoonlijke cursussenlijst ("Cursussen")? Een
+  // gebruiker kan een cursus verwijderen (dit op false zetten, zie
+  // subscribeUserToCourse/unsubscribe-route in src/lib/courses.ts) zonder de
+  // rest van deze rij (currentChapterId, dus de voortgang) kwijt te raken —
+  // opnieuw toevoegen zet 'm terug op true en je staat weer waar je was.
+  subscribed       Boolean  @default(true)
 
   @@unique([userId, courseId])
 }
@@ -1336,4 +1347,19 @@ model BrandingSettings {
   id             String  @id @default("singleton")
   logoDataUrl    String?
   faviconDataUrl String?
+}
+
+// Eén schakelaar per spelletje op de Spelen-pagina (/live) — door een admin
+// uit te zetten via /adminbackend. Uitgezet betekent: de kaart verdwijnt uit
+// het overzicht van gewone gebruikers (een admin blijft alles zien, met een
+// andere kleur voor wat uitstaat) — bewust geen harde routeblokkade, zie de
+// toelichting bij Course.enabled hierboven voor dezelfde afweging.
+model GameSettings {
+  id                   String  @id @default("singleton")
+  wordGameEnabled      Boolean @default(true)
+  scrabbleEnabled      Boolean @default(true)
+  gezinsavondEnabled   Boolean @default(true)
+  chapterGuessEnabled  Boolean @default(true)
+  challengesEnabled    Boolean @default(true)
+  liveExercisesEnabled Boolean @default(true) // "Nieuw spel starten"-formulier (oefeningen-race)
 }

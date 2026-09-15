@@ -8,19 +8,24 @@ export async function GET() {
 
   const [courses, userProgress] = await Promise.all([
     prisma.course.findMany({
+      where: { enabled: true },
       orderBy: { order: "asc" },
       include: { _count: { select: { chapters: true } } },
     }),
     prisma.userCourseProgress.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, subscribed: true },
       include: { currentChapter: { include: { book: true } } },
     }),
   ]);
 
   const progressByCourseId = new Map(userProgress.map((p) => [p.courseId, p]));
+  // Alleen de cursussen die deze gebruiker aan zijn persoonlijke lijst
+  // toevoegde (zie subscribeUserToCourse) — de rest staat in de catalogus
+  // (/api/courses/catalog, "Voeg nieuwe cursus toe").
+  const subscribedCourses = courses.filter((c) => progressByCourseId.has(c.id));
 
   const result = await Promise.all(
-    courses.map(async (course) => {
+    subscribedCourses.map(async (course) => {
       const progress = progressByCourseId.get(course.id);
       let completedCount = 0;
       if (course.type !== "FREE_CHOICE" && course._count.chapters > 0) {
