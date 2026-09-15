@@ -338,6 +338,9 @@ export default function ProfileClient() {
           <Link href="/change-password" className="btn-secondary self-start">
             Wachtwoord wijzigen
           </Link>
+          <Link href="/onboarding" className="btn-secondary self-start">
+            Rondleiding opnieuw bekijken
+          </Link>
           <button className="btn-secondary self-start" onClick={logout}>
             Uitloggen
           </button>

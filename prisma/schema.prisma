@@ -58,6 +58,14 @@ model User {
   // die ranglijst voor deze gebruiker wordt berekend, zodat het profiel dit
   // kan tonen zonder elke keer de hele geschiedenis te herberekenen.
   bestNationalRank   Int?
+  // null = deze gebruiker moet de onboarding-flow (/onboarding) nog zien —
+  // zet dashboard/page.tsx dan een redirect in werking. Niet-null (gezet bij
+  // overslaan én bij afronden, zie /api/onboarding/complete) betekent "niet
+  // opnieuw automatisch tonen"; via een knop op het profiel kan de flow
+  // alsnog handmatig herstart worden. Bestaande gebruikers krijgen dit bij de
+  // migratie met terugwerkende kracht gevuld, zodat zij 'm nooit te zien
+  // krijgen — alleen nieuwe registraties na deze wijziging doorlopen 'm.
+  onboardingSeenAt   DateTime?
 
   // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
   // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes

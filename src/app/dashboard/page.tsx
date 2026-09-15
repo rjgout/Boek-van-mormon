@@ -18,6 +18,12 @@ export default async function DashboardPage() {
   if (!user.emailVerifiedAt && !user.isDemoSeed && (await isEmailConfigured())) {
     redirect("/verify-email");
   }
+  // Nieuwe gebruikers krijgen eenmalig de onboarding-flow te zien (webapp,
+  // reeks/XP/hints, vrienden, notificaties). Bestaande gebruikers zijn bij
+  // de migratie al voorzien van een onboardingSeenAt (= hun createdAt), dus
+  // deze redirect raakt alleen registraties van na die migratie. Handmatig
+  // herstarten kan via de knop op de profielpagina.
+  if (!user.onboardingSeenAt) redirect("/onboarding");
 
   // "Van voor naar achter", de podcastcursus en de kindercursus hebben
   // allemaal al hun eigen pagina (/courses/[courseId]); de overige

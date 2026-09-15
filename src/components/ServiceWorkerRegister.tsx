@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import "@/lib/pwaInstall"; // side-effect: vangt beforeinstallprompt al vroeg op, zie dat bestand
 
 /**
  * Registreert de service worker onvoorwaardelijk bij elk bezoek — niet pas

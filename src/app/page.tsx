@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
 import { APP_NAME } from "@/lib/brand";
+import InstallAppCard from "@/components/InstallAppCard";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
@@ -28,7 +29,7 @@ export default async function HomePage() {
         </Link>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-4 mt-8 w-full max-w-3xl">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 w-full max-w-4xl">
         <div className="card text-left">
           <div className="text-3xl mb-2">🔥</div>
           <h3 className="font-extrabold mb-1 dark:text-slate-100">Dag-streak</h3>
@@ -53,6 +54,7 @@ export default async function HomePage() {
             wie het snelst en scherpst is.
           </p>
         </div>
+        <InstallAppCard variant="compact" />
       </div>
     </div>
   );
