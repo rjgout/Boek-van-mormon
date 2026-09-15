@@ -12,6 +12,21 @@ live multiplayer-quiz). Bewust gebouwd om **self-hosted** te draaien (geen
 cloud-platformafhankelijkheden), taal is overal Nederlands (UI, foutmeldingen,
 codecommentaar, commitmessages).
 
+## Werkwijze
+
+- Bij een vraag om analyse, ontwerp of sparren: wijzig geen code tenzij daar
+  expliciet om wordt gevraagd.
+- Bij grotere wijzigingen: onderzoek eerst de relevante bestaande
+  implementatie en doe een concreet voorstel voordat je code wijzigt.
+- Stel alleen verduidelijkende vragen wanneer benodigde informatie niet uit
+  het project of de opdracht kan worden afgeleid.
+- Maak geen ongevraagde refactors of wijzigingen buiten de scope van de taak.
+- Lees aanvullende documentatie alleen wanneer die relevant is voor de
+  huidige taak. Scan niet standaard het volledige project of alle bestanden
+  onder `docs/`.
+- Begin bij de bestanden die direct bij de taak horen en volg
+  imports/referenties wanneer meer context nodig is.
+
 ## Techstack
 
 - Next.js 16 (App Router) + TypeScript (strict) + Tailwind CSS + React 19
@@ -20,10 +35,8 @@ codecommentaar, commitmessages).
 - Custom server (`server.ts`, via `tsx`, geen `next start`) omdat er een
   Socket.io-server naast de Next.js-requesthandler moet draaien
 - Auth: eigen implementatie — `jose` (JWT) + `bcryptjs`, geen NextAuth/Clerk/etc.
-- **Geen testframework aanwezig** (geen jest/vitest/playwright-dependency, geen
-  test-CI-stap). Valideren gebeurt via `npx tsc --noEmit`, handmatig door de
-  dev-server heen lopen, en een schone `npm run build` vóór je een taak als
-  afgerond beschouwt.
+- **Geen testframework aanwezig** (geen jest/vitest/playwright-dependency,
+  geen test-CI-stap) — zie de validatiestappen onderaan dit bestand.
 
 ## Architectuur (3 containers, zie `docker-compose.yml` / `README.md`)
 
@@ -63,10 +76,10 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
   scores, "Raad het hoofdstuk"); state van een lopend spel leeft in-memory
   in deze ene instantie (zie Beperkingen in `README.md`)
 - `src/app/**` — App Router: pagina's (`page.tsx`) + API-routes (`app/api/**/route.ts`)
-- `src/lib/**` — kernlogica, per domein één bestand (`streak.ts`, `xp.ts`,
-  `leagues.ts`, `competitionXp.ts`, `challenges.ts`, `scrabbleGame.ts`,
-  `chapterGuess.ts`, `wordGame.ts`, `notify.ts`, `email.ts`, `auth.ts`,
-  `session.ts`, `baseUrl.ts`, `dates.ts`, ...)
+- `src/lib/**` — kernlogica, georganiseerd per domein; vermijd onnodige
+  versnippering (`streak.ts`, `xp.ts`, `leagues.ts`, `competitionXp.ts`,
+  `challenges.ts`, `scrabbleGame.ts`, `chapterGuess.ts`, `wordGame.ts`,
+  `notify.ts`, `email.ts`, `auth.ts`, `session.ts`, `baseUrl.ts`, `dates.ts`, ...)
 - `src/components/**` — client components (`"use client"`), meestal één
   `<Feature>Client.tsx` per pagina die de eigen data fetcht
 - `prisma/schema.prisma` + `prisma/migrations/**` — datamodel en migraties
@@ -119,12 +132,9 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
 - **Server is de enige bron van waarheid voor XP/scores/spelstatus** — de
   client stuurt nooit een bedrag of resultaat, de server berekent en
   valideert alles opnieuw (zie elke `complete*`-functie in `streak.ts`,
-  `scrabbleGame.ts`, `gameServer.ts`). Concurrency-gevoelige tegoeden
-  (hint-credits, groepsslots) gebruiken een atomic-`updateMany`-guard
-  (`where: { ..., count: { gte/lt: n } }`) i.p.v. read-then-write.
-  Competitie-XP loopt altijd via `awardCompetitionXp` (`src/lib/competitionXp.ts`)
-  — de enige plek met anti-farming-regels (dagcap, afnemend rendement);
-  algemene XP (`awardXp` in `xp.ts`) is ongelimiteerd en blijft dat.
+  `scrabbleGame.ts`, `gameServer.ts`). Zie `src/lib/xp.ts` en
+  `src/lib/competitionXp.ts` voor de implementatiedetails (o.a. concurrency-
+  veilige tegoeden en anti-farming-regels voor competitie-XP).
 - E-maillinks: gebruik `getBaseUrl(req)` (uit een route met een `NextRequest`)
   of `getAppUrl()` (async, overal elders — schedulers, socket-server) uit
   `src/lib/baseUrl.ts`. Beide zijn domeinonafhankelijk (geen hardcoded
@@ -137,8 +147,8 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
 
 - Commentaar in het Nederlands, en legt **waarom** uit (niet-vanzelfsprekende
   aannames, edge cases, bewuste afwegingen) — nooit **wat** de code doet.
-- Commitmessages: Nederlands, uitgebreid, leggen de reden van de wijziging
-  uit (consistent zo door de hele gitgeschiedenis van dit project).
+- Commitmessages zijn in het Nederlands en beschrijven duidelijk wat er is
+  gewijzigd en waarom wanneer dat relevant is.
 - Geen ORM-modelduplicatie in aparte typebestanden: types komen uit
   `@prisma/client` of worden lokaal in het bestand zelf gedefinieerd.
 
@@ -166,6 +176,6 @@ Belangrijke env vars (zie `.env.example`): `DATABASE_URL`, `REDIS_URL`,
 verzoek), `PODCAST_FEED_URL` (optioneel). SMTP wordt niet via env
 geconfigureerd maar via `/adminbackend` in de app zelf.
 
-Vóór je een taak afrond: `npx tsc --noEmit`, handmatig testen (dev-server +
-curl/Playwright), dan `rm -rf .next && npm run build` om er zeker van te
-zijn dat de productiebuild ook slaagt.
+Vóór een taak als afgerond geldt: voer `npx tsc --noEmit` uit, test relevante
+functionaliteit waar mogelijk handmatig via de dev-server/API, en voer
+daarna een schone productiebuild uit met `rm -rf .next && npm run build`.
