@@ -105,15 +105,20 @@ export async function syncPodcastFeed(client: PrismaClient, log: (msg: string) =
 
     const title = item.title?.trim() || `Aflevering ${number}`;
     const summary = extractSummary(item);
-    const listenUrl = item.link ?? item.enclosure?.url ?? null;
+    // Bewust twee losse velden: listenUrl is de webpagina (RSS <link>, voor
+    // "bekijk op de website"), audioUrl het daadwerkelijk afspeelbare bestand
+    // (RSS <enclosure>, voor de ingebouwde speler) — een webpagina-URL werkt
+    // niet als <audio src>.
+    const listenUrl = item.link ?? null;
+    const audioUrl = item.enclosure?.url ?? null;
     const isoDate = item.isoDate ?? item.pubDate;
     const publishedAt = isoDate && !Number.isNaN(Date.parse(isoDate)) ? new Date(isoDate) : null;
 
     const existing = await client.podcastEpisode.findUnique({ where: { number } });
     await client.podcastEpisode.upsert({
       where: { number },
-      update: { title, summary, listenUrl, publishedAt, order: -number },
-      create: { number, title, summary, listenUrl, publishedAt, order: -number },
+      update: { title, summary, listenUrl, audioUrl, publishedAt, order: -number },
+      create: { number, title, summary, listenUrl, audioUrl, publishedAt, order: -number },
     });
     if (existing) updated++;
     else created++;

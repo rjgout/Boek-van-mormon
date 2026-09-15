@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 
 interface EpisodeView {
@@ -9,6 +9,7 @@ interface EpisodeView {
   title: string;
   summary: string | null;
   listenUrl: string | null;
+  audioUrl: string | null;
   contentCompleted: boolean;
   contentBestScore: number | null;
   hasContentExercises: boolean;
@@ -45,6 +46,7 @@ function episodeStatus(episode: EpisodeView): StatusFilter {
 export default function PodcastCourseView({ courseName, episodes }: Props) {
   const [filter, setFilter] = useState<StatusFilter>("ALL");
   const [page, setPage] = useState(1);
+  const listRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => {
     if (filter === "ALL") return episodes;
@@ -103,6 +105,7 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
           <p className="text-slate-400 dark:text-slate-500">Geen afleveringen in dit filter.</p>
         )}
 
+        <div ref={listRef} className="contents">
         {pageEpisodes.map((episode) => (
           <div key={episode.id} className="card flex flex-col gap-3 max-w-xl">
             <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -116,10 +119,40 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
                   rel="noreferrer"
                   className="text-xs font-bold text-brand-600 dark:text-brand-300 underline underline-offset-2"
                 >
-                  Beluister deze aflevering ↗
+                  Bekijk op de website ↗
                 </a>
               )}
             </div>
+            {episode.audioUrl && (
+              <audio
+                controls
+                preload="none"
+                src={episode.audioUrl}
+                className="w-full h-10"
+                onPlay={(e) => {
+                  // Zet de andere spelers op deze pagina stil zodra deze
+                  // begint — anders lopen twee afleveringen door elkaar als
+                  // je per ongeluk twee keer op play klikt.
+                  listRef.current
+                    ?.querySelectorAll("audio")
+                    .forEach((a) => {
+                      if (a !== e.currentTarget) a.pause();
+                    });
+                  // Media Session: geeft dit als "nu speelt" door aan het
+                  // besturingssysteem (vergrendelscherm/notificatiebalk), wat
+                  // ook helpt om op de achtergrond te kunnen blijven
+                  // afspelen — zie de toelichting in het gesprek hierover.
+                  if ("mediaSession" in navigator) {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                      title: `Aflevering ${episode.number} — ${episode.title}`,
+                      artist: "Geloof je dat ook?",
+                    });
+                  }
+                }}
+              >
+                Je browser ondersteunt geen audio-afspelen.
+              </audio>
+            )}
             {episode.summary && <EpisodeSummary text={episode.summary} />}
             <div className="flex gap-3 flex-wrap">
               <ModeButton
@@ -139,6 +172,7 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
             </div>
           </div>
         ))}
+        </div>
 
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-4">

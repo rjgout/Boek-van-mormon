@@ -57,6 +57,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             title: episode.title,
             summary: episode.summary,
             listenUrl: episode.listenUrl,
+            audioUrl: episode.audioUrl,
             contentCompleted: contentProgress?.completed ?? false,
             contentBestScore: contentProgress ? contentProgress.bestScore : null,
             hasContentExercises: episode.exercises.some((e) => e.mode === "CONTENT"),

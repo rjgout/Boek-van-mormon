@@ -340,7 +340,13 @@ model PodcastEpisode {
   number      Int       @unique
   title       String
   summary     String?
+  // Link naar de afleveringspagina/website (RSS <link>) — voor de
+  // "bekijk op de website"-link. Het daadwerkelijk afspeelbare bestand (RSS
+  // <enclosure>, meestal een mp3-URL) staat apart in audioUrl, voor de
+  // ingebouwde speler (zie PodcastCourseView.tsx) — dat is bewust NIET
+  // dezelfde waarde, een webpagina kan immers niet als <audio src> dienen.
   listenUrl   String?
+  audioUrl    String?
   publishedAt DateTime?
   order       Int       @default(0)
 
