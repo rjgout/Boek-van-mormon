@@ -39,12 +39,12 @@ const REGION_LABEL: Record<Region, string> = {
   BELOOFDE_LAND: "Beloofde land",
   ZARAHEMLA: "Zarahemla",
 };
-const REGION_TINT: Record<Region, string> = {
-  JERUZALEM: "from-amber-100/70 dark:from-amber-950/40",
-  WILDERNIS: "from-amber-200/70 dark:from-amber-900/40",
-  ZEE: "from-ice-500/10 dark:from-ice-500/15",
-  BELOOFDE_LAND: "from-brand-500/10 dark:from-brand-500/15",
-  ZARAHEMLA: "from-gold-500/10 dark:from-gold-500/15",
+const REGION_IMAGE: Record<Region, string> = {
+  JERUZALEM: "/gezinsavond/regions/jeruzalem.webp",
+  WILDERNIS: "/gezinsavond/regions/wildernis.webp",
+  ZEE: "/gezinsavond/regions/zee.webp",
+  BELOOFDE_LAND: "/gezinsavond/regions/beloofde-land.webp",
+  ZARAHEMLA: "/gezinsavond/regions/zarahemla.webp",
 };
 const TILE_ICON: Record<TileKind, string> = {
   START: "🏺",
@@ -505,21 +505,31 @@ export default function FamilyGameRoom({ code, myUserId }: { code: string; myUse
               return (
                 <div
                   key={region}
-                  className={`absolute top-0 h-full bg-gradient-to-b ${REGION_TINT[region]} to-transparent flex items-start pt-3`}
-                  style={{ left, width }}
+                  className="absolute top-0 h-full bg-cover bg-center flex items-start pt-3"
+                  style={{ left, width, backgroundImage: `url(${REGION_IMAGE[region]})` }}
                 >
-                  <span className="px-4 font-extrabold text-lg text-slate-700 dark:text-slate-200 opacity-70">{REGION_LABEL[region]}</span>
+                  <span className="px-3 py-1 rounded-full font-extrabold text-sm bg-slate-900/55 text-white backdrop-blur-sm">
+                    {REGION_LABEL[region]}
+                  </span>
                 </div>
               );
             })}
 
             <svg className="absolute top-0 left-0 overflow-visible" width={1} height={1}>
+              {/* Dubbele lijn (donkere onderlaag + lichte bovenlaag) zodat het pad
+                  afsteekt tegen de illustraties op de achtergrond, ongeacht kleur. */}
               <polyline
                 points={board.map((t) => `${tileX(t.index)},${tileY(t.index)}`).join(" ")}
                 fill="none"
-                stroke="currentColor"
-                className="text-slate-200 dark:text-slate-700"
-                strokeWidth={5}
+                stroke="rgba(0,0,0,0.35)"
+                strokeWidth={8}
+                strokeLinecap="round"
+              />
+              <polyline
+                points={board.map((t) => `${tileX(t.index)},${tileY(t.index)}`).join(" ")}
+                fill="none"
+                stroke="rgba(255,255,255,0.9)"
+                strokeWidth={4}
                 strokeLinecap="round"
               />
             </svg>
