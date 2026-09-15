@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/db";
 import { awardXp } from "@/lib/xp";
-import { applyWeeklyXp } from "@/lib/streak";
+import { applyWeeklyXp } from "@/lib/leagues";
 
 // Eerste (en vooralsnog enige) artikel in de winkel: een hint, inwisselbaar
 // tegen XP. Het hint-tegoed dat dit oplevert (User.hintBalance) is los van

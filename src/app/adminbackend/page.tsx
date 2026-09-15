@@ -3,18 +3,20 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import { formatElapsedDutch } from "@/lib/dates";
 import { getEmailSettingsView } from "@/lib/email";
+import { getLeagueSettings } from "@/lib/leagues";
 import AdminUsersClient from "@/components/AdminUsersClient";
 import EmailSettingsClient from "@/components/EmailSettingsClient";
 import ReseedClient from "@/components/ReseedClient";
 import FeedbackAdminClient from "@/components/FeedbackAdminClient";
 import AdminBrandingClient from "@/components/AdminBrandingClient";
+import AdminLeagueSettingsClient from "@/components/AdminLeagueSettingsClient";
 
 export default async function AdminBackendPage() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
   if (!user.isAdmin) redirect("/dashboard");
 
-  const [users, userCount, bookCount, chapterCount, exerciseCount, emailSettings] = await Promise.all([
+  const [users, userCount, bookCount, chapterCount, exerciseCount, emailSettings, leagueSettings] = await Promise.all([
     prisma.user.findMany({
       orderBy: { createdAt: "asc" },
       select: {
@@ -36,6 +38,7 @@ export default async function AdminBackendPage() {
     prisma.chapter.count(),
     prisma.exercise.count(),
     getEmailSettingsView(),
+    getLeagueSettings(prisma),
   ]);
 
   return (
@@ -65,6 +68,8 @@ export default async function AdminBackendPage() {
       />
 
       <EmailSettingsClient initial={emailSettings} />
+
+      <AdminLeagueSettingsClient initial={{ ...leagueSettings, activityRules: JSON.stringify(leagueSettings.activityRules, null, 2) }} />
 
       <AdminBrandingClient />
 

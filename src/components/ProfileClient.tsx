@@ -39,6 +39,14 @@ interface ProfileData {
   duelsPlayed: number;
   duelsWon: number;
   tier: LeagueTier | null;
+  groupPosition: number | null;
+  bestTierEver: LeagueTier | null;
+  lifetimePromotions: number;
+  lifetimeDemotions: number;
+  competitionsWon: number;
+  seasonCount: number;
+  bestNationalRank: number | null;
+  seasons: { seasonIndex: number; highestTier: LeagueTier; finalTier: LeagueTier; finalGroupPosition: number | null }[];
   achievements: AchievementView[];
 }
 
@@ -224,6 +232,46 @@ export default function ProfileClient() {
           <Stat value={earnedCount.toString()} label="Achievements" small />
         </div>
       </div>
+
+      <div className="card flex flex-col gap-4">
+        <h2 className="font-extrabold text-lg dark:text-slate-100">Competitie</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <Stat
+            value={data.tier ? `${TIER_ICONS[data.tier]} ${data.groupPosition ? `#${data.groupPosition}` : "—"}` : "—"}
+            label="Deze week"
+            href="/competition"
+          />
+          <Stat
+            value={data.bestTierEver ? `${TIER_ICONS[data.bestTierEver]} ${TIER_LABELS[data.bestTierEver]}` : "—"}
+            label="Beste divisie ooit"
+            small
+          />
+          <Stat value={data.bestNationalRank ? `#${data.bestNationalRank}` : "—"} label="Beste NL-ranglijstpositie" small />
+          <Stat value={data.seasonCount.toString()} label="Seizoenen" small />
+        </div>
+        <div className="grid grid-cols-3 gap-4 text-center text-sm text-slate-500 dark:text-slate-400">
+          <Stat value={data.lifetimePromotions.toString()} label="Promoties" small />
+          <Stat value={data.lifetimeDemotions.toString()} label="Degradaties" small />
+          <Stat value={data.competitionsWon.toString()} label="Competities gewonnen" small />
+        </div>
+      </div>
+
+      {data.seasons.length > 0 && (
+        <section>
+          <h2 className="font-extrabold text-lg mb-3 dark:text-slate-100">Seizoenen</h2>
+          <div className="card flex flex-col divide-y divide-slate-100 dark:divide-slate-700">
+            {data.seasons.map((s) => (
+              <div key={s.seasonIndex} className="flex items-center justify-between py-2.5">
+                <span className="font-bold dark:text-slate-100">Seizoen {s.seasonIndex}</span>
+                <span className="text-slate-500 dark:text-slate-400">
+                  {TIER_ICONS[s.finalTier]} {TIER_LABELS[s.finalTier]}
+                  {s.finalGroupPosition ? ` — #${s.finalGroupPosition}` : ""}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section>
         <h2 className="font-extrabold text-lg mb-3 dark:text-slate-100">Achievements</h2>

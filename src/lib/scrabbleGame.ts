@@ -4,6 +4,31 @@ import { createBag, drawTiles, consumeFromRack, letterValue, shuffle, RACK_SIZE,
 import { validateAndScoreMove, type Placement } from "@/lib/scrabble/engine";
 import { findHint } from "@/lib/scrabble/hint";
 import { notifyScrabbleInvite, notifyScrabbleDeclined, notifyScrabbleYourTurn, notifyScrabbleFinished } from "@/lib/notify";
+import { awardCompetitionXp } from "@/lib/competitionXp";
+
+// Scrabble geeft (net als Uitdagingen) bewust geen algemene XP — zie
+// completeLesson/completeChapterGuess e.a. in streak.ts, die dat wel doen.
+// Dit is puur competitie-XP (zie src/lib/competitionXp.ts): een activiteit
+// die vroeger nul invloed had op de wekelijkse competitie, telt nu wel mee,
+// zonder de algemene XP-economie (winkel, achievements) aan te raken.
+const SCRABBLE_WIN_XP = 30;
+const SCRABBLE_PARTICIPATION_XP = 10;
+
+/** Wordt aangeroepen op elk van de drie afrondpunten (winst, gelijkspel, opgeven). */
+async function awardScrabbleCompetitionXp(winnerUserId: string | null, player1Id: string, player2Id: string): Promise<void> {
+  await prisma
+    .$transaction(async (tx) => {
+      if (winnerUserId) {
+        const loserId = winnerUserId === player1Id ? player2Id : player1Id;
+        await awardCompetitionXp(tx, winnerUserId, "SCRABBLE_WON", SCRABBLE_WIN_XP);
+        await awardCompetitionXp(tx, loserId, "SCRABBLE_PLAYED", SCRABBLE_PARTICIPATION_XP);
+      } else {
+        await awardCompetitionXp(tx, player1Id, "SCRABBLE_PLAYED", SCRABBLE_PARTICIPATION_XP);
+        await awardCompetitionXp(tx, player2Id, "SCRABBLE_PLAYED", SCRABBLE_PARTICIPATION_XP);
+      }
+    })
+    .catch(() => {});
+}
 
 // Aantal opeenvolgende beurten zonder plaatsing (pas/wissel) waarna een
 // partij ook eindigt zonder dat de zak leeg hoeft te zijn — voorkomt een
@@ -197,6 +222,7 @@ export async function placeMove(
       notifyScrabbleFinished(userId, opponentName, winnerUserId === userId, tied),
       notifyScrabbleFinished(opponentId, myName, winnerUserId === opponentId, tied),
     ]);
+    await awardScrabbleCompetitionXp(winnerUserId, game.player1Id, game.player2Id);
   } else {
     notifyScrabbleYourTurn(opponentId, myName).catch(() => {});
   }
@@ -297,6 +323,7 @@ export async function passTurn(gameId: string, userId: string): Promise<ActionRe
       notifyScrabbleFinished(userId, opponentName, winnerUserId === userId, tied),
       notifyScrabbleFinished(opponentId, myName, winnerUserId === opponentId, tied),
     ]);
+    await awardScrabbleCompetitionXp(winnerUserId, game.player1Id, game.player2Id);
   } else {
     notifyScrabbleYourTurn(opponentId, myName).catch(() => {});
   }
@@ -334,6 +361,14 @@ export async function forfeitGame(gameId: string, userId: string): Promise<Actio
     notifyScrabbleFinished(opponentId, myName, true, false),
     notifyScrabbleFinished(userId, opponentName, false, false),
   ]);
+  // Alleen de winnaar krijgt iets — wie opgeeft, verdient (net als bij het
+  // opgeven van Raad het hoofdstuk) geen enkele beloning, ook geen
+  // deelname-XP.
+  await prisma
+    .$transaction(async (tx) => {
+      await awardCompetitionXp(tx, opponentId, "SCRABBLE_WON", SCRABBLE_WIN_XP);
+    })
+    .catch(() => {});
   return { ok: true };
 }
 

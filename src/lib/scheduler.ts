@@ -1,8 +1,7 @@
 import { prisma } from "@/lib/db";
-import { dayKey, weekStartKey, amsterdamNow, type AmsterdamTime } from "@/lib/dates";
-import { resolveStartingTier, TIER_ORDER } from "@/lib/leagues";
-import { notifyDailyReminder, notifyWeeklyResult, notifyWordGame } from "@/lib/notify";
-import { TIER_LABELS } from "@/lib/leagues";
+import { addDays, dayKey, weekStartKey, amsterdamNow, type AmsterdamTime } from "@/lib/dates";
+import { resolveWeeklyPlacement, getLeagueSettings, TIER_ORDER, TIER_LABELS } from "@/lib/leagues";
+import { notifyDailyReminder, notifyWeeklyResult, notifySeasonResult, notifyWordGame } from "@/lib/notify";
 import { wordGameDayKey } from "@/lib/wordGame";
 
 const TICK_MS = 60_000;
@@ -63,10 +62,11 @@ async function runDailyReminderTick(): Promise<void> {
 
 /**
  * Stuurt, één keer per week, de promotie/degradatie-uitslag van de zojuist
- * afgelopen week. Hergebruikt resolveStartingTier (dezelfde rangschikking
- * die ook "lazy" de starttier van de nieuwe week bepaalt) puur lezend, dus
- * zonder dat lopende hoofdstuk-flows moeten wachten op een wekelijkse
- * batchjob — die blijven de tier zelf lazy toepassen zoals voorheen.
+ * afgelopen week. Hergebruikt resolveWeeklyPlacement (dezelfde
+ * groep-rangschikking die ook "lazy" de starttier/groep van de nieuwe week
+ * bepaalt) puur lezend, dus zonder dat lopende hoofdstuk-flows moeten
+ * wachten op een wekelijkse batchjob — die blijven de tier zelf lazy
+ * toepassen zoals voorheen.
  */
 async function runWeeklyResultTick(): Promise<void> {
   const now = new Date();
@@ -88,7 +88,7 @@ async function runWeeklyResultTick(): Promise<void> {
   });
 
   for (const score of endedScores) {
-    const newTier = await resolveStartingTier(prisma, score.userId, newWeek);
+    const { tier: newTier } = await resolveWeeklyPlacement(prisma, score.userId, newWeek);
     const oldIdx = TIER_ORDER.indexOf(score.tier);
     const newIdx = TIER_ORDER.indexOf(newTier);
     const outcome = newIdx > oldIdx ? "promoted" : newIdx < oldIdx ? "demoted" : "stayed";
@@ -98,6 +98,115 @@ async function runWeeklyResultTick(): Promise<void> {
       .update({ where: { id: score.userId }, data: { lastWeeklyResultNotifiedWeek: endedWeek } })
       .catch(() => {});
   }
+}
+
+/**
+ * Sluit een seizoen af zodra de huidige week op of na de eerste week ná het
+ * seizoen valt, en start meteen het volgende. In tegenstelling tot de
+ * wekelijkse plaatsing (die "lazy" per gebruiker gebeurt) kan dit niet lazy:
+ * het seizoensresultaat heeft ALLE weken van het seizoen nodig om te
+ * kloppen, dus dit is de ene plek in het hele systeem die wél als
+ * eenmalige batchtaak draait — maar wel binnen de al bestaande
+ * minuut-tick-scheduler, niet als losse cron-infrastructuur.
+ */
+export async function runSeasonRolloverTick(): Promise<void> {
+  const activeSeason = await prisma.season.findFirst({ where: { status: "ACTIVE" } });
+  if (!activeSeason) return; // kan niet gebeuren na de migratie, maar nooit crashen op een lege staat
+
+  const currentWeek = weekStartKey();
+  const firstWeekAfterSeason = addDays(activeSeason.startWeek, activeSeason.weekCount * 7);
+  if (currentWeek < firstWeekAfterSeason) return; // seizoen loopt nog
+
+  await prisma.$transaction(async (tx) => {
+    // Her-check binnen de transactie: voorkomt dat twee gelijktijdige ticks
+    // (bv. door een trage vorige run) hetzelfde seizoen dubbel afsluiten.
+    const fresh = await tx.season.findUnique({ where: { id: activeSeason.id } });
+    if (!fresh || fresh.status !== "ACTIVE") return;
+
+    const scores = await tx.weeklyScore.findMany({
+      where: { seasonId: activeSeason.id },
+      orderBy: { weekStart: "asc" },
+    });
+
+    const byUser = new Map<string, typeof scores>();
+    for (const s of scores) {
+      const list = byUser.get(s.userId);
+      if (list) list.push(s);
+      else byUser.set(s.userId, [s]);
+    }
+
+    const groupWinnerCache = new Map<string, string | null>();
+    async function winnerOfGroup(groupId: string): Promise<string | null> {
+      if (!groupWinnerCache.has(groupId)) {
+        const top = await tx.weeklyScore.findFirst({
+          where: { groupId },
+          orderBy: [{ xp: "desc" }, { id: "asc" }],
+          select: { userId: true },
+        });
+        groupWinnerCache.set(groupId, top?.userId ?? null);
+      }
+      return groupWinnerCache.get(groupId) ?? null;
+    }
+
+    for (const [userId, userScores] of byUser) {
+      let highestTierIdx = -1;
+      let promotions = 0;
+      let demotions = 0;
+      let competitionsWon = 0;
+      let prevTierIdx: number | null = null;
+
+      for (const s of userScores) {
+        const idx = TIER_ORDER.indexOf(s.tier);
+        if (idx > highestTierIdx) highestTierIdx = idx;
+        if (prevTierIdx !== null) {
+          if (idx > prevTierIdx) promotions++;
+          else if (idx < prevTierIdx) demotions++;
+        }
+        prevTierIdx = idx;
+
+        if (s.groupId && (await winnerOfGroup(s.groupId)) === userId) competitionsWon++;
+      }
+
+      const last = userScores[userScores.length - 1];
+      let finalGroupPosition: number | null = null;
+      if (last.groupId) {
+        const peers = await tx.weeklyScore.findMany({
+          where: { groupId: last.groupId },
+          orderBy: [{ xp: "desc" }, { id: "asc" }],
+          select: { userId: true },
+        });
+        const idx = peers.findIndex((p) => p.userId === userId);
+        finalGroupPosition = idx === -1 ? null : idx + 1;
+      }
+
+      await tx.seasonResult.create({
+        data: {
+          seasonId: activeSeason.id,
+          userId,
+          highestTier: TIER_ORDER[highestTierIdx] ?? "BRONZE",
+          finalTier: last.tier,
+          finalGroupPosition,
+          promotions,
+          demotions,
+          activeWeeks: userScores.length,
+          competitionsWon,
+        },
+      });
+
+      await notifySeasonResult(userId, activeSeason.index, TIER_LABELS[last.tier], finalGroupPosition).catch(() => {});
+    }
+
+    const settings = await getLeagueSettings(tx);
+    await tx.season.update({ where: { id: activeSeason.id }, data: { status: "COMPLETED", completedAt: new Date() } });
+    await tx.season.create({
+      data: {
+        index: activeSeason.index + 1,
+        startWeek: currentWeek,
+        weekCount: settings.seasonWeekCount,
+        status: "ACTIVE",
+      },
+    });
+  });
 }
 
 /**
@@ -138,6 +247,7 @@ export function startNotificationSchedulers(): void {
   setInterval(() => {
     runDailyReminderTick().catch((e) => console.error("Dagelijkse herinnering mislukt:", e));
     runWeeklyResultTick().catch((e) => console.error("Wekelijkse uitslag mislukt:", e));
+    runSeasonRolloverTick().catch((e) => console.error("Seizoensafsluiting mislukt:", e));
     runWordGameNotificationTick().catch((e) => console.error("Woord-van-de-dag-melding mislukt:", e));
   }, TICK_MS);
 }

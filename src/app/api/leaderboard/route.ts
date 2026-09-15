@@ -2,14 +2,85 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { weekStartKey } from "@/lib/dates";
+import { getLeagueSettings } from "@/lib/leagues";
+
+type Zone = "PROMOTION" | "SAFE" | "RELEGATION";
+
+function zoneFor(rank: number, total: number, promoteCount: number, demoteCount: number): Zone {
+  if (rank <= promoteCount) return "PROMOTION";
+  if (rank > total - demoteCount) return "RELEGATION";
+  return "SAFE";
+}
+
+const NATIONAL_PAGE_SIZE = 50;
 
 export async function GET(req: NextRequest) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
 
-  const scope = req.nextUrl.searchParams.get("scope") === "friends" ? "friends" : "league";
+  const scopeParam = req.nextUrl.searchParams.get("scope");
+  const scope = scopeParam === "friends" ? "friends" : scopeParam === "national" ? "national" : "league";
   const weekStart = weekStartKey();
 
+  if (scope === "national") {
+    // De permanente Nederlandse ranglijst: op levenslange XP (User.xpTotal,
+    // dezelfde cache als overal elders in de app), dus bewust een ander
+    // getal/mechanisme dan de wekelijkse, gelimiteerde competitie-XP
+    // hieronder — dit is geen kopie van de wekelijkse competitie, maar een
+    // apart, langetermijn antwoord op "hoe doe ik het over lange tijd".
+    const top = await prisma.user.findMany({
+      orderBy: [{ xpTotal: "desc" }, { id: "asc" }],
+      take: NATIONAL_PAGE_SIZE,
+      select: { id: true, handle: true, xpTotal: true, currentStreak: true },
+    });
+
+    const myRankAmongHigher = await prisma.user.count({
+      where: {
+        OR: [{ xpTotal: { gt: user.xpTotal } }, { AND: [{ xpTotal: user.xpTotal }, { id: { lt: user.id } }] }],
+      },
+    });
+    const myRank = myRankAmongHigher + 1;
+
+    if (!user.bestNationalRank || myRank < user.bestNationalRank) {
+      await prisma.user.update({ where: { id: user.id }, data: { bestNationalRank: myRank } }).catch(() => {});
+    }
+
+    const ids = top.map((u) => u.id);
+    const weekScores = await prisma.weeklyScore.findMany({
+      where: { weekStart, userId: { in: ids } },
+      select: { userId: true, tier: true },
+    });
+    const tierByUser = new Map(weekScores.map((s) => [s.userId, s.tier]));
+
+    const entries = top.map((u, i) => ({
+      rank: i + 1,
+      userId: u.id,
+      handle: u.handle,
+      xpTotal: u.xpTotal,
+      currentStreak: u.currentStreak,
+      tier: tierByUser.get(u.id) ?? null,
+      isMe: u.id === user.id,
+    }));
+
+    const meInTop = entries.some((e) => e.isMe);
+
+    return NextResponse.json({
+      scope,
+      entries,
+      me: meInTop
+        ? null
+        : {
+            rank: myRank,
+            userId: user.id,
+            handle: user.handle,
+            xpTotal: user.xpTotal,
+            currentStreak: user.currentStreak,
+            tier: tierByUser.get(user.id) ?? null,
+          },
+    });
+  }
+
+  const settings = await getLeagueSettings(prisma);
   const myScore = await prisma.weeklyScore.findUnique({
     where: { userId_weekStart: { userId: user.id, weekStart } },
   });
@@ -27,28 +98,65 @@ export async function GET(req: NextRequest) {
   const scores = await prisma.weeklyScore.findMany({
     where: {
       weekStart,
-      ...(scope === "league" ? { tier: myTier } : {}),
+      // "league": binnen je eigen groep van ~30 spelers, niet de hele
+      // divisie — zie resolveWeeklyPlacement in src/lib/leagues.ts. Zonder
+      // groupId (zou na de backfill-migratie niet meer moeten voorkomen)
+      // valt dit terug op "toon alleen mezelf", nooit op de hele divisie.
+      ...(scope === "league" ? { groupId: myScore?.groupId ?? "__none__" } : {}),
       ...(userIds ? { userId: { in: userIds } } : {}),
     },
     include: { user: { select: { id: true, handle: true } } },
-    orderBy: { xp: "desc" },
+    orderBy: [{ xp: "desc" }, { id: "asc" }],
   });
 
-  return NextResponse.json({
-    weekStart,
-    scope,
-    myTier,
-    hasActivityThisWeek: Boolean(myScore),
-    // Bewust de handle (gekozen gebruikersnaam) i.p.v. displayName (echte
-    // naam) — die is hier nergens voor nodig (zoeken gaat via handle#discri-
-    // minator, niet op naam), dus geen reden om 'm hier te tonen.
-    entries: scores.map((s, i) => ({
-      rank: i + 1,
+  const total = scores.length;
+  const entries = scores.map((s, i) => {
+    const rank = i + 1;
+    return {
+      rank,
       userId: s.user.id,
       handle: s.user.handle,
       xp: s.xp,
       tier: s.tier,
       isMe: s.user.id === user.id,
-    })),
+      zone: scope === "league" ? zoneFor(rank, total, settings.promoteCount, settings.demoteCount) : null,
+    };
+  });
+
+  // "Nog X XP tot promotie/veiligheid" (sectie 6/12 van het productplan) —
+  // server-side berekend op basis van dezelfde instellingen die de
+  // daadwerkelijke promotie/degradatie bepalen, zodat de client nooit zelf
+  // hoeft te "beslissen" wat er telt.
+  let xpGap: { toward: "PROMOTION" | "SAFETY" | "FIRST_PLACE"; xp: number } | null = null;
+  if (scope === "league" && total > 0) {
+    const meIndex = entries.findIndex((e) => e.isMe);
+    if (meIndex !== -1) {
+      const me = entries[meIndex];
+      if (me.zone === "RELEGATION") {
+        const lastSafeIndex = total - settings.demoteCount - 1;
+        if (lastSafeIndex >= 0) {
+          xpGap = { toward: "SAFETY", xp: Math.max(0, scores[lastSafeIndex].xp - me.xp + 1) };
+        }
+      } else if (me.zone === "SAFE") {
+        const lastPromotionIndex = settings.promoteCount - 1;
+        xpGap = { toward: "PROMOTION", xp: Math.max(0, scores[lastPromotionIndex].xp - me.xp + 1) };
+      } else if (me.zone === "PROMOTION" && meIndex > 0) {
+        xpGap = { toward: "FIRST_PLACE", xp: Math.max(0, scores[0].xp - me.xp + 1) };
+      }
+    }
+  }
+
+  return NextResponse.json({
+    weekStart,
+    scope,
+    myTier,
+    promoteCount: settings.promoteCount,
+    demoteCount: settings.demoteCount,
+    hasActivityThisWeek: Boolean(myScore),
+    xpGap,
+    // Bewust de handle (gekozen gebruikersnaam) i.p.v. displayName (echte
+    // naam) — die is hier nergens voor nodig (zoeken gaat via handle#discri-
+    // minator, niet op naam), dus geen reden om 'm hier te tonen.
+    entries,
   });
 }

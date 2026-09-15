@@ -53,6 +53,11 @@ model User {
   // voor "hoe lang geleden" op het adminoverzicht.
   onlineSocketCount  Int       @default(0)
   lastSeenAt         DateTime?
+  // Beste ooit behaalde positie op de Nederlandse ranglijst (zie
+  // /api/leaderboard?scope=national) — opportunistisch bijgewerkt telkens als
+  // die ranglijst voor deze gebruiker wordt berekend, zodat het profiel dit
+  // kan tonen zonder elke keer de hele geschiedenis te herberekenen.
+  bestNationalRank   Int?
 
   // xpTotal/currentStreak/freezeCount zijn caches voor snelle reads (dashboard,
   // nav-badges). De bron van waarheid voor XP is XPTransaction; voor freezes
@@ -142,8 +147,10 @@ model User {
   kidsAttempts    KidsExerciseAttempt[]
   kidsProgress    KidsStoryProgress[]
 
-  feedbackReports Feedback[]
-  streakDays      StreakDay[]
+  feedbackReports     Feedback[]
+  streakDays          StreakDay[]
+  seasonResults       SeasonResult[]
+  competitionXpEvents CompetitionXpEvent[]
 
   @@unique([handle, discriminator])
 }
@@ -773,27 +780,150 @@ model Friendship {
 // --- Wekelijkse competitie -------------------------------------------------
 
 // Divisies (secties 9 uit het productplan): elke gebruiker zit per week in
-// precies één tier. Promotie/degradatie wordt "lazy" berekend zodra iemand
-// voor het eerst die week actief wordt (zie src/lib/leagues.ts) — dat werkt
-// zonder een aparte cron-taak en is functioneel gelijkwaardig aan een
-// wekelijkse batchjob die op maandag draait.
+// precies één tier, en binnen die tier in een groep van (configureerbaar,
+// zie LeagueSettings) ~30 spelers. Promotie/degradatie wordt "lazy"
+// berekend zodra iemand voor het eerst die week actief wordt (zie
+// resolveWeeklyPlacement in src/lib/leagues.ts) — dat werkt zonder een
+// aparte cron-taak en is functioneel gelijkwaardig aan een wekelijkse
+// batchjob die op maandag draait.
 enum LeagueTier {
   BRONZE
   SILVER
   GOLD
   PLATINUM
   DIAMOND
+  MASTER
+  GRANDMASTER
+  LEGEND
+}
+
+// Eén "poule" van spelers binnen een tier, voor één week — de daadwerkelijke
+// promotie/degradatie-groep (zie sectie 3/4 van het productplan: een tier
+// bestaat uit meerdere groepen van elk ~30 spelers, niet één grote pot).
+// memberCount is een cache, atomisch opgehoogd (zelfde updateMany-guard
+// patroon als de hint-tegoeden bij ChapterGuessGame/ScrabbleGame) zodat een
+// groep nooit voorbij `size` vol raakt ook bij gelijktijdige toewijzing.
+model LeagueGroup {
+  id           String        @id @default(cuid())
+  weekStart    String // yyyy-mm-dd (maandag)
+  tier         LeagueTier
+  index        Int // welke groep binnen deze tier+week (0, 1, 2, ...)
+  size         Int
+  memberCount  Int           @default(0)
+  createdAt    DateTime      @default(now())
+  weeklyScores WeeklyScore[]
+
+  @@unique([weekStart, tier, index])
 }
 
 model WeeklyScore {
-  id        String     @id @default(cuid())
+  id        String       @id @default(cuid())
   userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   weekStart String // yyyy-mm-dd (maandag)
-  xp        Int        @default(0)
-  tier      LeagueTier @default(BRONZE)
+  xp        Int          @default(0)
+  tier      LeagueTier   @default(BRONZE)
+  // Beide nullable: bestaande rijen (van vóór groepen/seizoenen) blijven
+  // geldig zonder backfill-gok — zie de migratie voor hoe bestaande rijen
+  // alsnog een groep krijgen (seizoen bewust niet met terugwerkende kracht
+  // toegekend, zie migratie-commentaar).
+  groupId   String?
+  group     LeagueGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  seasonId  String?
+  season    Season?      @relation(fields: [seasonId], references: [id], onDelete: SetNull)
 
   @@unique([userId, weekStart])
+}
+
+// --- Seizoenen ---------------------------------------------------------
+
+enum SeasonStatus {
+  ACTIVE
+  COMPLETED
+}
+
+// Een seizoen omvat meerdere weken (configureerbaar via
+// LeagueSettings.seasonWeekCount, standaard 6) van gewone wekelijkse
+// competitie. weekCount wordt bij aanmaak gekopieerd vanuit de instellingen
+// zodat een latere wijziging van die instelling een lopend seizoen niet met
+// terugwerkende kracht verlengt/verkort.
+model Season {
+  id           String         @id @default(cuid())
+  index        Int            @unique
+  startWeek    String // yyyy-mm-dd (maandag van week 1)
+  weekCount    Int
+  status       SeasonStatus   @default(ACTIVE)
+  createdAt    DateTime       @default(now())
+  completedAt  DateTime?
+  weeklyScores WeeklyScore[]
+  results      SeasonResult[]
+}
+
+// Eindresultaat van één gebruiker over een afgesloten seizoen — zie
+// runSeasonRolloverTick in src/lib/scheduler.ts, dat dit één keer per
+// seizoen berekent en wegschrijft (geen live/lazy berekening, want dit heeft
+// alle weken van het seizoen nodig om te kloppen).
+model SeasonResult {
+  id                 String     @id @default(cuid())
+  seasonId           String
+  season             Season     @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  highestTier        LeagueTier
+  finalTier          LeagueTier
+  finalGroupPosition Int?
+  promotions         Int        @default(0)
+  demotions          Int        @default(0)
+  activeWeeks        Int        @default(0)
+  competitionsWon    Int        @default(0)
+  createdAt          DateTime   @default(now())
+
+  @@unique([seasonId, userId])
+}
+
+// --- Competitie-XP (anti-farming) ---------------------------------------
+
+// Eén rij per keer dat een activiteit competitie-XP opleverde — de bron van
+// waarheid voor de dagelijkse limiet/afnemende-meeropbrengst-regels in
+// awardCompetitionXp (src/lib/competitionXp.ts). Los van XPTransaction
+// (algemene XP, ongelimiteerd, ongemoeid) — zie het commentaar bij
+// LeagueSettings.activityRules voor waarom dit een apart systeem is.
+model CompetitionXpEvent {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activityKey   String
+  dayKey        String // yyyy-mm-dd (UTC-dagbucket, zie dayKey() in src/lib/dates.ts)
+  weekStart     String // yyyy-mm-dd (maandag)
+  rawAmount     Int
+  awardedAmount Int
+  metadata      String?
+  createdAt     DateTime @default(now())
+
+  @@index([userId, activityKey, dayKey])
+}
+
+// Eén configuratierij (zelfde singleton-patroon als EmailSettings/
+// BrandingSettings) voor alles wat sectie 14 van het productplan expliciet
+// niet op meerdere plekken hardgecodeerd wil hebben: groepsgrootte,
+// promotie/degradatie-aantallen, seizoensduur, en de per-activiteit
+// XP-regels. localeCode ligt nu vast op "nl-NL" (de enige actieve
+// competitie) maar blokkeert een toekomstige en/de-competitie niet.
+model LeagueSettings {
+  id                      String   @id @default("singleton")
+  groupSize               Int      @default(30)
+  promoteCount            Int      @default(3)
+  demoteCount             Int      @default(3)
+  // Onder deze groepsgrootte promoveert/degradeert niemand (generaliseert de
+  // vroegere vaste ondergrens van 5 in resolveStartingTier).
+  minGroupSizeForMovement Int      @default(10)
+  seasonWeekCount         Int      @default(6)
+  localeCode              String   @default("nl-NL")
+  // JSON: { [activityKey]: { dailyCap, decayFactor, winBonus?, levelMultiplier? } }
+  // — zie DEFAULT_ACTIVITY_RULES in src/lib/competitionXp.ts voor de vorm en
+  // de standaardwaarden waarmee dit veld geseed wordt.
+  activityRules           String
+  updatedAt               DateTime @updatedAt
 }
 
 // --- Live multiplayer quiz --------------------------------------------------

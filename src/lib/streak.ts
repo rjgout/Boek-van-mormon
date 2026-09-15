@@ -1,9 +1,9 @@
-import type { XPReason, Prisma } from "@prisma/client";
+import type { ChapterGuessLevel, XPReason, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { addDays, dayKey, daysBetween, weekStartKey } from "@/lib/dates";
+import { addDays, dayKey, daysBetween } from "@/lib/dates";
 import { awardXp } from "@/lib/xp";
-import { resolveStartingTier } from "@/lib/leagues";
 import { checkAndAwardAchievements } from "@/lib/achievements";
+import { awardCompetitionXp } from "@/lib/competitionXp";
 
 const PASS_THRESHOLD = 60; // percentage nodig om een hoofdstuk als voltooid te tellen
 const STREAK_MILESTONE_FOR_FREEZE = 7; // elke 7-daagse streak levert een freeze op
@@ -132,24 +132,6 @@ async function applyDailyStreak(tx: Tx, userId: string): Promise<DailyStreakResu
 }
 
 /**
- * Wekelijkse competitie-XP bijwerken (of de rij voor deze week aanmaken).
- * Geëxporteerd zodat elke plek die XP toekent óf afschrijft (zie
- * src/lib/shop.ts — hints kopen kost XP) de divisiestand in sync houdt met
- * de echte XP-balans; anders loopt "XP" in de winkel en "XP" in de
- * competitie uiteen zodra iemand XP uitgeeft.
- */
-export async function applyWeeklyXp(tx: Tx, userId: string, xp: number): Promise<void> {
-  const weekStart = weekStartKey();
-  const existing = await tx.weeklyScore.findUnique({ where: { userId_weekStart: { userId, weekStart } } });
-  if (existing) {
-    await tx.weeklyScore.update({ where: { userId_weekStart: { userId, weekStart } }, data: { xp: { increment: xp } } });
-  } else {
-    const tier = await resolveStartingTier(tx, userId, weekStart);
-    await tx.weeklyScore.create({ data: { userId, weekStart, xp, tier } });
-  }
-}
-
-/**
  * Verwerkt het resultaat van een les (of een live-spel, via `xpReason`): update
  * XP (met audittrail), hoofdstukvoortgang, streak, verdiende/verbruikte
  * streak freezes, divisie-XP en achievements.
@@ -221,7 +203,10 @@ export async function completeLesson(
       perfect: scorePercent === 100,
     });
 
-    await applyWeeklyXp(tx, userId, xpForThisAttempt);
+    await awardCompetitionXp(tx, userId, "LESSON", xpForThisAttempt, {
+      won: xpReason === "LIVE_GAME_WON",
+      metadata: { chapterId, scorePercent, xpReason },
+    });
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 
@@ -271,7 +256,7 @@ export async function completeQuickPractice(userId: string, correctCount: number
     const xp = correctCount * XP_PER_CORRECT_QUICK_PRACTICE;
     if (xp > 0) {
       await awardXp(tx, userId, xp, "QUICK_PRACTICE", { correctCount, total });
-      await applyWeeklyXp(tx, userId, xp);
+      await awardCompetitionXp(tx, userId, "QUICK_PRACTICE", xp, { metadata: { correctCount, total } });
     }
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
@@ -299,7 +284,12 @@ const XP_PER_CORRECT_CHAPTER_GUESS = 5;
  * completeQuickPractice: geen vaste cursus/hoofdstuk om aan te haken, dus
  * alleen de dagstreak en XP.
  */
-export async function completeChapterGuess(userId: string, correctCount: number, total: number): Promise<StudyResult> {
+export async function completeChapterGuess(
+  userId: string,
+  correctCount: number,
+  total: number,
+  level?: ChapterGuessLevel
+): Promise<StudyResult> {
   return prisma.$transaction(async (tx) => {
     const daily = await applyDailyStreak(tx, userId);
     const freezeCount = daily.freezeCountBeforeMilestone + daily.freezesEarned;
@@ -323,7 +313,7 @@ export async function completeChapterGuess(userId: string, correctCount: number,
     const xp = correctCount * XP_PER_CORRECT_CHAPTER_GUESS;
     if (xp > 0) {
       await awardXp(tx, userId, xp, "CHAPTER_GUESS_COMPLETED", { correctCount, total });
-      await applyWeeklyXp(tx, userId, xp);
+      await awardCompetitionXp(tx, userId, "CHAPTER_GUESS", xp, { level, metadata: { correctCount, total, level } });
     }
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
@@ -373,7 +363,7 @@ export async function completeWordGame(userId: string, xpEarned: number): Promis
 
     if (xpEarned > 0) {
       await awardXp(tx, userId, xpEarned, "WORD_GAME_WON", { xpEarned });
-      await applyWeeklyXp(tx, userId, xpEarned);
+      await awardCompetitionXp(tx, userId, "WORD_GAME", xpEarned);
     }
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
@@ -453,7 +443,7 @@ export async function completePodcastLesson(
     }
 
     await awardXp(tx, userId, xpForThisAttempt, "PODCAST_LESSON_COMPLETED", { episodeId, mode, scorePercent });
-    await applyWeeklyXp(tx, userId, xpForThisAttempt);
+    await awardCompetitionXp(tx, userId, "PODCAST_LESSON", xpForThisAttempt, { metadata: { episodeId, mode, scorePercent } });
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 
@@ -523,7 +513,7 @@ export async function completeKidsStory(
     }
 
     await awardXp(tx, userId, xpForThisAttempt, "KIDS_STORY_COMPLETED", { storyId, scorePercent });
-    await applyWeeklyXp(tx, userId, xpForThisAttempt);
+    await awardCompetitionXp(tx, userId, "KIDS_STORY", xpForThisAttempt, { metadata: { storyId, scorePercent } });
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 

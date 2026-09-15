@@ -1,5 +1,12 @@
 import { prisma } from "@/lib/db";
 import { notifyChallengeYourTurn, notifyChallengeFinished } from "@/lib/notify";
+import { awardCompetitionXp } from "@/lib/competitionXp";
+
+// Uitdagingen geven (zoals de doc-comment hieronder al zegt) bewust geen
+// algemene XP — de onderliggende hoofdstuk-oefeningen leveren die al via de
+// gewone lesflow. Dit is puur competitie-XP (zie src/lib/competitionXp.ts):
+// winnen van een uitdaging telt nu ook mee voor de wekelijkse competitie.
+const CHALLENGE_WIN_XP = 30;
 
 /**
  * Verwerkt een les-score als beurt in een uitdaging, indien de speler er
@@ -43,6 +50,11 @@ export async function recordChallengeAttempt(userId: string, challengeId: string
       notifyChallengeFinished(challenge.senderId, challenge.receiver.handle, senderScore > receiverScore, tied),
       notifyChallengeFinished(challenge.receiverId, challenge.sender.handle, receiverScore > senderScore, tied),
     ]);
+    if (winnerUserId) {
+      await prisma.$transaction(async (tx) => {
+        await awardCompetitionXp(tx, winnerUserId, "CHALLENGE_WON", CHALLENGE_WIN_XP);
+      }).catch(() => {});
+    }
   } else {
     const opponentId = isSender ? challenge.receiverId : challenge.senderId;
     const playerName = isSender ? challenge.sender.handle : challenge.receiver.handle;

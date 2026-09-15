@@ -114,6 +114,28 @@ export async function notifyWeeklyResult(userId: string, outcome: "promoted" | "
   });
 }
 
+/** Melding bij het afsluiten van een seizoen (zie runSeasonRolloverTick in src/lib/scheduler.ts). */
+export async function notifySeasonResult(
+  userId: string,
+  seasonIndex: number,
+  tierLabel: string,
+  finalPosition: number | null
+): Promise<void> {
+  const url = `${getAppUrl()}/profile`;
+  const positionText = finalPosition ? ` (#${finalPosition})` : "";
+  const text = `Seizoen ${seasonIndex} is afgelopen! Je eindigde in de ${tierLabel}${positionText}.`;
+  await notifyUser({
+    userId,
+    category: "achievements",
+    subject: `Seizoen ${seasonIndex} is afgelopen`,
+    emailHtml: emailWrap(text, url, "Bekijk je profiel"),
+    emailText: `${text} Bekijk je profiel: ${url}`,
+    pushTitle: `Seizoen ${seasonIndex} afgesloten`,
+    pushBody: text,
+    url: "/profile",
+  });
+}
+
 export async function notifyDailyReminder(userId: string): Promise<void> {
   const url = `${getAppUrl()}/dashboard`;
   await notifyUser({

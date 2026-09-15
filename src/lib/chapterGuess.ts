@@ -212,7 +212,7 @@ export async function submitChapterGuessAnswer(
 
   if (finished) {
     const correctCount = await prisma.chapterGuessQuestion.count({ where: { gameId, correct: true } });
-    const result = await completeChapterGuess(userId, correctCount, game.questionCount);
+    const result = await completeChapterGuess(userId, correctCount, game.questionCount, game.level);
     return {
       correct,
       correctChapter,

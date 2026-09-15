@@ -248,7 +248,7 @@ async function finishGame(room: RoomState) {
       await prisma.liveGamePlayer
         .update({ where: { gameId_userId: { gameId: room.id, userId: p.userId } }, data: { score: p.score } })
         .catch(() => {});
-      await completeChapterGuess(p.userId, p.correctCount, total).catch(() => {});
+      await completeChapterGuess(p.userId, p.correctCount, total, room.level ?? undefined).catch(() => {});
     }
   }
   setTimeout(() => rooms.delete(room.code), 5 * 60_000);

@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { weekStartKey } from "@/lib/dates";
+import { TIER_ORDER } from "@/lib/leagues";
 
 export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
 
-  const [chaptersCompleted, versesTotal, duelsWon, duelsPlayed, allAchievements, earned, weeklyScore] =
+  const [chaptersCompleted, versesTotal, duelsWon, duelsPlayed, allAchievements, earned, weeklyScore, seasonResults, activeSeasonScore] =
     await Promise.all([
       prisma.chapterProgress.count({ where: { userId: user.id, completed: true } }),
       prisma.chapterProgress.count({ where: { userId: user.id } }),
@@ -19,12 +20,44 @@ export async function GET() {
       prisma.achievement.findMany({ orderBy: { name: "asc" } }),
       prisma.userAchievement.findMany({ where: { userId: user.id } }),
       prisma.weeklyScore.findUnique({ where: { userId_weekStart: { userId: user.id, weekStart: weekStartKey() } } }),
+      // Seizoensgeschiedenis (sectie 10/11 van het productplan) — één rij per
+      // afgesloten seizoen waarin deze gebruiker actief was, zie
+      // runSeasonRolloverTick in src/lib/scheduler.ts.
+      prisma.seasonResult.findMany({
+        where: { userId: user.id },
+        include: { season: { select: { index: true } } },
+        orderBy: { season: { index: "desc" } },
+      }),
+      prisma.weeklyScore.findFirst({ where: { userId: user.id, season: { status: "ACTIVE" } }, select: { id: true } }),
     ]);
 
   const wins = duelsWon.filter(
     (p) => p.score > 0 && p.game.players.every((other) => other.userId === p.userId || other.score < p.score)
   ).length;
   const earnedByAchievementId = new Map(earned.map((e) => [e.achievementId, e.earnedAt]));
+
+  // Positie binnen de eigen groep van deze week (zie /competition) — null
+  // als er deze week nog geen potje/oefening is gedaan.
+  let groupPosition: number | null = null;
+  if (weeklyScore?.groupId) {
+    const peers = await prisma.weeklyScore.findMany({
+      where: { groupId: weeklyScore.groupId },
+      orderBy: [{ xp: "desc" }, { id: "asc" }],
+      select: { userId: true },
+    });
+    const idx = peers.findIndex((p) => p.userId === user.id);
+    groupPosition = idx === -1 ? null : idx + 1;
+  }
+
+  const bestTierIdx = Math.max(
+    weeklyScore ? TIER_ORDER.indexOf(weeklyScore.tier) : -1,
+    ...seasonResults.map((r) => TIER_ORDER.indexOf(r.highestTier))
+  );
+  const bestTierEver = bestTierIdx >= 0 ? TIER_ORDER[bestTierIdx] : null;
+  const lifetimePromotions = seasonResults.reduce((sum, r) => sum + r.promotions, 0);
+  const lifetimeDemotions = seasonResults.reduce((sum, r) => sum + r.demotions, 0);
+  const competitionsWon = seasonResults.reduce((sum, r) => sum + r.competitionsWon, 0);
+  const seasonCount = seasonResults.length + (activeSeasonScore ? 1 : 0);
 
   return NextResponse.json({
     displayName: user.handle,
@@ -48,6 +81,19 @@ export async function GET() {
     duelsPlayed,
     duelsWon: wins,
     tier: weeklyScore?.tier ?? null,
+    groupPosition,
+    bestTierEver,
+    lifetimePromotions,
+    lifetimeDemotions,
+    competitionsWon,
+    seasonCount,
+    bestNationalRank: user.bestNationalRank,
+    seasons: seasonResults.map((r) => ({
+      seasonIndex: r.season.index,
+      highestTier: r.highestTier,
+      finalTier: r.finalTier,
+      finalGroupPosition: r.finalGroupPosition,
+    })),
     achievements: allAchievements.map((a) => ({
       slug: a.slug,
       name: a.name,
