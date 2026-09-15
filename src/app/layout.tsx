@@ -3,6 +3,7 @@ import Link from "next/link";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/session";
 import { getBranding } from "@/lib/branding";
+import { cacheDetectedAppUrlFromRequestHeaders } from "@/lib/baseUrl";
 import NavUserBadges from "@/components/NavUserBadges";
 import InviteListener from "@/components/InviteListener";
 import ThemeScript from "@/components/ThemeScript";
@@ -63,6 +64,7 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  cacheDetectedAppUrlFromRequestHeaders().catch(() => {});
   const [user, { logoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
 
   return (

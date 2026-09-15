@@ -203,6 +203,20 @@ model EmailSettings {
   updatedAt       DateTime @updatedAt
 }
 
+// Eén (singleton) rij die het laatst geziene publieke adres onthoudt waarmee
+// iemand de app heeft bezocht (zie getBaseUrl/getAppUrl in src/lib/baseUrl.ts).
+// Nodig omdat achtergrondprocessen zonder eigen HTTP-request — de
+// notificatie-schedulers en de socket.io-spelserver, zie src/lib/notify.ts —
+// anders geen manier hebben om te weten via welk domein deze self-hosted app
+// bereikbaar is, en zonder deze cache zou een e-maillink dan op localhost
+// uitkomen. Wordt automatisch bijgewerkt bij elk binnenkomend verzoek, dus
+// zonder handmatige configuratie (APP_URL blijft een expliciete override).
+model DetectedAppUrl {
+  id        String   @id @default("singleton")
+  url       String
+  updatedAt DateTime @updatedAt
+}
+
 // --- Content: Boek van Mormon structuur --------------------------------
 
 model Book {

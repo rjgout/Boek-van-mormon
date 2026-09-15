@@ -29,6 +29,7 @@ export default function AdminUsersClient({
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [revealedPasswords, setRevealedPasswords] = useState<Record<string, string>>({});
+  const [emailedResets, setEmailedResets] = useState<Record<string, string>>({});
 
   async function toggleAdmin(userId: string, nextIsAdmin: boolean) {
     setError(null);
@@ -59,7 +60,11 @@ export default function AdminUsersClient({
       return;
     }
     const data = await res.json();
-    setRevealedPasswords((prev) => ({ ...prev, [userId]: data.tempPassword }));
+    if (data.emailed) {
+      setEmailedResets((prev) => ({ ...prev, [userId]: data.email }));
+    } else {
+      setRevealedPasswords((prev) => ({ ...prev, [userId]: data.tempPassword }));
+    }
   }
 
   async function deleteUser(u: AdminUser) {
@@ -182,6 +187,26 @@ export default function AdminUsersClient({
                       className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-bold ml-2"
                       onClick={() =>
                         setRevealedPasswords((prev) => {
+                          const next = { ...prev };
+                          delete next[u.id];
+                          return next;
+                        })
+                      }
+                    >
+                      Sluiten
+                    </button>
+                  </td>
+                </tr>
+              )}
+              {emailedResets[u.id] && (
+                <tr className="bg-gold-50 dark:bg-slate-700">
+                  <td colSpan={10} className="py-2 px-3 text-sm">
+                    Reset-e-mail verstuurd naar <strong>{emailedResets[u.id]}</strong> — het huidige wachtwoord werkt
+                    niet meer, de gebruiker kiest zelf een nieuw wachtwoord via de link in die e-mail.{" "}
+                    <button
+                      className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 font-bold ml-2"
+                      onClick={() =>
+                        setEmailedResets((prev) => {
                           const next = { ...prev };
                           delete next[u.id];
                           return next;

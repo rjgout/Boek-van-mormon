@@ -67,7 +67,7 @@ function emailWrap(bodyHtml: string, ctaUrl: string, ctaLabel: string): string {
 }
 
 export async function notifyFriendRequest(receiverUserId: string, senderDisplayName: string): Promise<void> {
-  const url = `${getAppUrl()}/friends`;
+  const url = `${await getAppUrl()}/friends`;
   await notifyUser({
     userId: receiverUserId,
     category: "social",
@@ -81,7 +81,7 @@ export async function notifyFriendRequest(receiverUserId: string, senderDisplayN
 }
 
 export async function notifyAchievement(userId: string, achievementName: string, achievementIcon: string): Promise<void> {
-  const url = `${getAppUrl()}/profile`;
+  const url = `${await getAppUrl()}/profile`;
   await notifyUser({
     userId,
     category: "achievements",
@@ -95,7 +95,7 @@ export async function notifyAchievement(userId: string, achievementName: string,
 }
 
 export async function notifyWeeklyResult(userId: string, outcome: "promoted" | "demoted" | "stayed", tierLabel: string): Promise<void> {
-  const url = `${getAppUrl()}/competition`;
+  const url = `${await getAppUrl()}/competition`;
   const text =
     outcome === "promoted"
       ? `Gefeliciteerd! Je bent gepromoveerd naar de ${tierLabel}.`
@@ -121,7 +121,7 @@ export async function notifySeasonResult(
   tierLabel: string,
   finalPosition: number | null
 ): Promise<void> {
-  const url = `${getAppUrl()}/profile`;
+  const url = `${await getAppUrl()}/profile`;
   const positionText = finalPosition ? ` (#${finalPosition})` : "";
   const text = `Seizoen ${seasonIndex} is afgelopen! Je eindigde in de ${tierLabel}${positionText}.`;
   await notifyUser({
@@ -137,7 +137,7 @@ export async function notifySeasonResult(
 }
 
 export async function notifyDailyReminder(userId: string): Promise<void> {
-  const url = `${getAppUrl()}/dashboard`;
+  const url = `${await getAppUrl()}/dashboard`;
   await notifyUser({
     userId,
     category: "dailyReminder",
@@ -151,7 +151,7 @@ export async function notifyDailyReminder(userId: string): Promise<void> {
 }
 
 export async function notifyChallengeReceived(receiverUserId: string, senderDisplayName: string, bookName: string, chapterNumber: number): Promise<void> {
-  const url = `${getAppUrl()}/challenges`;
+  const url = `${await getAppUrl()}/challenges`;
   const text = `${senderDisplayName} daagt je uit op ${bookName} ${chapterNumber}!`;
   await notifyUser({
     userId: receiverUserId,
@@ -166,7 +166,7 @@ export async function notifyChallengeReceived(receiverUserId: string, senderDisp
 }
 
 export async function notifyChallengeDeclined(senderUserId: string, receiverDisplayName: string): Promise<void> {
-  const url = `${getAppUrl()}/challenges`;
+  const url = `${await getAppUrl()}/challenges`;
   const text = `${receiverDisplayName} heeft je uitdaging geweigerd.`;
   await notifyUser({
     userId: senderUserId,
@@ -181,7 +181,7 @@ export async function notifyChallengeDeclined(senderUserId: string, receiverDisp
 }
 
 export async function notifyChallengeYourTurn(userId: string, opponentDisplayName: string): Promise<void> {
-  const url = `${getAppUrl()}/challenges`;
+  const url = `${await getAppUrl()}/challenges`;
   const text = `${opponentDisplayName} heeft gespeeld — jij bent aan de beurt!`;
   await notifyUser({
     userId,
@@ -196,7 +196,7 @@ export async function notifyChallengeYourTurn(userId: string, opponentDisplayNam
 }
 
 export async function notifyScrabbleInvite(receiverUserId: string, senderDisplayName: string): Promise<void> {
-  const url = `${getAppUrl()}/scrabble`;
+  const url = `${await getAppUrl()}/scrabble`;
   const text = `${senderDisplayName} daagt je uit voor een woordspel!`;
   await notifyUser({
     userId: receiverUserId,
@@ -211,7 +211,7 @@ export async function notifyScrabbleInvite(receiverUserId: string, senderDisplay
 }
 
 export async function notifyScrabbleDeclined(senderUserId: string, receiverDisplayName: string): Promise<void> {
-  const url = `${getAppUrl()}/scrabble`;
+  const url = `${await getAppUrl()}/scrabble`;
   const text = `${receiverDisplayName} heeft je woordspel-uitdaging geweigerd.`;
   await notifyUser({
     userId: senderUserId,
@@ -226,7 +226,7 @@ export async function notifyScrabbleDeclined(senderUserId: string, receiverDispl
 }
 
 export async function notifyScrabbleYourTurn(userId: string, opponentDisplayName: string): Promise<void> {
-  const url = `${getAppUrl()}/scrabble`;
+  const url = `${await getAppUrl()}/scrabble`;
   const text = `${opponentDisplayName} heeft gespeeld — jij bent aan de beurt!`;
   await notifyUser({
     userId,
@@ -241,7 +241,7 @@ export async function notifyScrabbleYourTurn(userId: string, opponentDisplayName
 }
 
 export async function notifyScrabbleFinished(userId: string, opponentDisplayName: string, won: boolean, tied: boolean): Promise<void> {
-  const url = `${getAppUrl()}/scrabble`;
+  const url = `${await getAppUrl()}/scrabble`;
   const text = tied
     ? `Gelijkspel tegen ${opponentDisplayName}!`
     : won
@@ -267,7 +267,7 @@ export async function notifyNewAchievements(userId: string, slugs: string[]): Pr
 }
 
 export async function notifyChallengeFinished(userId: string, opponentDisplayName: string, won: boolean, tied: boolean): Promise<void> {
-  const url = `${getAppUrl()}/challenges`;
+  const url = `${await getAppUrl()}/challenges`;
   const text = tied
     ? `Gelijkspel tegen ${opponentDisplayName}!`
     : won
@@ -286,7 +286,7 @@ export async function notifyChallengeFinished(userId: string, opponentDisplayNam
 }
 
 export async function notifyWordGame(userId: string): Promise<void> {
-  const url = `${getAppUrl()}/word-game`;
+  const url = `${await getAppUrl()}/word-game`;
   await notifyUser({
     userId,
     category: "wordGame",

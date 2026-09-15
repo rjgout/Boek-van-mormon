@@ -33,3 +33,20 @@ export function resetPasswordTemplate(link: string) {
     text: `Stel een nieuw wachtwoord in via: ${link} (1 uur geldig, negeer deze mail als je dit niet was)`,
   };
 }
+
+// Anders dan resetPasswordTemplate hierboven: het huidige wachtwoord is hier
+// al ongeldig gemaakt (zie de admin-resetroute), dus "negeer deze mail als
+// je dit niet was" zou hier verwarrend zijn — inloggen kan pas weer via
+// deze link.
+export function adminPasswordResetTemplate(link: string) {
+  return {
+    subject: `${APP_NAME} — je wachtwoord is gereset`,
+    html: wrap(
+      `<p>Een beheerder heeft je wachtwoord gereset. Je huidige wachtwoord werkt niet meer — klik op onderstaande link om een nieuw wachtwoord te kiezen:</p>
+       <p><a href="${link}" style="background:#16a34a;color:#fff;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:bold">Nieuw wachtwoord instellen</a></p>
+       <p style="color:#6b7280;font-size:13px">Werkt de knop niet? Kopieer deze link: ${link}</p>
+       <p style="color:#6b7280;font-size:13px">Deze link is 1 uur geldig.</p>`
+    ),
+    text: `Een beheerder heeft je wachtwoord gereset. Stel een nieuw wachtwoord in via: ${link} (1 uur geldig)`,
+  };
+}

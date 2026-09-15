@@ -3,9 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { hashPassword } from "@/lib/auth";
+import { createAuthToken } from "@/lib/authTokens";
+import { isEmailConfigured, sendMail } from "@/lib/email";
+import { adminPasswordResetTemplate } from "@/lib/emailTemplates";
+import { getBaseUrl } from "@/lib/baseUrl";
 
-// Leesbaar tijdelijk wachtwoord: geen 0/O/1/l/I (makkelijk te verwarren bij
-// mondeling/chat doorgeven).
+// Leesbaar tijdelijk wachtwoord — alleen nog als noodgreep wanneer er geen
+// e-mail geconfigureerd staat (zie hieronder). Met werkende e-mail (het
+// normale geval) wordt dit nooit meer gegenereerd of getoond.
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 
 function generateTempPassword(length = 12): string {
@@ -13,11 +18,15 @@ function generateTempPassword(length = 12): string {
   return Array.from(bytes, (b) => ALPHABET[b % ALPHABET.length]).join("");
 }
 
-// Er is bewust geen "wachtwoord vergeten"-e-mailflow (dit is een self-hosted
-// app zonder verplichte SMTP-configuratie). In plaats daarvan genereert een
-// admin hier een eenmalig tijdelijk wachtwoord dat hij/zij zelf doorgeeft aan
-// de gebruiker; die moet er bij de eerstvolgende login direct een eigen
-// wachtwoord voor kiezen (mustChangePassword, afgedwongen in dashboard/page.tsx).
+// Een admin kan het wachtwoord van een gebruiker resetten (bv. na een
+// supportverzoek). Dat maakt het huidige wachtwoord altijd meteen ongeldig.
+// Is er e-mail geconfigureerd, dan gebeurt de rest net als bij de
+// zelfbedieningsflow ("wachtwoord vergeten"): de gebruiker krijgt een e-mail
+// met een resetlink (1 uur geldig) om zelf een nieuw wachtwoord te kiezen —
+// een admin ziet of deelt dus geen wachtwoord meer. Zonder e-mailconfiguratie
+// (self-hosted zonder SMTP) is er geen manier om die link te bezorgen; dan
+// valt dit terug op het oude tijdelijke-wachtwoord-mechanisme dat de admin
+// zelf moet doorgeven.
 export async function POST(req: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   const admin = await getCurrentUser();
   if (!admin) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });
@@ -27,15 +36,28 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ use
   const target = await prisma.user.findUnique({ where: { id: userId } });
   if (!target) return NextResponse.json({ error: "Gebruiker niet gevonden" }, { status: 404 });
 
+  if (await isEmailConfigured()) {
+    const rawToken = await createAuthToken(userId, "PASSWORD_RESET");
+    const link = `${getBaseUrl(req)}/reset-password?token=${rawToken}`;
+    const { subject, html, text } = adminPasswordResetTemplate(link);
+    const result = await sendMail({ to: target.email, subject, html, text });
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error ?? "Kon de reset-e-mail niet versturen." }, { status: 502 });
+    }
+
+    // Pas het oude wachtwoord ongeldig maken nadat de e-mail écht is
+    // verstuurd: was sendMail hierboven mislukt, dan kan de gebruiker
+    // gewoon met zijn huidige wachtwoord blijven inloggen in plaats van
+    // buitengesloten te raken zonder werkende link.
+    const unusableHash = await hashPassword(randomBytes(32).toString("hex"));
+    await prisma.user.update({ where: { id: userId }, data: { passwordHash: unusableHash, mustChangePassword: true } });
+
+    return NextResponse.json({ emailed: true, email: target.email });
+  }
+
   const tempPassword = generateTempPassword();
   const passwordHash = await hashPassword(tempPassword);
+  await prisma.user.update({ where: { id: userId }, data: { passwordHash, mustChangePassword: true } });
 
-  await prisma.user.update({
-    where: { id: userId },
-    data: { passwordHash, mustChangePassword: true },
-  });
-
-  // Dit is de ENIGE keer dat dit wachtwoord ergens leesbaar is — er wordt
-  // niets van opgeslagen buiten de (gehashte) database-kolom.
   return NextResponse.json({ tempPassword });
 }
