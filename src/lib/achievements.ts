@@ -61,6 +61,17 @@ const ACHIEVEMENTS: AchievementDef[] = [
       );
     },
   },
+  {
+    // Bewust geen XP aan gekoppeld (zie src/lib/familyGame.ts en de
+    // sessieafspraak) — puur een cosmetische badge voor het meespelen aan
+    // een afgerond Gezinsavondspel, ongeacht winnen/verliezen. Alleen de
+    // ingelogde host (en eventuele accounthouders die vanaf hun eigen
+    // apparaat meededen) krijgen een LiveGamePlayer-rij bij dit spel; gasten
+    // hebben geen account en komen dus vanzelf nooit in aanmerking.
+    slug: "family-game-first-play",
+    check: async (tx, userId) =>
+      (await tx.liveGamePlayer.count({ where: { userId, game: { mode: "FAMILY_GAME", status: "FINISHED" } } })) >= 1,
+  },
 ];
 
 /** Herberekent alle achievement-voorwaarden en kent nieuw behaalde toe. */

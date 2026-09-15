@@ -74,6 +74,17 @@ export default function LiveLobbyForm() {
       </div>
 
       <div className="card flex flex-col gap-3">
+        <h2 className="font-extrabold dark:text-slate-100">🎉 Gezinsavond</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Een avontuurlijk bordspel over het Boek van Mormon voor het hele gezin — samen aan tafel op één apparaat, of
+          ieder op je eigen telefoon. Ook leuk zonder veel voorkennis.
+        </p>
+        <Link href="/gezinsavond" className="btn-secondary self-start">
+          Gezinsavond openen
+        </Link>
+      </div>
+
+      <div className="card flex flex-col gap-3">
         <h2 className="font-extrabold dark:text-slate-100">🔎 Raad het hoofdstuk</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Lees het eerste vers van een hoofdstuk en raad welk hoofdstuk het is — kies zelf je niveau, alleen of live

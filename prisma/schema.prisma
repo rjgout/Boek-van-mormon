@@ -961,9 +961,25 @@ enum LiveGameStatus {
 // CHAPTER_GUESS = "Raad het hoofdstuk" (zie ChapterGuessGame hieronder) —
 // niet aan één hoofdstuk gebonden, dus chapterId blijft dan leeg en level/
 // questionCount zijn juist wel gezet.
+// FAMILY_GAME = het Gezinsavondspel (zie src/lib/familyGame.ts) — ook niet
+// aan één hoofdstuk gebonden; gebruikt in plaats daarvan familyGameMinutes/
+// familyGameDiceMode hieronder. Bewust hergebruik van hetzelfde LiveGame-
+// mechanisme (lobby, uitnodigen, annuleren) i.p.v. een aparte sessie-tabel —
+// zie de sessie-samenvatting/het besproken ontwerp voor waarom.
 enum LiveGameMode {
   EXERCISES
   CHAPTER_GUESS
+  FAMILY_GAME
+}
+
+// Alleen relevant bij mode FAMILY_GAME. DIGITAL = de app gooit (server-
+// side, zie gameServer.ts — nooit clientside, dat zou op afstand meespelende
+// accounts kunnen laten valsspelen). PHYSICAL = een echte dobbelsteen; de
+// speler voert het aantal ogen zelf in, de server vertrouwt die waarde net
+// zoals bij elk ander door een mens ingevoerd spelresultaat.
+enum FamilyGameDiceMode {
+  DIGITAL
+  PHYSICAL
 }
 
 model LiveGame {
@@ -976,6 +992,9 @@ model LiveGame {
   chapter       Chapter?           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   level         ChapterGuessLevel?
   questionCount Int?
+  // Alleen gezet bij mode FAMILY_GAME (zie hierboven).
+  familyGameMinutes  Int?
+  familyGameDiceMode FamilyGameDiceMode?
   status        LiveGameStatus     @default(LOBBY)
   createdAt     DateTime           @default(now())
   players       LiveGamePlayer[]

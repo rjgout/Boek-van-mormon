@@ -2,13 +2,29 @@ import type { Server as HttpServer } from "http";
 import { Server as SocketIOServer, Socket } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
 import Redis from "ioredis";
-import type { ChapterGuessLevel } from "@prisma/client";
+import { randomUUID } from "crypto";
+import type { ChapterGuessLevel, FamilyGameDiceMode } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { verifySessionToken, SESSION_COOKIE } from "@/lib/auth";
 import { parseCookieHeader } from "@/lib/parseCookieHeader";
 import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeLesson, completeChapterGuess } from "@/lib/streak";
+import { checkAndAwardAchievements } from "@/lib/achievements";
+import { notifyNewAchievements } from "@/lib/notify";
 import { generateChapterGuessQuestions, labelsFor, computeHintEffect, type LiveQuestionSeed, type ChapterLabel } from "@/lib/chapterGuess";
+import {
+  BOARD,
+  finishIndexFor,
+  pickExerciseCard,
+  pickWhereInBookCard,
+  explanationForExercise,
+  checkExerciseAnswer,
+  nextDifficulty,
+  EVENT_CARDS,
+  type BoardTile,
+  type FamilyCard,
+  type FamilyDifficulty,
+} from "@/lib/familyGame";
 
 const EXERCISES_TIME_MS = 20_000;
 // "Raad het hoofdstuk" krijgt bewust ruim meer tijd (1 minuut, zoals
@@ -16,8 +32,13 @@ const EXERCISES_TIME_MS = 20_000;
 // lezen vóór je kan antwoorden, dat kost meer tijd dan een invuloefening.
 const CHAPTER_GUESS_TIME_MS = 60_000;
 const REVEAL_PAUSE_MS = 3_500;
+// Punten per goed kennisvraag/vul-aan/waar-in-boek-antwoord — bewust een vast
+// bedrag (geen tijdsdruk-bonus zoals bij EXERCISES/CHAPTER_GUESS): dit is een
+// gezinsspel voor aan tafel, geen race tegen de klok. Gebeurteniskaarten
+// geven er een kleine, losse variatie bovenop (zie EVENT_CARDS).
+const FAMILY_CORRECT_POINTS = 10;
 
-type RoomMode = "EXERCISES" | "CHAPTER_GUESS";
+type RoomMode = "EXERCISES" | "CHAPTER_GUESS" | "FAMILY_GAME";
 
 interface GameExercise {
   id: string;
@@ -43,6 +64,17 @@ interface RoomPlayer {
   // finishGame naar de database worden geschreven).
   hintCredits: number;
   hintUsedThisQuestion: boolean;
+
+  // Alleen relevant bij mode FAMILY_GAME — hieronder. Gasten bestaan alleen
+  // in dit in-memory record (userId is dan een synthetisch "guest:<id>",
+  // nooit een echte User-rij en dus ook nooit een LiveGamePlayer-rij) en
+  // hebben per definitie geen eigen socket: hun beurt komt altijd binnen via
+  // het socket van de host (zie canActFor hieronder). Een echt account dat
+  // vanaf zijn eigen apparaat meedoet, joint zoals gewoonlijk via join_game
+  // en heeft dus wél zijn eigen socketIds-invoer.
+  isGuest?: boolean;
+  position?: number;
+  streak?: number; // opeenvolgende goede antwoorden, voor adaptieve moeilijkheid — reset bij een fout antwoord
 }
 
 interface RoomState {
@@ -69,6 +101,30 @@ interface RoomState {
   // Gezet zodra iemand opgeeft (alleen relevant met vrienden/live) — de
   // tegenstander(s) winnen dan altijd, los van de stand op dat moment.
   forfeitedBy?: string;
+
+  // FAMILY_GAME — het bord staat vast (zie src/lib/familyGame.ts), alleen
+  // finishIndex verschilt per gekozen speelduur. turnOrder bevat zowel
+  // accounts als gasten, in de volgorde waarin ze zijn toegevoegd; het spel
+  // eindigt zodra de HUIDIGE speler de finish bereikt of passeert (een
+  // "eerste over de streep beëindigt het spel voor iedereen"-race — wie
+  // wint wordt daarna over punten bepaald, niet over bordpositie, zie
+  // finishFamilyGame). pendingTile bewaart wat er server-side nodig is om
+  // het openstaande antwoord/de keuze zo meteen te kunnen valideren, zonder
+  // dat de client ooit het juiste antwoord te zien krijgt.
+  // Optioneel (i.p.v. voor elke modus een neutrale default te moeten
+  // meegeven zoals bij chapterId/level hierboven) — alleen FAMILY_GAME-
+  // rooms vullen deze, en alle code die ze leest zit ook alleen in het
+  // FAMILY_GAME-pad hieronder.
+  board?: BoardTile[];
+  finishIndex?: number;
+  diceMode?: FamilyGameDiceMode | null;
+  turnOrder?: string[];
+  currentTurnIndex?: number;
+  pendingTile?:
+    | { kind: "KNOWLEDGE" | "FILL_IN"; exerciseId: string; playerId: string }
+    | { kind: "WHERE_IN_BOOK"; correctChapterId: string; playerId: string }
+    | { kind: "EVENT"; cardSlug: string; playerId: string }
+    | null;
 }
 
 const rooms = new Map<string, RoomState>();
@@ -102,7 +158,7 @@ async function authenticateSocket(socket: Socket) {
 
 function serializePlayers(room: RoomState) {
   return [...room.players.values()]
-    .map((p) => ({ userId: p.userId, displayName: p.displayName, score: p.score }))
+    .map((p) => ({ userId: p.userId, displayName: p.displayName, score: p.score, isGuest: p.isGuest ?? false, position: p.position ?? 0 }))
     .sort((a, b) => b.score - a.score);
 }
 
@@ -141,6 +197,7 @@ function broadcastLobby(room: RoomState) {
     status: room.status,
     mode: room.mode,
     level: room.level,
+    diceMode: room.diceMode,
     players: serializePlayers(room),
   });
 }
@@ -242,13 +299,28 @@ async function finishGame(room: RoomState) {
       // XP-boekhouding.
       await completeLesson(p.userId, room.chapterId!, percent, xp, won ? "LIVE_GAME_WON" : "LIVE_GAME_PLAYED").catch(() => {});
     }
-  } else {
+  } else if (room.mode === "CHAPTER_GUESS") {
     const total = room.cgQuestions.length;
     for (const p of room.players.values()) {
       await prisma.liveGamePlayer
         .update({ where: { gameId_userId: { gameId: room.id, userId: p.userId } }, data: { score: p.score } })
         .catch(() => {});
       await completeChapterGuess(p.userId, p.correctCount, total, room.level ?? undefined).catch(() => {});
+    }
+  } else {
+    // FAMILY_GAME: bewust GEEN XP/streak — dit spel moet op zichzelf leuk
+    // zijn, niet als omweg om XP te farmen (zie de sessieafspraak). Gasten
+    // hebben nooit een LiveGamePlayer-rij (geen account, dus geen FK
+    // mogelijk) en slaan deze update dus over; voor accounts (host, en
+    // eventuele vrienden die vanaf hun eigen apparaat meespeelden) wordt
+    // alleen de éénmalige, XP-loze "Gezinsavond"-prestatie gecontroleerd.
+    for (const p of room.players.values()) {
+      if (p.isGuest) continue;
+      await prisma.liveGamePlayer
+        .update({ where: { gameId_userId: { gameId: room.id, userId: p.userId } }, data: { score: p.score } })
+        .catch(() => {});
+      const newAchievements = await prisma.$transaction((tx) => checkAndAwardAchievements(tx, p.userId)).catch(() => []);
+      if (newAchievements.length > 0) notifyNewAchievements(p.userId, newAchievements).catch(() => {});
     }
   }
   setTimeout(() => rooms.delete(room.code), 5 * 60_000);
@@ -295,6 +367,155 @@ function registerAnswer(room: RoomState, userId: string, given: string[]) {
   if (allAnswered(room)) {
     revealAndAdvance(room);
   }
+}
+
+// --- FAMILY_GAME ----------------------------------------------------------
+//
+// Bewust geen tijdslimiet per beurt (in tegenstelling tot EXERCISES/
+// CHAPTER_GUESS hierboven) — dit is een rustig gezinsspel aan tafel, geen
+// race tegen de klok. Eén speler tegelijk is aan de beurt (turnOrder); een
+// gast bestaat alleen in dit geheugen en heeft nooit een eigen socket, dus
+// diens beurt komt altijd binnen via het socket van de host.
+
+function currentFamilyPlayerId(room: RoomState): string | null {
+  return room.turnOrder![room.currentTurnIndex!] ?? null;
+}
+
+// Mag dit socket een actie insturen namens playerId? Alleen de speler zelf
+// (een echt, apart ingelogd account) of — voor een gast, die geen eigen
+// socket heeft — de host, die de gast fysiek naast zich heeft zitten.
+function canActFor(room: RoomState, socket: Socket, playerId: string): boolean {
+  const player = room.players.get(playerId);
+  if (!player) return false;
+  if (player.isGuest) return socket.data.userId === room.hostId;
+  return socket.data.userId === playerId;
+}
+
+function broadcastFamilyTurn(room: RoomState) {
+  ioInstance?.to(room.code).emit("family_turn", {
+    currentPlayerId: currentFamilyPlayerId(room),
+    scoreboard: serializePlayers(room),
+  });
+}
+
+async function startFamilyGame(room: RoomState) {
+  room.status = "IN_PROGRESS";
+  await prisma.liveGame.update({ where: { code: room.code }, data: { status: "IN_PROGRESS" } });
+  ioInstance?.to(room.code).emit("family_game_started", {
+    board: room.board,
+    finishIndex: room.finishIndex,
+    diceMode: room.diceMode,
+    turnOrder: room.turnOrder,
+    scoreboard: serializePlayers(room),
+  });
+  broadcastFamilyTurn(room);
+}
+
+/** Verplaatst de huidige speler en bepaalt/verstuurt wat er op de nieuwe tegel gebeurt. */
+async function landOnTile(room: RoomState, playerId: string, roll: number) {
+  const player = room.players.get(playerId);
+  if (!player) return;
+
+  const from = player.position ?? 0;
+  const rawTo = from + roll;
+  const finishIndex = room.finishIndex!;
+  const board = room.board!;
+  const reachedFinish = rawTo >= finishIndex;
+  const to = Math.min(rawTo, finishIndex);
+  player.position = to;
+
+  if (reachedFinish) {
+    ioInstance?.to(room.code).emit("family_landed", { playerId, from, to, tile: board[finishIndex], card: null, isFinish: true });
+    await finishGame(room);
+    return;
+  }
+
+  const tile = board[to];
+  const difficulty: FamilyDifficulty = nextDifficulty("MEDIUM", player.streak ?? 0);
+  let card: FamilyCard | null = null;
+
+  if (tile.kind === "KNOWLEDGE" || tile.kind === "FILL_IN") {
+    const exerciseCard = await pickExerciseCard(tile.kind, difficulty);
+    card = exerciseCard;
+    room.pendingTile = exerciseCard ? { kind: tile.kind, exerciseId: exerciseCard.exerciseId, playerId } : null;
+  } else if (tile.kind === "WHERE_IN_BOOK") {
+    const picked = await pickWhereInBookCard();
+    card = picked?.card ?? null;
+    room.pendingTile = picked ? { kind: "WHERE_IN_BOOK", correctChapterId: picked.correctChapterId, playerId } : null;
+  } else if (tile.kind === "EVENT") {
+    const eventCard = EVENT_CARDS[Math.floor(Math.random() * EVENT_CARDS.length)];
+    card = { tileKind: "EVENT", slug: eventCard.slug, title: eventCard.title, choices: eventCard.choices.map((c) => c.label) };
+    room.pendingTile = { kind: "EVENT", cardSlug: eventCard.slug, playerId };
+  }
+
+  ioInstance?.to(room.code).emit("family_landed", { playerId, from, to, tile, card, isFinish: false });
+
+  // Geen content beschikbaar (zou alleen kunnen bij een compleet lege
+  // database) — sla de tegel dan over i.p.v. de beurt te laten vastlopen.
+  if (!room.pendingTile) advanceFamilyTurn(room);
+}
+
+function advanceFamilyTurn(room: RoomState) {
+  room.currentTurnIndex = (room.currentTurnIndex! + 1) % room.turnOrder!.length;
+  broadcastFamilyTurn(room);
+}
+
+async function handleFamilyAnswer(room: RoomState, socket: Socket, given: string[]) {
+  const pending = room.pendingTile;
+  if (!pending || pending.kind === "EVENT") return;
+  if (!canActFor(room, socket, pending.playerId)) return;
+  const player = room.players.get(pending.playerId);
+  if (!player) return;
+
+  let correct = false;
+  let explanation: { verseRef: string; verseText: string | null } | { correctLabel: string } | null = null;
+
+  if (pending.kind === "WHERE_IN_BOOK") {
+    correct = given[0] === pending.correctChapterId;
+    const labels = await labelsFor([pending.correctChapterId]);
+    explanation = { correctLabel: labels.get(pending.correctChapterId)?.label ?? "?" };
+  } else {
+    const result = await checkExerciseAnswer(pending.exerciseId, given);
+    correct = result?.correct ?? false;
+    explanation = await explanationForExercise(pending.exerciseId);
+  }
+
+  player.streak = correct ? (player.streak ?? 0) + 1 : 0;
+  if (correct) player.score += FAMILY_CORRECT_POINTS;
+  room.pendingTile = null;
+
+  ioInstance?.to(room.code).emit("family_reveal", {
+    playerId: pending.playerId,
+    correct,
+    explanation,
+    scoreboard: serializePlayers(room),
+  });
+
+  room.timer = setTimeout(() => advanceFamilyTurn(room), REVEAL_PAUSE_MS);
+}
+
+function handleFamilyEventChoice(room: RoomState, socket: Socket, choiceIndex: number) {
+  const pending = room.pendingTile;
+  if (!pending || pending.kind !== "EVENT") return;
+  if (!canActFor(room, socket, pending.playerId)) return;
+  const player = room.players.get(pending.playerId);
+  if (!player) return;
+
+  const eventCard = EVENT_CARDS.find((c) => c.slug === pending.cardSlug);
+  const choice = eventCard?.choices[choiceIndex];
+  if (!choice) return;
+
+  player.score = Math.max(0, player.score + choice.delta);
+  room.pendingTile = null;
+
+  ioInstance?.to(room.code).emit("family_event_result", {
+    playerId: pending.playerId,
+    delta: choice.delta,
+    label: choice.label,
+    scoreboard: serializePlayers(room),
+  });
+
+  room.timer = setTimeout(() => advanceFamilyTurn(room), REVEAL_PAUSE_MS);
 }
 
 export function initGameServer(httpServer: HttpServer) {
@@ -355,7 +576,30 @@ export function initGameServer(httpServer: HttpServer) {
           return;
         }
 
-        if (game.mode === "CHAPTER_GUESS") {
+        if (game.mode === "FAMILY_GAME") {
+          room = {
+            id: game.id,
+            code: upperCode,
+            hostId: game.hostId,
+            status: game.status as RoomState["status"],
+            mode: "FAMILY_GAME",
+            timeLimitMs: 0,
+            chapterId: null,
+            exercises: [],
+            level: null,
+            cgQuestions: [],
+            cgChapterLabels: new Map(),
+            questionIndex: 0,
+            questionStartedAt: 0,
+            players: new Map(),
+            board: BOARD,
+            finishIndex: finishIndexFor(game.familyGameMinutes ?? 30),
+            diceMode: game.familyGameDiceMode,
+            turnOrder: [],
+            currentTurnIndex: 0,
+            pendingTile: null,
+          };
+        } else if (game.mode === "CHAPTER_GUESS") {
           const questions = await generateChapterGuessQuestions(game.level!, game.questionCount!);
           room = {
             id: game.id,
@@ -412,8 +656,10 @@ export function initGameServer(httpServer: HttpServer) {
           correctCount: 0,
           hintCredits: 0,
           hintUsedThisQuestion: false,
+          ...(room.mode === "FAMILY_GAME" ? { isGuest: false, position: 0, streak: 0 } : {}),
         };
         room.players.set(user.id, player);
+        if (room.mode === "FAMILY_GAME") room.turnOrder!.push(user.id);
         await prisma.liveGamePlayer
           .upsert({
             where: { gameId_userId: { gameId: room.id, userId: user.id } },
@@ -427,11 +673,60 @@ export function initGameServer(httpServer: HttpServer) {
       broadcastLobby(room);
     });
 
+    // Alleen de host kan een gast toevoegen — gasten bestaan alleen op het
+    // apparaat van de host (zie de uitleg bij RoomPlayer.isGuest hierboven).
+    socket.on("add_guest", ({ name }: { name: string }) => {
+      const code = socket.data.gameCode as string | undefined;
+      if (!code) return;
+      const room = rooms.get(code);
+      if (!room || room.mode !== "FAMILY_GAME" || room.hostId !== user.id || room.status !== "LOBBY") return;
+      const trimmed = name.trim().slice(0, 24);
+      if (!trimmed) return;
+
+      const guestId = `guest:${randomUUID()}`;
+      room.players.set(guestId, {
+        userId: guestId,
+        displayName: trimmed,
+        socketIds: new Set(),
+        score: 0,
+        correctCount: 0,
+        hintCredits: 0,
+        hintUsedThisQuestion: false,
+        isGuest: true,
+        position: 0,
+        streak: 0,
+      });
+      room.turnOrder!.push(guestId);
+      broadcastLobby(room);
+    });
+
+    socket.on("remove_guest", ({ guestId }: { guestId: string }) => {
+      const code = socket.data.gameCode as string | undefined;
+      if (!code) return;
+      const room = rooms.get(code);
+      if (!room || room.mode !== "FAMILY_GAME" || room.hostId !== user.id || room.status !== "LOBBY") return;
+      const player = room.players.get(guestId);
+      if (!player?.isGuest) return;
+      room.players.delete(guestId);
+      room.turnOrder = room.turnOrder!.filter((id) => id !== guestId);
+      broadcastLobby(room);
+    });
+
     socket.on("start_game", async () => {
       const code = socket.data.gameCode as string | undefined;
       if (!code) return;
       const room = rooms.get(code);
       if (!room || room.hostId !== user.id || room.status !== "LOBBY") return;
+
+      if (room.mode === "FAMILY_GAME") {
+        if (room.turnOrder!.length < 2) {
+          socket.emit("error_message", { message: "Voeg minstens nog één speler of gast toe." });
+          return;
+        }
+        await startFamilyGame(room);
+        return;
+      }
+
       if (totalQuestions(room) === 0) {
         socket.emit("error_message", {
           message: room.mode === "EXERCISES" ? "Dit hoofdstuk heeft geen oefeningen." : "Kon geen vragen genereren.",
@@ -443,6 +738,58 @@ export function initGameServer(httpServer: HttpServer) {
       await prisma.liveGame.update({ where: { code }, data: { status: "IN_PROGRESS" } });
       broadcastLobby(room);
       askQuestion(room);
+    });
+
+    // Dobbelsteen (DIGITAL): de server gooit, nooit de client — anders zou
+    // een op afstand meespelend account zijn eigen worp kunnen manipuleren
+    // (zie de sessieafspraak over server-autoriteit). Alleen de speler die
+    // aan de beurt is (of de host namens een gast, zie canActFor) mag gooien.
+    socket.on("roll_dice", async () => {
+      const code = socket.data.gameCode as string | undefined;
+      if (!code) return;
+      const room = rooms.get(code);
+      if (!room || room.mode !== "FAMILY_GAME" || room.status !== "IN_PROGRESS" || room.pendingTile) return;
+      const currentId = currentFamilyPlayerId(room);
+      if (!currentId || !canActFor(room, socket, currentId)) return;
+      if (room.diceMode !== "DIGITAL") return;
+
+      const roll = 1 + Math.floor(Math.random() * 6);
+      ioInstance?.to(room.code).emit("family_dice_result", { playerId: currentId, roll });
+      await landOnTile(room, currentId, roll);
+    });
+
+    // Dobbelsteen (PHYSICAL): een echte dobbelsteen — de speler voert het
+    // aantal ogen zelf in. Net zo'n volwaardige, vertrouwde invoer als elk
+    // ander door een mens ingevoerd spelresultaat elders in de app (zie de
+    // sessieafspraak: dit is geen tijdelijke workaround maar een officiële
+    // spelmodus).
+    socket.on("enter_physical_roll", async ({ value }: { value: number }) => {
+      const code = socket.data.gameCode as string | undefined;
+      if (!code) return;
+      const room = rooms.get(code);
+      if (!room || room.mode !== "FAMILY_GAME" || room.status !== "IN_PROGRESS" || room.pendingTile) return;
+      const currentId = currentFamilyPlayerId(room);
+      if (!currentId || !canActFor(room, socket, currentId)) return;
+      if (room.diceMode !== "PHYSICAL") return;
+      if (!Number.isInteger(value) || value < 1 || value > 6) return;
+
+      await landOnTile(room, currentId, value);
+    });
+
+    socket.on("submit_family_answer", ({ given }: { given: string[] }) => {
+      const code = socket.data.gameCode as string | undefined;
+      if (!code) return;
+      const room = rooms.get(code);
+      if (!room || room.mode !== "FAMILY_GAME" || room.status !== "IN_PROGRESS") return;
+      handleFamilyAnswer(room, socket, given).catch(() => {});
+    });
+
+    socket.on("choose_event", ({ choiceIndex }: { choiceIndex: number }) => {
+      const code = socket.data.gameCode as string | undefined;
+      if (!code) return;
+      const room = rooms.get(code);
+      if (!room || room.mode !== "FAMILY_GAME" || room.status !== "IN_PROGRESS") return;
+      handleFamilyEventChoice(room, socket, choiceIndex);
     });
 
     socket.on("submit_answer", ({ given }: { given: string[] }) => {
@@ -574,6 +921,7 @@ export function initGameServer(httpServer: HttpServer) {
       player?.socketIds.delete(socket.id);
       if (room && player && player.socketIds.size === 0 && room.status === "LOBBY") {
         room.players.delete(user.id);
+        if (room.mode === "FAMILY_GAME") room.turnOrder = room.turnOrder!.filter((id) => id !== user.id);
         broadcastLobby(room);
       }
     });

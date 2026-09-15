@@ -9,4 +9,5 @@ export const ACHIEVEMENT_DISPLAY: Record<string, { name: string; icon: string }>
   "first-freeze-gifted": { name: "Vrijgevig", icon: "🎁" },
   "first-friend": { name: "Niet alleen", icon: "👥" },
   "first-duel-won": { name: "Eerste overwinning", icon: "⚔️" },
+  "family-game-first-play": { name: "Gezinsavond", icon: "🎉" },
 };

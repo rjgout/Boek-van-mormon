@@ -23,6 +23,12 @@ const achievementDefs = [
   },
   { slug: "first-friend", name: "Niet alleen", icon: "👥", description: "Voegde je eerste vriend toe." },
   { slug: "first-duel-won", name: "Eerste overwinning", icon: "⚔️", description: "Won je eerste live Schriftduel." },
+  {
+    slug: "family-game-first-play",
+    name: "Gezinsavond",
+    icon: "🎉",
+    description: "Speelde het Gezinsavondspel voor het eerst uit.",
+  },
 ];
 
 /**
