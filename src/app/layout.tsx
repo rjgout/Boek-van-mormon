@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/session";
 import { getBranding } from "@/lib/branding";
-import { cacheDetectedAppUrlFromRequestHeaders } from "@/lib/baseUrl";
+import { cacheDetectedAppUrl } from "@/lib/baseUrl";
 import NavUserBadges from "@/components/NavUserBadges";
 import InviteListener from "@/components/InviteListener";
 import ThemeScript from "@/components/ThemeScript";
@@ -63,8 +64,21 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
+// Onthoudt bij elk paginabezoek het publieke adres (zie cacheDetectedAppUrl
+// in src/lib/baseUrl.ts) — hier, en niet in baseUrl.ts zelf, omdat dit
+// bestand (via Next's eigen bundeling) de enige veilige plek is om
+// "next/headers" te gebruiken. Fire-and-forget, mag de pagina nooit blokkeren.
+async function detectAppUrlFromHeaders(): Promise<void> {
+  if (process.env.APP_URL?.trim()) return; // env-override actief, niets te detecteren
+  const h = await headers();
+  const host = h.get("x-forwarded-host") ?? h.get("host");
+  if (!host) return;
+  const proto = h.get("x-forwarded-proto") ?? "https";
+  cacheDetectedAppUrl(`${proto}://${host}`, host);
+}
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  cacheDetectedAppUrlFromRequestHeaders().catch(() => {});
+  detectAppUrlFromHeaders().catch(() => {});
   const [user, { logoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
 
   return (
