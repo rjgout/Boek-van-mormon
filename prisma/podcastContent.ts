@@ -7823,4 +7823,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 43,
+    title: "Aflevering 43",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat dit derde en laatste deel van het gesprek met gast Michiel vooral over?",
+        options: [
+          "Genderidentiteit, transgender zijn, en hoe dit past binnen het geloof in een eeuwige identiteit",
+          "De organisatie van jeugdkampen",
+          "De geschiedenis van de tempelbouw",
+          "Het schrijven van kerkmuziek",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael leggen uit dat je volgens hun geloof een eeuwige identiteit als man of vrouw hebt, die je al had voordat je geboren werd en die ook bij de opstanding hersteld wordt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat stelt Michiel over het idee dat iemands gevoelens over gender de kern van hun identiteit zouden zijn?",
+        options: [
+          "Dat het maar een klein deel is van wie iemand is, en niet de kern waar het echt om draait",
+          "Dat het altijd de allerbelangrijkste eigenschap van een persoon is",
+          "Dat het volledig genegeerd moet worden in elk gesprek",
+          "Dat niemand daar ooit over mag praten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de houding die Koos en Raphael uiteindelijk innemen tegenover mensen die worstelen met hun genderidentiteit of er anders over denken?",
+        options: [
+          "Dat het niet aan hen is om te oordelen, en dat iedereen welkom en geliefd is",
+          "Dat zulke mensen nooit meer in de kerk mogen komen",
+          "Dat ze verplicht in therapie moeten",
+          "Dat het onderwerp helemaal niet besproken mag worden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken dat het gezin vanuit verschillende hoeken onder druk staat",
+          "Ze bespreken de eeuwige identiteit als man of vrouw en de opstanding",
+          "Michiel legt uit dat gevoelens over gender niet de kern van iemands identiteit zijn",
+          "Ze sluiten af met de boodschap dat iedereen welkom is en niemand geoordeeld wordt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 11 legt Amulek uit hoe het lichaam bij de opstanding hersteld wordt. Wat gebeurt er volgens vers 43?",
+        options: [
+          "De geest en het lichaam worden herenigd in hun volmaakte gedaante, en ledematen en gewrichten worden hersteld tot hun eigen gestalte",
+          "Alleen de geest keert terug, zonder lichaam",
+          "Het lichaam blijft voor altijd onvolledig",
+          "Er wordt in dit vers niets over herstel gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 11:44 komt die herstelling tot allen, zowel jong als oud, zowel man als vrouw, en zal zelfs niet één haar van hun hoofd verloren gaan.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurt er volgens Alma 11:45 met het sterfelijke lichaam bij de opstanding?",
+        options: [
+          "Het wordt opgewekt tot een onsterfelijk lichaam, waarbij geest en lichaam zich verenigen om nooit meer gescheiden te worden",
+          "Het sterfelijke lichaam verdwijnt volledig zonder terug te keren",
+          "Alleen de ziel blijft bestaan, zonder ooit een lichaam te krijgen",
+          "Er wordt in dit vers niets over het lichaam gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 11:43-45 in de juiste volgorde.",
+        items: [
+          "De geest en het lichaam worden opnieuw verenigd in hun volmaakte gedaante",
+          "Die herstelling komt tot allen, zowel man als vrouw",
+          "Zij worden voorgeleid voor het gerecht van Christus",
+          "Het sterfelijke lichaam wordt opgewekt tot een onsterfelijk lichaam",
+        ],
+      },
+    ],
+  },
 ];
