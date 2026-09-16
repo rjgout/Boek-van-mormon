@@ -3969,4 +3969,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 85,
+    title: "Aflevering 85",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk cijfer geeft Raphael aan zijn eigen leven op dit moment, toen Koos ernaar vroeg?",
+        options: [
+          "Een negen",
+          "Een tien",
+          "Een zes",
+          "Een drie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vindt dat 'weest gij volmaakt' verkeerd vertaald is, en dat het eigenlijk zou moeten gaan om één zijn met God, zoals in het hogepriesterlijk gebed van Christus.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vergelijking gebruikt Koos om uit te leggen hoe zonde en bekering werken?",
+        options: [
+          "Een creditcard die gevuld wordt met dingen die niet goed gingen, en die alleen door Christus op nul gezet kan worden",
+          "Een spaarpot die je vult met goede werken totdat die vol is",
+          "Een bibliotheekboek dat je op tijd moet inleveren",
+          "Een puzzel die je stukje voor stukje moet afmaken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover zijn Koos en Raphael het aan het einde eens, als het gaat om het doel van dit leven?",
+        options: [
+          "Dat het doel niet is om volmaakt te worden, maar om te leren en steeds weer terug te keren naar Christus",
+          "Dat het doel is om zoveel mogelijk aardse bezittingen te verzamelen",
+          "Dat het doel is om nooit meer een fout te maken",
+          "Dat het doel is om zo snel mogelijk het leven te beëindigen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken online reviews en waarom één ster zelden terecht is",
+          "Ze bespreken het geloofsartikel over 'weest gij volmaakt' en of dat een verkeerde vertaling is",
+          "Koos legt de creditcard-vergelijking uit voor zonde en bekering",
+          "Ze bespreken waarom Satans plan makkelijker was, maar geen keuzevrijheid bood",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 34 spoort Amulek het volk aan om hun bekering niet uit te stellen. Wat noemt hij dit leven, volgens vers 32?",
+        options: [
+          "De tijd voor de mens om zich voor te bereiden God te ontmoeten en zijn arbeid te verrichten",
+          "Een tijd zonder enig belang voor de eeuwigheid",
+          "Een tijd die volledig losstaat van het leven hierna",
+          "Een periode die voor iedereen precies even lang duurt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 34:33 komt er een 'nacht van duisternis' na dit leven, waarin geen arbeid meer verricht kan worden als je je tijd nu niet nuttig besteedt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Alma 34:34 over de geest die je lichaam bezit op het moment dat je uit dit leven vertrekt?",
+        options: [
+          "Diezelfde geest zal macht hebben om je lichaam in de eeuwige wereld te bezitten",
+          "Die geest verdwijnt volledig en heeft geen enkele invloed meer",
+          "Die geest wordt automatisch vervangen door een compleet nieuwe geest",
+          "Die geest heeft geen enkel verband met wie je hierna zult zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze aansporingen uit Alma 34 in de juiste volgorde.",
+        items: [
+          "Treed naar voren en laat uw hart niet langer verstokt zijn",
+          "Dit leven is de tijd om u voor te bereiden God te ontmoeten",
+          "Stel de dag van uw bekering niet uit tot het einde",
+          "Anders komt de nacht van duisternis waarin geen arbeid kan worden verricht",
+        ],
+      },
+    ],
+  },
 ];
