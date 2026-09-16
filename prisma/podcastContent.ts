@@ -2183,4 +2183,286 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 104,
+    title: "Aflevering 104",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel staat in deze aflevering centraal?",
+        options: [
+          "Geloofsartikel 2: de mens zal worden gestraft voor zijn eigen zonde en niet voor Adams overtreding",
+          "Geloofsartikel 4: geloof, bekering, doop en de gave van de Heilige Geest",
+          "Geloofsartikel 9: God zal nog vele grote en gewichtige zaken openbaren",
+          "Geloofsartikel 13: eerlijk, trouw en deugdzaam zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael leggen uit dat de kerk de traditionele leer van de erfzonde, waarbij mensen al schuldig geboren worden aan Adams overtreding, afwijst.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe omschrijven Koos en Raphael de geestelijke dood die door de val van Adam ontstond?",
+        options: [
+          "Als scheiding van God, een noodzakelijk onderdeel van het heilsplan en niet als een straf",
+          "Als een straf die alle mensen persoonlijk verdienen vanaf hun geboorte",
+          "Als het letterlijk sterven van de geest, zodat die niet meer bestaat",
+          "Als iets dat alleen ongelovigen treft",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Koos gebruikt een voorbeeld met zijn kinderen om het verschil tussen straf en gevolg uit te leggen. Waarover gaat dat voorbeeld?",
+        options: [
+          "Het inleveren van telefoonprivileges als natuurlijk gevolg van gedrag, niet als willekeurige straf",
+          "Het verplicht laten meehelpen in de tuin",
+          "Het geven van extra zakgeld bij goed gedrag",
+          "Het samen kijken van een film als beloning",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken geloofsartikel 2 en de val van Adam",
+          "Ze leggen uit waarom de kerk erfzonde afwijst",
+          "Koos vertelt zijn voorbeeld over telefoonprivileges om straf en gevolg te onderscheiden",
+          "Ze speculeren over andere werelden met hun eigen Adam en Eva",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 8 schrijft Mormon aan zijn zoon Moroni over kleine kinderen. Wat zegt hij over de vervloeking van Adam?",
+        options: [
+          "Die is in Christus van kleine kinderen weggenomen, zodat die geen macht meer over hen heeft",
+          "Die blijft op alle mensen rusten totdat zij zich laten dopen",
+          "Die geldt alleen voor volwassenen, niet voor kinderen",
+          "Die kan alleen worden weggenomen door goede werken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 8 is het een ernstige spotternij voor het aangezicht van God om kleine kinderen te dopen, omdat zij niet in staat zijn om zonde te bedrijven.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Mormon in Moroni 8 over wie bekering en doop wél nodig hebben?",
+        options: [
+          "Alleen zij die toerekeningsvatbaar zijn en in staat om zonde te bedrijven",
+          "Alle mensen zonder uitzondering, vanaf hun geboorte",
+          "Alleen mensen die nooit naar de kerk zijn geweest",
+          "Niemand, want iedereen is al gered",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 8 in de juiste volgorde.",
+        items: [
+          "Christus kwam niet om rechtvaardigen maar om zondaars tot bekering te roepen",
+          "De vervloeking van Adam is in Christus van kleine kinderen weggenomen",
+          "Het is spotternij voor God om kleine kinderen te dopen",
+          "Bekering is voor hen die onder de vervloeking van een gebroken wet staan",
+        ],
+      },
+    ],
+  },
+  {
+    number: 103,
+    title: "Aflevering 103",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar begint Raphael de aflevering mee, voordat hij het zelf meteen weer terugtrekt?",
+        options: [
+          "Dat hij heeft uitgerekend wanneer Christus terugkomt",
+          "Dat hij een nieuwe openbaring heeft ontvangen",
+          "Dat de wereld dit jaar nog vergaat",
+          "Dat hij een nieuwe kerk wil oprichten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Raphael en Koos betekent de wederkomst van Christus dat de aarde letterlijk ophoudt te bestaan.",
+        answer: false,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke gelijkenis gebruikt Koos om uit te leggen dat er ook onder gelovigen een tweedeling zal zijn vlak voor de wederkomst?",
+        options: [
+          "De gelijkenis van de tien jonkvrouwen (vijf wijze en vijf dwaze)",
+          "De gelijkenis van de verloren zoon",
+          "De gelijkenis van de barmhartige Samaritaan",
+          "De gelijkenis van het mosterdzaadje",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemen Koos en Raphael als reden waarom wij nu meer tekenen des tijds lijken waar te nemen dan mensen 200 jaar geleden?",
+        options: [
+          "Wij kunnen informatie over gebeurtenissen zoals oorlogen veel sneller en breder tot ons krijgen",
+          "Er zijn nu daadwerkelijk veel meer oorlogen dan ooit tevoren",
+          "De profetieën waren vroeger nog niet opgeschreven",
+          "Mensen geloofden vroeger de profeten helemaal niet",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael grapt over het berekenen van de wederkomst van Christus",
+          "Ze bespreken hoe tekenen des tijds zoals oorlogen sneller bekend worden dan vroeger",
+          "Koos legt de gelijkenis van de tien jonkvrouwen uit als beeld van een tweedeling onder gelovigen",
+          "Ze bespreken profeten zoals Nelson en Hinckley die woorden voor onze tijd hebben nagelaten",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mormon 8 spreekt Moroni rechtstreeks tot de lezers van onze tijd. Welke tekenen noemt hij die er \"zullen worden gehoord\" in onze dagen?",
+        options: [
+          "Oorlogen, geruchten van oorlogen en aardbevingen op verschillende plaatsen",
+          "Alleen vrede en voorspoed over de hele aarde",
+          "Een wereldwijde hongersnood als enig teken",
+          "Het verdwijnen van alle kerken tegelijk",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Moroni schrijft in Mormon 8 dat hij spreekt \"alsof gij aanwezig zijt\", ook al is de lezer er op het moment van schrijven niet.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat verwijt Moroni in Mormon 8 aan kerken en hun leden in de laatste dagen?",
+        options: [
+          "Dat zij hun geld, bezit en fraaie kleding meer liefhebben dan de armen en behoeftigen",
+          "Dat zij te weinig gebouwen bezitten",
+          "Dat zij te veel tijd besteden aan bijbelstudie",
+          "Dat zij te weinig muziek gebruiken in hun diensten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze tekenen uit Mormon 8 in de volgorde waarin Moroni ze noemt.",
+        items: [
+          "Het bloed der heiligen roept tot de Heer wegens geheime verenigingen",
+          "Kerkleiders verheffen zich in de hoogmoed van hun hart",
+          "Er wordt gehoord van branden, orkanen en rook in vreemde landen",
+          "Er wordt gehoord van oorlogen, geruchten van oorlogen en aardbevingen",
+        ],
+      },
+    ],
+  },
+  {
+    number: 102,
+    title: "Aflevering 102",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel bespreken Koos en Raphael in deze aflevering?",
+        options: [
+          "Het eerste: wij geloven in God, de eeuwige Vader, en in Zijn Zoon, Jezus Christus, en in de Heilige Geest",
+          "Het derde: door de verzoening van Christus kan de gehele mensheid worden gered",
+          "Het vijfde: een mens moet geroepen worden door profetie",
+          "Het tiende: de letterlijke vergadering van Israël",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Koos en Raphael leert het eerste geloofsartikel dat God de Vader, Jezus Christus en de Heilige Geest drie afzonderlijke personen zijn, in plaats van één persoon in drie vormen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe verdelen Koos en Raphael de rollen van God de Vader en Jezus Christus in het gesprek?",
+        options: [
+          "God de Vader vertegenwoordigt de rechtvaardigheid, Christus de barmhartigheid",
+          "God de Vader vertegenwoordigt de barmhartigheid, Christus de rechtvaardigheid",
+          "Beiden vertegenwoordigen precies dezelfde rol zonder enig verschil",
+          "God de Vader doet alleen wonderen, Christus doet alleen onderwijzen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom kon God de Vader volgens Koos niet zelf, zonder Christus, simpelweg alle zonden vergeven?",
+        options: [
+          "Omdat hij dan zijn eigen wet van gerechtigheid zou breken en daardoor niet langer God zou kunnen zijn",
+          "Omdat hij daar geen tijd voor had",
+          "Omdat alleen engelen zonden mogen vergeven",
+          "Omdat Satan dat wettelijk zou kunnen tegenhouden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken het ontstaan van de dertien geloofsartikelen",
+          "Koos leest het eerste geloofsartikel voor",
+          "Ze bespreken waarom God de Vader niet zelf de rol van Christus kon vervullen",
+          "Raphael benadrukt dat wij daadwerkelijk kinderen van God zijn",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 42 legt Alma aan zijn zoon Corianton uit waarom barmhartigheid de gerechtigheid niet zomaar terzijde kan schuiven. Wat zou er volgens hem gebeuren als dat wel kon?",
+        options: [
+          "Dan zou God ophouden God te zijn",
+          "Dan zou er niets veranderen, want het maakt geen verschil",
+          "Dan zou Satan direct de macht overnemen",
+          "Dan zou er geen wet meer nodig zijn voor wie dan ook",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 42 verzoent God zelf de zonden van de wereld, zodat Hij zowel een volmaakt rechtvaardig als een barmhartig God kan zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurt er volgens Alma 42 met wie zich werkelijk bekeert?",
+        options: [
+          "De barmhartigheid maakt aanspraak op hen, dankzij de verzoening",
+          "Zij worden alsnog voor eeuwig van Gods tegenwoordigheid afgesneden",
+          "Zij hoeven niet meer geoordeeld te worden naar hun werken",
+          "Zij worden automatisch engelen zonder opstanding",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit Alma's uitleg in Alma 42 in de juiste volgorde.",
+        items: [
+          "De hele mensheid is gevallen en bevindt zich in de greep der gerechtigheid",
+          "Het plan van barmhartigheid kan alleen worden verwezenlijkt door een verzoening",
+          "God verzoent zelf de zonden van de wereld om aan beide eisen te voldoen",
+          "Alleen de werkelijk boetvaardigen worden uiteindelijk gered",
+        ],
+      },
+    ],
+  },
 ];
