@@ -3123,4 +3123,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 94,
+    title: "Aflevering 94",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vraag van een luisteraar staat in deze aflevering centraal?",
+        options: [
+          "Is er eeuwig geluk voor iedereen?",
+          "Bestaat de hel echt?",
+          "Waarom zijn er zoveel religies?",
+          "Wat gebeurt er met dieren na de dood?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat de kerk gelooft in tussenstadia na de dood, zoals een geestenwereld en paradijs, in plaats van een direct oordeel naar hemel of hel.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat oppert Raphael als mogelijke bron van blijvend ongeluk voor wie in een lagere graad van heerlijkheid terechtkomt?",
+        options: [
+          "Het besef van je eigen gemiste potentieel en de keuzes die daartoe leidden",
+          "Het ontbreken van muziek in die graad van heerlijkheid",
+          "Het feit dat er geen zonlicht zou zijn",
+          "Het feit dat er geen andere mensen zouden zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarmee vergelijkt Raphael de verschillende graden van heerlijkheid, om uit te leggen dat je gelukkig kan zijn ook al bereik je niet het hoogste niveau?",
+        options: [
+          "Met de verschillende niveaus van het Nederlandse schoolsysteem, zoals vmbo en vwo",
+          "Met verschillende sporten",
+          "Met verschillende talen",
+          "Met verschillende beroepen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos introduceert de luisteraarsvraag over eeuwig geluk voor iedereen",
+          "Raphael legt de tussenstadia na de dood uit, zoals geestenwereld en paradijs",
+          "Ze bespreken of spijt over gemist potentieel eeuwig ongeluk kan betekenen",
+          "Raphael vergelijkt de graden van heerlijkheid met schoolniveaus",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 41 legt Alma aan zijn zoon Corianton uit wat herstelling niet betekent. Wat zegt hij daarover in vers 10?",
+        options: [
+          "Denk niet dat je van zonde tot geluk zult worden hersteld, want goddeloosheid heeft nooit geluk betekend",
+          "Herstelling betekent dat alle zonden vanzelf worden vergeven zonder gevolgen",
+          "Herstelling betekent dat iedereen precies hetzelfde terugkrijgt, ongeacht wat hij deed",
+          "Herstelling is alleen van toepassing op lichamelijke genezing",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 41:11 bevindt wie in een natuurlijke, vleselijke staat verkeert zich in een staat die in strijd is met de aard van geluk.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Alma in vers 13 de betekenis van het woord herstelling uit?",
+        options: [
+          "Goed voor wat goed is, kwaad voor wat kwaad is; rechtvaardig voor wat rechtvaardig is, barmhartig voor wat barmhartig is",
+          "Alleen kwaad wordt teruggegeven, nooit iets goeds",
+          "Alleen goede daden worden herinnerd, kwade daden worden vergeten",
+          "Herstelling geldt alleen voor de allerbeste mensen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 41 in de juiste volgorde.",
+        items: [
+          "Goddeloosheid heeft nooit geluk betekend",
+          "Wie in een vleselijke staat verkeert, is in strijd met de aard van het geluk",
+          "Herstelling betekent goed voor goed, kwaad voor kwaad teruggeven",
+          "Wat gij van u laat uitgaan, zal weer tot u terugkeren",
+        ],
+      },
+    ],
+  },
 ];
