@@ -4157,4 +4157,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 83,
+    title: "Aflevering 83",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom gingen Koos en Raphael dit weekend, tijdens de algemene conferentie, allebei naar een andere kerk?",
+        options: [
+          "Omdat er tijdens een algemene-conferentieweekend geen reguliere avondmaalsdienst in hun eigen wijk is",
+          "Omdat hun eigen kerkgebouw gesloten was voor renovatie",
+          "Omdat ze allebei verhuisd waren naar een andere stad",
+          "Omdat ze uit nieuwsgierigheid nooit meer naar hun eigen kerk wilden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat hij bij de andere kerk drie kwartier moest blijven staan tijdens een lange muzikale sessie met een volledige band.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat viel Koos en Raphael allebei op tijdens hun kerkbezoek, wat ze aan elkaar bekenden?",
+        options: [
+          "Dat ze allebei de behoefte voelden om zelf iets te zeggen of een toespraak te geven",
+          "Dat ze zich allebei erg verveelden",
+          "Dat ze allebei de muziek verschrikkelijk vonden",
+          "Dat ze allebei precies wisten welke kerk het was",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de conclusie van Koos en Raphael over waarom Christus, als hij zijn kerk zou stichten, niet meerdere verschillende kerken zou hebben?",
+        options: [
+          "Omdat het onlogisch is dat Christus meerdere kerken zou managen, terwijl zijn leer maar één is",
+          "Omdat er wettelijk maar één kerk per land is toegestaan",
+          "Omdat andere kerken geen gebouwen hebben",
+          "Omdat andere kerken de Bijbel niet gebruiken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de opbouw van de algemene conferentie en hoe ze die volgen",
+          "Ze vertellen over hun bezoek aan andere kerken dat weekend",
+          "Ze bespreken de behoefte die ze allebei voelden om zelf iets te zeggen",
+          "Ze concluderen dat Christus maar één kerk zou stichten en leiden",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 11 geeft Christus zijn leer aan het volk in Amerika. Wat zegt Hij over woordenstrijd omtrent zijn leer, in vers 28-29?",
+        options: [
+          "Er mag geen woordenstrijd zijn, want de geest van twisten is niet van Hem maar van de duivel",
+          "Woordenstrijd is juist een goed teken van betrokkenheid",
+          "Hij moedigt debat over zijn leer juist aan",
+          "Hij zegt daar niets specifieks over",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 11:32 getuigen de Vader, de Zoon en de Heilige Geest van elkaar, en gebiedt de Vader alle mensen overal zich te bekeren en in Christus te geloven.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Christus in 3 Nephi 11:40 over wie meer of minder verkondigt dan zijn leer en dat als zijn leer vestigt?",
+        options: [
+          "Die persoon is uit den boze en bouwt op een zanderig fundament",
+          "Die persoon wordt daar automatisch voor beloond",
+          "Dat maakt voor de uiteindelijke uitkomst geen enkel verschil",
+          "Christus zegt dat dit juist verrijkend kan zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 11 in de juiste volgorde.",
+        items: [
+          "Christus gebiedt dat er geen woordenstrijd over de punten van zijn leer zal zijn",
+          "De geest van twisten is niet van Christus maar van de duivel",
+          "Dit is de leer die de Vader aan Christus heeft gegeven",
+          "Wie meer of minder verkondigt en dat als zijn leer vestigt, bouwt op een zanderig fundament",
+        ],
+      },
+    ],
+  },
 ];
