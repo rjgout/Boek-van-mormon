@@ -5379,4 +5379,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 70,
+    title: "Aflevering 70",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk persoonlijk record vertelt Koos aan het begin van deze aflevering te hebben verbroken?",
+        options: [
+          "Hij heeft nu vier dagen achter elkaar gevast, in plaats van zijn vorige record van drie dagen",
+          "Hij heeft een marathon gelopen",
+          "Hij heeft een boek in één dag uitgelezen",
+          "Hij heeft een week niet naar het nieuws geluisterd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael benadrukt dat je overgeslagen maaltijden tijdens het vasten niet achteraf moet proberen in te halen, omdat dat het doel van het vasten juist tenietdoet.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over het gesprek met een terminaal zieke vriend?",
+        options: [
+          "Dat zijn vriend de dood ziet als een overgang naar zijn hemelse thuis, zonder angst maar met liefde en positiviteit",
+          "Dat zijn vriend erg bang was voor wat er na de dood komt",
+          "Dat zijn vriend niet meer in God geloofde",
+          "Dat zijn vriend boos was op zijn lot",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover raken Koos en Raphael in discussie met betrekking tot het duizendjarig vrederijk?",
+        options: [
+          "Of Satan gebonden is omdat Christus hem bindt, of omdat de bevolking dan zo rechtvaardig is dat hij geen invloed meer heeft",
+          "Of het duizendjarig vrederijk wel echt duizend jaar zal duren",
+          "Of er dan nog steeds oorlogen zullen zijn",
+          "Of de aarde dan zal ophouden te bestaan",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken wat hen vrolijk maakt en Koos' vastenrecord van vier dagen",
+          "Koos vertelt over het bezoek aan zijn terminaal zieke vriend",
+          "Ze bespreken het duizendjarig vrederijk en de sterfelijkheid daarin",
+          "Ze bespreken of Satan gebonden is door Christus of door de rechtvaardigheid van het volk",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 1 Nephi 22 profeteert Nephi over de tijd dat de Heilige Israëls zal regeren. Waarom heeft Satan dan geen macht, volgens vers 26?",
+        options: [
+          "Wegens de rechtvaardigheid van het volk, waardoor hij geen macht over het hart der mensen heeft",
+          "Omdat hij voorgoed vernietigd is",
+          "Omdat hij nooit meer heeft bestaan",
+          "Omdat er dan helemaal geen mensen meer op aarde zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 1 Nephi 22:24-25 zal de Heilige Israëls regeren met heerschappij en macht, en zijn kinderen vergaderen uit de vier hoeken der aarde als één kudde met één Herder.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe lang kan Satan volgens 1 Nephi 22:26 niet worden losgelaten, wegens de rechtvaardigheid van het volk?",
+        options: [
+          "Vele jaren lang",
+          "Slechts één dag",
+          "Voor altijd, zonder enige uitzondering",
+          "Er wordt geen tijdsduur genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze profetische uitspraken uit 1 Nephi 22 in de juiste volgorde.",
+        items: [
+          "De rechtvaardigen worden weggeleid en de Heilige Israëls zal regeren",
+          "Hij vergadert zijn kinderen uit de vier hoeken der aarde",
+          "Er zal één kudde zijn en één Herder",
+          "Wegens de rechtvaardigheid van het volk heeft Satan geen macht",
+        ],
+      },
+    ],
+  },
 ];
