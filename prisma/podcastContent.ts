@@ -576,4 +576,266 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 122,
+    title: "Aflevering 122",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke diepe theologische vraag staat in deze aflevering centraal?",
+        options: [
+          "Wat maakt een God eigenlijk een God?",
+          "Waarom bestaat er lijden in de wereld?",
+          "Hoe oud is de aarde volgens de Schriften?",
+          "Wie schreef het boek Genesis?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zeggen Koos en Raphael over hoe Jezus Christus en de Heilige Geest hun status als God hebben gekregen?",
+        options: [
+          "Ze zijn door Hemelse Vader benoemd/geroepen tot hun taak",
+          "Ze zijn dat altijd al geweest, net als Hemelse Vader",
+          "Ze werden God door menselijke aanbidding",
+          "Niemand van hen is werkelijk een God",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Koos en Raphael zou je, als je de \"elementen kunt beheersen\" zoals in hun gedachte-experiment, daarmee automatisch een God worden.",
+        answer: false,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom is Satan volgens Koos geen echte God, ook al heeft hij zichzelf zo uitgeroepen?",
+        options: [
+          "Omdat hij zijn macht ontleent aan het kwaad, en niet door God benoemd is",
+          "Omdat hij geen kennis heeft",
+          "Omdat hij geen naam heeft",
+          "Omdat hij nooit heeft bestaan",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken het verschil tussen Hemelse Vader, Jezus Christus en de Heilige Geest",
+          "Ze filosoferen over een gedachte-experiment: het beheersen van de elementen",
+          "Ze bespreken waarom Satan zichzelf god noemt, maar het niet is",
+          "Ze bespreken het idee dat mensen ooit zelf een God kunnen worden",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 12 (de leer op de tempel) zegt Christus dat Hij wil dat wij net zo worden als wie?",
+        options: [
+          "Volmaakt, zoals Hij en de Vader in de hemel volmaakt zijn",
+          "Volmaakt, zoals de engelen",
+          "Volmaakt, zoals de profeten van weleer",
+          "Christus zegt dat volmaaktheid onmogelijk is voor mensen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 12 zijn de oude dingen (de wet van Mozes) weggedaan en alle dingen nieuw geworden door Christus.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens deze tekst in 3 Nephi 12 het gevolg van kinderen van de Vader in de hemel worden?",
+        options: [
+          "Je wordt geroepen om net zo volmaakt te worden als Hij",
+          "Je hoeft de geboden niet meer te houden",
+          "Je krijgt automatisch alle antwoorden op je vragen",
+          "Je wordt vrijgesteld van beproevingen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken van Christus in 3 Nephi 12 in de juiste volgorde.",
+        items: [
+          "Hij roept op om kinderen van de Vader in de hemel te zijn",
+          "Hij zegt dat oude dingen (de wet van Mozes) zijn weggedaan",
+          "Hij zegt dat alle dingen nieuw zijn geworden in Hem",
+          "Hij roept op om volmaakt te zijn, zoals Hij en de Vader volmaakt zijn",
+        ],
+      },
+    ],
+  },
+  {
+    number: 121,
+    title: "Aflevering 121",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel bespreken Koos en Raphael in deze aflevering?",
+        options: ["Geloofsartikel 7 (de gaven van de Geest)", "Geloofsartikel 3", "Geloofsartikel 10", "Geloofsartikel 12"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke drie aparte gaven noemen ze naast elkaar: profetie, openbaring en...?",
+        options: ["Visioenen", "Genezing", "Talen", "Vertaling"],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Raphael en Koos krijgt iedereen precies dezelfde gaven van God toebedeeld.",
+        answer: false,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarvoor wordt gewijde olijfolie gebruikt, zoals besproken bij de gave van gezondmaking?",
+        options: [
+          "Om iemand te zalven bij een zegen voor de zieken",
+          "Om de doopvont te reinigen",
+          "Om kaarsen te maken voor de tempel",
+          "Om brood te bakken voor het avondmaal",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze lezen geloofsartikel 7 voor en bespreken wat een \"gave\" precies is",
+          "Ze bespreken de gave van talen en zendelingen die snel een taal leren",
+          "Ze bespreken profetie, openbaring en visioenen als aparte gaven",
+          "Ze bespreken de gave van gezondmaking en het zalven met gewijde olie",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Raphael noemt de droom van Lehi en Nephi over de boom des levens als voorbeeld van een visioen. In welk hoofdstuk begint deze droom?",
+        options: ["1 Nephi 8", "Alma 32", "Mosiah 4", "3 Nephi 12"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe smaakte de vrucht van de boom volgens Lehi's beschrijving in 1 Nephi 8?",
+        options: [
+          "Zoeter dan alles wat hij ooit had geproefd",
+          "Bitter, maar toch waardevol",
+          "Zout, als water uit de zee",
+          "Smaakloos, maar met een aangename geur",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "In 1 Nephi 8 raken sommige mensen in een mist van duisternis hun weg kwijt en dwalen ze af van het pad naar de boom.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit Lehi's droom in 1 Nephi 8 in de juiste volgorde.",
+        items: [
+          "Lehi ziet een boom met begerenswaardige vrucht",
+          "Hij proeft de vrucht en verlangt dat zijn gezin er ook van neemt",
+          "Er komt een mist van duisternis op, waardoor mensen de weg kwijtraken",
+          "Sommigen grijpen de ijzeren roede vast en klampen zich eraan vast op weg naar de boom",
+        ],
+      },
+    ],
+  },
+  {
+    number: 120,
+    title: "Aflevering 120",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is het hoofdonderwerp van deze aflevering?",
+        options: [
+          "Wat het woord \"heilige\" precies betekent",
+          "De geschiedenis van de eerste apostelen",
+          "Het vieren van kerkelijke feestdagen",
+          "De organisatie van de tempel",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Koos legt uit dat het woord \"heilig\" (Hebreeuws: kadosh) letterlijk betekent...",
+        options: ["Toewijden / apart zetten", "Volmaakt zijn", "Overleden zijn", "Gedoopt zijn"],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "In de katholieke traditie worden mensen meestal pas na hun overlijden heilig verklaard, terwijl het Nieuwe Testament levende gelovigen al \"heiligen\" noemt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat wordt bedoeld met \"de Sabbatdag heiligen\"?",
+        options: [
+          "De dag apart zetten en toewijden aan God, in plaats van aan alledaagse bezigheden",
+          "Nooit meer buiten mogen komen op zondag",
+          "Een speciale maaltijd bereiden voor de kerkleiders",
+          "Elke zondag een nieuwe heilige aanwijzen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt hoe hij het woord \"heilige\" kende vanuit zijn katholieke jeugd",
+          "Raphael legt de Hebreeuwse betekenis van \"heilig\" (kadosh) uit",
+          "Ze bespreken de naam \"De Kerk van Jezus Christus van de Heiligen der Laatste Dagen\"",
+          "Koos vertelt over zijn eigen proces van heiliging, met een voorbeeld uit het verkeer",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 3 zegt koning Benjamin dat de natuurlijke mens een vijand van God is, tenzij hij zich overgeeft aan de Heilige Geest en...",
+        options: [
+          "Een heilige wordt door de verzoening van Christus",
+          "Zich terugtrekt uit de maatschappij",
+          "Zich aan strenge vastenwetten houdt",
+          "Alle bezittingen wegdoet",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe wordt iemand die de natuurlijke mens aflegt volgens Mosiah 3:19 als een kind — welke eigenschappen worden genoemd?",
+        options: [
+          "Onderworpen, zachtmoedig, ootmoedig, geduldig, vol liefde",
+          "Streng, veeleisend, ongeduldig",
+          "Onafhankelijk en op zichzelf",
+          "Rijk en succesvol",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens koning Benjamin is de natuurlijke mens sinds de val van Adam een vijand van God geweest.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit Mosiah 3:19 in de juiste volgorde.",
+        items: [
+          "De natuurlijke mens is van nature een vijand van God",
+          "Hij geeft zich over aan de ingevingen van de Heilige Geest",
+          "Hij legt de natuurlijke mens af door de verzoening van Christus",
+          "Hij wordt als een kind: onderworpen, zachtmoedig en vol liefde",
+        ],
+      },
+    ],
+  },
 ];
