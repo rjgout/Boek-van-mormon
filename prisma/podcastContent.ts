@@ -6883,4 +6883,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 53,
+    title: "Aflevering 53",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vieren Koos en Raphael aan het begin van deze aflevering?",
+        options: [
+          "Dat hun podcast precies één jaar bestaat",
+          "De honderdste aflevering",
+          "Een nieuw kerkgebouw",
+          "Het behalen van een diploma",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael noemen 6 april als een bijzondere datum: zowel de geboortedag van Christus als de dag waarop hun kerk officieel gesticht werd (in 1830).",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over zijn overleden dochter Vlinder?",
+        options: [
+          "Dat ze doodgeboren is, tussen zijn oudste en derde kind, en dat hij vaak zegt 'drie jongens' in plaats van 'vier kinderen' om het gesprek niet te belasten",
+          "Dat ze inmiddels een tiener is",
+          "Dat ze als peuter genezen is van een ernstige ziekte",
+          "Dat ze zijn oudste kind is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarop is de vriendschap tussen Koos en Raphael volgens henzelf vooral gefundeerd?",
+        options: [
+          "Op het gedeelde evangelie/geloof, en daarnaast gewoon een hechte persoonlijke vriendschap",
+          "Op het feit dat ze bij hetzelfde bedrijf werken",
+          "Op een gedeelde hobby in sport",
+          "Op het feit dat ze buren zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze vieren dat de podcast precies een jaar bestaat",
+          "Ze bespreken 6 april als geboortedag van Christus en stichtingsdatum van de kerk",
+          "Koos vertelt voor het eerst openlijk over zijn scheiding",
+          "Raphael vertelt over zijn overleden dochter Vlinder en het coronajaar",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 1 wordt beschreven wat er in Amerika gebeurde op de nacht dat Christus geboren werd. Wat gebeurde er volgens vers 19?",
+        options: [
+          "Die hele nacht was er geen duisternis, maar was het zo licht als op klaarlichte dag",
+          "Er viel juist drie dagen lang duisternis",
+          "Er kwam een grote aardbeving die alle steden verwoestte",
+          "Er werd niets bijzonders beschreven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 1:21 verscheen er ook een nieuwe ster, precies zoals eerder voorzegd was.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waaraan herkende het volk in 3 Nephi 1:19 dat dit de dag was waarop de Heer geboren zou worden?",
+        options: [
+          "Aan het teken dat was gegeven: een hele nacht zonder duisternis, gevolgd door een gewone zonsopgang",
+          "Aan een brief die uit Jeruzalem was aangekomen",
+          "Aan het feit dat alle profeten gelijktijdig verschenen",
+          "Er wordt geen reden gegeven in dit vers",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 1 in de juiste volgorde.",
+        items: [
+          "Bij het ondergaan van de zon was er geen duisternis",
+          "De hele nacht bleef het zo licht als op klaarlichte dag",
+          "De zon kwam de volgende ochtend weer op volgens haar juiste orde",
+          "Er verscheen ook een nieuwe ster, volgens het woord",
+        ],
+      },
+    ],
+  },
 ];
