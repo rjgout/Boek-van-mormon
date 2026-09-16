@@ -7259,4 +7259,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 49,
+    title: "Aflevering 49",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk onderscheid probeert Hans, de gast, in dit tweede deel scherp te krijgen?",
+        options: [
+          "Het verschil tussen een zwakheid (onderdeel van ons leerproces) en een zonde die de relatie met God verstoort",
+          "Het verschil tussen twee muziekstijlen",
+          "Het verschil tussen twee kerkgenootschappen in Nederland",
+          "Het verschil tussen twee soorten gebed",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos gebruikt de vergelijking van een creditcard: elke keer dat je iets doet wat je van God afhoudt komt er een bedrag op te staan, en alleen door geloof in en toewending tot Christus kan dat saldo worden afgeboekt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk persoonlijk verhaal vertelt Hans over Noord-Ierland in de jaren zeventig?",
+        options: [
+          "Dat mensen daar geweld rechtvaardigden met het idee dat het niet uitmaakt wat je doet, zolang je maar in Christus gelooft",
+          "Dat hij daar zijn opleiding tot zendeling volgde",
+          "Dat hij daar een kerk heeft helpen bouwen",
+          "Dat hij daar zijn vrouw heeft ontmoet",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de kern van het antwoord van Koos en Raphael op Hans' vraag over mensen die nooit over Christus hebben kunnen horen?",
+        options: [
+          "Dat iedereen, hier op aarde of anders hierna, de kans zal krijgen om Christus te leren kennen",
+          "Dat die mensen automatisch verloren zijn",
+          "Dat het dan totaal niet uitmaakt of iemand Christus ooit leert kennen",
+          "Dat alleen mensen die in de Bijbelse tijd leefden een kans krijgen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken het verschil tussen een zwakheid en een zonde",
+          "Koos legt de creditcard-vergelijking uit voor zonde en het zoenoffer",
+          "Hans vertelt over Noord-Ierland en het misbruik van geloof om geweld te rechtvaardigen",
+          "Ze bespreken dat iedereen de kans moet krijgen om Christus te leren kennen, ook na dit leven",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt koning Benjamin in Mosiah 3:11 over mensen die gestorven zijn zonder Gods wil te kennen, of die onwetend gezondigd hebben?",
+        options: [
+          "Dat het bloed van Christus ook hun zonden verzoent",
+          "Dat zij automatisch voor eeuwig verloren zijn",
+          "Dat zij nooit een kans zullen krijgen",
+          "Er wordt in dit vers niets over hen gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 3:12 geldt de waarschuwing juist voor wie weet dat hij tegen God opstaat, en voor die persoon is redding alleen mogelijk door bekering en geloof in Christus.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wiens zonden verzoent het bloed van Christus volgens Mosiah 3:11, naast wie wegens de overtreding van Adam gevallen zijn?",
+        options: [
+          "Van hen die onwetend hebben gezondigd, zonder Gods wil aangaande hen te kennen",
+          "Alleen van mensen die in Jeruzalem geboren zijn",
+          "Alleen van mensen die nooit gezondigd hebben",
+          "Er wordt in dit vers niemand anders genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 3:11-12 in de juiste volgorde.",
+        items: [
+          "Zijn bloed verzoent de zonden van hen die wegens Adams overtreding zijn gevallen",
+          "Ook van hen die stierven zonder Gods wil aangaande hen te kennen",
+          "Of die onwetend hebben gezondigd",
+          "Maar wie weet dat hij tegen God opstaat, heeft bekering en geloof in Christus nodig",
+        ],
+      },
+    ],
+  },
 ];
