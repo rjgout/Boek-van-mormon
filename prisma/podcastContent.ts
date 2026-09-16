@@ -2094,4 +2094,93 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 105,
+    title: "Aflevering 105",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke mijlpaal vieren Koos en Raphael in deze aflevering?",
+        options: ["Het tweejarig bestaan van hun podcast", "Hun 500e aflevering", "De start van hun eigen kerkgebouw", "Een prijs voor beste podcast"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie noemt Raphael als hoogtepunt van het afgelopen jaar, die hij persoonlijk mocht ontmoeten?",
+        options: [
+          "Ouderling Renlund, een van de twaalf apostelen",
+          "De profeet van de kerk zelf",
+          "Een bekende Nederlandse acteur",
+          "Zijn eigen overgrootvader",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt dat er tijdens de ringconferentie geen foto's, video of audio-opnames gemaakt mochten worden van de toespraken van de apostel.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk toekomstig doel kondigt Koos aan voor het volgende jaar van de podcast?",
+        options: [
+          "Een crowdfundingactie om samen naar de open dag van de Salt Lake tempel te gaan",
+          "Het stoppen met de podcast",
+          "Het overstappen naar alleen tekstberichten, geen audio meer",
+          "Het verkopen van de podcast aan een groot mediabedrijf",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze vieren het tweejarig bestaan en blikken terug op hun doelen",
+          "Raphael vertelt over zijn ontmoeting met ouderling Renlund",
+          "Ze bespreken hun tempelbezoeken in Rome, Zwitserland en Frankfurt",
+          "Koos kondigt het plan aan om naar de open dag van de Salt Lake tempel te gaan",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Koos verwacht dat bij de wederkomst van Christus \"iedereen het zal zien\". In 3 Nephi 1 wordt een teken beschreven dat door het hele continent werd waargenomen. Welk teken?",
+        options: [
+          "Een hele nacht zonder duisternis, zo licht als op klaarlichte dag",
+          "Een aardbeving die drie dagen duurde",
+          "Een zwerm sprinkhanen die de oogst vernietigde",
+          "Een zonsverduistering die een week duurde",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe reageerden mensen die de profeten niet hadden geloofd, toen dit teken zich voordeed volgens 3 Nephi 1?",
+        options: [
+          "Velen vielen ter aarde als dood, uit angst en besef van hun ongerechtigheid",
+          "Niemand merkte er iets van",
+          "Ze vierden meteen een groot feest",
+          "Ze verlieten per direct het land",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 1 probeerde Satan na dit teken leugens te verspreiden om mensen te laten twijfelen aan wat ze hadden gezien.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit 3 Nephi 1 in de juiste volgorde.",
+        items: [
+          "De zon gaat onder, maar er komt geen duisternis",
+          "Het volk beseft dat de Zoon van God spoedig zal verschijnen",
+          "De volgende ochtend gaat de zon weer normaal op",
+          "Satan verspreidt leugens om het geloof in het teken te ondermijnen",
+        ],
+      },
+    ],
+  },
 ];
