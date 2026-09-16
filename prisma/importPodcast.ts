@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { randomUUID } from "crypto";
 import type { PodcastEpisodeSeed, PodcastComprehensionExercise } from "./podcastContent";
 
 function toAnswersAndOptions(comp: PodcastComprehensionExercise): {
@@ -31,7 +32,13 @@ function toAnswersAndOptions(comp: PodcastComprehensionExercise): {
   };
 }
 
-/** Idempotent: herdraaien overschrijft de oefeningen van dezelfde aflevering. */
+/**
+ * Idempotent: herdraaien overschrijft de oefeningen van dezelfde aflevering.
+ *
+ * Batcht de oefeningen/opties per aflevering met `createMany` in plaats van
+ * één losse insert-aanroep per oefening — zelfde reden en aanpak als
+ * importBooks() in prisma/importContent.ts.
+ */
 export async function importPodcastEpisodes(
   prisma: PrismaClient,
   episodes: PodcastEpisodeSeed[],
@@ -56,38 +63,37 @@ export async function importPodcastEpisodes(
 
     await prisma.podcastExercise.deleteMany({ where: { episodeId: episode.id } });
 
-    let order = 0;
-    for (const comp of seed.content) {
-      const data = toAnswersAndOptions(comp);
-      await prisma.podcastExercise.create({
-        data: {
-          episodeId: episode.id,
-          mode: "CONTENT",
-          order: order++,
-          type: data.type,
-          prompt: data.prompt,
-          answers: JSON.stringify(data.answers),
-          wordBank: data.wordBank ? JSON.stringify(data.wordBank) : undefined,
-          options: data.options ? { create: data.options.map((o, idx) => ({ ...o, order: idx })) } : undefined,
-        },
-      });
-    }
+    const exerciseRows: Prisma.PodcastExerciseCreateManyInput[] = [];
+    const optionRows: Prisma.PodcastExerciseOptionCreateManyInput[] = [];
 
-    order = 0;
-    for (const comp of seed.bomConnection) {
-      const data = toAnswersAndOptions(comp);
-      await prisma.podcastExercise.create({
-        data: {
+    const addExercises = (comps: PodcastComprehensionExercise[], mode: "CONTENT" | "BOM_CONNECTION") => {
+      comps.forEach((comp, order) => {
+        const data = toAnswersAndOptions(comp);
+        const exerciseId = randomUUID();
+        exerciseRows.push({
+          id: exerciseId,
           episodeId: episode.id,
-          mode: "BOM_CONNECTION",
-          order: order++,
+          mode,
+          order,
           type: data.type,
           prompt: data.prompt,
           answers: JSON.stringify(data.answers),
           wordBank: data.wordBank ? JSON.stringify(data.wordBank) : undefined,
-          options: data.options ? { create: data.options.map((o, idx) => ({ ...o, order: idx })) } : undefined,
-        },
+        });
+        data.options?.forEach((o, idx) => {
+          optionRows.push({ id: randomUUID(), exerciseId, label: o.label, isCorrect: o.isCorrect, order: idx });
+        });
       });
+    };
+
+    addExercises(seed.content, "CONTENT");
+    addExercises(seed.bomConnection, "BOM_CONNECTION");
+
+    if (exerciseRows.length > 0) {
+      await prisma.podcastExercise.createMany({ data: exerciseRows });
+    }
+    if (optionRows.length > 0) {
+      await prisma.podcastExerciseOption.createMany({ data: optionRows });
     }
 
     log(`  - Aflevering ${seed.number}: ${seed.content.length} + ${seed.bomConnection.length} oefeningen`);

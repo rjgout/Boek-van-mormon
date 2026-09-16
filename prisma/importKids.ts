@@ -1,4 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
+import { randomUUID } from "crypto";
 import {
   generateFillBlank,
   generateWordBank,
@@ -61,7 +62,10 @@ export async function importKidsStories(
     const sentences = splitSentences(seed.text).slice(0, MAX_TEXT_EXERCISES_PER_STORY);
     const distractorPool = buildDistractorPool(sentences);
 
+    const exerciseRows: Prisma.KidsExerciseCreateManyInput[] = [];
+    const optionRows: Prisma.KidsExerciseOptionCreateManyInput[] = [];
     let order = 0;
+
     for (let s = 0; s < sentences.length; s++) {
       const sentence = sentences[s];
       const verseRef = `Verhaal ${seed.number}`;
@@ -75,18 +79,24 @@ export async function importKidsStories(
       }
       if (!generated) continue;
 
-      await prisma.kidsExercise.create({
-        data: {
-          storyId: story.id,
-          order: order++,
-          type: generated.type,
-          prompt: generated.prompt,
-          answers: JSON.stringify(generated.answers),
-          wordBank: generated.wordBank ? JSON.stringify(generated.wordBank) : undefined,
-          options: generated.options
-            ? { create: generated.options.map((label, idx) => ({ label, isCorrect: generated!.answers.includes(label.toLowerCase()), order: idx })) }
-            : undefined,
-        },
+      const exerciseId = randomUUID();
+      exerciseRows.push({
+        id: exerciseId,
+        storyId: story.id,
+        order: order++,
+        type: generated.type,
+        prompt: generated.prompt,
+        answers: JSON.stringify(generated.answers),
+        wordBank: generated.wordBank ? JSON.stringify(generated.wordBank) : undefined,
+      });
+      generated.options?.forEach((label, idx) => {
+        optionRows.push({
+          id: randomUUID(),
+          exerciseId,
+          label,
+          isCorrect: generated!.answers.includes(label.toLowerCase()),
+          order: idx,
+        });
       });
     }
 
@@ -99,23 +109,32 @@ export async function importKidsStories(
       const distractors = shuffleWithSeed(otherImages, seed.number).slice(0, 3);
       const imageOptions = shuffleWithSeed([correctImage, ...distractors], seed.number + 11);
 
-      await prisma.kidsExercise.create({
-        data: {
-          storyId: story.id,
-          order: order++,
-          type: "IMAGE_CHOICE",
-          prompt: `Welke afbeelding hoort bij het verhaal "${seed.title}"?`,
-          answers: JSON.stringify([correctImage.toLowerCase()]),
-          options: {
-            create: imageOptions.map((url, idx) => ({
-              label: url,
-              imageUrl: url,
-              isCorrect: url === correctImage,
-              order: idx,
-            })),
-          },
-        },
+      const exerciseId = randomUUID();
+      exerciseRows.push({
+        id: exerciseId,
+        storyId: story.id,
+        order: order++,
+        type: "IMAGE_CHOICE",
+        prompt: `Welke afbeelding hoort bij het verhaal "${seed.title}"?`,
+        answers: JSON.stringify([correctImage.toLowerCase()]),
       });
+      imageOptions.forEach((url, idx) => {
+        optionRows.push({
+          id: randomUUID(),
+          exerciseId,
+          label: url,
+          imageUrl: url,
+          isCorrect: url === correctImage,
+          order: idx,
+        });
+      });
+    }
+
+    if (exerciseRows.length > 0) {
+      await prisma.kidsExercise.createMany({ data: exerciseRows });
+    }
+    if (optionRows.length > 0) {
+      await prisma.kidsExerciseOption.createMany({ data: optionRows });
     }
 
     log(`  - Verhaal ${seed.number} (${seed.title}): ${order} oefeningen`);
