@@ -3311,4 +3311,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 92,
+    title: "Aflevering 92",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vier stappen noemen Koos en Raphael als basis van het evangelie, voordat het \"volharden tot het einde\" begint?",
+        options: [
+          "Geloof, bekering, doop en de gave van de Heilige Geest",
+          "Geloof, hoop, naastenliefde en nederigheid",
+          "Doop, tempelbezoek, tiende betalen en vasten",
+          "Gebed, schriftstudie, tempelbezoek en dienstbetoon",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt het verhaal van Paulus, die eerst christenen vervolgde voordat hij zich op de weg naar Damascus tot Christus bekeerde.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe verklaart Koos dat God bij sommige mensen, zoals Paulus of Alma de Jongere, lijkt in te grijpen in hun keuzevrijheid?",
+        options: [
+          "Omdat zij in het voorsterfelijk leven al geordend waren voor een belangrijke rol die zij moesten vervullen",
+          "Omdat God willekeurig bepaalde mensen uitkiest zonder enige reden",
+          "Omdat zij daar zelf specifiek om gevraagd hadden",
+          "Omdat hun ouders daarvoor hadden betaald",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke game gebruikt Raphael als beeld voor hoe God zegeningen soms juist aan wie \"achteraan\" ligt geeft, zoals bij Paulus?",
+        options: [
+          "Mario Kart, waarbij je een krachtige kogel alleen krijgt als je ver achteraan rijdt",
+          "Schaken, waarbij de koningin de sterkste stukken heeft",
+          "Voetbal, waarbij de aanvoerder altijd wint",
+          "Monopoly, waarbij je met dobbelstenen speelt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de vier stappen van geloof, bekering, doop en de Heilige Geest",
+          "Ze bespreken de verwarring rond de geest van Christus en de drie personen van de Godheid",
+          "Koos vertelt over de bekering van Paulus en Alma de Jongere",
+          "Raphael gebruikt het Mario Kart-voorbeeld om oneerlijk lijkende zegeningen te verklaren",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 27 legt Christus zijn evangelie uit aan zijn discipelen in Amerika. Wat gebeurt er met wie zich bekeert, laat dopen en tot het einde volhardt?",
+        options: [
+          "Christus zal hem onschuldig houden voor het aangezicht van de Vader op de dag van het oordeel",
+          "Hij moet zich daarna nog een tweede keer laten dopen",
+          "Hij hoeft zich daarna nergens meer aan te houden",
+          "Hij wordt meteen een engel zonder verdere ontwikkeling",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 27:17 wordt wie niet tot het einde volhardt, omgehakt en in het vuur geworpen, wegens de gerechtigheid van de Vader.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Christus in 3 Nephi 27:13 als de kern van zijn evangelie?",
+        options: [
+          "Dat Hij in de wereld is gekomen om de wil van zijn Vader te doen, die Hem gezonden heeft",
+          "Dat Hij alleen gekomen is om wonderen te verrichten",
+          "Dat Hij vooral gekomen is om de wet van Mozes te herbevestigen",
+          "Dat Hij gekomen is om een nieuw volk te stichten los van Israël",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 27 in de juiste volgorde.",
+        items: [
+          "Christus legt uit dat Hij gekomen is om de wil van zijn Vader te doen",
+          "Wie zich bekeert en laat dopen en tot het einde volhardt, wordt onschuldig gehouden",
+          "Wie niet tot het einde volhardt, wordt omgehakt en in het vuur geworpen",
+          "Niets onreins kan zijn koninkrijk ingaan, behalve wie getrouw is tot het einde",
+        ],
+      },
+    ],
+  },
 ];
