@@ -5003,4 +5003,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 74,
+    title: "Aflevering 74",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk onderwerp staat centraal in deze aflevering, naar aanleiding van een vraag over de juiste vorm van dopen?",
+        options: [
+          "Of de doop door onderdompeling moet gebeuren, en waarom dat zo belangrijk is",
+          "Of je meerdere keren gedoopt mag worden voor de lol",
+          "Welke kleur kleding je bij een doop moet dragen",
+          "Op welke dag van de week een doop moet plaatsvinden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat de manier van dopen bekend is doordat Christus dit via openbaring aan zijn profeten heeft bekendgemaakt, en niet iets is wat mensen zelf mogen bepalen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over plaatsvervangende doop (doop voor de doden)?",
+        options: [
+          "Dat je namens een overledene wordt ondergedompeld, met bijna hetzelfde doopgebed, zodat ook zij van dat verbond gebruik kunnen maken",
+          "Dat het helemaal geen onderdompeling vereist",
+          "Dat het alleen voor levende mensen bedoeld is",
+          "Dat het nooit in de kerk wordt gepraktiseerd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover raken Koos en Raphael in de war aan het einde van de aflevering?",
+        options: [
+          "Of kinderen onder de acht jaar, die nog niet gedoopt kunnen worden, wel of niet zonde kunnen begaan",
+          "Of de doop wel echt door Christus is ingesteld",
+          "Of het avondmaal ouder is dan de doop",
+          "Of profeten wel echt openbaring ontvangen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de doop door onderdompeling en waar die vandaan komt",
+          "Ze bespreken het avondmaalsgebed en het verbond van de doop",
+          "Raphael legt uit hoe plaatsvervangende doop voor overledenen werkt",
+          "Ze raken in discussie over de doopleeftijd van acht jaar en zonde bij jonge kinderen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 11 leert Christus zijn discipelen in Amerika precies hoe zij moeten dopen. Wat moeten zij doen volgens vers 23?",
+        options: [
+          "In het water afdalen en de persoon in zijn naam dopen",
+          "Alleen water over het hoofd van de persoon sprenkelen",
+          "De persoon met olie zalven in plaats van water te gebruiken",
+          "Helemaal geen water gebruiken, alleen een gebed uitspreken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 11:26 moeten zij de persoon in het water onderdompelen en weer uit het water laten komen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke exacte woorden geeft Christus in 3 Nephi 11:25 voor het doopgebed?",
+        options: [
+          "Met het gezag mij door Jezus Christus verleend, doop ik u in de naam van de Vader, de Zoon en de Heilige Geest",
+          "In naam van de kerk doop ik u tot vergeving van al uw schulden",
+          "Er wordt geen enkele specifieke tekst gegeven",
+          "Een gebed volledig in het Hebreeuws",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze instructies van Christus uit 3 Nephi 11 in de juiste volgorde.",
+        items: [
+          "Wie zich bekeert en zich wil laten dopen, zult gij in het water afdalen en dopen",
+          "Gij zult de exacte woorden van het doopgebed uitspreken",
+          "Gij zult hen in het water onderdompelen",
+          "Gij zult hen wederom uit het water laten komen",
+        ],
+      },
+    ],
+  },
 ];
