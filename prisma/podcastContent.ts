@@ -1827,4 +1827,88 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 108,
+    title: "Aflevering 108",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie is de gast in deze aflevering, een voormalig directeur/collega van Raphael?",
+        options: ["Erik van 't Hoff", "David en Kevin", "Lisette en Sheila", "Ouderling Renlund"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk begrip had Erik, opgegroeid in een ander kerkgenootschap, nog nooit eerder gehoord?",
+        options: [
+          "Het celestiale koninkrijk (en de andere graden van heerlijkheid)",
+          "De doop",
+          "Het gebed",
+          "Kerstmis",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Erik vertelt dat hij, na veel nadenken over ingewikkelde theologische details, steeds meer teruggrijpt naar de twee grote geboden: God liefhebben en je naaste liefhebben.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoeveel jaar zaten er volgens Koos ongeveer tussen de laatste profeet in het Boek van Mormon en het eerste visioen van Joseph Smith?",
+        options: ["Ongeveer 1400 jaar", "Ongeveer 100 jaar", "Ongeveer 50 jaar", "Ongeveer 3000 jaar"],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Erik stelt zich voor en vertelt hoe hij Raphael kent",
+          "Ze bespreken de graden van heerlijkheid en de Godheid",
+          "Ze bespreken veranderingen die Erik in zijn eigen kerk heeft meegemaakt",
+          "Ze bespreken het idee van een herstelde kerk via Joseph Smith",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 11 verschijnt Christus aan het volk op het Amerikaanse continent. Wat zegt de stem van de Vader vlak voordat Christus neerdaalt?",
+        options: [
+          "Ziet mijn geliefde Zoon, in wie Ik mijn welbehagen heb; luistert naar Hem",
+          "Vernietig deze stad, want zij is goddeloos",
+          "Keer terug naar Jeruzalem",
+          "Bouw hier een tempel",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe stelt Christus zichzelf voor aan het volk in 3 Nephi 11?",
+        options: [
+          "Ik ben Jezus Christus, die volgens het getuigenis der profeten in de wereld zou komen",
+          "Ik ben een engel, gezonden om jullie te waarschuwen",
+          "Ik ben Mozes, teruggekeerd om de wet te herhalen",
+          "Ik ben een van de twaalf apostelen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 11 daalde Christus neer, gekleed in een wit gewaad, en stond Hij in het midden van het volk.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit 3 Nephi 11 in de juiste volgorde.",
+        items: [
+          "Het volk hoort een stem uit de hemel die zij eerst niet begrijpen",
+          "De stem van de Vader zegt: luistert naar Hem",
+          "Zij zien een Man in een wit gewaad uit de hemel neerdalen",
+          "Hij stelt zich voor als Jezus Christus",
+        ],
+      },
+    ],
+  },
 ];
