@@ -13,28 +13,45 @@
 #      je de oude map op de NAS opruimt.
 #
 # Gebruik (nieuwe installatie):
-#   1. Vervang hieronder elke *_PASSWORD/SESSION_SECRET-placeholder door je
-#      eigen waarde (zoek ze op met Ctrl+F — sommige komen op 2-3 plekken
-#      voor en moeten daar allemaal hetzelfde zijn).
+#   1. Vervang hieronder elke *_PASSWORD/SECRET-placeholder door je eigen
+#      waarde (zoek ze op met Ctrl+F — sommige komen op 2-3 plekken voor en
+#      moeten daar allemaal hetzelfde zijn).
 #   2. Plak dit in Portainer: Stacks -> Add stack -> Web editor -> plak ->
 #      Deploy the stack.
-#   3. Wijs je eigen reverse proxy / Cloudflare Tunnel naar poort 3000 van je
-#      NAS (of naar de container "jehova-app" als je 'm op hetzelfde
-#      Docker-netwerk aansluit).
+#   3. Wijs je eigen reverse proxy / Cloudflare Tunnel naar de poort die je
+#      hieronder bij "jehova-proxy" instelt (niet meer rechtstreeks naar
+#      jehova-app — zie de toelichting daar).
 #
-# Updates: geen automatische updater (Watchtower) — na een nieuwe push naar
-# main haal je 'm zelf op in Portainer via Stacks -> jehova-app -> Pull and
-# redeploy.
-#
-# Zie docs/DEPLOY-SYNOLOGY.md voor de volledige toelichting.
+# Updates: zie docs/DEPLOY-SYNOLOGY.md voor de aanbevolen weg (de
+# "Deployen"-knop in /adminbackend, met onderhoudspagina + automatische
+# rollback bij een mislukte update). Portainer's eigen "Pull and redeploy"
+# blijft ook werken, maar zonder die onderhoudsgate.
 
 services:
+  # Enige onderdeel dat van buitenaf (via je Cloudflare Tunnel) bereikbaar
+  # is. Blijft altijd actief, ook terwijl jehova-app hieronder ververst
+  # wordt — daardoor ziet Cloudflare nooit een dichte poort/foutpagina
+  # tijdens een update. Zie docs/DEPLOY-SYNOLOGY.md.
+  jehova-proxy:
+    image: ghcr.io/rjgout/jehova-proxy:latest
+    container_name: jehova-proxy
+    restart: unless-stopped
+    ports:
+      # Pas de "2402" hier aan naar de poort die je Cloudflare Tunnel al
+      # gebruikt (dit was voorheen rechtstreeks op jehova-app gepubliceerd).
+      - "2402:80"
+    depends_on:
+      - jehova-app
+    volumes:
+      - maintenance_flag:/flag:ro
+
   jehova-app:
     image: ghcr.io/rjgout/jehova-app:latest
     container_name: jehova-app
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    # Bewust GEEN "ports" meer hier: jehova-proxy hierboven is nu het enige
+    # dat van buitenaf bereikbaar is; jehova-app is alleen nog intern op het
+    # Docker-netwerk bereikbaar (als "jehova-app:3000").
     environment:
       # De gebruiker/database heten bewust nog "bom" — zie de migratienotitie
       # bovenaan dit bestand voor waarom dat niet hoeft te veranderen.
@@ -51,6 +68,10 @@ services:
       # vanzelf het juiste adres krijgen (zie .env.example). SMTP-instellingen
       # zelf stel je in via /adminbackend in de app, niet hier.
       # APP_URL: "https://jehova.jouwdomein.nl"
+      # Voor het "Nu deployen"/"Onderhoudsmodus"/"Rollback"-paneel in
+      # /adminbackend — zelfde geheim als hieronder bij jehova-deploy.
+      DEPLOY_AGENT_URL: "http://jehova-deploy:4000"
+      DEPLOY_AGENT_TOKEN: CHANGE_THIS_TO_A_DIFFERENT_LONG_RANDOM_STRING
     depends_on:
       jehova-db:
         condition: service_healthy
@@ -62,6 +83,26 @@ services:
       timeout: 5s
       start_period: 20s
       retries: 3
+
+  # Voert namens /adminbackend de daadwerkelijke deploy-pijplijn uit (pullen,
+  # jehova-app vervangen, healthcheck, evt. terugrollen). Heeft daarvoor
+  # toegang tot de Docker-daemon nodig (de gemounte socket hieronder) — dus
+  # geen host-poort, alleen intern bereikbaar, en elk verzoek moet
+  # AGENT_TOKEN meesturen. Zie deploy/agent/server.js en
+  # docs/DEPLOY-SYNOLOGY.md voor de precieze werking en de afwegingen
+  # hierbij.
+  jehova-deploy:
+    image: ghcr.io/rjgout/jehova-deploy-agent:latest
+    container_name: jehova-deploy
+    restart: unless-stopped
+    environment:
+      AGENT_TOKEN: CHANGE_THIS_TO_A_DIFFERENT_LONG_RANDOM_STRING
+      APP_CONTAINER_NAME: jehova-app
+      APP_IMAGE: ghcr.io/rjgout/jehova-app:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - maintenance_flag:/flag
+      - deploy_state:/state
 
   jehova-db:
     image: postgres:16-alpine
@@ -89,3 +130,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  # Bestandsvlag (aan/uit) waarmee jehova-proxy bepaalt of bezoekers de app
+  # of de onderhoudspagina zien; alleen jehova-deploy schrijft erin.
+  maintenance_flag:
+  # Onthoudt welke image-versie voor het laatst gezond bevestigd is, voor
+  # een handmatige rollback los van een mislukte deploy.
+  deploy_state:

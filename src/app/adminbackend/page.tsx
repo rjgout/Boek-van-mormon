@@ -14,6 +14,8 @@ import AdminGameSettingsClient from "@/components/AdminGameSettingsClient";
 import AdminCoursesClient from "@/components/AdminCoursesClient";
 import AdminBrandingClient from "@/components/AdminBrandingClient";
 import AdminLeagueSettingsClient from "@/components/AdminLeagueSettingsClient";
+import AdminDeployClient from "@/components/AdminDeployClient";
+import { isDeployAgentConfigured } from "@/lib/deployAgent";
 
 export default async function AdminBackendPage() {
   const user = await getCurrentUser();
@@ -58,6 +60,8 @@ export default async function AdminBackendPage() {
         <StatCard label="Hoofdstukken" value={chapterCount} />
         <StatCard label="Oefeningen" value={exerciseCount} />
       </div>
+
+      <AdminDeployClient configured={isDeployAgentConfigured()} />
 
       <ReseedClient />
 

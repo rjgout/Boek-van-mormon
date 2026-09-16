@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Even geduld… — Jehova</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #eef6ff;
+    --card: #ffffff;
+    --text: #0c3a69;
+    --muted: #4a6b8a;
+    --accent: #2e86f5;
+    --gold: #f6b93b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a2e54;
+      --card: #0f2e4d;
+      --text: #eef6ff;
+      --muted: #a9c6e6;
+      --accent: #4fa3f7;
+      --gold: #f8cd6c;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 24px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(10, 46, 84, 0.12);
+  }
+  .icon {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    margin: 12px 0 8px;
+  }
+  p {
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0 0 8px;
+  }
+  .dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 20px 4px 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: bounce 1.2s infinite ease-in-out;
+  }
+  .dots span:nth-child(2) { animation-delay: 0.15s; background: var(--gold); }
+  .dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dots span { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="card" role="status" aria-live="polite">
+    <div class="icon" aria-hidden="true">📖</div>
+    <h1>Even geduld…</h1>
+    <p>We zijn bezig met een korte update van de website.</p>
+    <p>De website is zo weer beschikbaar — deze pagina ververst vanzelf.</p>
+    <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </main>
+  <script>
+    // Probeert zelf periodiek of de app alweer terug is, zodat niemand
+    // handmatig hoeft te verversen. Geen afhankelijkheid van de app zelf:
+    // dit bestand staat volledig los, en zonder JavaScript blijft gewoon de
+    // statische tekst hierboven zichtbaar.
+    (function poll() {
+      setInterval(function () {
+        fetch(location.href, { method: "GET", cache: "no-store" })
+          .then(function (res) {
+            // De proxy geeft 503 terug zolang onderhoud aan staat (zie
+            // nginx.conf); alles anders dan dat betekent dat de app er weer is.
+            if (res.status !== 503) location.reload();
+          })
+          .catch(function () {
+            // Nog niet bereikbaar — gewoon nog eens proberen bij de volgende tik.
+          });
+      }, 5000);
+    })();
+  </script>
+</body>
+</html>

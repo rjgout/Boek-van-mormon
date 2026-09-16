@@ -244,8 +244,11 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 ## Zelf hosten op een Synology NAS (Docker + Cloudflare Tunnel)
 
 Zie [`docs/DEPLOY-SYNOLOGY.md`](docs/DEPLOY-SYNOLOGY.md) voor een volledig
-uitgewerkt voorbeeld: een Docker-image die via GitHub Actions automatisch
-gebouwd en gepubliceerd wordt zodra je naar `main` pusht, en die je met één
-klik in Portainer ophaalt en herstart — plus hoe je 'm onder je eigen domein
-achter een Cloudflare Tunnel zet. Dezelfde aanpak werkt met kleine
-aanpassingen op elke andere Docker-host.
+uitgewerkt voorbeeld: Docker-images die via GitHub Actions automatisch
+gebouwd en gepubliceerd worden zodra je naar `main` pusht, hoe je 'm onder
+je eigen domein achter een Cloudflare Tunnel zet, en een "Deployen &
+onderhoudsmodus"-paneel in `/adminbackend` waarmee je met één klik update:
+bezoekers zien tijdens het updaten een nette onderhoudspagina in plaats van
+een foutmelding, en een nieuwe versie die de gezondheidscontrole niet haalt
+wordt automatisch teruggedraaid naar de vorige, werkende versie. Dezelfde
+aanpak werkt met kleine aanpassingen op elke andere Docker-host.

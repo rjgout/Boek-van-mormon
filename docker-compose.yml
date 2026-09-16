@@ -8,11 +8,37 @@
 # voor poort 3000 als je de app publiek bereikbaar wil maken onder je eigen
 # domein — deze compose-file is daar bewust neutraal in.
 #
+# jehova-proxy hieronder is een lichte, altijd-actieve nginx die tussen die
+# reverse proxy en jehova-app in staat, en tijdens een herstart van
+# jehova-app (bv. na een `docker compose up -d --build`) een nette
+# onderhoudspagina toont in plaats van een verbroken verbinding — zie
+# deploy/nginx/ en docs/DEPLOY-SYNOLOGY.md. Onderhoudsmodus zet je hier
+# handmatig aan/uit met de kanttekening hieronder; het volledige
+# geautomatiseerde "pull -> healthcheck -> wisselen/rollback"-paneel in
+# /adminbackend is (nog) specifiek voor de vooraf-gebouwde-images-opzet in
+# deploy/docker-compose.yml, omdat het uitgaat van een uit een registry te
+# pullen image in plaats van een lokale build.
+#
+# Onderhoudsmodus handmatig:
+#   aan:  docker compose exec jehova-proxy touch /flag/maintenance.on
+#   uit:  docker compose exec jehova-proxy rm -f /flag/maintenance.on
+#
 # Voor het specifieke geval van een Synology NAS + Portainer (met een
 # vooraf gebouwde image i.p.v. lokaal bouwen) zie deploy/docker-compose.yml
 # en docs/DEPLOY-SYNOLOGY.md.
 
 services:
+  jehova-proxy:
+    build: ./deploy/nginx
+    container_name: jehova-proxy
+    restart: unless-stopped
+    depends_on:
+      - jehova-app
+    ports:
+      - "${PORT:-3000}:80"
+    volumes:
+      - maintenance_flag:/flag
+
   jehova-app:
     build: .
     container_name: jehova-app
@@ -34,8 +60,9 @@ services:
       # veilig om te wijzigen.
       DATABASE_URL: "postgresql://${POSTGRES_USER:-bom}:${POSTGRES_PASSWORD:?Zet POSTGRES_PASSWORD in .env}@jehova-db:5432/${POSTGRES_DB:-bom}?schema=public"
       REDIS_URL: "redis://:${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}@jehova-redis:6379"
-    ports:
-      - "${PORT:-3000}:3000"
+    # Bewust GEEN "ports" meer hier: jehova-proxy hierboven is nu het enige
+    # dat van buitenaf bereikbaar is; jehova-app is alleen nog intern op het
+    # Docker-netwerk bereikbaar (als "jehova-app:3000").
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:'+(process.env.PORT||3000)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 30s
@@ -85,3 +112,6 @@ volumes:
   # alpine sh -c "cp -a /from/. /to/"` met beide containers gestopt) vóórdat
   # je deze compose-file met de nieuwe naam opnieuw opstart.
   jehova_db_data:
+  # Bestandsvlag waarmee jehova-proxy bepaalt of bezoekers de app of de
+  # onderhoudspagina zien (zie de toelichting bovenaan dit bestand).
+  maintenance_flag:

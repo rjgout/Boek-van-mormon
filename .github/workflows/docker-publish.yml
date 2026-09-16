@@ -13,6 +13,20 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          # jehova-proxy en jehova-deploy-agent horen bij de maintenance-mode
+          # deployopzet (zie docs/DEPLOY-SYNOLOGY.md) — samen met jehova-app
+          # als vooraf gebouwde images op ghcr.io, zodat Portainer's
+          # Web-editor-stacks (die geen buildcontext hebben) ze net als
+          # jehova-app zelf gewoon kunnen pullen.
+          - name: jehova-app
+            context: .
+          - name: jehova-proxy
+            context: ./deploy/nginx
+          - name: jehova-deploy-agent
+            context: ./deploy/agent
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +44,7 @@ jobs:
 
       - name: Bepaal image-naam (ghcr.io vereist kleine letters)
         id: image
-        run: echo "name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/jehova-app" >> "$GITHUB_OUTPUT"
+        run: echo "name=ghcr.io/$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')/${{ matrix.name }}" >> "$GITHUB_OUTPUT"
 
       - name: Extract metadata
         id: meta
@@ -44,9 +58,9 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ${{ matrix.context }}
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
