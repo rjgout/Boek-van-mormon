@@ -60,7 +60,7 @@ praktijk toegepast wordt.
 
 | Container | Rol | Persistent? |
 |---|---|---|
-| `jehova-game` | Next.js-app + API + Socket.io-server (`server.ts`) | Nee, stateless |
+| `jehova-app` | Next.js-app + API + Socket.io-server (`server.ts`) | Nee, stateless |
 | `jehova-db` | PostgreSQL — alle gebruikersdata | Ja (`jehova_db_data`) |
 | `jehova-redis` | Socket.io-adapter voor live-quiz | Nee, ephemeral |
 

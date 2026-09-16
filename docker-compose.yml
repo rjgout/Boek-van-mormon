@@ -13,9 +13,9 @@
 # en docs/DEPLOY-SYNOLOGY.md.
 
 services:
-  jehova-game:
+  jehova-app:
     build: .
-    container_name: jehova-game
+    container_name: jehova-app
     restart: unless-stopped
     depends_on:
       jehova-db:
@@ -74,7 +74,7 @@ services:
 
 volumes:
   # Persistente data (gebruikers, voortgang, XP, streaks, freezes, vrienden,
-  # competitie, spelresultaten, content) staat hier — NIET in de jehova-game
+  # competitie, spelresultaten, content) staat hier — NIET in de jehova-app
   # container. Een container verwijderen en opnieuw starten (zonder deze
   # volume te verwijderen) laat alle data intact.
   #
