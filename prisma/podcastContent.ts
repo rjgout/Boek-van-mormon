@@ -5285,4 +5285,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 71,
+    title: "Aflevering 71",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat had Koos net gelezen over het ontstaan van de Bijbel?",
+        options: [
+          "Dat de evangeliën pas decennia na Christus zijn opgeschreven en dat er keuzes zijn gemaakt over wat er wel en niet in kwam",
+          "Dat de hele Bijbel binnen één jaar na Christus is geschreven",
+          "Dat er geen enkele keuze is gemaakt over de inhoud",
+          "Dat de Bijbel volledig door één enkele auteur is geschreven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt dat het avondmaalsgebed vroeger woord voor woord foutloos moest worden opgezegd, anders werd het opnieuw gedaan, terwijl de exacte vertaling van dat gebed later toch is gewijzigd.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld van een veranderde kerkregel noemt Koos, over kleding tijdens jeugdkampen?",
+        options: [
+          "Dat vroeger strikte kledingregels golden met lange mouwen en rokken over de knie, wat nu is losgelaten",
+          "Dat er nu juist strengere kledingregels gelden dan vroeger",
+          "Dat kledingregels nooit zijn veranderd",
+          "Dat kleding tegenwoordig verplicht wit moet zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom benadrukken Koos en Raphael het belang van een levende profeet naast de geschreven schriften?",
+        options: [
+          "Omdat vertalingen en praktijken door de tijd heen kunnen veranderen, maar een profeet actuele duiding kan geven",
+          "Omdat de geschreven schriften eigenlijk niet meer nodig zijn",
+          "Omdat een profeet nooit een vergissing kan maken bij het interpreteren",
+          "Omdat schriften alleen bedoeld zijn voor historisch onderzoek",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt over wat hij las over het ontstaan van de Bijbel",
+          "Ze bespreken de veranderde vertaling van het doop- en avondmaalsgebed",
+          "Koos noemt voorbeelden van veranderde kerkregels, zoals kledingvoorschriften",
+          "Ze benadrukken het belang van persoonlijke openbaring naast die van de profeet",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 4 en 5 staan de exacte woorden van het avondmaalsgebed opgetekend, zoals die door Christus zijn ingesteld. Aan wie wordt in dit gebed gevraagd het brood te zegenen?",
+        options: [
+          "God, de eeuwige Vader, in de naam van zijn Zoon Jezus Christus",
+          "Alleen de plaatselijke priester zelf",
+          "De gemeente als geheel, zonder gebed",
+          "Niemand, het gebed wordt niet tot iemand gericht",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 4:3 betuigen zij die van het brood nemen daarmee dat zij gewillig zijn de naam van Christus op zich te nemen en Hem altijd indachtig te zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is het doel, volgens Moroni 4:3, van het onderhouden van Christus' geboden na het nemen van het brood?",
+        options: [
+          "Opdat zij zijn Geest altijd bij zich mogen hebben",
+          "Opdat zij nooit meer hoeven te bidden",
+          "Opdat zij automatisch rijk worden",
+          "Opdat zij een hogere positie in de kerk krijgen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderdelen van het avondmaalsgebed uit Moroni 4-5 in de juiste volgorde.",
+        items: [
+          "De ouderling of priester knielt met de kerk neer en bidt tot de Vader",
+          "Hij vraagt God het brood te zegenen en te heiligen voor de zielen van allen die ervan nemen",
+          "Zij betuigen gewillig te zijn de naam van Christus op zich te nemen",
+          "Op dezelfde wijze wordt ook de beker met wijn gezegend, ter gedachtenis van zijn bloed",
+        ],
+      },
+    ],
+  },
 ];
