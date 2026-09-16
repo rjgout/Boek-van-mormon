@@ -3781,4 +3781,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 87,
+    title: "Aflevering 87",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke disclaimer benadrukken Koos en Raphael aan het begin van deze aflevering?",
+        options: [
+          "Dat zij niet namens de kerk spreken, ook al zijn zij er lid van",
+          "Dat de podcast officieel wordt gesponsord door de kerk",
+          "Dat zij vanaf nu alleen nog Engels gaan spreken",
+          "Dat zij stoppen met de podcast",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt over Joseph Smith en de bouw van de Kirtland-tempel, en ziet daarin een bewijs dat Joseph Smith een profeet was, ondanks dat hij ook fouten maakte.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke gelijkenis vindt Koos moeilijk te begrijpen, waarbij vijf van de tien jonkvrouwen buitengesloten worden?",
+        options: [
+          "De gelijkenis van de tien jonkvrouwen met hun olielampen",
+          "De gelijkenis van de verloren zoon",
+          "De gelijkenis van de barmhartige Samaritaan",
+          "De gelijkenis van het mosterdzaadje",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld gebruiken Koos en Raphael om te laten zien dat zelfs dezelfde waarheid op een misleidende manier verteld kan worden, zoals Satan soms doet?",
+        options: [
+          "Dat Satan tegen Mozes zei dat hij een mensenzoon is, vlak nadat God hem had verteld dat hij Gods zoon is",
+          "Dat Satan altijd volledig liegt, zonder ooit een waar woord te spreken",
+          "Dat Satan nooit met profeten spreekt",
+          "Dat Satan alleen in dromen verschijnt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze herhalen hun disclaimer dat ze niet namens de kerk spreken",
+          "Ze bespreken of een profeet fouten en zonden kan maken",
+          "Koos vertelt over Joseph Smith en de bouw van de Kirtland-tempel",
+          "Ze bespreken hun favoriete gelijkenissen en waarom Christus in gelijkenissen sprak",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Ether 4 belooft Christus dat wie zijn woorden gelooft, bezocht zal worden met openbaringen van zijn Geest. Wat zal die persoon dan doen, volgens vers 11?",
+        options: [
+          "Hij zal weten en getuigen, want door de Geest zal hij weten dat deze dingen waar zijn",
+          "Hij zal meteen alle antwoorden op elke vraag krijgen",
+          "Hij hoeft daarna nooit meer te bidden",
+          "Hij zal onmiddellijk profeet worden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Ether 4:12 komt alles wat mensen ertoe beweegt het goede te doen, van Christus, want het goede komt van niemand anders dan van Hem.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe noemt Christus zichzelf in Ether 4:12?",
+        options: [
+          "Het licht en het leven en de waarheid der wereld",
+          "Alleen een boodschapper van de Vader, zonder eigen gezag",
+          "Een gewone profeet zoals andere profeten",
+          "Een engel die de Vader dient",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Ether 4 in de juiste volgorde.",
+        items: [
+          "Wie de woorden van Christus gelooft, zal Hij bezoeken met openbaringen van zijn Geest",
+          "Door die Geest zal hij weten dat de dingen waar zijn",
+          "Alles wat mensen tot het goede beweegt, komt van Christus",
+          "Christus nodigt de andere volken uit om tot Hem te komen voor grotere kennis",
+        ],
+      },
+    ],
+  },
 ];
