@@ -2,6 +2,7 @@ import bomWords from "../../prisma/bomWords.json";
 import { amsterdamNow } from "@/lib/dates";
 import { prisma } from "@/lib/db";
 import { completeWordGame } from "@/lib/streak";
+import { findVersesContainingWord, type VerseMatch } from "@/lib/dictionary";
 
 export const WORD_LENGTH = 5;
 export const MAX_GUESSES = 6;
@@ -102,56 +103,6 @@ export function xpForWin(guessesUsed: number): number {
   return 25 + 5 * (MAX_GUESSES - guessesUsed);
 }
 
-export interface WordGameVerseMatch {
-  bookName: string;
-  chapterNumber: number;
-  verseNumber: number;
-  text: string;
-}
-
-// Haalt het diakriet-vrije woord terug in de brontekst: dezelfde extractie
-// (regex + NFD-normaliseren + diakritische tekens strippen + kleine
-// letters) als waarmee prisma/bomWords.json zelf is opgebouwd, zodat een
-// woord uit die lijst hier gegarandeerd ook weer teruggevonden wordt —
-// ongeacht hoofdletters aan het begin van een zin of eventuele accenten in
-// de brontekst.
-const COMBINING_DIACRITICS = new RegExp("[\\u0300-\\u036f]", "g");
-
-function normalizeToken(s: string): string {
-  return s.normalize("NFD").replace(COMBINING_DIACRITICS, "").toLowerCase();
-}
-
-/**
- * Alle verzen waar een bepaald woord (heel woord, geen deel van een langer
- * woord) in voorkomt — gebruikt om na afloop van het woordspel te laten
- * zien waar het woord van vandaag vandaan komt. Scant de volledige
- * verzentabel (~6600 rijen, dus prima snel genoeg voor deze eenmalige,
- * niet-veelgevraagde actie) in plaats van een aparte woord-naar-verzen-index
- * bij te houden.
- */
-export async function findVersesContainingWord(word: string): Promise<WordGameVerseMatch[]> {
-  const target = normalizeToken(word);
-  const verses = await prisma.verse.findMany({
-    select: {
-      number: true,
-      text: true,
-      chapter: { select: { number: true, book: { select: { name: true, order: true } } } },
-    },
-  });
-
-  const matches = verses
-    .filter((v) => (v.text.match(/[A-Za-zÀ-ÿ]+/g) ?? []).some((token) => normalizeToken(token) === target))
-    .sort((a, b) => a.chapter.book.order - b.chapter.book.order || a.chapter.number - b.chapter.number || a.number - b.number)
-    .map((v) => ({
-      bookName: v.chapter.book.name,
-      chapterNumber: v.chapter.number,
-      verseNumber: v.number,
-      text: v.text,
-    }));
-
-  return matches;
-}
-
 export interface WordGameView {
   dayKey: string;
   wordLength: number;
@@ -163,7 +114,7 @@ export interface WordGameView {
   word: string | null;
   // Idem: pas gevuld na afloop (winst of verlies maakt niet uit), zodat je
   // de verzen met het woord van vandaag kan naslaan.
-  verses: WordGameVerseMatch[];
+  verses: VerseMatch[];
 }
 
 async function buildView(game: {

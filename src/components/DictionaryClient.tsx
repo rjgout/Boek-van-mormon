@@ -7,6 +7,13 @@ interface DictionaryEntry {
   count: number;
 }
 
+interface VerseMatch {
+  bookName: string;
+  chapterNumber: number;
+  verseNumber: number;
+  text: string;
+}
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("");
 
 type FilterMode = "letter" | "length";
@@ -18,6 +25,9 @@ export default function DictionaryClient() {
   const [mode, setMode] = useState<FilterMode>("letter");
   const [letter, setLetter] = useState<string | null>("a");
   const [length, setLength] = useState<number | null>(null);
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const [verses, setVerses] = useState<VerseMatch[] | null>(null);
+  const [versesError, setVersesError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/dictionary")
@@ -53,6 +63,28 @@ export default function DictionaryClient() {
   function selectMode(next: FilterMode) {
     setMode(next);
     setQuery("");
+  }
+
+  // Nogmaals op hetzelfde woord klikken klapt het weer dicht i.p.v. opnieuw
+  // te laden — verzen van een woord veranderen toch nooit binnen een sessie.
+  async function selectWord(word: string) {
+    if (selectedWord === word) {
+      setSelectedWord(null);
+      setVerses(null);
+      setVersesError(null);
+      return;
+    }
+    setSelectedWord(word);
+    setVerses(null);
+    setVersesError(null);
+    try {
+      const res = await fetch(`/api/dictionary/${encodeURIComponent(word)}`);
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error ?? `Er ging iets mis (${res.status}).`);
+      setVerses(data.verses ?? []);
+    } catch (e) {
+      setVersesError(e instanceof Error ? e.message : "Er ging iets mis.");
+    }
   }
 
   if (loadError) {
@@ -177,9 +209,17 @@ export default function DictionaryClient() {
       <div className="card !p-0 overflow-hidden">
         <ul className="max-h-[60vh] overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800">
           {filtered.map((e) => (
-            <li key={e.word} className="px-4 py-2 flex items-baseline justify-between gap-3">
-              <span className="dark:text-slate-100">{e.word}</span>
-              <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0">({e.count})</span>
+            <li key={e.word}>
+              <button
+                type="button"
+                onClick={() => selectWord(e.word)}
+                className={`w-full px-4 py-2 flex items-baseline justify-between gap-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 ${
+                  selectedWord === e.word ? "bg-brand-50 dark:bg-brand-900/30" : ""
+                }`}
+              >
+                <span className="dark:text-slate-100">{e.word}</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 shrink-0">({e.count})</span>
+              </button>
             </li>
           ))}
           {filtered.length === 0 && (
@@ -187,6 +227,34 @@ export default function DictionaryClient() {
           )}
         </ul>
       </div>
+
+      {selectedWord && (
+        <div className="flex flex-col gap-3">
+          <h2 className="font-extrabold dark:text-slate-100">
+            📖 Waar &ldquo;{selectedWord}&rdquo; voorkomt{verses ? ` (${verses.length})` : ""}
+          </h2>
+          {versesError && <p className="text-red-600 dark:text-red-400 text-sm font-semibold">{versesError}</p>}
+          {!versesError && !verses && <p className="text-sm text-slate-400 dark:text-slate-500">Laden...</p>}
+          {verses && verses.length === 0 && (
+            <p className="text-sm text-slate-400 dark:text-slate-500">Geen verzen gevonden.</p>
+          )}
+          {verses && verses.length > 0 && (
+            <div className="flex flex-col gap-2">
+              {verses.map((v, i) => (
+                <details key={i} className="group card !py-2">
+                  <summary className="font-bold text-sm cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between dark:text-slate-100">
+                    {v.bookName} {v.chapterNumber}:{v.verseNumber}
+                    <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+                      ▾
+                    </span>
+                  </summary>
+                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">{v.text}</p>
+                </details>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
