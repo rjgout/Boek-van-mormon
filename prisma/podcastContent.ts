@@ -8293,4 +8293,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 38,
+    title: "Aflevering 38",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat geloven Koos, Raphael en gast Caelan over wie Christus was vóór zijn geboorte?",
+        options: [
+          "Dat Hij als geest al bestond en de God van het Oude Testament was, ook wel Jehovah of 'Ik ben' genoemd",
+          "Dat Christus pas bij zijn geboorte voor het eerst bestond",
+          "Dat Christus dezelfde persoon was als hemelse vader",
+          "Dat er geen enkel verband is tussen het Oude en Nieuwe Testament",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael noemt Christus een soort 'demigod' (halfgod): met een sterfelijke, menselijke kant via Maria en een goddelijke, onsterfelijke kant via hemelse vader.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Caelan over de reden dat er in hun kerkgebouwen en tempels geen kruisen te zien zijn?",
+        options: [
+          "Omdat de focus meer ligt op de opstanding van Christus dan op zijn dood",
+          "Omdat kruisen wettelijk verboden zijn in Nederland",
+          "Omdat ze niet geloven dat Christus gestorven is",
+          "Omdat het gebouw daar simpelweg geen ruimte voor heeft",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom, leggen Koos en Raphael uit, waren de offerdieren in het Oude Testament belangrijk, ook al waren de zonden van die mensen toen nog niet vergeven?",
+        options: [
+          "Omdat die offers verwezen naar Christus, die zelf als het lam geofferd zou worden",
+          "Omdat ze puur een culturele gewoonte waren zonder enige diepere betekenis",
+          "Omdat ze bedoeld waren om de tempel schoon te houden",
+          "Omdat ze niets met Christus te maken hadden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken dat Christus als geest al de God van het Oude Testament was",
+          "Ze bespreken de geboorte van Christus uit Maria en zijn 'demigod'-natuur",
+          "Ze bespreken waarom de offers uit het Oude Testament naar Christus verwezen",
+          "Caelan legt uit waarom er geen kruisen in hun gebouwen hangen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 3 profeteert koning Benjamin over de komst van Christus. Wat zegt hij in vers 5 over wie er zal neerdalen?",
+        options: [
+          "De almachtige Heer die regeert, die van alle eeuwigheid tot alle eeuwigheid was en is",
+          "Een gewone profeet zonder bijzondere macht",
+          "Een engel zonder verdere identiteit",
+          "Er wordt in dit vers niemand specifiek genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 3:8 zal Hij Jezus Christus heten, de Zoon van God, en zal zijn moeder Maria heten.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke wonderen zegt koning Benjamin in Mosiah 3:5 dat Christus onder de mensen zal verrichten?",
+        options: [
+          "Zieken genezen, doden opwekken, lammen doen lopen en blinden hun gezicht geven",
+          "Alleen mensen tot koning kronen",
+          "Alleen oorlogen winnen",
+          "Er worden in dit vers geen wonderen genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 3:5-8 in de juiste volgorde.",
+        items: [
+          "De almachtige Heer zal met macht uit de hemel neerdalen",
+          "Hij zal in een tabernakel van leem wonen en onder de mensen uitgaan",
+          "Hij zal machtige wonderen verrichten, zoals zieken genezen",
+          "Hij zal Jezus Christus heten, en zijn moeder zal Maria heten",
+        ],
+      },
+    ],
+  },
 ];
