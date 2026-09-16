@@ -4909,4 +4909,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 75,
+    title: "Aflevering 75",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom had Koos Raphael een tijdje niet in de kerk gezien?",
+        options: [
+          "Raphael was op vakantie en bezocht daar een andere plaatselijke kerk van hun geloof",
+          "Raphael was tijdelijk gestopt met naar de kerk gaan",
+          "Raphael was verhuisd naar een andere stad",
+          "Raphael had een nieuwe roeping gekregen ver weg",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt dat hij tijdens zijn vakantie in Zwitserland, ondanks zenuwen die hij normaal wel heeft, spontaan zijn getuigenis gaf in het Engels, terwijl de dienst in het Frans werd gehouden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Met welke vergelijking legt Raphael uit waarom regelmatig naar de kerk gaan belangrijk blijft, ook als je zelf kunt studeren?",
+        options: [
+          "Met het volgen van een opleiding: alleen thuisstudie zonder de aanvulling van school houdt op den duur vaak op",
+          "Met het bijhouden van een dagboek",
+          "Met het onderhouden van een auto",
+          "Met het volgen van het nieuws",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over een periode waarin hij en zijn gezin bewust wegbleven van de kerk?",
+        options: [
+          "Dat het door problemen met bepaalde mensen kwam, maar dat ze uiteindelijk toch terugkeerden omdat ze het gemist hadden",
+          "Dat ze nooit meer zijn teruggekeerd",
+          "Dat het kwam doordat ze hun getuigenis waren kwijtgeraakt",
+          "Dat de kerk hun lidmaatschap had ingetrokken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael vertelt over het kerkbezoek in Zwitserland tijdens zijn vakantie",
+          "Ze bespreken waarom regelmatig kerkbezoek belangrijk blijft, ook als je zelf kan studeren",
+          "Raphael vertelt over de periode dat zijn gezin wegbleef van de kerk",
+          "Koos legt uit waarom Christus zoveel belang hecht aan zijn kerk",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 6 wordt beschreven hoe de vroege kerk van Christus functioneerde. Wat deden de leden dikwijls samen, volgens vers 5?",
+        options: [
+          "Vasten en bidden en met elkaar spreken over het welzijn van hun ziel",
+          "Alleen maar zwijgend bij elkaar zitten zonder enige activiteit",
+          "Uitsluitend zakelijke vergaderingen houden",
+          "Alleen op belangrijke feestdagen samenkomen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 6:6 kwamen de leden van de kerk dikwijls tezamen om van het brood en de wijn te nemen ter gedachtenis van de Heer Jezus.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar werden de bijeenkomsten van de vroege kerk door geleid, volgens Moroni 6:9?",
+        options: [
+          "Door de werkingen van de Geest en de macht van de Heilige Geest",
+          "Door een vast, onveranderlijk script zonder enige ruimte voor de Geest",
+          "Uitsluitend door de oudste persoon aanwezig",
+          "Door loting onder de aanwezigen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze beschrijvingen uit Moroni 6 in de juiste volgorde.",
+        items: [
+          "Wie gedoopt was, werd bij het volk van de kerk van Christus gerekend",
+          "De leden kwamen dikwijls tezamen om te vasten en te bidden",
+          "Zij kwamen dikwijls tezamen om van het brood en de wijn te nemen",
+          "Hun bijeenkomsten werden geleid naar de werkingen van de Heilige Geest",
+        ],
+      },
+    ],
+  },
 ];
