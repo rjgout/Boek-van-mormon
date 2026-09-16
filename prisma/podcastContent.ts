@@ -4721,4 +4721,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 77,
+    title: "Aflevering 77",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat het gesprek in deze aflevering vooral over, naar aanleiding van energiedrankjes?",
+        options: [
+          "Verslavende en ongezonde middelen zoals cafeïne, alcohol en vapen, en hoe je daarmee omgaat",
+          "De beste recepten voor gezonde smoothies",
+          "De geschiedenis van de theeplant",
+          "Sportvoeding voor topsporters",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt vol bewondering dat Joseph Smith al 200 jaar geleden een openbaring kreeg over gezondheid, het woord van wijsheid, lang voordat de wetenschap de schadelijke effecten van bijvoorbeeld alcohol kon aantonen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemen Koos en Raphael als reden waarom mensen toch beginnen met verslavende middelen, ook al weten ze dat het niet goed voor ze is?",
+        options: [
+          "Groepsdruk, nieuwsgierigheid en het idee dat verslaving 'hen niet zal overkomen'",
+          "Omdat het altijd verplicht wordt door de overheid",
+          "Omdat er geen enkel gezondheidsrisico aan verbonden is",
+          "Omdat alle religies het juist aanmoedigen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk advies geeft Koos over hoe je anderen kunt helpen om los te komen van verslavende gewoontes?",
+        options: [
+          "Door zelf een goed voorbeeld te zijn, zodat mensen zien dat het ook zonder kan",
+          "Door mensen te dwingen om te stoppen",
+          "Door nooit met iemand over het onderwerp te praten",
+          "Door zelf ook maar mee te doen om erbij te horen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de discussie rond energiedrankjes en cafeïne voor jongeren",
+          "Koos vertelt over de openbaring over gezondheid die 200 jaar geleden werd gegeven",
+          "Ze bespreken waarom mensen toch beginnen met verslavende middelen",
+          "Ze bespreken hoe je door een goed voorbeeld anderen kunt helpen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 38 geeft Alma raad aan zijn zoon Sjiblon. Waartoe roept hij hem op in vers 10?",
+        options: [
+          "Om in alle dingen ijverig en matig te zijn",
+          "Om zoveel mogelijk rijkdom te verzamelen",
+          "Om zich volledig af te zonderen van andere mensen",
+          "Om nooit meer te spreken in het openbaar",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 38:12 moet Sjiblon al zijn hartstochten beteugelen, opdat hij met liefde vervuld zal zijn, en moet hij luiheid vermijden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarvoor waarschuwt Alma zijn zoon in vers 11?",
+        options: [
+          "Om niet tot hoogmoed verheven te worden of te roemen op eigen wijsheid of kracht",
+          "Om nooit meer te bidden",
+          "Om zich nooit te verdiepen in de schriften",
+          "Om altijd zoveel mogelijk aanmatiging te tonen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze raadgevingen uit Alma 38 in de juiste volgorde.",
+        items: [
+          "Wees in alle dingen ijverig en matig",
+          "Zie toe dat gij niet tot hoogmoed verheven wordt",
+          "Beteugel al uw hartstochten, opdat gij met liefde vervuld zult zijn",
+          "Bid niet zoals de Zoramieten, om door mensen geprezen te worden",
+        ],
+      },
+    ],
+  },
 ];
