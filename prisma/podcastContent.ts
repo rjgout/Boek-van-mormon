@@ -7541,4 +7541,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 46,
+    title: "Aflevering 46",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar vertelt gast Paula in dit tweede deel vooral over?",
+        options: [
+          "Haar worsteling met gevoelens die niet pasten bij hoe zij het evangelie wilde naleven, en hoe ze daar met Gods hulp uiteindelijk vrij van kwam",
+          "Haar carrière als lerares",
+          "De geschiedenis van haar kerkgebouw",
+          "Haar reizen door Europa",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Paula vertelt dat ze door het vergeven van haar moeder, en later door het leren kennen van haar biologische familie in Suriname, zichzelf en haar afkomst uiteindelijk kon accepteren.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurde er volgens Paula op het beslissende moment dat ze de kerk bijna voorgoed verliet?",
+        options: [
+          "Een zuster aan de telefoon vertelde haar dat ze de hele weg gehuild had, wat Paula liet voelen dat de Geest aanwezig was, en ze bleef",
+          "Ze kreeg die dag een officieel bericht van de kerkleiding",
+          "Haar man vroeg haar op dat moment ten huwelijk",
+          "Ze verhuisde onmiddellijk naar een ander land",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Paula over het laatste stukje van haar proces, nadat ze zelf al zoveel had gedaan?",
+        options: [
+          "Dat de Heer dat laatste stukje uiteindelijk door genade heeft weggenomen, wat zij zelf niet kon",
+          "Dat ze het uiteindelijk toch helemaal alleen heeft opgelost",
+          "Dat dat stukje eigenlijk nooit is opgelost",
+          "Dat ze daarvoor een operatie heeft ondergaan",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Paula vertelt over het keerpunt met de zuster aan de telefoon",
+          "Paula vertelt over het vergeven van haar moeder en het leren kennen van haar biologische familie",
+          "Paula ontmoet haar man Martin en alles valt op zijn plek",
+          "Paula getuigt dat de Heer het laatste stukje uiteindelijk door genade heeft weggenomen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Ether 12:27 belooft de Heer iets aan wie zich voor Hem verootmoedigt en geloof in Hem heeft. Wat belooft Hij?",
+        options: [
+          "Dat Hij zwakke dingen sterk voor hen zal laten worden",
+          "Dat zij nooit meer een zwakheid zullen ervaren",
+          "Dat zij alleen door hun eigen inspanning verlost worden",
+          "Er wordt in dit vers niets beloofd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Ether 12:27 geeft de Heer mensen zwakheid opdat zij ootmoedig zullen zijn, en is zijn genade genoeg voor wie zich voor Hem verootmoedigt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat toont de Heer volgens Ether 12:27 aan mensen die tot Hem komen?",
+        options: [
+          "Hun zwakheid",
+          "Alleen hun sterke punten",
+          "De zwakheden van andere mensen",
+          "Er wordt in dit vers niets getoond",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Ether 12:27 in de juiste volgorde.",
+        items: [
+          "Als de mensen tot Hem komen, zal Hij hun hun zwakheid tonen",
+          "Hij geeft de mensen zwakheid, opdat zij ootmoedig zullen zijn",
+          "Zijn genade is genoeg voor wie zich voor Hem verootmoedigt en geloof heeft",
+          "Hij zal zwakke dingen sterk voor hen laten worden",
+        ],
+      },
+    ],
+  },
 ];
