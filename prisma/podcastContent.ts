@@ -7635,4 +7635,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 45,
+    title: "Aflevering 45",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover wil gast Paula het in dit eerste deel vooral hebben?",
+        options: [
+          "Over de homoseksuele gevoelens die ze zelf vroeger had",
+          "Over haar carrière als zendeling in het buitenland",
+          "Over de geschiedenis van haar geboorteplaats Rotterdam",
+          "Over haar hobby's zoals tuinieren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Paula vertelt dat ze lange tijd het gevoel had dat ze de enige in de kerk was met dit soort gevoelens, waardoor ze er moeilijk met iemand over kon praten.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat besloten Paula en haar vriendin, toen ze allebei ontdekten dat ze verliefd op elkaar waren geworden?",
+        options: [
+          "Om er, vanwege hun sterke getuigenis van het evangelie, niet aan toe te geven en de relatie te beëindigen",
+          "Om allebei de kerk te verlaten",
+          "Om er met niemand ooit meer over te praten",
+          "Om onmiddellijk te trouwen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Raphael uit waarom homoseksualiteit volgens de proclamatie over het gezin niet past in het plaatje van het gezin, zonder dat hij het daarmee 'verkeerd' noemt?",
+        options: [
+          "Dat het gezin bedoeld is als plek waar een man en vrouw kinderen opvoeden in het evangelie, en dat wie geen partner heeft toch de kans krijgt op een eeuwig gezin in het hiernamaals",
+          "Dat homoseksuele mensen nooit een gelukkig leven kunnen hebben",
+          "Dat het gezin er totaal niet toe doet",
+          "Dat er geen enkel verschil is met andere levenskeuzes",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Paula vertelt over haar jeugd en het besef dat ze op meisjes viel",
+          "Paula vertelt over haar zending en het gesprek met haar zendingsleider",
+          "Ze bespreken wat het evangelie leert over homoseksuele gevoelens en praktiseren",
+          "Paula vertelt over de relatie met haar vriendin en de beslissing om die te beëindigen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 1 Nephi 3:7 zegt Nephi dat hij zal doen wat de Heer gebiedt. Waarom vertrouwt hij daarop, ook als het moeilijk is?",
+        options: [
+          "Omdat de Heer geen geboden geeft zonder een weg te bereiden om ze te kunnen volbrengen",
+          "Omdat het altijd gemakkelijk zal zijn",
+          "Omdat hij nooit voor een moeilijke keuze zal komen te staan",
+          "Er wordt in dit vers geen reden gegeven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 1 Nephi 3:7 weet Nephi dat de Heer altijd een weg bereidt voor mensen om te kunnen doen wat Hij hun gebiedt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is Nephi's reactie op het gebod van de Heer, ook al is het niet eenvoudig?",
+        options: [
+          "Ik zal heengaan en de dingen doen die de Heer heeft geboden",
+          "Ik weiger dit gebod uit te voeren",
+          "Ik zal wachten tot iemand anders het doet",
+          "Er wordt in dit vers geen reactie van Nephi genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 1 Nephi 3:7 in de juiste volgorde.",
+        items: [
+          "Nephi zegt tegen zijn vader dat hij zal heengaan",
+          "En de dingen zal doen die de Heer heeft geboden",
+          "Want hij weet dat de Heer geen geboden geeft zonder een weg te bereiden",
+          "Zodat de mensenkinderen kunnen volbrengen wat Hij hun gebiedt",
+        ],
+      },
+    ],
+  },
 ];
