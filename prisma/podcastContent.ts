@@ -3217,4 +3217,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 93,
+    title: "Aflevering 93",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke uitspraak over God gebruikt Koos om het gesprek in deze aflevering te openen?",
+        options: [
+          "God is dezelfde gisteren, heden en in de toekomst, God is onveranderlijk",
+          "God verandert elke dag van gedaante",
+          "God heeft nooit een plan gehad",
+          "God is precies zoals de mens",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael zijn het erover eens dat God wel degelijk groeit en zich ontwikkelt, terwijl zijn karakter en aard onveranderlijk blijven.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld gebruikt Raphael om uit te leggen hoe hij Gods alwetendheid over onze keuzes ziet, zonder dat dit onze keuzevrijheid wegneemt?",
+        options: [
+          "Dat God, net als bij een wiskundige som, precies weet hoe iemand zal kiezen zonder dat de uitkomst van tevoren vastligt",
+          "Dat God helemaal niets weet over de toekomst",
+          "Dat God iedereen dwingt om dezelfde keuze te maken",
+          "Dat keuzevrijheid alleen bestaat in de hemel, niet op aarde",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat concluderen Koos en Raphael over waarom God ons vandaag de dag nog steeds levende profeten geeft?",
+        options: [
+          "Omdat Zijn basisprincipes niet veranderen, maar de wereld en haar uitdagingen wel, waardoor actuele leiding nodig blijft",
+          "Omdat de Bijbel niet meer waardevol is",
+          "Omdat God zijn mening steeds weer volledig omgooit",
+          "Omdat profeten alleen nodig waren in het Oude Testament",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken Koos' voorkeur om weinig te veranderen, met zijn oude iPhone als voorbeeld",
+          "Koos stelt de vraag of God veranderlijk of onveranderlijk is",
+          "Ze bespreken Gods alwetendheid tegenover onze keuzevrijheid",
+          "Ze concluderen dat Gods basisprincipes niet veranderen, maar zijn geboden en hulpmiddelen wel",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mormon 9 haalt Mormon aan dat God dezelfde is gisteren, heden en voor eeuwig. Wat zegt hij daarbij over verandering in God?",
+        options: [
+          "Er is in Hem geen verandering of zweem van ommekeer",
+          "God verandert net zo vaak als de seizoenen",
+          "God verandert alleen op belangrijke feestdagen",
+          "God verandert steeds mee met de mode van de tijd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mormon 9:10 zou een god die verandert en in wie een zweem van ommekeer is, geen god van wonderen zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zou er volgens Mormon 9:19 gebeuren als God zou veranderen?",
+        options: [
+          "Dan zou Hij ophouden God te zijn",
+          "Dan zou er niets aan de hand zijn",
+          "Dan zou Hij juist machtiger worden",
+          "Dan zouden de wonderen alleen maar toenemen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mormon 9 in de juiste volgorde.",
+        items: [
+          "God is dezelfde gisteren, heden en voor eeuwig, zonder zweem van ommekeer",
+          "Een god die verandert, is geen god van wonderen",
+          "Mormon toont de God van Abraham, Isaak en Jakob als God van wonderen",
+          "God verandert niet, anders zou Hij ophouden God te zijn",
+        ],
+      },
+    ],
+  },
 ];
