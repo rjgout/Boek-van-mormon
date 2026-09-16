@@ -4345,4 +4345,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 81,
+    title: "Aflevering 81",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk computerspel noemt Raphael als zijn 'guilty pleasure', ondanks dat hij het eigenlijk een slecht spel vindt?",
+        options: [
+          "GTA (Grand Theft Auto)",
+          "Mario Kart",
+          "FIFA",
+          "Minecraft",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat gamen op zich niet verkeerd is, maar dat het een probleem wordt zodra het uit balans raakt en ten koste gaat van gezin of werk.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertellen Koos en Raphael over Satan en zijn volgelingen in het voorbestaan?",
+        options: [
+          "Dat één derde van Gods geesteskinderen tijdens de oorlog in de hemel met Satan meeging",
+          "Dat Satan helemaal geen volgelingen had",
+          "Dat Satan pas op aarde volgelingen kreeg",
+          "Dat de helft van de mensheid met Satan meeging",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe leggen Koos en Raphael uit dat Satan aan zijn kennis en macht komt?",
+        options: [
+          "Hij heeft dezelfde kennis van Hemelse Vader gekregen als ieder ander geesteskind, maar gebruikt die voor eigen gewin in plaats van uit naastenliefde",
+          "Hij heeft zijn eigen, volledig aparte bron van kennis los van God",
+          "Hij heeft geen enkele kennis en werkt puur op toeval",
+          "Zijn kennis komt uitsluitend van mensen die hem aanbidden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael vertelt over zijn guilty pleasure-game GTA",
+          "Koos legt uit hoe Satan de natuurlijke mens en verslaving kan versterken",
+          "Ze bespreken de oorlog in de hemel en waarom Satan viel",
+          "Ze concluderen dat het draait om steeds weer de focus op Christus terugbrengen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 2 legt Lehi aan zijn zoon uit hoe de duivel is ontstaan. Wat zegt hij daarover in vers 17?",
+        options: [
+          "Een engel Gods was uit de hemel gevallen en werd daardoor een duivel, omdat hij had gezocht wat kwaad was",
+          "De duivel heeft altijd al als duivel bestaan, los van God",
+          "De duivel is een schepping van de mensheid zelf",
+          "De duivel was oorspronkelijk een dier",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 2:18 zocht de duivel, nadat hij voor eeuwig ellendig was geworden, ook de ellende van het gehele mensdom.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt 2 Nephi 2:27 over de vrijheid van de mens?",
+        options: [
+          "Mensen zijn vrij om vrijheid en eeuwig leven te kiezen, of gevangenschap en dood volgens de macht van de duivel",
+          "Mensen hebben helemaal geen keuzevrijheid",
+          "Alleen profeten hebben keuzevrijheid",
+          "Keuzevrijheid bestaat alleen na de dood",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 2 in de juiste volgorde.",
+        items: [
+          "Een engel Gods was uit de hemel gevallen en werd een duivel",
+          "Hij zocht ook de ellende van het gehele mensdom",
+          "Hij zeide tot Eva dat zij van de verboden vrucht zou eten",
+          "Mensen zijn vrij om vrijheid te kiezen, of gevangenschap naar de macht van de duivel",
+        ],
+      },
+    ],
+  },
 ];
