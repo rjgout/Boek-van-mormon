@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
+import { usePodcastPlayer } from "@/lib/podcastPlayerContext";
 
 interface EpisodeView {
   id: string;
@@ -46,7 +47,6 @@ function episodeStatus(episode: EpisodeView): StatusFilter {
 export default function PodcastCourseView({ courseName, episodes }: Props) {
   const [filter, setFilter] = useState<StatusFilter>("ALL");
   const [page, setPage] = useState(1);
-  const listRef = useRef<HTMLDivElement>(null);
 
   const filtered = useMemo(() => {
     if (filter === "ALL") return episodes;
@@ -98,6 +98,8 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
           </p>
         </div>
 
+        <PageControls currentPage={currentPage} totalPages={totalPages} onChange={setPage} />
+
         {episodes.length === 0 && (
           <p className="text-slate-400 dark:text-slate-500">Er zijn nog geen afleveringen beschikbaar.</p>
         )}
@@ -105,7 +107,7 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
           <p className="text-slate-400 dark:text-slate-500">Geen afleveringen in dit filter.</p>
         )}
 
-        <div ref={listRef} className="contents">
+        <div className="contents">
         {pageEpisodes.map((episode) => (
           <div key={episode.id} className="card flex flex-col gap-3 max-w-xl">
             <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -123,36 +125,7 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
                 </a>
               )}
             </div>
-            {episode.audioUrl && (
-              <audio
-                controls
-                preload="none"
-                src={episode.audioUrl}
-                className="w-full h-10"
-                onPlay={(e) => {
-                  // Zet de andere spelers op deze pagina stil zodra deze
-                  // begint — anders lopen twee afleveringen door elkaar als
-                  // je per ongeluk twee keer op play klikt.
-                  listRef.current
-                    ?.querySelectorAll("audio")
-                    .forEach((a) => {
-                      if (a !== e.currentTarget) a.pause();
-                    });
-                  // Media Session: geeft dit als "nu speelt" door aan het
-                  // besturingssysteem (vergrendelscherm/notificatiebalk), wat
-                  // ook helpt om op de achtergrond te kunnen blijven
-                  // afspelen — zie de toelichting in het gesprek hierover.
-                  if ("mediaSession" in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                      title: `Aflevering ${episode.number} — ${episode.title}`,
-                      artist: "Geloof je dat ook?",
-                    });
-                  }
-                }}
-              >
-                Je browser ondersteunt geen audio-afspelen.
-              </audio>
-            )}
+            {episode.audioUrl && <EpisodePlayButton episode={episode} />}
             {episode.summary && <EpisodeSummary text={episode.summary} />}
             <div className="flex gap-3 flex-wrap">
               <ModeButton
@@ -174,29 +147,70 @@ export default function PodcastCourseView({ courseName, episodes }: Props) {
         ))}
         </div>
 
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center gap-4">
-            <button
-              className="btn-secondary !px-3 !py-1.5"
-              disabled={currentPage <= 1}
-              onClick={() => setPage(currentPage - 1)}
-            >
-              ← Vorige
-            </button>
-            <span className="text-sm text-slate-500 dark:text-slate-400">
-              Pagina {currentPage} van {totalPages}
-            </span>
-            <button
-              className="btn-secondary !px-3 !py-1.5"
-              disabled={currentPage >= totalPages}
-              onClick={() => setPage(currentPage + 1)}
-            >
-              Volgende →
-            </button>
-          </div>
-        )}
+        <PageControls currentPage={currentPage} totalPages={totalPages} onChange={setPage} />
       </div>
     </div>
+  );
+}
+
+function PageControls({
+  currentPage,
+  totalPages,
+  onChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onChange: (page: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+
+  return (
+    <div className="flex items-center justify-center gap-3 flex-wrap">
+      <button className="btn-secondary !px-3 !py-1.5" disabled={currentPage <= 1} onClick={() => onChange(currentPage - 1)}>
+        ← Vorige
+      </button>
+      <label className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+        Pagina
+        <select
+          className="input !w-auto !py-1.5 text-center"
+          value={currentPage}
+          onChange={(e) => onChange(Number(e.target.value))}
+        >
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+        van {totalPages}
+      </label>
+      <button className="btn-secondary !px-3 !py-1.5" disabled={currentPage >= totalPages} onClick={() => onChange(currentPage + 1)}>
+        Volgende →
+      </button>
+    </div>
+  );
+}
+
+function EpisodePlayButton({ episode }: { episode: EpisodeView }) {
+  const player = usePodcastPlayer();
+  if (!episode.audioUrl) return null;
+
+  const isThisEpisode = player.episode?.id === episode.id;
+  const isPlaying = isThisEpisode && player.isPlaying;
+
+  function handleClick() {
+    if (isThisEpisode) {
+      player.togglePlay();
+    } else {
+      player.playEpisode({ id: episode.id, number: episode.number, title: episode.title, audioUrl: episode.audioUrl! });
+    }
+  }
+
+  return (
+    <button onClick={handleClick} className="btn-secondary !px-4 !py-2 self-start flex items-center gap-2">
+      <span aria-hidden>{isPlaying ? "⏸" : "▶"}</span>
+      {isThisEpisode ? (isPlaying ? "Pauzeren" : "Hervatten") : "Afspelen"}
+    </button>
   );
 }
 

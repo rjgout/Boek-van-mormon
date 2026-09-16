@@ -183,10 +183,11 @@ model User {
   activeCourse   Course?              @relation("ActiveCourse", fields: [activeCourseId], references: [id], onDelete: SetNull)
   courseProgress UserCourseProgress[]
 
-  podcastAttempts PodcastExerciseAttempt[]
-  podcastProgress PodcastEpisodeProgress[]
-  kidsAttempts    KidsExerciseAttempt[]
-  kidsProgress    KidsStoryProgress[]
+  podcastAttempts        PodcastExerciseAttempt[]
+  podcastProgress        PodcastEpisodeProgress[]
+  podcastPlaybackHistory PodcastPlaybackProgress[]
+  kidsAttempts           KidsExerciseAttempt[]
+  kidsProgress           KidsStoryProgress[]
 
   feedbackReports     Feedback[]
   streakDays          StreakDay[]
@@ -392,8 +393,28 @@ model PodcastEpisode {
   publishedAt DateTime?
   order       Int       @default(0)
 
-  exercises PodcastExercise[]
-  progress  PodcastEpisodeProgress[]
+  exercises        PodcastExercise[]
+  progress         PodcastEpisodeProgress[]
+  playbackProgress PodcastPlaybackProgress[]
+}
+
+// Onthoudt waar je gebleven was met luisteren (zie PodcastMiniPlayer.tsx) —
+// los van PodcastEpisodeProgress hierboven, dat over de oefeningen gaat.
+// Server-side (i.p.v. alleen lokaal in de browser) zodat je op een ander
+// apparaat verder kan luisteren waar je gebleven was. Eén rij per
+// gebruiker+aflevering; wordt verwijderd zodra een aflevering (bijna)
+// helemaal is afgeluisterd, zodat een volgende keer weer bij het begin
+// begint i.p.v. bij "nog 3 seconden te gaan".
+model PodcastPlaybackProgress {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  episodeId       String
+  episode         PodcastEpisode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  positionSeconds Float
+  updatedAt       DateTime       @updatedAt
+
+  @@unique([userId, episodeId])
 }
 
 enum PodcastExerciseMode {

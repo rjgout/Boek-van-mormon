@@ -12,6 +12,8 @@ import ChangelogPopup from "@/components/ChangelogPopup";
 import ThemeScript from "@/components/ThemeScript";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import PodcastMiniPlayer from "@/components/PodcastMiniPlayer";
+import { PodcastPlayerProvider } from "@/lib/podcastPlayerContext";
 import { APP_TAGLINE, resolveAppName } from "@/lib/brand";
 
 // PWA: manifest + icons zijn wat een browser nodig heeft om "toevoegen aan
@@ -98,7 +100,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ThemeScript />
       </head>
       <body>
-        <header className="sticky top-0 z-20 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-100 dark:border-slate-800">
+        <PodcastPlayerProvider>
+        {/* Header + mini-player samen in één sticky wrapper (i.p.v. de
+            header zelf sticky te maken) zodat ze bij het scrollen als één
+            geheel bovenaan blijven staan, ongeacht de exacte hoogte van de
+            header — zie PodcastMiniPlayer.tsx. */}
+        <div className="sticky top-0 z-20">
+        <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-100 dark:border-slate-800">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg">
               {logoDataUrl ? (
@@ -159,11 +167,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             )}
           </div>
         </header>
+        {user && <PodcastMiniPlayer />}
+        </div>
         <main className="mx-auto max-w-5xl px-4 py-8 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-8">{children}</main>
         {user && <BottomNav />}
         {user && <InviteListener />}
         {user && <ChangelogPopup />}
         <ServiceWorkerRegister />
+        </PodcastPlayerProvider>
       </body>
     </html>
   );
