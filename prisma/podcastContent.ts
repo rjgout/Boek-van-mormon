@@ -8387,4 +8387,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 37,
+    title: "Aflevering 37",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom vieren we volgens Koos en Raphael de geboorte van Christus op 25 december, terwijl zij geloven dat Hij op 6 april geboren is?",
+        options: [
+          "Omdat de viering van zijn geboorte samengevoegd is met een ouder heidens lichtfeest rond de kortste dag van het jaar",
+          "Omdat 25 december toevallig ook zijn sterfdatum is",
+          "Omdat er geen enkele reden voor is, het is puur toeval",
+          "Omdat de Bijbel letterlijk 25 december noemt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael merkt op dat het beeld van herders die 's nachts buiten in het veld bij hun schapen liggen, niet goed past bij een geboorte in de winter.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat stelt Koos voor als hun eigen traditie tijdens kerst, om bewust stil te staan bij de geboorte van Christus?",
+        options: [
+          "Hij leest met de familie een paar verzen uit Lucas 2 voor, het kerstverhaal",
+          "Hij kijkt een volledige speelfilm over het leven van Christus",
+          "Hij vast de hele kerstavond",
+          "Hij doet helemaal niets bijzonders met kerst",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorstel doet Raphael om mensen bewuster te maken van de reden van het kerstfeest?",
+        options: [
+          "In plaats van 'fijne kerst' te zeggen, mensen feliciteren met de geboorte van Christus",
+          "Om helemaal te stoppen met cadeautjes geven",
+          "Om kerst helemaal niet meer te vieren",
+          "Om alleen nog maar in stilte te vieren zonder woorden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken waarom Sinterklaas en kerst zo dicht bij elkaar liggen",
+          "Ze bespreken waarom kerst op 25 december valt terwijl Christus op 6 april geboren is",
+          "Koos vertelt over zijn traditie om uit Lucas 2 voor te lezen",
+          "Raphael stelt voor om mensen te feliciteren met de geboorte van Christus",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Helaman 14 geeft de profeet Samuel de Lamaniet een teken voor de geboorte van Christus. Wat zal er volgens vers 3 met de nacht vóór zijn geboorte gebeuren?",
+        options: [
+          "Er zullen grote lichten aan de hemel zijn, zodat er geen duisternis zal zijn en het de mensen zal toeschijnen dat het dag is",
+          "Er zal een zware storm woeden",
+          "De zon zal helemaal niet meer opkomen",
+          "Er wordt in dit vers niets over de nacht gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Helaman 14:5 zal er ook een nieuwe ster verrijzen, zoals men er nog nooit een gezien heeft, als teken van Christus' geboorte.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoeveel jaar van tevoren kondigt Samuel in Helaman 14:2 de komst van de Zoon van God aan?",
+        options: [
+          "Nog vijf jaar",
+          "Nog honderd jaar",
+          "Nog één dag",
+          "Er wordt in dit vers geen termijn genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Helaman 14:2-5 in de juiste volgorde.",
+        items: [
+          "Samuel kondigt aan dat de Zoon van God over vijf jaar zal komen",
+          "Er zullen grote lichten aan de hemel zijn, zodat het lijkt of het dag is",
+          "Een dag en een nacht en een dag zullen zijn alsof het één dag is",
+          "Er zal een nieuwe ster verrijzen als teken",
+        ],
+      },
+    ],
+  },
 ];
