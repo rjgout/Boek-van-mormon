@@ -3687,4 +3687,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 88,
+    title: "Aflevering 88",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk gebod staat centraal in het gesprek van Koos en Raphael in deze aflevering?",
+        options: [
+          "Gij zult niet doden",
+          "Gij zult de sabbatdag heiligen",
+          "Gij zult niet stelen",
+          "Gij zult geen andere goden voor mijn aangezicht hebben",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos wijst erop dat het Boek van Mormon net als het Oude Testament veel oorlogen bevat, waarbij het volk van God zich verdedigt tegen aanvallers.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat bespreken Koos en Raphael over de context van 'gij zult niet doden', zoals bij zelfverdediging of het leger?",
+        options: [
+          "Dat het gaat om de intentie, en dat je bijvoorbeeld geen weerloze tegenstander alsnog mag afmaken",
+          "Dat het gebod nooit ergens een uitzondering kent, zelfs niet bij zelfverdediging",
+          "Dat het gebod alleen geldt binnen je eigen familie",
+          "Dat het gebod inmiddels is afgeschaft",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk advies geven Koos en Raphael aan het einde van de aflevering, mocht iemand denken een ingeving van God te krijgen om iemand te doden of zichzelf iets aan te doen?",
+        options: [
+          "Twijfel daaraan, overleg met kerkelijke leiders en bel een hulplijn, want dat komt niet van God",
+          "Volg die ingeving zonder verder na te denken",
+          "Bespreek het alleen met vrienden, nooit met een hulplijn",
+          "Negeer het gevoel volledig en praat er met niemand over",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken voorbeelden uit de schriften waarin doden door God werd opgedragen",
+          "Ze bespreken zelfverdediging, oorlog en de doodstraf",
+          "Raphael bespreekt het verhaal van Nephi die Laban moest doden",
+          "Ze sluiten af met het advies om nooit zomaar een ingeving tot doden te vertrouwen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 1 Nephi 4 dringt de Geest er bij Nephi op aan om Laban te doden. Wat is Nephi's eerste reactie, volgens vers 10?",
+        options: [
+          "Hij deinst terug, want hij heeft nog nooit het bloed van een mens vergoten",
+          "Hij doet het onmiddellijk zonder enige aarzeling",
+          "Hij weigert volledig en loopt weg",
+          "Hij vraagt zijn broers om het in zijn plaats te doen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 1 Nephi 4:13 zegt de Geest tegen Nephi dat het beter is dat één mens omkomt dan dat een hele natie in ongeloof verkommert en verloren gaat.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke redenen noemt de Geest in 1 Nephi 4:11 om Laban te doden?",
+        options: [
+          "Laban had geprobeerd Nephi van het leven te beroven, gehoorzaamde de geboden niet en had hun bezit gestolen",
+          "Laban had gewoon toevallig pech",
+          "Laban had nooit iemand kwaad gedaan",
+          "Laban was de koning van het land",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit 1 Nephi 4 in de juiste volgorde.",
+        items: [
+          "De Geest dringt er bij Nephi op aan om Laban te doden",
+          "Nephi deinst terug, want hij heeft nog nooit iemands bloed vergoten",
+          "De Geest legt uit dat de Heer Laban in Nephi's handen heeft overgeleverd",
+          "Nephi gehoorzaamt de stem van de Geest en doodt Laban met zijn eigen zwaard",
+        ],
+      },
+    ],
+  },
 ];
