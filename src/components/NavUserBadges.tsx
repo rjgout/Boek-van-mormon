@@ -14,9 +14,9 @@ export default function NavUserBadges({
       <Link href="/streak" title="Reeks" className="flex items-center gap-1 text-orange-500">
         🔥 {streak}
       </Link>
-      <span title="Ervaringspunten" className="flex items-center gap-1 text-gold-600">
+      <Link href="/xp" title="Ervaringspunten" className="flex items-center gap-1 text-gold-600">
         ⭐ {xp}
-      </span>
+      </Link>
       <Link href="/profile" className="hidden md:inline text-slate-500">
         {displayName}
       </Link>

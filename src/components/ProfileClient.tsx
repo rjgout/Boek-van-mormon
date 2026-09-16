@@ -222,7 +222,7 @@ export default function ProfileClient() {
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
           <Stat value={`🔥 ${data.currentStreak}`} label="Reeks" href="/streak" />
-          <Stat value={`⭐ ${data.xpTotal}`} label="XP" />
+          <Stat value={`⭐ ${data.xpTotal}`} label="XP" href="/xp" />
           <Stat value={`🧊 ${data.freezeCount}`} label="Freezes" />
           <Stat value={`📖 ${data.chaptersCompleted}`} label="Hoofdstukken" />
         </div>
