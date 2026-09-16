@@ -6319,4 +6319,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 60,
+    title: "Aflevering 60",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie is de gast in deze aflevering, en wat is zijn grote passie?",
+        options: [
+          "Dave, gepensioneerd geschiedenisleraar met een grote passie voor familiegeschiedenis (genealogie)",
+          "Albert, een lid van een baptistengemeente",
+          "Shamantha, die spreekt over de wet van de aantrekkingskracht",
+          "Renco, een andere podcastmaker",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Dave benadrukt dat je bij familiegeschiedenis altijd bewijs moet zoeken in archieven, en niet zomaar iets moet aannemen dat online staat, want dat kan de 'historische gruwel' worden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke schrifttekst haalt Koos aan over het profetische belang van familiegeschiedenis in de laatste dagen?",
+        options: [
+          "De profetie dat de harten van de vaderen tot de kinderen worden teruggevoerd en omgekeerd, voordat de grote dag des Heren komt",
+          "De profetie over het bouwen van de ark van Noach",
+          "De profetie over de torenbouw van Babel",
+          "De profetie over de doortocht door de Rode Zee",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Dave over hoe familiegeschiedenis kan helpen om jezelf beter te begrijpen?",
+        options: [
+          "Dat je door brieven en verhalen van voorouders bepaalde karaktereigenschappen, zoals ongeduld, bij jezelf kunt herkennen en ermee kunt werken",
+          "Dat karaktereigenschappen volledig vastliggen en nooit veranderd kunnen worden",
+          "Dat familiegeschiedenis geen enkel verband houdt met persoonlijke ontwikkeling",
+          "Dat alleen erfelijke ziekten via familiegeschiedenis te ontdekken zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Dave vertelt over zijn projecten rond het familiearchief en genealogie",
+          "Ze bespreken de profetie over het terugvoeren van de harten van vaders en kinderen",
+          "Ze bespreken verzegeling van gezinnen in de tempel en de betekenis daarvan",
+          "Dave legt uit hoe familiegeschiedenis kan helpen jezelf beter te begrijpen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 25 citeert Christus zelf de profetie over Elia aan het volk in Amerika. Wat zal Elia doen, volgens vers 6?",
+        options: [
+          "Het hart der vaderen terugvoeren tot de kinderen en het hart der kinderen tot hun vaderen",
+          "Alleen de koningen van de aarde onderwijzen",
+          "De aarde onmiddellijk vernietigen",
+          "Alleen profetieën over oorlogen uitspreken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 25:5 zendt de Heer de profeet Elia vóórdat de grote en geduchte dag des Heren komt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zou er gebeuren als de harten van vaders en kinderen niet worden teruggevoerd, volgens vers 6?",
+        options: [
+          "Dan zou de Heer komen en de aarde treffen met een banvloek",
+          "Er zou dan helemaal niets veranderen",
+          "De aarde zou dan juist extra gezegend worden",
+          "Er wordt in dit vers geen gevolg genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 25 in de juiste volgorde.",
+        items: [
+          "De Heer zal de profeet Elia zenden",
+          "Dit gebeurt vóórdat de grote en geduchte dag des Heren komt",
+          "Elia zal het hart der vaderen terugvoeren tot de kinderen",
+          "Anders zou de Heer de aarde treffen met een banvloek",
+        ],
+      },
+    ],
+  },
 ];
