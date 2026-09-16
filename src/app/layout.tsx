@@ -57,7 +57,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#1c8a3f",
+  // Twee varianten (i.p.v. één vaste kleur) zodat de kleur van de
+  // adresbalk/statusbalk op mobiel meegaat met het systeemthema — dit is
+  // een losse browser-meta-tag die niet kan reageren op de eigen
+  // donker-thema-toggle (zie ThemeScript.tsx), alleen op prefers-color-scheme.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#1565c0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a2e54" },
+  ],
   // Nodig zodat env(safe-area-inset-*) (zie BottomNav) daadwerkelijk de
   // inkeping/homeindicator-ruimte teruggeeft i.p.v. altijd 0 — anders valt
   // de onderste navigatie in een geïnstalleerde iOS-PWA samen met de

@@ -6,24 +6,33 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Blauw uit het jehova.app-wordmerk: 400/600 zijn de exacte kleuren
+        // van het logo (".app" resp. "jehova"), de rest van de schaal is
+        // daaromheen geïnterpoleerd zodat lichte/donkere varianten (zie
+        // bv. "text-brand-800 dark:text-brand-300" door de hele app heen)
+        // dezelfde tint blauw blijven i.p.v. toevallige losse kleuren.
         brand: {
-          50: "#f2fbf4",
-          100: "#e0f7e5",
-          200: "#b9edc6",
-          300: "#87dc9d",
-          400: "#4fc370",
-          500: "#2ba750",
-          600: "#1c8a3f",
-          700: "#186d34",
-          800: "#17572c",
-          900: "#144826",
+          50: "#eef6ff",
+          100: "#d9edfe",
+          200: "#aed8fc",
+          300: "#7cc0fa",
+          400: "#4fa3f7",
+          500: "#2e86f5",
+          600: "#1565c0",
+          700: "#0f4a85",
+          800: "#0c3a69",
+          900: "#0a2e54",
         },
+        // Goud uit het logo (de punt na "app"): 500 is de exacte kleur.
         gold: {
-          400: "#f7c948",
-          500: "#f0b429",
-          600: "#de911d",
+          50: "#fdf3e0",
+          400: "#f8cd6c",
+          500: "#f6b93b",
+          600: "#e0992a",
+          700: "#b97814",
         },
         ice: {
+          50: "#f0f9ff",
           400: "#7dd3fc",
           500: "#38bdf8",
           600: "#0ea5e9",

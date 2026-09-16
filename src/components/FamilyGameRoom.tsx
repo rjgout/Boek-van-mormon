@@ -551,7 +551,7 @@ export default function FamilyGameRoom({ code, myUserId }: { code: string; myUse
                 style={{
                   left: tileX(p.position) + (i % 2 === 0 ? -8 : 8),
                   top: tileY(p.position) - 26 - Math.floor(i / 2) * 16,
-                  backgroundColor: p.userId === currentPlayerId ? "#186d34" : "#64748b",
+                  backgroundColor: p.userId === currentPlayerId ? "#0f4a85" : "#64748b",
                 }}
                 title={p.displayName}
               >
