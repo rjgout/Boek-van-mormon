@@ -7071,4 +7071,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 51,
+    title: "Aflevering 51",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt gast Shamantha over zichzelf aan het begin van dit eerste deel?",
+        options: [
+          "Ze is moeder van drie kinderen, getrouwd, en heeft net een omscholing tot data-engineer afgerond",
+          "Ze is net afgestudeerd als arts",
+          "Ze is de bisschop van haar unit",
+          "Ze werkt al twintig jaar in de horeca",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat hij een 'natuurlijke mens'-kant in zichzelf ervaart, met drangen en zwakheden, naast een geestelijke kant die het goede wil kiezen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat ontdekte Shamantha, met hulp van een vriendin, over de oorzaak van haar worsteling met de wet van kuisheid?",
+        options: [
+          "Dat ze als heel jong kind slachtoffer was geweest van seksueel misbruik, wat ze eerst helemaal verdrongen had",
+          "Dat ze eigenlijk helemaal geen probleem had",
+          "Dat het kwam door een verkeerd advies van een kerkleider",
+          "Dat het probleem alleen bij haar man lag",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar kijkt de Heer volgens Shamantha vooral naar, als het gaat om worstelen met een gebod?",
+        options: [
+          "Niet alleen of je het meteen voor elkaar krijgt, maar hoe vaak je bereid bent om weer op te staan en niet de moed op te geven",
+          "Alleen naar hoe snel je het probleem volledig oplost",
+          "Alleen naar wat andere mensen van je vinden",
+          "Alleen naar hoeveel kennis je van de schriften hebt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Shamantha vertelt over zichzelf en haar omscholing tot data-engineer",
+          "Koos legt zijn beeld van de 'natuurlijke mens' en de geestelijke kant in zichzelf uit",
+          "Shamantha vertelt over haar worsteling met de wet van kuisheid en het misbruik uit haar jeugd",
+          "Raphael legt uit waarom de wet van kuisheid volgens hem bedoeld is om het gezin te beschermen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 3:19 wordt letterlijk over de 'natuurlijke mens' gesproken, zoals Koos die noemt. Waar is de natuurlijke mens volgens dit vers een vijand van?",
+        options: [
+          "Van God, sinds de val van Adam",
+          "Van de kerkleiders",
+          "Van de wetenschap",
+          "Van andere mensen in het algemeen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 3:19 kan iemand de natuurlijke mens afleggen en een heilige worden door de verzoening van Christus.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Met welke eigenschappen wordt iemand die de natuurlijke mens aflegt vergeleken in Mosiah 3:19?",
+        options: [
+          "Met een kind: onderworpen, zachtmoedig, ootmoedig, geduldig en vol liefde",
+          "Met een leeuw: sterk en onverzettelijk",
+          "Met een rechter: streng en onverbiddelijk",
+          "Er wordt in dit vers geen vergelijking gemaakt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 3:19 in de juiste volgorde.",
+        items: [
+          "De natuurlijke mens is een vijand van God sinds de val van Adam",
+          "Tenzij hij zich overgeeft aan de ingevingen van de Heilige Geest",
+          "En de natuurlijke mens aflegt door de verzoening van Christus",
+          "En wordt als een kind: onderworpen, zachtmoedig, geduldig en vol liefde",
+        ],
+      },
+    ],
+  },
 ];
