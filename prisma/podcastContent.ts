@@ -8199,4 +8199,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 39,
+    title: "Aflevering 39",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat het gesprek met gast Caelan in dit tweede deel vooral over?",
+        options: [
+          "De leer dat mensen het potentieel hebben om ooit zelf als God te worden, en eigen werelden te scheppen",
+          "De organisatie van jeugdactiviteiten",
+          "De geschiedenis van de kerk in Nederland",
+          "Een reis naar Utah",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Caelan benadrukt dat, ook al geloven zij dat mensen ooit een god kunnen worden, hemelse vader altijd hun almachtige God en vader blijft.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke Bijbelteksten haalt Caelan aan om te onderbouwen dat mensen zoals God kunnen worden?",
+        options: [
+          "Psalm 82:6 ('u bent goden'), Johannes 10:34, en Openbaring 3:21 (zitten op de troon)",
+          "Alleen de tien geboden",
+          "Alleen de scheppingsverhalen uit Genesis",
+          "Er worden geen Bijbelteksten genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is, volgens Raphael, absoluut noodzakelijk om de hoogste graad van heerlijkheid en eeuwig nageslacht te kunnen bereiken?",
+        options: [
+          "Een verzegeling van een huwelijk tussen man en vrouw",
+          "Een universitaire opleiding",
+          "Een reis naar Jeruzalem",
+          "Rijkdom tijdens dit leven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze vergelijken het eeuwige plan met een soort positieve netwerkorganisatie",
+          "Caelan haalt Bijbelteksten aan over mensen die als goden genoemd worden",
+          "Ze bespreken wat God tot God maakt: macht over de elementen door kennis en wijsheid",
+          "Ze bespreken dat een tempelverzegeling tussen man en vrouw hiervoor noodzakelijk is",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 12 roept Christus zijn discipelen op om volmaakt te worden. Naar wiens voorbeeld, volgens vers 48?",
+        options: [
+          "Naar het voorbeeld van Christus zelf, of van de Vader in de hemel",
+          "Naar het voorbeeld van een aardse koning",
+          "Er wordt in dit vers geen voorbeeld genoemd",
+          "Naar het voorbeeld van de discipelen onderling",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 12:45 word je een kind van de Vader in de hemel door zelfs je vijanden lief te hebben, net zoals Hij zijn zon laat opgaan over bozen en goeden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Christus in 3 Nephi 12:47 over de oude dingen die onder de wet vielen?",
+        options: [
+          "Dat oude dingen zijn weggedaan en alle dingen nieuw zijn geworden",
+          "Dat de oude wet voor altijd blijft gelden zoals die was",
+          "Dat er niets veranderd is sinds de wet van Mozes",
+          "Er wordt in dit vers niets over gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 12:44-48 in de juiste volgorde.",
+        items: [
+          "Heb uw vijanden lief en bid voor wie u vervolgen",
+          "Opdat gij kinderen zult zijn van uw Vader in de hemel",
+          "Oude dingen zijn weggedaan en alle dingen zijn nieuw geworden",
+          "Wees volmaakt, zoals uw Vader in de hemel volmaakt is",
+        ],
+      },
+    ],
+  },
 ];
