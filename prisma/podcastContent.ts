@@ -4533,4 +4533,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 79,
+    title: "Aflevering 79",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld noemt Raphael om uit te leggen dat geboden juist meer vrijheid geven in plaats van die weg te nemen?",
+        options: [
+          "Verkeersregels, die ervoor zorgen dat we veilig van punt A naar punt B kunnen komen",
+          "Belastingregels",
+          "Sportregels bij voetbal",
+          "Regels rond huisdieren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat hij zich in bepaalde opzichten wel gemanipuleerd voelt door hoe de kerkgeschiedenis vroeger werd gepresenteerd, zoals rondom de vertaling van het Boek van Mormon.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom vindt Raphael het juist geloofwaardiger dat er meerdere, licht verschillende versies van Joseph Smiths eerste visioen bestaan?",
+        options: [
+          "Omdat een verhaal dat elke keer net iets anders wordt verteld, minder op een ingestudeerde leugen lijkt dan een verhaal dat altijd identiek is",
+          "Omdat verschillende versies altijd bewijzen dat een verhaal verzonnen is",
+          "Omdat het aantal versies volledig irrelevant is voor de geloofwaardigheid",
+          "Omdat de kerk dat nooit heeft toegegeven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Koos als reden waarom hij, ondanks bepaalde twijfels over personen, toch overtuigd blijft van het Boek van Mormon?",
+        options: [
+          "De bevestiging die hij door de Heilige Geest voelt tijdens het bestuderen ervan",
+          "Omdat iedereen om hem heen het ook gelooft",
+          "Omdat hij het nooit in twijfel heeft getrokken",
+          "Omdat de kerk het hem opdraagt te geloven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken manipulatie in het dagelijks leven, zoals opvoeding en reclame",
+          "Raphael legt uit dat geboden juist meer vrijheid geven in plaats van beperking",
+          "Koos vertelt over de veranderde openheid rond de kerkgeschiedenis",
+          "Ze bespreken waarom meerdere versies van een verhaal het geloofwaardiger kunnen maken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 10 moedigt Jakob het volk aan hun hart op te heffen. Waaraan herinnert hij hen in vers 23?",
+        options: [
+          "Dat zij vrij zijn om naar eigen inzicht te handelen, om de weg van de dood of van het eeuwige leven te kiezen",
+          "Dat zij geen enkele keuzevrijheid hebben",
+          "Dat alleen de koning mag kiezen voor het hele volk",
+          "Dat keuzevrijheid alleen na de dood bestaat",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 10:24 worden wij, wanneer wij met God zijn verzoend, alleen in en door de genade van God behouden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarmee moeten wij ons volgens 2 Nephi 10:24 verzoenen, en waarmee niet?",
+        options: [
+          "Met de wil van God, en niet met de wil van de duivel en het vlees",
+          "Met de wil van de duivel, en niet met de wil van God",
+          "Met de mening van de meerderheid, ongeacht wat die is",
+          "Met geen enkele wil, want dat maakt niets uit",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 10 in de juiste volgorde.",
+        items: [
+          "Wees goedsmoeds, want gij zijt vrij om naar eigen inzicht te handelen",
+          "Verzoen u met de wil van God, niet met de wil van de duivel",
+          "Alleen door de genade Gods wordt gij behouden",
+          "Moge God u opwekken door de kracht van de opstanding en de verzoening",
+        ],
+      },
+    ],
+  },
 ];
