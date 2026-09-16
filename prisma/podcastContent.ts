@@ -3499,4 +3499,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 90,
+    title: "Aflevering 90",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld van technologie-afhankelijkheid vertelt Raphael, waarbij collega's zonder een bepaalde dienst niet meer konden werken?",
+        options: [
+          "Een storing bij een grote DNS-provider, waardoor ook ChatGPT uitviel",
+          "Een stroomstoring die een hele week duurde",
+          "Het verlies van alle bedrijfsgegevens",
+          "Een hackaanval op de bedrijfswebsite",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael is voorstander van een minimumleeftijd voor social media, zoals in Australië al is ingevoerd, en vergelijkt dit met bestaande leeftijdsgrenzen voor alcohol en wapenbezit.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Raphael uit dat algoritmes van social-mediaplatforms werken?",
+        options: [
+          "Ze laten je steeds meer content zien van het soort waar je al naar kijkt, zodat je langer op het platform blijft",
+          "Ze laten willekeurig gekozen content zien, zonder enig patroon",
+          "Ze tonen altijd evenveel positieve als negatieve content",
+          "Ze stoppen automatisch na een vast aantal minuten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk advies geven Koos en Raphael om social media juist ten goede te gebruiken?",
+        options: [
+          "Bewust christelijke kanalen volgen, zodat het algoritme ook die content gaat voorschotelen",
+          "Helemaal stoppen met alle vormen van techniek",
+          "Alleen nog maar op zondag naar de telefoon kijken",
+          "Alle social media-accounts direct verwijderen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken hoe afhankelijk we zijn geworden van stroom en internet",
+          "Ze bespreken een leeftijdsgrens voor social media, vergelijkbaar met alcohol of wapenbezit",
+          "Koos vertelt over verontrustende filmpjes die zijn zoon hem liet zien",
+          "Ze bespreken hoe je social media juist ten goede kan gebruiken, zoals vasten van je telefoon",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 7 legt Mormon uit hoe je kunt onderscheiden of iets van God is of van de duivel. Wat is het criterium, volgens vers 13?",
+        options: [
+          "Wat uitnodigt en verlokt om voortdurend goed te doen en God lief te hebben, is door God ingegeven",
+          "Alleen wat spectaculair en indrukwekkend is, komt van God",
+          "Alleen wat door kerkleiders wordt goedgekeurd, komt van God",
+          "Alles wat populair is, komt automatisch van God",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 7:16 wordt de Geest van Christus aan ieder mens gegeven, zodat hij goed van kwaad kan onderscheiden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Mormon in Moroni 7:17 over hoe de duivel te werk gaat?",
+        options: [
+          "Hij overreedt geen enkel mens om goed te doen, hij en zijn engelen niet",
+          "Hij overreedt mensen soms tot iets goeds, om ze daarna te misleiden",
+          "Hij doet vooral zijn best om mensen te laten bidden",
+          "Hij heeft geen enkele invloed op menselijke keuzes",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 7 in de juiste volgorde.",
+        items: [
+          "Alle dingen die goed zijn, komen van God, en wat slecht is, komt van de duivel",
+          "Het is ons gegeven te oordelen, zodat we goed van kwaad kunnen onderscheiden",
+          "De Geest van Christus wordt aan ieder mens gegeven om dat onderscheid te maken",
+          "De duivel overreedt geen enkel mens om goed te doen",
+        ],
+      },
+    ],
+  },
 ];
