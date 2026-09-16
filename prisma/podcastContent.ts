@@ -6601,4 +6601,192 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 57,
+    title: "Aflevering 57",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar begint het gesprek van Koos en Raphael in deze aflevering over?",
+        options: [
+          "Gokken, en dat er de laatste tijd meer gokverslaafden zijn gekomen door reclame",
+          "Beleggen in aandelen",
+          "Het bezoeken van een casino in het buitenland",
+          "Voetbal kijken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos zegt dat hij zelf wel eens naar het casino gaat, maar dat voor hem vooral als een gezellig avondje uit ziet, met een vast bedrag dat hij toch kan missen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Koos als een goddelijke eigenschap die je kunt oefenen door bewust met gokken (of vasten) om te gaan?",
+        options: [
+          "Zelfbeheersing",
+          "Onzichtbaarheid",
+          "Alwetendheid",
+          "Volmaaktheid zonder enige moeite",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Koos dat hemelse vader eigenlijk wil voorkomen als het om verslaving gaat?",
+        options: [
+          "Dat je afhankelijk wordt van iets, waardoor je keuzevrijheid wordt ingeperkt",
+          "Dat je nooit meer plezier kan maken",
+          "Dat je te veel geld uitgeeft aan hobby's in het algemeen",
+          "Dat je nooit meer naar een casino mag",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken de toename van gokverslaving door reclame",
+          "Koos legt uit hoe hij zelf met een vast bedrag naar het casino gaat",
+          "Ze bespreken zelfbeheersing als goddelijke eigenschap en de leeftijdsgrens voor gokken",
+          "Ze bespreken andere soorten verslaving en dat keuzevrijheid daardoor wordt ingeperkt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar roept koning Benjamin in Mosiah 4:30 zijn volk toe op te letten, om niet verloren te gaan?",
+        options: [
+          "Op zichzelf, op hun gedachten, hun woorden en hun daden",
+          "Alleen op hun uiterlijk",
+          "Alleen op de daden van andere mensen",
+          "Alleen op hun financiën",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 4:29 zijn er zoveel manieren om zonde te begaan dat koning Benjamin ze niet allemaal kan opnoemen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Mosiah 4:30 nodig naast het letten op jezelf, om niet verloren te gaan?",
+        options: [
+          "De geboden van God onderhouden en volharden in het geloof tot het einde van je leven",
+          "Zoveel mogelijk geld verdienen",
+          "Nooit meer een spelletje spelen",
+          "Altijd gelijk hebben in een discussie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 4:29-30 in de juiste volgorde.",
+        items: [
+          "Er zijn zovele wegen om zonde te begaan dat koning Benjamin ze niet kan tellen",
+          "Let op uzelf, op uw gedachten, uw woorden en uw daden",
+          "Onderhoud de geboden Gods en volhard in het geloof tot het einde",
+          "O mens, denk hieraan en ga niet verloren",
+        ],
+      },
+    ],
+  },
+  {
+    number: 56,
+    title: "Aflevering 56",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat deze aflevering vooral over?",
+        options: [
+          "Wat een profeet is en waarom de kerk gelooft dat er vandaag de dag nog steeds profeten zijn",
+          "De geschiedenis van de kerkgebouwen",
+          "De financiën van de podcast zelf",
+          "De verschillende soorten doopvormen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat een profeet iemand is die geautoriseerd is om namens God te spreken, en dat het priesterschap nodig is om ook namens God te handelen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld noemt Raphael om te laten zien waarom er ook vandaag nog een profeet nodig is, naast de Bijbel?",
+        options: [
+          "Het dopen voor de doden, waar de Bijbel maar één summiere tekst over heeft en geen verdere instructies geeft",
+          "Het bouwen van tempels in het algemeen",
+          "De volgorde van de boeken in het Nieuwe Testament",
+          "De naam van de kerk",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over de boodschap van de huidige profeet die hem is bijgebleven?",
+        options: [
+          "Dat je niet bang hoeft te zijn ondanks alles wat er in de wereld gebeurt, als je op Christus focust",
+          "Dat de wereld binnenkort zal vergaan",
+          "Dat iedereen naar dezelfde plek op vakantie moet gaan",
+          "Dat er geen reden meer is om de schriften te bestuderen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken de algemene conferentie en de opzet daarvan",
+          "Ze bespreken wat een profeet is en de functie van het priesterschap",
+          "Raphael noemt het voorbeeld van dopen voor de doden als iets wat hersteld moest worden",
+          "Ze bespreken hoe een nieuwe president van de kerk wordt aangewezen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 8 legt Ammon aan koning Limhi uit wat een ziener is. Wat zegt hij dat een ziener kan doen?",
+        options: [
+          "Weten van dingen die voorbij zijn en van dingen die zullen komen, en verborgen dingen aan het licht brengen",
+          "Alleen maar de toekomst van het weer voorspellen",
+          "Alleen maar oude talen vertalen zonder enige andere gave",
+          "Niets bijzonders, een ziener is precies hetzelfde als een gewoon lid",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 8:16 is een ziener ook een openbaarder en een profeet, en kan geen mens een grotere gave hebben, tenzij hij de macht van God bezit.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom mag volgens Mosiah 8:13 niet zomaar iedereen in de uitleggers (de zienerstenen) kijken?",
+        options: [
+          "Omdat iemand anders dan zou kunnen zoeken naar iets wat hij niet behoort te zoeken en zou omkomen",
+          "Omdat de uitleggers te zwaar zijn om vast te houden",
+          "Omdat alleen koningen mogen lezen",
+          "Er wordt in dit vers geen reden gegeven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 8:13-18 in de juiste volgorde.",
+        items: [
+          "Ammon vertelt over een man die met uitleggers oude kronieken kan vertalen",
+          "Wie geboden wordt erin te kijken, wordt een ziener genoemd",
+          "Ammon legt uit dat een ziener ook een openbaarder en een profeet is",
+          "Door een ziener wordt de mens, door geloof, een grote weldoener voor zijn medemensen",
+        ],
+      },
+    ],
+  },
 ];
