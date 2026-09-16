@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 interface BrandingView {
   logoDataUrl: string | null;
+  heroLogoDataUrl: string | null;
   faviconDataUrl: string | null;
   appName: string | null;
 }
@@ -146,16 +147,16 @@ export default function AdminBrandingClient() {
       </summary>
 
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Een eigen logo vervangt de tekst en het boek-emoji in de header én op het welkomscherm, overal
-        in de app.
+        Header-logo en welkomscherm-logo zijn los van elkaar in te stellen — vaak is de header-versie
+        klein en naast tekst, terwijl een welkomscherm-logo groot en alleenstaand staat.
       </p>
 
       <div className="flex flex-col gap-2">
         <p className="font-bold text-sm dark:text-slate-100">App-naam</p>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Alleen zichtbaar als tekst zolang er geen logo hieronder is ingesteld: dan gebruikt de
-          browsertab/paginatitel en (bij geen logo) de header en het welkomscherm deze naam i.p.v.
-          &ldquo;Jehova&rdquo;. Leeg laten = standaardnaam.
+          Tekst die getoond wordt zolang er geen logo is ingesteld op de bijbehorende plek (header,
+          welkomscherm), en altijd voor de browsertab/paginatitel (kan geen afbeelding zijn). Leeg
+          laten = standaardnaam &ldquo;Jehova&rdquo;.
         </p>
         <form
           className="flex items-center gap-2"
@@ -179,12 +180,21 @@ export default function AdminBrandingClient() {
       </div>
 
       <ImageSlot
-        label="Logo"
+        label="Logo (header)"
         description="Vervangt 📖 + de app-naam in de header. Werkt het best met een transparante achtergrond."
         value={branding.logoDataUrl}
         maxDimension={512}
         previewClassName="h-12 w-32 px-2"
         onChange={(logoDataUrl) => save({ logoDataUrl })}
+      />
+
+      <ImageSlot
+        label="Logo (welkomscherm)"
+        description="Los van het header-logo hierboven — vervangt de app-naam boven de titel op het welkomscherm. Optioneel: laat leeg om daar de tekstnaam te tonen."
+        value={branding.heroLogoDataUrl}
+        maxDimension={800}
+        previewClassName="h-16 w-48 px-2"
+        onChange={(heroLogoDataUrl) => save({ heroLogoDataUrl })}
       />
 
       <ImageSlot

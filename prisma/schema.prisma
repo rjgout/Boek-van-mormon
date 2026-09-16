@@ -1359,11 +1359,16 @@ model ChangelogEntry {
 // appName overschrijft op dezelfde manier de vaste APP_NAME uit
 // src/lib/brand.ts (zie resolveAppName()) — bv. de kicker-tekst op het
 // welkomscherm, zonder dat daarvoor de broncode aangepast hoeft te worden.
+// heroLogoDataUrl is bewust een apart veld van logoDataUrl: de header-logo
+// (klein, naast de app-naam) en een eventueel logo op het welkomscherm
+// (groot, alleenstaand) zijn qua vorm vaak totaal verschillende afbeeldingen
+// — niet automatisch dezelfde afbeelding op beide plekken hergebruiken.
 model BrandingSettings {
-  id             String  @id @default("singleton")
-  logoDataUrl    String?
-  faviconDataUrl String?
-  appName        String?
+  id              String  @id @default("singleton")
+  logoDataUrl     String?
+  heroLogoDataUrl String?
+  faviconDataUrl  String?
+  appName         String?
 }
 
 // Eén schakelaar per spelletje op de Spelen-pagina (/live) — door een admin

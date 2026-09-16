@@ -7,17 +7,18 @@ import InstallAppCard from "@/components/InstallAppCard";
 import WelcomeCta from "@/components/WelcomeCta";
 
 export default async function HomePage() {
-  const [user, { appName, logoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
+  const [user, { appName, heroLogoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
   if (user) redirect("/dashboard");
   const displayName = resolveAppName(appName);
 
   return (
     <div className="flex flex-col items-center text-center gap-8 py-12">
-      {/* Zelfde logo-vervangt-tekst-patroon als de header (zie layout.tsx):
-          staat er een eigen logo, dan toont dat i.p.v. de tekstnaam. */}
-      {logoDataUrl ? (
+      {/* heroLogoDataUrl is een los huisstijlveld van de header-logo (zie
+          layout.tsx) — bewust niet automatisch hergebruikt, want de twee
+          plekken vragen vaak om een andere vorm afbeelding. */}
+      {heroLogoDataUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={logoDataUrl} alt={displayName} className="h-10 w-auto" />
+        <img src={heroLogoDataUrl} alt={displayName} className="h-10 w-auto" />
       ) : (
         <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{displayName}</p>
       )}

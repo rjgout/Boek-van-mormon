@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 
 export interface BrandingView {
   logoDataUrl: string | null;
+  heroLogoDataUrl: string | null;
   faviconDataUrl: string | null;
   appName: string | null;
 }
@@ -19,6 +20,7 @@ export async function getBranding(): Promise<BrandingView> {
   const row = await prisma.brandingSettings.findUnique({ where: { id: "singleton" } });
   return {
     logoDataUrl: row?.logoDataUrl ?? null,
+    heroLogoDataUrl: row?.heroLogoDataUrl ?? null,
     faviconDataUrl: row?.faviconDataUrl ?? null,
     appName: row?.appName ?? null,
   };
