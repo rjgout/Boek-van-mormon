@@ -6789,4 +6789,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 55,
+    title: "Aflevering 55",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar beginnen Koos en Raphael het gesprek mee, voordat ze bij de gelijkenis van de wijngaard komen?",
+        options: [
+          "Het taboe op praten over salaris en loonsverschillen tussen collega's",
+          "Het kopen van een nieuwe auto",
+          "De geschiedenis van de kerk in Nederland",
+          "Het weer van die week",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "In de gelijkenis die Koos aanhaalt, kregen alle arbeiders in de wijngaard hetzelfde dagloon, ongeacht hoeveel uur ze die dag gewerkt hadden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vindt Raphael er in eerste instantie oneerlijk aan klinken, als hij de gelijkenis vergelijkt met het aardse leven?",
+        options: [
+          "Dat iemand die zijn hele leven in het evangelie is opgegroeid, hetzelfde 'loon' (eeuwig leven) krijgt als iemand die zich pas op het laatste moment bekeert",
+          "Dat er helemaal geen loon wordt uitgekeerd",
+          "Dat de wijngaard in de gelijkenis niet echt bestaat",
+          "Dat werken op zondag verboden zou moeten zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk tegenargument geeft Koos: waar geniet hij, in zijn beleving, al een 'voorsprong' van, ook al krijgt uiteindelijk iedereen hetzelfde eeuwige leven?",
+        options: [
+          "Van de gemoedsrust, de liefde van God en de diepere vreugde die hij nu al in dit leven ervaart",
+          "Van een hoger inkomen dan andere mensen",
+          "Van een langer leven dan andere mensen",
+          "Van meer vrije tijd dan andere mensen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken het taboe op praten over salaris en loonverschillen",
+          "Koos vertelt de gelijkenis van de arbeiders in de wijngaard met het gelijke dagloon",
+          "Raphael vraagt zich af of dat niet oneerlijk is tegenover wie zijn hele leven het evangelie leefde",
+          "Koos legt uit dat hij nu al de zegeningen en vreugde van het evangelie geniet, als een soort voorsprong",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar vraagt koning Benjamin zijn volk in Mosiah 2:41 over na te denken?",
+        options: [
+          "Over de gezegende en gelukkige toestand van hen die de geboden van God onderhouden",
+          "Over de bouw van de tempel",
+          "Over de belastingen die het volk moest betalen",
+          "Over de geschiedenis van de oorlogen in het land",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 2:41 worden zij die Gods geboden onderhouden 'gezegend in alle dingen, zowel stoffelijke als geestelijke' — dus al in dit leven, niet alleen hierna.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurt er volgens Mosiah 2:41 met wie getrouw volhardt tot het einde?",
+        options: [
+          "Zij worden in de hemel ontvangen, om bij God te wonen in een staat van nimmer eindigend geluk",
+          "Zij krijgen een hoger dagloon dan anderen",
+          "Zij hoeven de geboden daarna niet meer te onderhouden",
+          "Er wordt in dit vers geen uitkomst genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 2:41 in de juiste volgorde.",
+        items: [
+          "Denk na over de gezegende en gelukkige toestand van hen die Gods geboden onderhouden",
+          "Zij worden gezegend in alle dingen, zowel stoffelijke als geestelijke",
+          "Indien zij getrouw volharden tot het einde, worden zij in de hemel ontvangen",
+          "Zij kunnen bij God wonen in een staat van nimmer eindigend geluk",
+        ],
+      },
+    ],
+  },
 ];
