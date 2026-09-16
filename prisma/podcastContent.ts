@@ -5567,4 +5567,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 68,
+    title: "Aflevering 68",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld vertelt Raphael over een ingeving die hij eerst had, maar waar hij niet naar luisterde?",
+        options: [
+          "Zijn eerste gevoel om zijn zoon bij de kerk af te zetten in plaats van bij de sporthal",
+          "Zijn gevoel om een andere route naar zijn werk te nemen",
+          "Zijn gevoel om een ander cadeau te kopen",
+          "Zijn gevoel om een andere baan te zoeken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt het verschil tussen de invloed en de gave van de Heilige Geest uit met het beeld van een deur die eerst maar aan één kant een deurknop heeft, en na doophandoplegging aan beide kanten.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is het licht van Christus, zoals Koos het omschrijft?",
+        options: [
+          "Een soort intuïtie of moreel kompas dat ieder mens bij de geboorte meekrijgt, ongeacht achtergrond of geloof",
+          "Een gave die alleen gedoopte leden van de kerk ontvangen",
+          "Een letterlijk zichtbaar licht rondom een persoon",
+          "Een gave die alleen profeten ontvangen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom is de gave van de Heilige Geest volgens Koos toch waardevol, ook al hebben mensen zonder die gave ook het licht van Christus?",
+        options: [
+          "Omdat je de Heilige Geest nodig hebt om God beter te leren kennen en je relatie met Hem verder te ontwikkelen",
+          "Omdat het licht van Christus eigenlijk helemaal niets doet",
+          "Omdat alleen de gave van de Heilige Geest je kan beschermen tegen ziekte",
+          "Omdat de gave van de Heilige Geest een vervanging is van het licht van Christus",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael vertelt over de ingeving die hij negeerde bij het afzetten van zijn zoon",
+          "Ze leggen het licht van Christus uit als moreel kompas voor ieder mens",
+          "Raphael legt het verschil tussen de invloed en de gave van de Heilige Geest uit",
+          "Ze bespreken waarom de gave van de Heilige Geest toch noodzakelijk is",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 7 waarschuwt Mormon zijn broeders over het licht waarmee zij oordelen. Welk licht noemt hij dat expliciet, in vers 18?",
+        options: [
+          "Het licht van Christus",
+          "Het licht van de zon",
+          "Het licht van de profeten alleen",
+          "Er wordt geen licht genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 7:19 wordt wie zorgvuldig onderzoek doet in het licht van Christus en al het goede aangrijpt zonder het te veroordelen, zeker een kind van Christus.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarvoor waarschuwt Mormon in Moroni 7:18, met betrekking tot het licht van Christus?",
+        options: [
+          "Om niet verkeerd te oordelen, want met hetzelfde oordeel waarmee je oordeelt, zul je zelf geoordeeld worden",
+          "Om nooit meer een keuze te maken",
+          "Om het licht van Christus compleet te negeren",
+          "Om alleen naar de mening van anderen te luisteren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 7 in de juiste volgorde.",
+        items: [
+          "Gij kent het licht waarmee gij kunt oordelen, namelijk het licht van Christus",
+          "Ziet toe dat gij niet verkeerd oordeelt",
+          "Doe zorgvuldig onderzoek in het licht van Christus om goed van kwaad te onderscheiden",
+          "Wie al het goede aangrijpt zonder het te veroordelen, is zeker een kind van Christus",
+        ],
+      },
+    ],
+  },
 ];
