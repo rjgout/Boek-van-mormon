@@ -6131,4 +6131,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 62,
+    title: "Aflevering 62",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk actueel onderwerp bespreken Koos en Raphael, over regels voor kinderen en telefoons?",
+        options: [
+          "Plannen om schermtijd en social media voor jonge kinderen wettelijk te beperken",
+          "Nieuwe belastingregels voor techbedrijven",
+          "Een verbod op alle smartphones voor volwassenen",
+          "Nieuwe snelheidslimieten op de snelweg",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael worstelt met het feit dat de kerk platforms zoals Facebook gebruikt om het evangelie te verspreiden, terwijl hij het bedrijf erachter zelf als problematisch beschouwt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk verhaal uit het Boek van Mormon haalt Koos aan om te illustreren dat God soms iets vreselijks toelaat binnen zijn grotere plan?",
+        options: [
+          "Het verhaal van de gelovigen die in Ammonihah levend werden verbrand, terwijl Alma en Amulek moesten toekijken",
+          "Het verhaal van de doop van Alma bij de wateren van Mormon",
+          "Het verhaal van de bekering van Alma de Jongere",
+          "Het verhaal van de gouden platen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar komen Koos en Raphael op uit als het gaat om het gebruiken van 'slechte' platforms voor een goed doel?",
+        options: [
+          "Dat je in gebed moet blijven en moet luisteren naar de Geest om te bepalen wat op dat moment het juiste is om te doen",
+          "Dat het gebruik van zulke platforms altijd verboden zou moeten zijn",
+          "Dat het doel de middelen altijd zonder enige twijfel heiligt",
+          "Dat de kerk nooit van dit soort platforms gebruik zou moeten maken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken plannen om schermtijd en social media voor kinderen te beperken",
+          "Raphael worstelt met het gebruik van Facebook door de kerk",
+          "Koos vertelt het verhaal van de verbranding van de gelovigen in Ammonihah",
+          "Ze concluderen dat gebed en de Geest de weg zijn om zulke keuzes te maken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 14 worden gelovige vrouwen en kinderen in Ammonihah in het vuur geworpen. Wat wil Amulek doen, volgens vers 10?",
+        options: [
+          "Zijn handen uitstrekken en de macht van God gebruiken om hen uit de vlammen te redden",
+          "Onmiddellijk wegvluchten uit de stad",
+          "Zich bij de menigte aansluiten",
+          "Niets doen en zwijgend toekijken zonder enige emotie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 14:11 weerhoudt de Geest Alma ervan om in te grijpen, omdat de Heer hen in heerlijkheid tot Zich opneemt en dit toelaat opdat zijn oordelen over het volk rechtvaardig zullen zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat werd er, naast de mensen zelf, ook in het vuur geworpen in Alma 14:8?",
+        options: [
+          "Hun kronieken die de heilige Schriften bevatten",
+          "Al hun voedselvoorraden",
+          "Hun kledingstukken",
+          "Al hun gereedschap",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit Alma 14 in de juiste volgorde.",
+        items: [
+          "Het volk drijft de gelovige vrouwen en kinderen bijeen en werpt hen in het vuur",
+          "Ook hun heilige geschriften worden in het vuur geworpen",
+          "Alma en Amulek worden gedwongen toe te kijken",
+          "Alma weerhoudt Amulek ervan in te grijpen, omdat de Heer dit toelaat voor zijn rechtvaardige oordeel",
+        ],
+      },
+    ],
+  },
 ];
