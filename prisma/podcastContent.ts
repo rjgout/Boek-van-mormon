@@ -7165,4 +7165,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 50,
+    title: "Aflevering 50",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat het gesprek in deze aflevering vooral over?",
+        options: [
+          "Vloeken en schelden, en hoe je daarmee omgaat vanuit het geloof",
+          "Het kopen van nieuwe apparatuur voor de podcast",
+          "De geschiedenis van de kerk in Amerika",
+          "Het plannen van een vakantie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat 'Gij zult de naam van God niet ijdel gebruiken' een van de tien geboden is, die volgens hem helpen om de twee grootste geboden (God en je naaste liefhebben) te onderhouden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over de les die hij van zijn vader kreeg over vloekwoorden?",
+        options: [
+          "Zijn vader liet de kinderen alle woorden opnoemen en legde vervolgens uit wat elk woord echt betekende",
+          "Zijn vader verbood alle gesprekken over dit onderwerp",
+          "Zijn vader liet hem een boete betalen voor elk vloekwoord",
+          "Zijn vader vertelde dat vloeken helemaal geen probleem was",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom, denkt Raphael, gebruiken mensen zo vaak juist de naam van Jezus als vloekwoord in plaats van een andere naam?",
+        options: [
+          "Omdat het woord gewoon lekker bekt in die situatie, zonder dat mensen er goed over nadenken",
+          "Omdat het woord van oorsprong helemaal niets met Jezus te maken heeft",
+          "Omdat het een officieel voorgeschreven woord is",
+          "Omdat het in geen enkele taal een vloekwoord is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken frustratie bij gamen en in het verkeer als aanleiding voor krachttermen",
+          "Ze bespreken het gebod om Gods naam niet ijdel te gebruiken",
+          "Raphael vertelt over de les van zijn vader over de betekenis van vloekwoorden",
+          "Koos legt uit hoe je jezelf bewust kunt corrigeren in het moment zelf",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 12 onderwijst Christus zijn discipelen over zweren en spreken. Wat zegt Hij volgens vers 37 dat je 'ja' en 'nee' zouden moeten zijn?",
+        options: [
+          "Laat uw ja, ja zijn en uw nee, nee; want wat u meer zegt dan dat, is uit den boze",
+          "Je hoeft nooit meer iets te beloven",
+          "Alleen priesters mogen ja of nee zeggen",
+          "Er wordt in dit vers niets over gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 12:34 zegt Christus dat je helemaal niet moet zweren, ook niet bij de hemel, omdat die Gods troon is.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom mag je volgens 3 Nephi 12:36 niet bij je eigen hoofd zweren?",
+        options: [
+          "Omdat je niet één haar zwart of wit kunt maken",
+          "Omdat je hoofd van jezelf is en dus niet telt",
+          "Omdat alleen koningen bij hun hoofd mogen zweren",
+          "Er wordt in dit vers geen reden gegeven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 12:33-37 in de juiste volgorde.",
+        items: [
+          "Doe de Heer uw eden gestand, maar zweer in het geheel niet",
+          "Zweer niet bij de hemel, want die is Gods troon",
+          "Zweer niet bij uw hoofd, want u kunt geen haar zwart of wit maken",
+          "Laat uw ja, ja zijn en uw nee, nee",
+        ],
+      },
+    ],
+  },
 ];
