@@ -65,6 +65,14 @@ export default function DictionaryClient() {
     setQuery("");
   }
 
+  // Het totaal-aantal (uit de woordenlijst) voor het geselecteerde woord —
+  // gebruikt om toe te lichten waarom dat getal kan afwijken van het aantal
+  // verzen hieronder (zie de toelichting bij de verzenlijst).
+  const selectedTotalCount = useMemo(() => {
+    if (!selectedWord || !entries) return null;
+    return entries.find((e) => e.word === selectedWord)?.count ?? null;
+  }, [selectedWord, entries]);
+
   // Nogmaals op hetzelfde woord klikken klapt het weer dicht i.p.v. opnieuw
   // te laden — verzen van een woord veranderen toch nooit binnen een sessie.
   async function selectWord(word: string) {
@@ -229,30 +237,42 @@ export default function DictionaryClient() {
       </div>
 
       {selectedWord && (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
           <h2 className="font-extrabold dark:text-slate-100">
             📖 Waar &ldquo;{selectedWord}&rdquo; voorkomt{verses ? ` (${verses.length})` : ""}
           </h2>
-          {versesError && <p className="text-red-600 dark:text-red-400 text-sm font-semibold">{versesError}</p>}
-          {!versesError && !verses && <p className="text-sm text-slate-400 dark:text-slate-500">Laden...</p>}
-          {verses && verses.length === 0 && (
-            <p className="text-sm text-slate-400 dark:text-slate-500">Geen verzen gevonden.</p>
+          {/* Het getal achter het woord hierboven is het totaal aantal keer dat
+              het voorkomt; hier gaat het om het aantal verzen — die twee
+              wijken uiteen zodra een woord meer dan eens in hetzelfde vers
+              staat (bv. "en"), dus dat hoort geen tegenstrijdigheid te lijken. */}
+          {verses && selectedTotalCount !== null && selectedTotalCount !== verses.length && (
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              {selectedTotalCount}x in totaal, verspreid over {verses.length}{" "}
+              {verses.length === 1 ? "vers" : "verzen"} (in sommige verzen dus vaker dan één keer).
+            </p>
           )}
-          {verses && verses.length > 0 && (
-            <div className="flex flex-col gap-2">
-              {verses.map((v, i) => (
-                <details key={i} className="group card !py-2">
-                  <summary className="font-bold text-sm cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between dark:text-slate-100">
-                    {v.bookName} {v.chapterNumber}:{v.verseNumber}
-                    <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
-                      ▾
-                    </span>
-                  </summary>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">{v.text}</p>
-                </details>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-col gap-3 mt-2">
+            {versesError && <p className="text-red-600 dark:text-red-400 text-sm font-semibold">{versesError}</p>}
+            {!versesError && !verses && <p className="text-sm text-slate-400 dark:text-slate-500">Laden...</p>}
+            {verses && verses.length === 0 && (
+              <p className="text-sm text-slate-400 dark:text-slate-500">Geen verzen gevonden.</p>
+            )}
+            {verses && verses.length > 0 && (
+              <div className="flex flex-col gap-2">
+                {verses.map((v, i) => (
+                  <details key={i} className="group card !py-2">
+                    <summary className="font-bold text-sm cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between dark:text-slate-100">
+                      {v.bookName} {v.chapterNumber}:{v.verseNumber}
+                      <span className="text-slate-400 transition-transform group-open:rotate-180" aria-hidden>
+                        ▾
+                      </span>
+                    </summary>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 mt-2">{v.text}</p>
+                  </details>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
