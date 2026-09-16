@@ -2935,4 +2935,192 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 96,
+    title: "Aflevering 96",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemen Koos en Raphael zichzelf, gezien het onderwerp van hun podcast en de taal waarin ze spreken?",
+        options: [
+          "Een niche binnen een niche binnen een niche",
+          "De grootste podcast van Nederland",
+          "Een wereldwijd fenomeen",
+          "Een kerkelijk radioprogramma",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat de plaatselijke Stadskerk met kerst duizenden bezoekers trekt over meerdere diensten, terwijl hun eigen wijk met kerst juist extra rustig is.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld gebruikt Raphael, over president Hinckley en een glas sinaasappelsap, om uit te leggen waarom mensen het evangelie niet makkelijker delen?",
+        options: [
+          "Dat je iets waar je zelf enorm van geniet, toch niet vanzelfsprekend met een ander deelt",
+          "Dat sinaasappelsap symbool staat voor de Heilige Geest",
+          "Dat je nooit iets moet delen zonder dat erom gevraagd wordt",
+          "Dat gulheid altijd tot last leidt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom vertelt Koos dat hij op zijn werk terughoudend is om over zijn geloof of gevoelige onderwerpen te spreken?",
+        options: [
+          "Hij heeft als manager eerder negatieve ervaringen gehad waarbij collega's dat tegen hem gebruikten",
+          "Zijn werkgever verbiedt elk gesprek over geloof volledig",
+          "Hij vindt het geloof zelf niet belangrijk genoeg om over te praten",
+          "Hij heeft er nooit eerder over nagedacht",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken dat ze in een niche van een niche zitten met hun podcast",
+          "Ze vergelijken hun eigen kerkopkomst met de drukte bij de Stadskerk met kerst",
+          "Raphael vertelt het voorbeeld van president Hinckley en het glas sinaasappelsap",
+          "Ze bespreken het idee om een laagdrempelige, makkelijk deelbare aflevering te maken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 14 spreekt Christus over een enge poort en een smalle weg. Wat zegt Hij daarover?",
+        options: [
+          "Smal is de weg die tot het leven leidt, en weinigen zijn er die hem vinden",
+          "Alle wegen leiden uiteindelijk tot hetzelfde doel",
+          "De brede weg en de smalle weg komen op hetzelfde neer",
+          "Iedereen vindt de smalle weg vanzelf, zonder moeite",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 14 zijn er velen die door de wijde poort ingaan, op de brede weg die tot vernietiging leidt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarvoor waarschuwt Christus zijn toehoorders direct na de uitspraak over de smalle weg, in 3 Nephi 14?",
+        options: [
+          "Voor valse profeten die in schaapsklederen komen, maar van binnen roofzuchtige wolven zijn",
+          "Voor het eten van onrein voedsel",
+          "Voor het reizen naar vreemde landen",
+          "Voor het te lang bidden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 3 Nephi 14 in de juiste volgorde.",
+        items: [
+          "Wijd is de poort en breed is de weg die tot vernietiging leidt",
+          "Smal is de weg die tot het leven leidt, en weinigen vinden hem",
+          "Wacht u voor valse profeten in schaapsklederen",
+          "Gij zult hen kennen aan hun vruchten",
+        ],
+      },
+    ],
+  },
+  {
+    number: 95,
+    title: "Aflevering 95",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar begint het gesprek over hoogmoed mee, in deze aflevering?",
+        options: [
+          "Raphaels voorkeur voor merkkleding zoals Tommy Hilfiger",
+          "Een discussie over dure auto's",
+          "Een discussie over grote huizen",
+          "Een discussie over dure vakanties",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos omschrijft hoogmoed als alles wat jou van God afhoudt, of het gevoel dat je Hem niet nodig hebt of het zelfs beter weet dan Hem.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Raphael als voorbeeld van hoogmoed die niet met geestelijke zaken te maken heeft?",
+        options: [
+          "Het gevoel dat hij te goed zou zijn voor werk zoals vuilnis ophalen of het schoffelen van gemeentetuinen",
+          "Het bezitten van een dure auto",
+          "Het wonen in een groot huis",
+          "Het reizen naar het buitenland",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar zijn Koos en Raphael het aan het einde van de aflevering over eens, wanneer het gaat om hoogmoed en bekering?",
+        options: [
+          "Dat bekering een continu, dagelijks proces van bijsturen is, ook op een dag die goed leek te gaan",
+          "Dat je maar één keer in je leven hoeft te bekeren van hoogmoed",
+          "Dat hoogmoed alleen bij rijke mensen voorkomt",
+          "Dat hoogmoed onmogelijk te vermijden is en dus geen probleem is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken merkkleding en of dat op zichzelf al hoogmoedig is",
+          "Koos geeft zijn definitie van hoogmoed als alles wat je van God afhoudt",
+          "Ze bespreken of we ooit een punt bereiken waarop we Christus niet meer nodig hebben",
+          "Raphael noemt het voorbeeld van werk dat hij als \"onder zijn niveau\" zou zien",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Helaman 12 wordt beschreven hoe mensen zich gedragen zodra het hun voorspoedig gaat. Wat gebeurt er dan vaak, volgens vers 2?",
+        options: [
+          "Zij verstokken hun hart en vergeten de Heer, hun God",
+          "Zij worden vanzelf nog dankbaarder richting God",
+          "Zij geven automatisch meer aan de armen",
+          "Zij bidden juist vaker en intensiever",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Helaman 12:5 zijn mensenkinderen vlug om zich in hoogmoed te verheffen, maar traag om aan de Heer te denken en zijn raadgevingen op te volgen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat willen mensen volgens Helaman 12:6 vaak niet, ondanks Gods grote goedheid en barmhartigheid?",
+        options: [
+          "Dat Hij over hen heerst, hen regeert en hun leidsman is",
+          "Dat Hij hen zegent met voorspoed",
+          "Dat Hij hun gebeden beantwoordt",
+          "Dat Hij profeten stuurt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Helaman 12 in de juiste volgorde.",
+        items: [
+          "De Heer zegent en maakt voorspoedig wie hun vertrouwen in Hem stellen",
+          "Juist bij voorspoed verstokken mensen hun hart en vergeten zij de Heer",
+          "Mensenkinderen zijn vlug om zich in hoogmoed te verheffen",
+          "Zij willen niet dat de Heer, ondanks zijn goedheid, hun leidsman is",
+        ],
+      },
+    ],
+  },
 ];
