@@ -1,8 +1,15 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import { randomUUID } from "crypto";
+import { shuffleWithSeed } from "../src/lib/exerciseGen";
 import type { PodcastEpisodeSeed, PodcastComprehensionExercise } from "./podcastContent";
 
-function toAnswersAndOptions(comp: PodcastComprehensionExercise): {
+// De vragen zijn handmatig geschreven met het juiste antwoord steeds als
+// eerste optie genoteerd (leesbaarheid tijdens het schrijven) — zonder
+// shuffle zou het juiste antwoord bij multiple choice dus (bijna) altijd op
+// dezelfde plek staan. `seed` maakt de shuffle stabiel per oefening (niet
+// willekeurig bij elke herimport), zodat herdraaien van de import geen
+// ruis geeft in bv. testen/screenshots.
+function toAnswersAndOptions(comp: PodcastComprehensionExercise, seed: number): {
   type: "MULTIPLE_CHOICE" | "SEQUENCE" | "TRUE_FALSE";
   prompt: string;
   answers: string[];
@@ -10,11 +17,12 @@ function toAnswersAndOptions(comp: PodcastComprehensionExercise): {
   options?: { label: string; isCorrect: boolean }[];
 } {
   if (comp.type === "MULTIPLE_CHOICE") {
+    const options = comp.options.map((label, i) => ({ label, isCorrect: i === comp.correctIndex }));
     return {
       type: "MULTIPLE_CHOICE",
       prompt: comp.prompt,
       answers: [comp.options[comp.correctIndex].toLowerCase()],
-      options: comp.options.map((label, i) => ({ label, isCorrect: i === comp.correctIndex })),
+      options: shuffleWithSeed(options, seed),
     };
   }
   if (comp.type === "SEQUENCE") {
@@ -67,8 +75,11 @@ export async function importPodcastEpisodes(
     const optionRows: Prisma.PodcastExerciseOptionCreateManyInput[] = [];
 
     const addExercises = (comps: PodcastComprehensionExercise[], mode: "CONTENT" | "BOM_CONNECTION") => {
+      // +500 voor BOM_CONNECTION zodat de twee blokken van dezelfde
+      // aflevering niet toevallig dezelfde shuffle-uitkomst krijgen.
+      const seedOffset = mode === "CONTENT" ? 0 : 500;
       comps.forEach((comp, order) => {
-        const data = toAnswersAndOptions(comp);
+        const data = toAnswersAndOptions(comp, seed.number * 1000 + seedOffset + order);
         const exerciseId = randomUUID();
         exerciseRows.push({
           id: exerciseId,

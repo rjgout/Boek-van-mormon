@@ -3,6 +3,13 @@ import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 import LessonFlow from "@/components/LessonFlow";
 
+// Een hoofdstuk kan (met de automatisch gegenereerde invuloefeningen erbij)
+// tientallen oefeningen hebben — veel te veel voor één les. Net als bij de
+// "Snelle ronde" (zie practice/page.tsx) een willekeurige subset, zodat een
+// hoofdstuk overzichtelijk blijft en je bij een volgende poging (of als een
+// andere gebruiker hetzelfde hoofdstuk doet) een andere selectie kan krijgen.
+const MAX_LESSON_EXERCISES = 7;
+
 export default async function LessonPage({
   params,
   searchParams,
@@ -47,7 +54,8 @@ export default async function LessonPage({
   const currentIndex = allChapters.findIndex((c) => c.id === chapter.id);
   const nextChapterId = currentIndex >= 0 ? allChapters[currentIndex + 1]?.id ?? null : null;
 
-  const exercises = chapter.exercises.map((e) => ({
+  const selectedExercises = [...chapter.exercises].sort(() => Math.random() - 0.5).slice(0, MAX_LESSON_EXERCISES);
+  const exercises = selectedExercises.map((e) => ({
     id: e.id,
     type: e.type as "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE",
     verseRef: e.verseRef,

@@ -143,8 +143,16 @@ export async function importBooks(
             prompt: comp.prompt,
             answers: JSON.stringify([comp.options[comp.correctIndex].toLowerCase()]),
           });
-          comp.options.forEach((label, order) => {
-            optionRows.push({ id: randomUUID(), exerciseId, label, isCorrect: order === comp.correctIndex, order });
+          // Geshuffeld, want handmatig geschreven meerkeuzevragen hebben het
+          // juiste antwoord vaak als eerste optie genoteerd (leesbaarheid
+          // tijdens het schrijven) — zonder shuffle staat het dus (bijna)
+          // altijd op dezelfde plek.
+          const shuffledOptions = shuffleWithSeed(
+            comp.options.map((label, i) => ({ label, isCorrect: i === comp.correctIndex })),
+            c + 1
+          );
+          shuffledOptions.forEach(({ label, isCorrect }, order) => {
+            optionRows.push({ id: randomUUID(), exerciseId, label, isCorrect, order });
           });
         } else {
           const shuffled = shuffleWithSeed(comp.items, c + 1);

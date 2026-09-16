@@ -63,7 +63,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ cha
     });
   }
 
-  const total = exercises.length;
+  // Bewust het aantal daadwerkelijk beantwoorde oefeningen, niet het totale
+  // aantal goedgekeurde oefeningen van dit hoofdstuk: de les toont een
+  // willekeurige subset (zie lesson/[chapterId]/page.tsx), dus scorePercent
+  // zou anders nooit 100% kunnen worden.
+  const total = results.length;
   const scorePercent = total === 0 ? 0 : Math.round((correctCount / total) * 100);
   const xp = correctCount * XP_PER_CORRECT + (scorePercent === 100 ? XP_PERFECT_BONUS : 0);
 
