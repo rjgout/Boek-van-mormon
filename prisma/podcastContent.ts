@@ -8011,4 +8011,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 41,
+    title: "Aflevering 41",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt gast Michiel over zijn dagelijks werk?",
+        options: [
+          "Hij is akkerbouwer en teelt onder andere uien, witlof, wortels en suikerbieten",
+          "Hij is dominee in een kerk",
+          "Hij is arts in een ziekenhuis",
+          "Hij werkt bij de gemeente als ambtenaar",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Michiel citeert de proclamatie over het gezin, waarin staat dat geslacht een essentieel kenmerk is van iemands voorsterfelijke, sterfelijke en eeuwige identiteit en doel.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vergelijking maakt Michiel met de aandoening 'Body Integrity Identity Disorder', waarbij iemand een gezond lichaamsdeel wil laten verwijderen?",
+        options: [
+          "Hij vraagt zich af of we net zo makkelijk zouden instemmen met het verwijderen van een gezonde ledemaat als met andere lichaamsveranderingen op basis van een gevoel",
+          "Hij zegt dat die aandoening niets met het onderwerp te maken heeft",
+          "Hij zegt dat die aandoening niet bestaat",
+          "Hij vergelijkt het met een allergie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke zorg uiten Michiel en Koos over pubertijdsremmers en medische transitie op jonge leeftijd?",
+        options: [
+          "Dat de gevolgen, zoals onvruchtbaarheid en verminderd seksueel genot, vaak blijvend zijn, terwijl de beslissing op jonge leeftijd wordt genomen",
+          "Dat die behandelingen helemaal geen risico's kennen",
+          "Dat die behandelingen alleen in Nederland bestaan",
+          "Dat er geen enkel voorbeeld is van mensen die weer terug transitioneren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Michiel vertelt over zijn werk als akkerbouwer",
+          "Ze citeren de proclamatie over het gezin over geslacht als eeuwig kenmerk",
+          "Michiel bespreekt mogelijke sociale invloeden op het toenemend aantal transities",
+          "Ze bespreken de risico's van pubertijdsremmers en medische ingrepen op jonge leeftijd",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 18 legt Ammon aan koning Lamoni uit waarnaar de mens geschapen is. Wat zegt hij in vers 34?",
+        options: [
+          "Dat de mens in het begin geschapen is naar het beeld Gods",
+          "Dat de mens toevallig is ontstaan zonder enig doel",
+          "Dat alleen koningen naar Gods beeld geschapen zijn",
+          "Er wordt in dit vers niets over de schepping van de mens gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 18:32 kent God de gedachten en overleggingen van elk mensenhart, want door zijn hand zijn zij allen vanaf het begin geschapen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat leert Ammon koning Lamoni om hem tot kennis van waarheid te brengen, volgens vers 34-36?",
+        options: [
+          "Hij begint bij de schepping van de wereld en van Adam, en legt de val van de mens uit",
+          "Hij leert hem alleen over de sterrenkunde",
+          "Hij weigert überhaupt iets uit te leggen",
+          "Hij leert hem alleen liederen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 18:32-36 in de juiste volgorde.",
+        items: [
+          "God kent de gedachten van elk mensenhart, want Hij heeft hen allen geschapen",
+          "De mens is in het begin geschapen naar het beeld Gods",
+          "Ammon is door de Heilige Geest geroepen om dit volk te onderwijzen",
+          "Hij begint bij de schepping van de wereld en de val van de mens",
+        ],
+      },
+    ],
+  },
 ];
