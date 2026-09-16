@@ -6,7 +6,7 @@ deployvoorbeeld: zie `docs/DEPLOY-SYNOLOGY.md`.
 
 ## Wat dit is
 
-"Geloof je dat ook?" — een Nederlandstalige, Duolingo-achtige leerapp om het
+"Geloof je dat ook?" — een Nederlandstalige leerapp om het
 Boek van Mormon te lezen (lessen, oefeningen, XP, streaks, competitie,
 live multiplayer-quiz). Bewust gebouwd om **self-hosted** te draaien (geen
 cloud-platformafhankelijkheden), taal is overal Nederlands (UI, foutmeldingen,

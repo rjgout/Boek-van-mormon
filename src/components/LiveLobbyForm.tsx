@@ -85,7 +85,7 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
       <GameCard enabled={settings.wordGameEnabled} isAdmin={isAdmin}>
         <h2 className="font-extrabold dark:text-slate-100">🟩 Woord van de dag</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Lingo/Wordle met alleen 5-letterwoorden uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één
+          Raad het 5-letterwoord uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één
           poging per dag, en het telt mee voor je streak.
         </p>
         <Link href="/word-game" className="btn-secondary self-start">
@@ -96,8 +96,8 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
       <GameCard enabled={settings.scrabbleEnabled} isAdmin={isAdmin}>
         <h2 className="font-extrabold dark:text-slate-100">🔤 Woordspel</h2>
         <p className="text-sm text-slate-500 dark:text-slate-400">
-          Een Scrabble-variant met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,
-          net als Wordfeud.
+          Een woordlegspel met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,
+          ieder op je eigen tempo.
         </p>
         <Link href="/scrabble" className="btn-secondary self-start">
           Woordspel openen

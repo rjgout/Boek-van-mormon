@@ -18,7 +18,7 @@ export default async function ToolsPage() {
           <div>
             <h2 className="font-extrabold text-lg dark:text-slate-100">Woordenboek</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Alle woorden uit het Boek van Mormon, op letter of op lengte — ook handig bij Scrabble.
+              Alle woorden uit het Boek van Mormon, op letter of op lengte — ook handig bij woordspelletjes.
             </p>
           </div>
           <span className="text-2xl" aria-hidden>

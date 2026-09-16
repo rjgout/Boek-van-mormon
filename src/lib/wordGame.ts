@@ -72,7 +72,7 @@ export function getWordForDay(gameDayKey: string): string {
 
 export type LetterState = "correct" | "present" | "absent";
 
-/** Klassieke Wordle-feedback: eerst exacte plekken, dan (uit wat overblijft) verkeerd-geplaatste letters. */
+/** Klassieke woordraad-feedback: eerst exacte plekken, dan (uit wat overblijft) verkeerd-geplaatste letters. */
 export function evaluateGuess(guess: string, target: string): LetterState[] {
   const g = guess.toLowerCase().split("");
   const t = target.toLowerCase().split("");

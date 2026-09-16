@@ -729,7 +729,7 @@ enum XPReason {
   // "Raad het hoofdstuk" — zowel alleen als live met vrienden. Zie
   // completeChapterGuess in src/lib/streak.ts.
   CHAPTER_GUESS_COMPLETED
-  // Het dagelijkse woordspel (Lingo/Wordle-stijl) goed geraden. Zie
+  // Het dagelijkse woordspel (woord raden) goed geraden. Zie
   // completeWordGame in src/lib/streak.ts.
   WORD_GAME_WON
 }
@@ -1120,7 +1120,7 @@ model ChapterGuessQuestion {
   @@unique([gameId, order])
 }
 
-// --- Dagelijks woordspel (Lingo/Wordle-stijl) --------------------------------
+// --- Dagelijks woordspel (woord raden) --------------------------------
 //
 // Eén woord van de dag voor iedereen, gekozen uit de 5-letterwoorden van het
 // Boek van Mormon (zie src/lib/wordGame.ts — een deterministieke, geen state
@@ -1215,9 +1215,9 @@ model Challenge {
   @@index([senderId])
 }
 
-// --- Woordspel (Scrabble-variant, alleen woorden uit het Boek van Mormon) --
+// --- Woordspel (woordlegspel, alleen woorden uit het Boek van Mormon) --
 //
-// Asynchroon en 1-op-1, net als Challenge hierboven (à la Wordfeud: elke
+// Asynchroon en 1-op-1, net als Challenge hierboven (elke
 // speler doet zijn zet wanneer het uitkomt) — geen realtime lobby zoals
 // LiveGame. Het bord/de racks/de zak staan als JSON in deze ene rij, wat
 // hier prima is: er is maar één actieve "lezer/schrijver" tegelijk (wie er

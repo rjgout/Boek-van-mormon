@@ -85,7 +85,7 @@ export default function ScrabbleListClient() {
       <div>
         <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Woordspel</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm">
-          Een Scrabble-variant met alleen woorden uit het Boek van Mormon. Asynchroon, net als Wordfeud: speel je
+          Een woordlegspel met alleen woorden uit het Boek van Mormon. Asynchroon: speel je
           beurt wanneer het uitkomt.
         </p>
       </div>

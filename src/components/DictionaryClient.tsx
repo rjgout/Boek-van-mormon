@@ -76,7 +76,7 @@ export default function DictionaryClient() {
         <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Woordenboek</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm">
           Alle {entries.length.toLocaleString("nl")} woorden uit het Boek van Mormon. Het getal tussen haakjes is hoe
-          vaak het woord voorkomt — ook handig als Scrabble-hulpmiddel.
+          vaak het woord voorkomt — ook handig bij woordspelletjes.
         </p>
       </div>
 

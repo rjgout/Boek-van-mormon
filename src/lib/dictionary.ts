@@ -7,10 +7,10 @@ export interface DictionaryEntry {
 
 // Zelfde brontekst en exact dezelfde extractie (regex + kleine letters +
 // diakritische tekens strippen) als prisma/bomWords.json, zodat deze lijst
-// altijd één-op-één overeenkomt met wat geldig is in Scrabble (zie
+// altijd één-op-één overeenkomt met wat geldig is in het woordlegspel (zie
 // src/lib/scrabble/dictionary.ts) — dit woordenboek is dus ook bruikbaar
-// als Scrabble-hulpmiddel. Statisch gegenereerd i.p.v. live opgeteld uit de
-// database, om dezelfde reden dat bomWords.json dat ook is.
+// als hulpmiddel bij woordspelletjes. Statisch gegenereerd i.p.v. live
+// opgeteld uit de database, om dezelfde reden dat bomWords.json dat ook is.
 const ENTRIES: DictionaryEntry[] = Object.entries(bomWordCounts as Record<string, number>)
   .map(([word, count]) => ({ word, count }))
   .sort((a, b) => a.word.localeCompare(b.word, "nl"));
