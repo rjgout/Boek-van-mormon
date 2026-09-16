@@ -3875,4 +3875,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 86,
+    title: "Aflevering 86",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke centrale vraag stelt Koos aan Raphael aan het begin van deze aflevering?",
+        options: [
+          "Ben jij rijk?",
+          "Ben jij gelukkig getrouwd?",
+          "Ben jij tevreden met je baan?",
+          "Geloof jij in wonderen?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt over een tempelervaring waarin Adam en Eva aan Satan zeggen dat ze niet ingaan op zijn aanbod, omdat ze al genoeg hebben voor hun onderhoud.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke twee grappen vertellen Koos en Raphael over mensen die aardse rijkdom mee willen nemen naar het hiernamaals?",
+        options: [
+          "Een grap over goud op zolder verstoppen en een grap over een koffer vol goudstaven bij de hemelpoort",
+          "Een grap over een man die zijn auto mee wilde nemen naar de hemel",
+          "Een grap over iemand die zijn huis wilde verkopen aan Petrus",
+          "Een grap over een rijke man die zijn testament kwijt was",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Koos als de ware rijkdom die je wel kunt meenemen naar het leven hierna?",
+        options: [
+          "Je relaties, je kennis en de karaktereigenschappen die je hebt ontwikkeld",
+          "Je bankrekening en al je bezittingen",
+          "Je functietitel en carrière",
+          "Je verzameling waardevolle spullen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken hoe goedgelovig je moet zijn tegenover mensen en AI-chatbots",
+          "Koos stelt de vraag of Raphael zichzelf rijk vindt",
+          "Ze bespreken de tempelervaring waarin Adam en Eva Satans aanbod afwijzen",
+          "Ze concluderen dat je als kind en erfgenaam van God uiteindelijk alles kunt ontvangen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Jakob 2 leert Jakob het volk over rijkdom. Wat moeten zij zoeken vóórdat zij naar rijkdom streven, volgens vers 18?",
+        options: [
+          "Het koninkrijk van God",
+          "Een groter huis",
+          "Meer aanzien in de gemeenschap",
+          "Een hogere positie in het leger",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Jakob 2:19 mag je pas rijkdom nastreven nadat je hoop in Christus hebt verkregen, en dan met de bedoeling om er goed mee te doen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke doelen noemt Jakob 2:19 voor het gebruiken van verkregen rijkdom?",
+        options: [
+          "De naakten kleden, de hongerigen voeden, gevangenen bevrijden en zieken en noodlijdenden helpen",
+          "Alleen het vergroten van je eigen aanzien",
+          "Het opbouwen van een zo groot mogelijk persoonlijk vermogen",
+          "Het financieren van oorlogen tegen vijandige volken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Jakob 2 in de juiste volgorde.",
+        items: [
+          "Acht uw broeders als uzelf en wees vrijgevig met uw bezit",
+          "Zoek het koninkrijk Gods voordat gij naar rijkdom streeft",
+          "Verkrijg eerst hoop in Christus",
+          "Streef daarna naar rijkdom met de bedoeling goed te doen",
+        ],
+      },
+    ],
+  },
 ];
