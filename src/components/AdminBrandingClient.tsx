@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 interface BrandingView {
   logoDataUrl: string | null;
   faviconDataUrl: string | null;
+  appName: string | null;
 }
 
 // PNG (niet JPEG) om transparantie in een logo/favicon te behouden.
@@ -109,11 +110,15 @@ function ImageSlot({
 export default function AdminBrandingClient() {
   const [branding, setBranding] = useState<BrandingView | null>(null);
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
+  const [appNameInput, setAppNameInput] = useState("");
 
   useEffect(() => {
     fetch("/api/admin/branding")
       .then((r) => r.json())
-      .then(setBranding);
+      .then((b: BrandingView) => {
+        setBranding(b);
+        setAppNameInput(b.appName ?? "");
+      });
   }, []);
 
   async function save(patch: Partial<BrandingView>) {
@@ -143,6 +148,33 @@ export default function AdminBrandingClient() {
       <p className="text-sm text-slate-500 dark:text-slate-400">
         Een eigen logo vervangt de tekst en het boek-emoji in de header overal in de app.
       </p>
+
+      <div className="flex flex-col gap-2">
+        <p className="font-bold text-sm dark:text-slate-100">App-naam</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          Vervangt de naam &ldquo;Jehova&rdquo; op het welkomscherm (en overal elders waar geen eigen logo
+          staat). Leeg laten = standaardnaam.
+        </p>
+        <form
+          className="flex items-center gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save({ appName: appNameInput || null });
+          }}
+        >
+          <input
+            type="text"
+            className="input !py-2 max-w-xs"
+            maxLength={40}
+            placeholder="Jehova"
+            value={appNameInput}
+            onChange={(e) => setAppNameInput(e.target.value)}
+          />
+          <button type="submit" className="btn-secondary !px-3 !py-1.5 !text-xs">
+            Opslaan
+          </button>
+        </form>
+      </div>
 
       <ImageSlot
         label="Logo"

@@ -1356,10 +1356,14 @@ model ChangelogEntry {
 // bestandsopslagsysteem nodig. Is logoDataUrl gezet, dan vervangt dat de
 // tekst+emoji in de header (zie layout.tsx); faviconDataUrl vervangt op
 // dezelfde manier het standaard favicon.ico (zie /api/branding/favicon).
+// appName overschrijft op dezelfde manier de vaste APP_NAME uit
+// src/lib/brand.ts (zie resolveAppName()) — bv. de kicker-tekst op het
+// welkomscherm, zonder dat daarvoor de broncode aangepast hoeft te worden.
 model BrandingSettings {
   id             String  @id @default("singleton")
   logoDataUrl    String?
   faviconDataUrl String?
+  appName        String?
 }
 
 // Eén schakelaar per spelletje op de Spelen-pagina (/live) — door een admin

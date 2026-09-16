@@ -6,12 +6,13 @@ import { getCurrentUser } from "@/lib/session";
 import { getBranding } from "@/lib/branding";
 import { cacheDetectedAppUrl } from "@/lib/baseUrl";
 import NavUserBadges from "@/components/NavUserBadges";
+import HeaderAuthLinks from "@/components/HeaderAuthLinks";
 import InviteListener from "@/components/InviteListener";
 import ChangelogPopup from "@/components/ChangelogPopup";
 import ThemeScript from "@/components/ThemeScript";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
-import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
+import { APP_TAGLINE, resolveAppName } from "@/lib/brand";
 
 // PWA: manifest + icons zijn wat een browser nodig heeft om "toevoegen aan
 // startscherm"/installeren aan te bieden (samen met de service worker, zie
@@ -20,10 +21,11 @@ import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 // Dynamisch (i.p.v. een statische export) omdat een admin via
 // /adminbackend een eigen favicon kan instellen (zie src/lib/branding.ts).
 export async function generateMetadata(): Promise<Metadata> {
-  const { faviconDataUrl } = await getBranding();
+  const { faviconDataUrl, appName } = await getBranding();
+  const displayName = resolveAppName(appName);
 
   return {
-    title: APP_NAME,
+    title: displayName,
     description: APP_TAGLINE,
     manifest: "/manifest.webmanifest",
     icons: {
@@ -49,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title: APP_NAME,
+      title: displayName,
     },
   };
 }
@@ -87,7 +89,8 @@ async function detectAppUrlFromHeaders(): Promise<void> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   detectAppUrlFromHeaders().catch(() => {});
-  const [user, { logoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
+  const [user, { logoDataUrl, appName }] = await Promise.all([getCurrentUser(), getBranding()]);
+  const displayName = resolveAppName(appName);
 
   return (
     <html lang="nl" suppressHydrationWarning>
@@ -100,11 +103,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg">
               {logoDataUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={logoDataUrl} alt={APP_NAME} className="h-8 w-auto" />
+                <img src={logoDataUrl} alt={displayName} className="h-8 w-auto" />
               ) : (
                 <>
                   <span aria-hidden>📖</span>
-                  {APP_NAME}
+                  {displayName}
                 </>
               )}
             </Link>
@@ -152,14 +155,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <NavUserBadges streak={user.currentStreak} xp={user.xpTotal} displayName={user.handle} />
               </nav>
             ) : (
-              <nav className="flex items-center gap-2">
-                <Link href="/login" className="btn-secondary !px-4 !py-2">
-                  Inloggen
-                </Link>
-                <Link href="/register" className="btn-primary !px-4 !py-2">
-                  Account maken
-                </Link>
-              </nav>
+              <HeaderAuthLinks />
             )}
           </div>
         </header>

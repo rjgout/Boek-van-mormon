@@ -7,3 +7,14 @@
 // zie prisma/podcastContent.ts) en dus ook geen productnaam.
 export const APP_NAME = "Jehova";
 export const APP_TAGLINE = "Schriftstudie op een speelse, motiverende manier.";
+
+/**
+ * Een admin kan via /adminbackend (Huisstijl) een eigen app-naam instellen
+ * (zie BrandingSettings.appName) — bv. om aan te sluiten bij een eigen
+ * logo/huisstijl zonder daarvoor de broncode te hoeven aanpassen. Deze
+ * functie lost dat overal consistent op: lege/ontbrekende instelling valt
+ * terug op APP_NAME hierboven.
+ */
+export function resolveAppName(override: string | null | undefined): string {
+  return override?.trim() || APP_NAME;
+}

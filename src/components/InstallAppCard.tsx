@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { hasInstallPrompt, onInstallPromptChange, promptInstall, isStandalone, isIOS } from "@/lib/pwaInstall";
 
 /**
- * Gedeeld tussen de homepage (variant="compact", vóór registratie) en stap 0
+ * Gedeeld tussen de homepage (variant="compact", als vast onderdeel van het
+ * functie-overzicht), de mobiele/tablet-welkomweergave (variant="hero", zie
+ * WelcomeCta.tsx — vervangt daar de inloggen/account-maken-knoppen) en stap 0
  * van de onboarding (variant="full", ná registratie) — zelfde installatielogica,
  * alleen andere hoeveelheid tekst/toelichting eromheen.
  */
-export default function InstallAppCard({ variant = "full" }: { variant?: "compact" | "full" }) {
+export default function InstallAppCard({ variant = "full" }: { variant?: "compact" | "hero" | "full" }) {
   const [standalone, setStandalone] = useState(false);
   const [promptAvailable, setPromptAvailable] = useState(false);
   const [ios, setIos] = useState(false);
@@ -48,8 +50,10 @@ export default function InstallAppCard({ variant = "full" }: { variant?: "compac
       </h3>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
         {variant === "compact"
-          ? "Werkt als een echte app: sneller starten en (straks) pushmeldingen."
-          : "Nodig, want pushmeldingen (zie de laatste stap) werken alleen als de app op je scherm staat."}
+          ? "Werkt als een echte app: sneller starten en pushmeldingen."
+          : variant === "hero"
+            ? "Daarna kan je vanuit de app zelf inloggen of een account maken — én werkt het sneller, met pushmeldingen voor je streak."
+            : "Nodig, want pushmeldingen (zie de laatste stap) werken alleen als de app op je scherm staat."}
       </p>
 
       {promptAvailable && (

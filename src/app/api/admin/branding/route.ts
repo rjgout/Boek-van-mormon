@@ -12,6 +12,12 @@ const dataUrlField = z
 const schema = z.object({
   logoDataUrl: dataUrlField,
   faviconDataUrl: dataUrlField,
+  appName: z
+    .string()
+    .max(40, "Maximaal 40 tekens.")
+    .transform((v) => v.trim() || null)
+    .nullable()
+    .optional(),
 });
 
 export async function GET() {

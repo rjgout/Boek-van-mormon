@@ -1,16 +1,19 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
-import { APP_NAME } from "@/lib/brand";
+import { getBranding } from "@/lib/branding";
+import { resolveAppName } from "@/lib/brand";
 import InstallAppCard from "@/components/InstallAppCard";
+import WelcomeCta from "@/components/WelcomeCta";
 
 export default async function HomePage() {
-  const user = await getCurrentUser();
+  const [user, { appName }] = await Promise.all([getCurrentUser(), getBranding()]);
   if (user) redirect("/dashboard");
+  const displayName = resolveAppName(appName);
 
   return (
     <div className="flex flex-col items-center text-center gap-8 py-12">
-      <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{APP_NAME}</p>
+      <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{displayName}</p>
       <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-800 dark:text-brand-300 leading-tight">
         Lees de Schriften,
         <br />
@@ -20,16 +23,12 @@ export default async function HomePage() {
         Korte lessen, invuloefeningen, dag-streaks, streak freezes die je verdient
         (en kan weggeven), vrienden, divisies en een live quiz die je samen kan spelen.
       </p>
-      <div className="flex gap-3">
-        <Link href="/register" className="btn-primary">
-          Gratis beginnen
-        </Link>
-        <Link href="/login" className="btn-secondary">
-          Ik heb al een account
-        </Link>
-      </div>
+      <WelcomeCta />
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 w-full max-w-4xl">
+      {/* sm:grid-cols-3 (i.p.v. 2) omdat de installatiekaart hieronder pas
+          vanaf lg meedoet — anders staat er in het tablet-bereik één kaart
+          in haar eentje op een lege rij. */}
+      <div className="grid sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-8 w-full max-w-4xl">
         <div className="card text-left">
           <div className="text-3xl mb-2">🔥</div>
           <h3 className="font-extrabold mb-1 dark:text-slate-100">Dag-streak</h3>
@@ -54,7 +53,10 @@ export default async function HomePage() {
             wie het snelst en scherpst is.
           </p>
         </div>
-        <InstallAppCard variant="compact" />
+        {/* Op mobiel/tablet staat de installatie-oproep al prominent bij WelcomeCta hierboven. */}
+        <div className="hidden lg:block">
+          <InstallAppCard variant="compact" />
+        </div>
       </div>
     </div>
   );
