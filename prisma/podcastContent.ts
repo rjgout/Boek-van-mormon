@@ -7353,4 +7353,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 48,
+    title: "Aflevering 48",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over waarom hij niet zo van het woord 'bekering' houdt, en liever spreekt van 'je tot God keren'?",
+        options: [
+          "Omdat 'bekering' voor hem vroeger een negatieve, hel-en-verdoemenisachtige lading had, terwijl hij nu elke ochtend gewoon opnieuw naar God toe keert",
+          "Omdat hij het woord te moeilijk vindt om uit te spreken",
+          "Omdat het woord niet in de schriften voorkomt",
+          "Omdat het woord alleen voor nieuwe leden zou gelden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Hans legt uit dat het Hebreeuwse woord voor 'zonde' letterlijk 'je doel voorbij schieten' betekent, en dat 'bekeren' letterlijk 'terugkeren' betekent.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld gebruikt Hans uit een supermarkt om te laten zien dat alleen 'het goedmaken' niet genoeg is voor een volledig bekeringsproces?",
+        options: [
+          "Een man die betrapt werd op winkeldiefstal, alsnog betaalde, maar niet liet blijken dat hij het niet opnieuw zou doen",
+          "Een kassière die per ongeluk te veel geld teruggaf",
+          "Een winkeleigenaar die een klant onterecht beschuldigde",
+          "Een klant die een product terugbracht zonder bon",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarmee vergelijkt Raphael het voortdurend bijsturen in het leven, om gefocust te blijven op Christus?",
+        options: [
+          "Met fietsen: niemand kan een perfecte rechte lijn fietsen, je bent continu in balans aan het bijsturen",
+          "Met autorijden op een snelweg zonder bochten",
+          "Met stilzitten zonder ooit te bewegen",
+          "Met een wedstrijd die je in één keer wint of verliest",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Koos legt uit waarom hij liever spreekt van 'je tot God keren' dan van bekering",
+          "Hans bespreekt verschillende definities van zonde en bekering uit diverse tradities",
+          "Hans vertelt het voorbeeld uit de supermarkt over goedmaken zonder volledige omkeer",
+          "Raphael vergelijkt het voortdurend bijsturen in het leven met fietsen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Enos 1 beschrijft Enos zijn worsteling voor God voordat hij vergeving ontving. Wat deed hij, volgens vers 4, de hele dag en tot in de avond?",
+        options: [
+          "Hij riep God aan in machtig gebed en smeking, totdat zijn stem tot de hemelen reikte",
+          "Hij zocht de hele dag naar voedsel in de wouden",
+          "Hij schreef de hele dag in zijn dagboek",
+          "Hij sprak de hele dag met andere mensen over het weer",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Enos 1:5 kwam er een stem tot Enos die zei dat zijn zonden hem vergeven waren, en dat hij gezegend zou worden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat bracht Enos ertoe om voor zijn Maker te knielen en zo vurig te bidden, volgens Enos 1:3?",
+        options: [
+          "De woorden over het eeuwige leven en de vreugde der heiligen die hij zijn vader vaak had horen zeggen, drongen diep tot zijn hart door",
+          "Een droom die hij die nacht had gehad",
+          "Een gesprek met vreemden die hij tegenkwam",
+          "Er wordt in dit vers geen reden gegeven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Enos 1:2-6 in de juiste volgorde.",
+        items: [
+          "De woorden van zijn vader over het eeuwige leven drongen diep tot Enos' hart door",
+          "Zijn ziel hongerde, en hij knielde neer in machtig gebed",
+          "De hele dag en tot in de avond bleef hij zijn stem verheffen",
+          "Een stem zei hem dat zijn zonden vergeven waren",
+        ],
+      },
+    ],
+  },
 ];
