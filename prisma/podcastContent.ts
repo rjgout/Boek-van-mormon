@@ -8105,4 +8105,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 40,
+    title: "Aflevering 40",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat het gesprek in deze nieuwjaarsaflevering vooral over?",
+        options: [
+          "Het stellen van (meetbare) doelen voor het nieuwe jaar en hoe dat samenhangt met vooruitgang in het geloof",
+          "De geschiedenis van oud en nieuw vieren",
+          "Het kopen van nieuwe podcastapparatuur",
+          "Een reis die ze gaan maken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat een ongeschreven doel eigenlijk maar een wens is, en dat het daarom belangrijk is om doelen op te schrijven en waar mogelijk meetbaar te maken.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Koos zijn idee van 'vooruitgang' uit aan de hand van licht en waarheid?",
+        options: [
+          "Dat je groeit in licht door eigenschappen als liefde, dankbaarheid en geduld te ontwikkelen, en in waarheid door de ervaringen die je opdoet",
+          "Dat vooruitgang alleen te meten is in kilo's",
+          "Dat licht en waarheid niets met groei te maken hebben",
+          "Dat alleen uiterlijke prestaties tellen als vooruitgang",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke concrete doelen stellen Koos en Raphael voor hun podcast in dit nieuwe jaar?",
+        options: [
+          "Acht gasten uitnodigen, waarvan minstens één van een ander geloof, wekelijks een aflevering blijven maken, en een community opbouwen",
+          "Stoppen met de podcast na dit jaar",
+          "Alleen nog maar afleveringen zonder gasten maken",
+          "De podcast omzetten in een boek",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken hoe snel de techniek de afgelopen dertig jaar is veranderd",
+          "Raphael legt uit waarom een doel meetbaar moet zijn om geen wens te blijven",
+          "Koos vertelt over zijn idee om een dankbaarheidsboekje bij te gaan houden",
+          "Ze stellen samen concrete doelen voor hun podcast in het nieuwe jaar",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 28:30 wordt beschreven hoe de Heer kennis en groei aan mensen geeft. Hoe gebeurt dat volgens dit vers?",
+        options: [
+          "Regel op regel, voorschrift op voorschrift, hier een weinig en daar een weinig",
+          "In één keer alles tegelijk, zonder enige opbouw",
+          "Alleen via dromen, zonder enige inspanning",
+          "Er wordt in dit vers geen manier genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 28:30 zal de Heer meer geven aan wie ontvangt, maar van wie zegt 'ik heb genoeg' zal zelfs weggenomen worden wat hij heeft.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zullen zij leren, volgens 2 Nephi 28:30, die naar Gods voorschriften luisteren en zijn raad ter harte nemen?",
+        options: [
+          "Wijsheid",
+          "Alleen rijkdom",
+          "Alleen roem",
+          "Er wordt in dit vers niets specifieks genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 28:30 in de juiste volgorde.",
+        items: [
+          "De Heer geeft de mensenkinderen regel op regel, voorschrift op voorschrift",
+          "Hier een weinig en daar een weinig",
+          "Gezegend zijn zij die naar zijn voorschriften luisteren, want zij zullen wijsheid leren",
+          "Hem die ontvangt, zal Hij meer geven",
+        ],
+      },
+    ],
+  },
 ];
