@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ExerciseCard, type Exercise } from "@/components/LessonFlow";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 interface Answer {
   exerciseId: string;
@@ -47,6 +48,7 @@ export default function PodcastLessonFlow({
     const data = await res.json();
     setSubmitting(false);
     setSummary(data);
+    announceXpChanged();
   }
 
   function onDone(given: string[]) {

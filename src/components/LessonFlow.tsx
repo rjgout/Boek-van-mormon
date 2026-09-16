@@ -6,6 +6,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
 import { normalizeAnswer } from "@/lib/exerciseGen";
 import { useActivityStatus } from "@/lib/useActivity";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 export type ExerciseType = "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE" | "IMAGE_CHOICE";
 
@@ -104,6 +105,7 @@ export default function LessonFlow({ chapterId, bookName, chapterNumber, nextCha
     setSubmitting(false);
     setSummary(data);
     setPhase("summary");
+    announceXpChanged();
   }
 
   function onExerciseDone(given: string[], correct: boolean) {

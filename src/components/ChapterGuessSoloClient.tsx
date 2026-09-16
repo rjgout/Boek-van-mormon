@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 type Level = "BEGINNER" | "ADVANCED" | "EXPERT";
 
@@ -119,7 +120,10 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
     }
     setFeedback(data);
     setGame((g) => (g ? { ...g, hintCredits: data.hintCredits } : g));
-    if (data.finished) setFinalSummary(data.summary);
+    if (data.finished) {
+      setFinalSummary(data.summary);
+      announceXpChanged();
+    }
   }
 
   function nextQuestion() {

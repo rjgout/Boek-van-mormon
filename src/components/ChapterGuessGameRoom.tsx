@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { getSocket } from "@/lib/socketClient";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 interface LobbyPlayer {
   userId: string;
@@ -105,6 +106,7 @@ export default function ChapterGuessGameRoom({ code, myUserId }: { code: string;
       setPlayers(data.scoreboard);
       setForfeitedBy(data.forfeitedBy ?? null);
       setPhase("finished");
+      announceXpChanged();
     }
     function onError(data: { message: string }) {
       setErrorMessage(data.message);

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { getSocket } from "@/lib/socketClient";
 import { normalizeAnswer } from "@/lib/exerciseGen";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 interface LobbyPlayer {
   userId: string;
@@ -77,6 +78,7 @@ export default function GameRoom({ code, myUserId }: { code: string; myUserId: s
       setPlayers(data.scoreboard);
       setForfeitedBy(data.forfeitedBy ?? null);
       setPhase("finished");
+      announceXpChanged();
     }
     function onError(data: { message: string }) {
       setErrorMessage(data.message);

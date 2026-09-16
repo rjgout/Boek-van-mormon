@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 type LetterState = "correct" | "present" | "absent";
 
@@ -36,7 +36,6 @@ const TILE_STYLES: Record<LetterState, string> = {
 };
 
 export default function WordGameClient() {
-  const router = useRouter();
   const [game, setGame] = useState<GameView | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [guess, setGuess] = useState("");
@@ -79,7 +78,7 @@ export default function WordGameClient() {
     }
     setGame(data);
     setGuess("");
-    if (data.status !== "IN_PROGRESS") router.refresh();
+    if (data.status !== "IN_PROGRESS") announceXpChanged();
   }
 
   if (loadError) {

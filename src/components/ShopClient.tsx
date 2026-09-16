@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 interface ShopData {
   xpTotal: number;
@@ -12,7 +12,6 @@ interface ShopData {
 }
 
 export default function ShopClient() {
-  const router = useRouter();
   const [data, setData] = useState<ShopData | null>(null);
   const [hintQuantity, setHintQuantity] = useState(1);
   const [buyingHints, setBuyingHints] = useState(false);
@@ -46,9 +45,7 @@ export default function ShopClient() {
     }
     setData({ ...data, xpTotal: body.xpTotal, hintBalance: body.hintBalance });
     setHintMessage({ type: "ok", text: `${hintQuantity} hint${hintQuantity > 1 ? "s" : ""} gekocht! 💡` });
-    // De XP-badge in de header is server-gerenderd (layout.tsx) en anders
-    // pas bij de volgende paginanavigatie ververst.
-    router.refresh();
+    announceXpChanged();
   }
 
   async function buyFreezes() {
@@ -68,7 +65,7 @@ export default function ShopClient() {
     }
     setData({ ...data, xpTotal: body.xpTotal, freezeCount: body.freezeCount });
     setFreezeMessage({ type: "ok", text: `${freezeQuantity} freeze${freezeQuantity > 1 ? "s" : ""} gekocht! 🧊` });
-    router.refresh();
+    announceXpChanged();
   }
 
   if (!data) return <p className="text-slate-400 dark:text-slate-500 text-center">Laden...</p>;

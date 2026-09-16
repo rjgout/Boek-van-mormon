@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ExerciseCard, type Exercise } from "@/components/LessonFlow";
 import { useActivityStatus } from "@/lib/useActivity";
+import { announceXpChanged } from "@/lib/xpBroadcast";
 
 interface Answer {
   exerciseId: string;
@@ -41,6 +42,7 @@ export default function QuickPracticeFlow({ exercises }: { exercises: Exercise[]
     const data = await res.json();
     setSubmitting(false);
     setSummary(data);
+    announceXpChanged();
   }
 
   function onDone(given: string[], _correct: boolean) {
