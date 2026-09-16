@@ -104,10 +104,13 @@ model User {
   longestStreak Int     @default(0)
   lastStudyDate String? // yyyy-mm-dd, in de dag-bucket van de gebruiker
   freezeCount   Int     @default(0)
-  // Met XP gekochte hints (zie src/lib/shop.ts) — een los, algemeen tegoed
-  // bovenop de per-partij verdiende hint-tegoeden bij het Woordspel
-  // (ScrabbleGame.player1/2HintCredits): overal inzetbaar waar hints
-  // gebruikt kunnen worden, niet gebonden aan één spel.
+  // Het enige hint-tegoed dat er is (zie src/lib/shop.ts) — gekocht in de
+  // winkel of verdiend bij het Woordspel/Raad het hoofdstuk komt allebei
+  // hier terecht, zodat overal waar hints gebruikt kunnen worden precies
+  // hetzelfde getal te zien is. Eerder bestonden er ook losse per-partij
+  // tegoeden (ScrabbleGame.player1/2HintCredits, ChapterGuessGame.hintCredits)
+  // die pas bij uitputting dit tegoed aanspraken — dat gaf per scherm een
+  // ander getal te zien, dus vervangen door dit ene gedeelde tegoed.
   hintBalance   Int     @default(0)
 
   // Notificaties: allebei standaard UIT (zelfde privacy-by-default-principe
@@ -1118,11 +1121,6 @@ model ChapterGuessGame {
   level         ChapterGuessLevel
   questionCount Int
   currentIndex  Int                    @default(0)
-  // Per-spel verdiend hint-tegoed (net als ScrabbleGame.player1HintCredits) —
-  // +1 bij elk juist antwoord (behalve op EXPERT, waar sowieso geen hints
-  // mogen). Op = eerst dit tegoed, dan pas User.hintBalance (gekocht in de
-  // winkel), zie useChapterGuessHint in src/lib/chapterGuess.ts.
-  hintCredits   Int                    @default(0)
   status        ChapterGuessGameStatus @default(IN_PROGRESS)
   questions     ChapterGuessQuestion[]
   createdAt     DateTime               @default(now())
@@ -1281,14 +1279,6 @@ model ScrabbleGame {
   // zak leeg hoeft te zijn (voorkomt een oneindig vastgelopen partij).
   consecutivePasses Int     @default(0)
   winnerUserId      String?
-
-  // Alleen woorden uit het Boek van Mormon mogen blijkt lastiger dan gedacht
-  // — elke geslaagde plaatsing (PLACE) levert +1 hint-tegoed op, dat een
-  // hint (letters highlighten die samen een woord vormen) verzilvert. Begint
-  // op 0: pas na je eerste geslaagde woord krijg je er één. Zie
-  // src/lib/scrabble/hint.ts.
-  player1HintCredits Int @default(0)
-  player2HintCredits Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

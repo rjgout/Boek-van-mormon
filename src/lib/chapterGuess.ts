@@ -113,21 +113,21 @@ export interface ChapterGuessGameView {
   summary: { correctCount: number; total: number } | null;
 }
 
-// Hoeveel hints je nu daadwerkelijk kunt gebruiken: het per-spel verdiende
-// tegoed plus het algemene, met XP gekochte tegoed (User.hintBalance, zie
-// src/lib/shop.ts) — useChapterGuessHint spreekt bij gebrek aan het eerste
-// gewoon het tweede aan, dus de UI moet ook echt de som tonen. Eerder
-// toonde de knop alleen game.hintCredits, waardoor gekochte hints wel
-// bruikbaar waren maar niet meetelden in het getal op de knop.
-async function totalHintsAvailable(userId: string, gameHintCredits: number): Promise<number> {
+// Eén gedeeld hint-tegoed (User.hintBalance, zie src/lib/shop.ts) — verdiend
+// (dit potje) of gekocht (winkel) komt op dezelfde plek terecht, en overal
+// waar hints gebruikt kunnen worden (Woordspel, Raad het hoofdstuk, live
+// quiz) wordt exact ditzelfde getal getoond. Vroeger was dit een los
+// per-spel tegoed dat pas bij uitputting het algemene tegoed aansprak,
+// waardoor het getal per scherm kon verschillen.
+async function getHintBalance(userId: string): Promise<number> {
   const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { hintBalance: true } });
-  return gameHintCredits + user.hintBalance;
+  return user.hintBalance;
 }
 
 export async function getChapterGuessGameView(gameId: string, userId: string): Promise<ChapterGuessGameView | { error: string }> {
   const game = await prisma.chapterGuessGame.findUnique({ where: { id: gameId } });
   if (!game || game.userId !== userId) return { error: "Spel niet gevonden." };
-  const hintCredits = await totalHintsAvailable(userId, game.hintCredits);
+  const hintCredits = await getHintBalance(userId);
 
   if (game.status === "FINISHED") {
     const correctCount = await prisma.chapterGuessQuestion.count({ where: { gameId, correct: true } });
@@ -190,8 +190,8 @@ export async function submitChapterGuessAnswer(
 
   const nextIndex = game.currentIndex + 1;
   const finished = nextIndex >= game.questionCount;
+  // Geen hint-tegoed meer op EXPERT: hints mogen daar toch niet gebruikt worden.
   const earnsHintCredit = correct && game.level !== "EXPERT";
-  const hintCredits = await totalHintsAvailable(userId, game.hintCredits + (earnsHintCredit ? 1 : 0));
 
   await prisma.$transaction(async (tx) => {
     await tx.chapterGuessQuestion.update({
@@ -202,13 +202,15 @@ export async function submitChapterGuessAnswer(
       where: { id: gameId },
       data: {
         currentIndex: nextIndex,
-        // Geen hint-tegoed meer op EXPERT: hints mogen daar toch niet gebruikt worden.
-        hintCredits: earnsHintCredit ? { increment: 1 } : undefined,
         status: finished ? "FINISHED" : undefined,
         finishedAt: finished ? new Date() : undefined,
       },
     });
+    if (earnsHintCredit) {
+      await tx.user.update({ where: { id: userId }, data: { hintBalance: { increment: 1 } } });
+    }
   });
+  const hintCredits = await getHintBalance(userId);
 
   if (finished) {
     const correctCount = await prisma.chapterGuessQuestion.count({ where: { gameId, correct: true } });
@@ -291,7 +293,6 @@ export async function useChapterGuessHint(
   // kunnen verbruiken, of — als we de vraag zouden claimen vóórdat we weten
   // of er een tegoed is — de vraag permanent kunnen "opbranden" zonder dat
   // er ooit een hint is gegeven.
-  let usedGameCredit = false;
   try {
     await prisma.$transaction(async (tx) => {
       const claimed = await tx.chapterGuessQuestion.updateMany({
@@ -300,22 +301,12 @@ export async function useChapterGuessHint(
       });
       if (claimed.count === 0) throw new HintAlreadyUsedError();
 
-      // Zelfde twee-traps-verbruik als bij het Woordspel: eerst het per-spel
-      // verdiende tegoed, pas daarna het algemene, gekochte tegoed
-      // (User.hintBalance, zie src/lib/shop.ts).
-      const gameCreditResult = await tx.chapterGuessGame.updateMany({
-        where: { id: gameId, hintCredits: { gt: 0 } },
-        data: { hintCredits: { decrement: 1 } },
+      // Eén gedeeld tegoed (User.hintBalance, zie src/lib/shop.ts).
+      const userCreditResult = await tx.user.updateMany({
+        where: { id: userId, hintBalance: { gt: 0 } },
+        data: { hintBalance: { decrement: 1 } },
       });
-      if (gameCreditResult.count > 0) {
-        usedGameCredit = true;
-      } else {
-        const userCreditResult = await tx.user.updateMany({
-          where: { id: userId, hintBalance: { gt: 0 } },
-          data: { hintBalance: { decrement: 1 } },
-        });
-        if (userCreditResult.count === 0) throw new NoHintCreditError();
-      }
+      if (userCreditResult.count === 0) throw new NoHintCreditError();
     });
   } catch (e) {
     if (e instanceof HintAlreadyUsedError) return { error: "Je hebt voor deze vraag al een hint gebruikt." };
@@ -325,10 +316,7 @@ export async function useChapterGuessHint(
     throw e;
   }
 
-  // Het getal op de knop is de som van beide tegoeden (zie
-  // totalHintsAvailable) — dit haalt User.hintBalance dus opnieuw op zodat
-  // een eventuele aftrek daarvan ook echt zichtbaar wordt.
-  const hintCredits = await totalHintsAvailable(userId, usedGameCredit ? game.hintCredits - 1 : game.hintCredits);
+  const hintCredits = await getHintBalance(userId);
 
   const optionIds = question.optionIds ? (JSON.parse(question.optionIds) as string[]) : null;
   const effect = computeHintEffect(game.level, question.chapterId, optionIds, await getChapterLabel(question.chapterId));

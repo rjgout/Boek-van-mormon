@@ -60,10 +60,9 @@ interface RoomPlayer {
   answeredAt?: number;
   given?: string[];
   correct?: boolean;
-  // Alleen relevant bij mode CHAPTER_GUESS — per-speler, alleen in het
-  // geheugen (net als score/correctCount hierboven, die ook pas bij
-  // finishGame naar de database worden geschreven).
-  hintCredits: number;
+  // Alleen relevant bij mode CHAPTER_GUESS. Hints zelf gaan via het gedeelde
+  // User.hintBalance (zie src/lib/shop.ts) — hier alleen bijgehouden of
+  // deze speler al een hint gebruikt heeft voor de huidige vraag.
   hintUsedThisQuestion: boolean;
 
   // Alleen relevant bij mode FAMILY_GAME — hieronder. Gasten bestaan alleen
@@ -409,8 +408,14 @@ function registerAnswer(room: RoomState, userId: string, given: string[]) {
   if (correct) {
     player.correctCount += 1;
     // Net als bij het alleen-spelen-spel: geen nieuwe hints te verdienen op
-    // EXPERT, daar mogen ze toch niet gebruikt worden.
-    if (room.mode === "CHAPTER_GUESS" && room.level !== "EXPERT") player.hintCredits += 1;
+    // EXPERT, daar mogen ze toch niet gebruikt worden. Rechtstreeks naar het
+    // gedeelde User.hintBalance (zie src/lib/shop.ts) i.p.v. een los
+    // per-partij tegoed, zodat dit overal hetzelfde getal blijft — synchroon
+    // wegschrijven kan hier niet (registerAnswer is niet async), dus "fire
+    // and forget" net als de andere niet-kritieke schrijfacties in dit bestand.
+    if (room.mode === "CHAPTER_GUESS" && room.level !== "EXPERT" && !player.isGuest) {
+      prisma.user.update({ where: { id: player.userId }, data: { hintBalance: { increment: 1 } } }).catch(() => {});
+    }
   }
 
   ioInstance?.to(room.code).emit("answer_received", {
@@ -740,7 +745,6 @@ export function initGameServer(httpServer: HttpServer) {
           socketIds: new Set(),
           score: 0,
           correctCount: 0,
-          hintCredits: 0,
           hintUsedThisQuestion: false,
           ...(room.mode === "FAMILY_GAME" ? { isGuest: false, position: 0, streak: 0 } : {}),
         };
@@ -780,7 +784,6 @@ export function initGameServer(httpServer: HttpServer) {
         socketIds: new Set(),
         score: 0,
         correctCount: 0,
-        hintCredits: 0,
         hintUsedThisQuestion: false,
         isGuest: true,
         position: 0,
@@ -902,20 +905,13 @@ export function initGameServer(httpServer: HttpServer) {
       const player = room.players.get(user.id);
       if (!player || player.hintUsedThisQuestion) return;
 
-      // Zelfde twee-traps-verbruik als overal elders: eerst het per-spel
-      // verdiende (in-memory) tegoed, dan pas User.hintBalance.
-      let used = false;
-      if (player.hintCredits > 0) {
-        player.hintCredits -= 1;
-        used = true;
-      } else {
-        const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-        if (dbUser && dbUser.hintBalance > 0) {
-          await prisma.user.update({ where: { id: user.id }, data: { hintBalance: { decrement: 1 } } });
-          used = true;
-        }
-      }
-      if (!used) {
+      // Eén gedeeld tegoed (User.hintBalance, zie src/lib/shop.ts) — de
+      // `gt: 0`-voorwaarde maakt dit race-veilig bij een dubbelklik.
+      const result = await prisma.user.updateMany({
+        where: { id: user.id, hintBalance: { gt: 0 } },
+        data: { hintBalance: { decrement: 1 } },
+      });
+      if (result.count === 0) {
         // Los "hint_error"-event i.p.v. het generieke "error_message": dat
         // laatste zet de client naar een volle foutpagina (spel niet
         // gevonden/al gestart e.d.), wat hier te drastisch zou zijn voor
@@ -927,7 +923,8 @@ export function initGameServer(httpServer: HttpServer) {
 
       const question = room.cgQuestions[room.questionIndex];
       const effect = computeHintEffect(room.level!, question.chapterId, question.optionIds, room.cgChapterLabels.get(question.chapterId) ?? null);
-      socket.emit("hint_result", effect);
+      const dbUser = await prisma.user.findUnique({ where: { id: user.id }, select: { hintBalance: true } });
+      socket.emit("hint_result", { ...effect, hintBalance: dbUser?.hintBalance ?? 0 });
     });
 
     socket.on("forfeit", () => {

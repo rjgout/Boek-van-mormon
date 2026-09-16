@@ -184,18 +184,8 @@ export async function placeMove(
         board: JSON.stringify(board),
         bag: JSON.stringify(bag),
         ...(isPlayer1
-          ? {
-              player1Rack: JSON.stringify(newRack),
-              player1Score: myScore,
-              player2Score: opponentScore,
-              player1HintCredits: { increment: 1 },
-            }
-          : {
-              player2Rack: JSON.stringify(newRack),
-              player2Score: myScore,
-              player1Score: opponentScore,
-              player2HintCredits: { increment: 1 },
-            }),
+          ? { player1Rack: JSON.stringify(newRack), player1Score: myScore, player2Score: opponentScore }
+          : { player2Rack: JSON.stringify(newRack), player2Score: myScore, player1Score: opponentScore }),
         turnUserId: finished ? null : opponentId,
         consecutivePasses: 0,
         status: finished ? "FINISHED" : "ACTIVE",
@@ -212,6 +202,9 @@ export async function placeMove(
         score: validation.result.score,
       },
     }),
+    // Eén gedeeld hint-tegoed (User.hintBalance) i.p.v. een los per-partij
+    // tegoed — zie useHint hieronder voor dezelfde reden.
+    prisma.user.update({ where: { id: userId }, data: { hintBalance: { increment: 1 } } }),
   ]);
 
   const myName = isPlayer1 ? game.player1.handle : game.player2.handle;
@@ -377,6 +370,7 @@ export interface HintActionResult {
   error?: string;
   word?: string;
   usedIndices?: number[];
+  hintBalance?: number;
 }
 
 /**
@@ -399,29 +393,20 @@ export async function useHint(gameId: string, userId: string): Promise<HintActio
     return { ok: false, error: "Geen woord gevonden met je huidige letters." };
   }
 
-  // Verdiende (per-partij) tegoed gaat eerst op; pas als dat leeg is wordt
-  // er geput uit het algemene, met XP gekochte tegoed (User.hintBalance,
-  // zie src/lib/shop.ts) — dat is overal inzetbaar, niet aan dit spel
-  // gebonden. De `gt: 0`-voorwaarde in de updateMany's hieronder maakt dit
-  // race-veilig bij gelijktijdige aanvragen (bv. een dubbelklik): als een
-  // andere aanvraag het tegoed ondertussen al heeft opgemaakt, matcht de
-  // WHERE niet meer en is affected rows 0, in plaats van dat beide
-  // aanvragen op basis van een verouderde lezing allebei doorgaan.
-  const gameCreditField = isPlayer1 ? "player1HintCredits" : "player2HintCredits";
-  const gameCreditResult = await prisma.scrabbleGame.updateMany({
-    where: { id: gameId, [gameCreditField]: { gt: 0 } },
-    data: { [gameCreditField]: { decrement: 1 } },
+  // Eén gedeeld hint-tegoed (User.hintBalance, zie src/lib/shop.ts) —
+  // overal inzetbaar, niet aan dit spel gebonden. De `gt: 0`-voorwaarde
+  // maakt dit race-veilig bij gelijktijdige aanvragen (bv. een dubbelklik):
+  // als een andere aanvraag het tegoed ondertussen al heeft opgemaakt,
+  // matcht de WHERE niet meer en is affected rows 0, in plaats van dat
+  // beide aanvragen op basis van een verouderde lezing allebei doorgaan.
+  const userCreditResult = await prisma.user.updateMany({
+    where: { id: userId, hintBalance: { gt: 0 } },
+    data: { hintBalance: { decrement: 1 } },
   });
-
-  if (gameCreditResult.count === 0) {
-    const userCreditResult = await prisma.user.updateMany({
-      where: { id: userId, hintBalance: { gt: 0 } },
-      data: { hintBalance: { decrement: 1 } },
-    });
-    if (userCreditResult.count === 0) {
-      return { ok: false, error: "Je hebt geen hint beschikbaar — speel eerst een woord, of koop er een in de winkel." };
-    }
+  if (userCreditResult.count === 0) {
+    return { ok: false, error: "Je hebt geen hint beschikbaar — speel eerst een woord, of koop er een in de winkel." };
   }
 
-  return { ok: true, word: hint.word, usedIndices: hint.usedIndices };
+  const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { hintBalance: true } });
+  return { ok: true, word: hint.word, usedIndices: hint.usedIndices, hintBalance: user.hintBalance };
 }

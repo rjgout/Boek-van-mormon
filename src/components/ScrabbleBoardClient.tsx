@@ -267,7 +267,11 @@ export default function ScrabbleBoardClient({ gameId }: { gameId: string }) {
     }
     setHintIndices(body.usedIndices ?? []);
     setHintSecondsLeft(10);
-    setGame((g) => (g ? { ...g, myHintCredits: g.myHintCredits - 1 } : g));
+    // Eén gedeeld tegoed (zie useHint in scrabbleGame.ts) dat overal
+    // hetzelfde moet tonen — de server-waarde overnemen i.p.v. lokaal
+    // aftrekken voorkomt dat dit scherm uit de pas gaat lopen met andere
+    // schermen (winkel, Raad het hoofdstuk) die hetzelfde tegoed tonen.
+    setGame((g) => (g && typeof body.hintBalance === "number" ? { ...g, myHintCredits: body.hintBalance } : g));
   }
 
   async function submitForfeit() {

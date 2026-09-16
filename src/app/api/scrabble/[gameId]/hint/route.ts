@@ -9,5 +9,5 @@ export async function POST(_req: Request, { params }: { params: Promise<{ gameId
   const { gameId } = await params;
   const result = await useHint(gameId, user.id);
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: 400 });
-  return NextResponse.json({ word: result.word, usedIndices: result.usedIndices });
+  return NextResponse.json({ word: result.word, usedIndices: result.usedIndices, hintBalance: result.hintBalance });
 }
