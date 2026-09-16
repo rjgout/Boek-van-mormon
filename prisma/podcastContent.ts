@@ -5849,4 +5849,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 65,
+    title: "Aflevering 65",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie is de gast in deze aflevering, en van welke geloofsgemeenschap is hij lid?",
+        options: [
+          "Albert, lid van een baptistengemeente",
+          "Een lid van dezelfde kerk als Koos en Raphael",
+          "Een katholieke priester",
+          "Een boeddhistische monnik",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Albert vertelt dat hij op 21-jarige leeftijd zijn leven aan Jezus Christus heeft overgegeven, na jarenlang met zijn oma naar de kerk te zijn gegaan zonder dat het echt tot hem doordrong.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Koos uit wat er volgens hem gebeurt met mensen die nooit de kans hebben gekregen om het evangelie te horen, bijvoorbeeld in landen waar christen zijn gevaarlijk is?",
+        options: [
+          "Dat zij in het hiernamaals alsnog de gelegenheid krijgen om het evangelie te horen en te aanvaarden",
+          "Dat zij automatisch verloren zijn zonder enige kans",
+          "Dat zij automatisch worden gered zonder enige eigen keuze",
+          "Dat de vraag helemaal niet relevant is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover verschillen Koos en Albert van mening met betrekking tot de doop?",
+        options: [
+          "Albert vindt de doop niet zaligmakend, terwijl Koos gelooft dat er zelfs een plaatsvervangende doop mogelijk is voor wie geen kans kreeg zich te laten dopen",
+          "Beiden zijn het volledig oneens over of Jezus wel gedoopt moest worden",
+          "Albert gelooft dat de doop de enige weg naar redding is, zonder enige uitzondering",
+          "Ze zijn het over alles precies eens",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Albert vertelt zijn bekeringsverhaal en hoe hij zich bevrijd voelde",
+          "Ze bespreken het leven na de dood en het paradijs als wachtruimte",
+          "Ze bespreken of iedereen een gelijke kans krijgt om het evangelie te horen",
+          "Ze bespreken de doop, plaatsvervangende doop en de balans tussen wet en geest",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 29 zegt Alma dat de Heer aan alle naties mensen geeft om zijn woord te verkondigen. Hoe doet Hij dat, volgens vers 8?",
+        options: [
+          "Van hun eigen natie en taal, alles wat Hij in wijsheid juist acht voor hen om te hebben",
+          "Alleen via één enkele, wereldwijd identieke taal",
+          "Alleen aan de rijkste volken van de aarde",
+          "Hij geeft helemaal niemand de mogelijkheid om zijn woord te verkondigen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 29:8 geeft de Heer raad met wijsheid, volgens hetgeen juist en waar is, aan elk volk op een manier die bij hen past.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Alma in vers 9 als zijn grootste vreugde?",
+        options: [
+          "Een werktuig in de handen van God te mogen zijn om zielen tot bekering te brengen",
+          "Zijn eigen roem en aanzien onder het volk",
+          "Het vergaren van rijkdom",
+          "Het krijgen van een hoge politieke positie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachten uit Alma 29 in de juiste volgorde.",
+        items: [
+          "De Heer geeft alle naties mensen van hun eigen taal om zijn woord te verkondigen",
+          "Hij geeft raad met wijsheid, volgens hetgeen juist en waar is",
+          "Alma roemt in wat de Heer hem heeft geboden, als werktuig in Gods handen",
+          "Als hij ziet dat velen zich bekeren, wordt zijn ziel met vreugde vervuld",
+        ],
+      },
+    ],
+  },
 ];
