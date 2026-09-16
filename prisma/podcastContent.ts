@@ -4815,4 +4815,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 76,
+    title: "Aflevering 76",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk bijbelverhaal bespreken Koos en Raphael uitgebreid, met de vraag of het letterlijk de hele aarde betrof?",
+        options: [
+          "Het verhaal van Noach en de zondvloed",
+          "Het verhaal van Jona en de vis",
+          "Het verhaal van David en Goliath",
+          "Het verhaal van de doortocht door de Rode Zee",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael oppert dat de zondvloed misschien wel plaatselijk was en dat dit voor Noach, gezien zijn beperkte referentiekader, aanvoelde als de gehele wereld.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk veelvoorkomend misverstand over de ark van Noach noemt Raphael?",
+        options: [
+          "Dat mensen denken dat hij van elk dier precies twee meenam, terwijl dat niet exact zo in de tekst staat",
+          "Dat de ark eigenlijk van hout noch metaal was gemaakt",
+          "Dat Noach de ark eigenlijk nooit heeft gebouwd",
+          "Dat er helemaal geen dieren aan boord waren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover zijn Koos en Raphael het eens, als het gaat om het begrijpen van de schriften?",
+        options: [
+          "Dat je de Heilige Geest nodig hebt om te begrijpen wat een schriftgedeelte voor jou op dit moment betekent",
+          "Dat elke lezer de schriften vrij naar eigen smaak mag herschrijven",
+          "Dat alleen de letterlijke lezing van elk vers de enige juiste is",
+          "Dat schriftstudie eigenlijk niet zo belangrijk is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken hoe reizen en nieuws de wereld kleiner hebben gemaakt",
+          "Ze bespreken of de zondvloed van Noach de hele aarde bedekte of alleen zijn eigen omgeving",
+          "Raphael noemt misverstanden over de ark van Noach en de drie wijzen",
+          "Ze concluderen dat je de Heilige Geest nodig hebt om de schriften voor jezelf te begrijpen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 1 Nephi 19 legt Nephi uit waarom hij de woorden van Jesaja aan zijn volk voorlas. Wat zegt hij daarover in vers 23?",
+        options: [
+          "Dat hij alle Schriften op zichzelf en zijn volk toepaste, opdat het hun tot nut en lering zou strekken",
+          "Dat hij de woorden van Jesaja alleen maar letterlijk overschreef zonder er iets mee te doen",
+          "Dat hij de profetieën van Jesaja juist probeerde te vermijden",
+          "Dat hij de tekst compleet herschreef naar eigen inzicht",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 1 Nephi 19:24 moedigt Nephi zijn volk aan om de woorden van de profeet op zichzelf toe te passen, opdat zij hoop zullen hebben.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom had de profeet Jesaja zijn woorden geschreven, volgens Nephi in vers 24?",
+        options: [
+          "Opdat het huis van Israël, ook het afgebroken overblijfsel ervan, er hoop uit zou putten",
+          "Puur als historisch verslag, zonder enig ander doel",
+          "Om indruk te maken op andere volkeren",
+          "Om alleen voor koningen bedoeld te zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit 1 Nephi 19 in de juiste volgorde.",
+        items: [
+          "Nephi leest zijn volk voor uit de boeken van Mozes",
+          "Hij leest hun ook voor wat de profeet Jesaja geschreven had",
+          "Hij past alle Schriften op zichzelf en zijn volk toe",
+          "Hij moedigt hen aan de woorden van de profeet ook op zichzelf toe te passen",
+        ],
+      },
+    ],
+  },
 ];
