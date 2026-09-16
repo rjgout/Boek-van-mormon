@@ -6037,4 +6037,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 63,
+    title: "Aflevering 63",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie is de gast in deze aflevering, die veel vertelt over de wet van de aantrekkingskracht en haar eigen ervaringen met gebed?",
+        options: [
+          "Shamantha",
+          "Albert",
+          "Renco",
+          "Dick",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Shamantha vertelt over hoe zij een fietskar precies op tijd en voor een laag bedrag kreeg, nadat ze er specifiek voor gebeden en om gevraagd had, en dit zag als een duidelijk antwoord van Hemelse Vader.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vraagt Raphael zich af over het verband tussen geloof en het beantwoorden van gebeden?",
+        options: [
+          "Waarom je zou moeten geloven dat je iets krijgt, terwijl Hemelse Vader toch elk gebed beantwoordt, ongeacht de mate van geloof",
+          "Of gebeden wel echt bestaan",
+          "Of je alleen in de tempel mag bidden",
+          "Of gebeden alleen in het Engels effectief zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke universele wet noemen Koos en Raphael, die ook buiten de kerk terug te vinden is, zoals in boeken over financiële vrijheid?",
+        options: [
+          "Het geven van tien procent van je inkomen, wat overeenkomt met het principe van de tiende",
+          "De wet op het verkeer",
+          "De zwaartekrachtwet",
+          "De wet van vraag en aanbod",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de wet van de aantrekkingskracht en universele wetmatigheden",
+          "Shamantha vertelt haar verhalen over de fietskar en de woning",
+          "Ze bespreken de vijf wetten die in de tempel worden onderwezen",
+          "Ze bespreken het woord van wijsheid en verslavende middelen zoals alcohol en koffie",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 7 spreekt Mormon over hoop. Wat zegt hij in vers 40 over de relatie tussen hoop en geloof?",
+        options: [
+          "Dat je geen geloof kunt verwerven, tenzij je hoop hebt",
+          "Dat geloof en hoop helemaal niets met elkaar te maken hebben",
+          "Dat hoop alleen voor kinderen is weggelegd",
+          "Dat geloof altijd voorafgaat aan hoop, nooit andersom",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 7:41 mogen wij hopen tot het eeuwige leven te worden opgewekt, dankzij de verzoening van Christus en de kracht van zijn opstanding.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Moroni 7:42 over iemand die geloof heeft?",
+        options: [
+          "Die moet ook wel hoop hebben, want zonder geloof kan er geen hoop zijn",
+          "Die heeft nooit hoop nodig",
+          "Die kan zonder enige hoop verder leven",
+          "Geloof en hoop sluiten elkaar juist uit",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 7 in de juiste volgorde.",
+        items: [
+          "Hoe kun je geloof verwerven, tenzij je hoop hebt?",
+          "Je mag hopen tot het eeuwige leven te worden opgewekt door de verzoening van Christus",
+          "Als iemand geloof heeft, moet hij ook wel hoop hebben",
+          "Zonder zachtmoedigheid en nederigheid zijn geloof en hoop tevergeefs",
+        ],
+      },
+    ],
+  },
 ];
