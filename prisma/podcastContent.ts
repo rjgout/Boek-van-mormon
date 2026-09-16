@@ -5661,4 +5661,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 67,
+    title: "Aflevering 67",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke overtuiging staat centraal in het gesprek van Koos en Raphael in deze aflevering?",
+        options: [
+          "Dat er maar één ware kerk van Christus is, waaraan Hij rechtstreeks leiding geeft",
+          "Dat alle kerken exact gelijkwaardig zijn",
+          "Dat kerken helemaal niet meer nodig zijn",
+          "Dat Christus meerdere onafhankelijke kerken heeft gesticht om zijn risico te spreiden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat Johannes de Doper, na eerst onthoofd te zijn geweest, als opgestaan hemels boodschapper aan Joseph Smith verscheen om het Aäronische priesterschap te herstellen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk beeld gebruikt Raphael om te verklaren waarom andere kerken ook waarheid bevatten, maar niet het volledige evangelie?",
+        options: [
+          "Een spiegel van Christus' kerk die in stukken is gevallen, waarbij iedere kerk een eigen stukje waarheid heeft opgeraapt",
+          "Een boom waarvan alle takken precies gelijk zijn",
+          "Een rivier die in duizend zijstromen is opgesplitst zonder verschil",
+          "Een schilderij dat door iedereen identiek wordt nagemaakt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de conclusie van Koos over hoe mensen die de \"valse profeten\"-waarschuwing in de schrift verkeerd interpreteren?",
+        options: [
+          "Dat zij ten onrechte concluderen dat er dus helemaal geen profeten meer zouden mogen bestaan",
+          "Dat zij daaruit terecht concluderen dat er geen profeten meer nodig zijn",
+          "Dat die waarschuwing nergens in de schriften voorkomt",
+          "Dat die waarschuwing alleen op het Oude Testament van toepassing is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken of Christus meerdere kerken zou kunnen hebben",
+          "Koos legt uit hoe de priesterschapssleutels aan Joseph Smith werden hersteld",
+          "Raphael gebruikt het beeld van de gebroken spiegel voor waarheid in verschillende kerken",
+          "Ze bespreken de waarschuwing voor valse profeten en hoe die verkeerd geïnterpreteerd wordt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 28 profeteert Nephi over de staat van de kerken in de laatste dagen. Waardoor zijn hun kerken verdorven geworden, volgens vers 12?",
+        options: [
+          "Wegens hoogmoed en wegens valse leraren en valse leer",
+          "Wegens een gebrek aan financiële middelen",
+          "Wegens te weinig kerkgebouwen",
+          "Wegens te veel muziek in de diensten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 28:14 zijn bijna allen afgedwaald, op enkelen na die de ootmoedige volgelingen van Christus zijn, en zelfs zij dwalen soms omdat zij naar de voorschriften van mensen worden onderricht.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat verwijt Nephi de verdorven kerken in vers 13?",
+        options: [
+          "Dat zij de armen beroven ter wille van hun fraaie heiligdommen en kledij, en de zachtmoedigen vervolgen",
+          "Dat zij te veel aan liefdadigheid doen",
+          "Dat zij te weinig aandacht besteden aan gebouwen",
+          "Dat zij te bescheiden zijn in hun optreden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 28 in de juiste volgorde.",
+        items: [
+          "Zij zijn allen van de weg afgeweken en verdorven geworden",
+          "Wegens hoogmoed en valse leer zijn hun kerken verdorven",
+          "Zij beroven de armen ter wille van hun fraaie heiligdommen",
+          "Slechts enkelen blijven ootmoedige volgelingen van Christus",
+        ],
+      },
+    ],
+  },
 ];
