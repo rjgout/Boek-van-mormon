@@ -5191,4 +5191,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 72,
+    title: "Aflevering 72",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke tool voor zelfreflectie stelt Raphael voor, naast een timer van tien minuten?",
+        options: [
+          "Gebed, waarbij je doorpraat met Hemelse Vader nadat je vaste riedeltje op is",
+          "Een dagelijkse podcast opnemen",
+          "Een uur lang televisiekijken",
+          "Een wekelijks bezoek aan de sportschool",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt dat hij een vitaliteitscoach op zijn werk heeft geraadpleegd en kleine gewoontes, zoals meer water drinken, geleidelijk in zijn leven heeft ingeslepen met behulp van een app.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld vertelt Koos over een moment waarop hij achteraf merkte dat hij gefrustreerd had gereageerd?",
+        options: [
+          "Toen hij zijn dochter kwijtraakte in een winkel en meteen verwijtend reageerde in plaats van te vragen of ze bezorgd was",
+          "Toen hij een vergadering miste",
+          "Toen zijn auto kapot ging tijdens de vakantie",
+          "Toen hij een belangrijke afspraak vergat",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk gezegde uit Raphaels vakgebied gebruikt hij om uit te leggen waarom aannames tot problemen leiden?",
+        options: [
+          "\"Assumption is the mother of all mess-ups\" (aanname is de moeder van alle fouten)",
+          "\"Meten is weten\"",
+          "\"Beter voorkomen dan genezen\"",
+          "\"Haastige spoed is zelden goed\"",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken persoonlijke ontwikkeling en de rol van zelfreflectie",
+          "Raphael stelt voor om gebed als reflectie-tool te gebruiken met een timer",
+          "Koos vertelt over zijn gefrustreerde reactie toen hij zijn dochter kwijtraakte",
+          "Ze bespreken waarom doorvragen beter is dan boos worden op basis van aannames",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 37 geeft Alma raad aan zijn zoon Helaman. Wat zegt hij in vers 37 over hoe je moet handelen?",
+        options: [
+          "Raadpleeg de Heer bij al uw handelingen, en Hij zal u ten goede leiden",
+          "Vraag nooit om raad, maar los alles zelf op",
+          "Handel altijd zonder ooit stil te staan bij de gevolgen",
+          "Vertrouw uitsluitend op je eigen wijsheid",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 37:36 moeten al onze gedachten tot de Heer uitgaan, en de gevoelens van ons hart voor eeuwig op Hem gericht zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat belooft Alma zijn zoon in vers 37, als hij deze raad opvolgt?",
+        options: [
+          "Dat hij ten laatsten dage verhoogd zal worden",
+          "Dat hij meteen rijk zal worden",
+          "Dat hij nooit meer tegenslag zal ervaren",
+          "Dat hij een leger zal aanvoeren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze raadgevingen uit Alma 37 in de juiste volgorde.",
+        items: [
+          "Roep God aan voor al uw onderhoud en laat al uw handelingen tot de Heer zijn",
+          "Raadpleeg de Heer bij al uw handelingen",
+          "Leg u des nachts neer in de hoede des Heren",
+          "Laat uw hart des ochtends vol dankbaarheid zijn jegens God",
+        ],
+      },
+    ],
+  },
 ];
