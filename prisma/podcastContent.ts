@@ -838,4 +838,271 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 119,
+    title: "Aflevering 119",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke centrale vraag stellen Koos en Raphael zichzelf in deze aflevering?",
+        options: [
+          "Wat is geloof eigenlijk, en hoe verschilt dat van weten?",
+          "Hoe kies je een zendingsgebied?",
+          "Wat is het verschil tussen doop en bevestiging?",
+          "Hoe organiseer je een gemeenteactiviteit?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Koos en Raphael het verschil tussen geloof en kennis?",
+        options: [
+          "Geloof is overtuigd zijn zonder volledige zekerheid; kennis heb je niet meer nodig te geloven",
+          "Geloof en kennis zijn precies hetzelfde",
+          "Kennis is altijd zwakker dan geloof",
+          "Geloof bestaat alleen bij kinderen, kennis alleen bij volwassenen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos zegt dat hij vaak liever getuigt van het effect dat zijn geloof in zijn leven heeft, dan simpelweg te zeggen \"ik weet het\".",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom zijn we volgens Raphael en Koos naar de aarde gestuurd zonder herinnering aan het voorbestaan?",
+        options: [
+          "Om geloof te kunnen oefenen",
+          "Omdat herinneringen technisch onmogelijk zijn",
+          "Om straf te ondergaan voor keuzes in het voorbestaan",
+          "Om gelijk te zijn aan dieren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken of \"geloven\" iets is wat iedereen doet, ook atheïsten",
+          "Ze bespreken het verschil tussen geloof en kennis",
+          "Ze bespreken getuigenissen waarin mensen zeggen \"ik weet\" in plaats van \"ik geloof\"",
+          "Ze concluderen dat het hele plan van zaligheid draait om het oefenen van geloof",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe omschrijft Moroni geloof in Ether 12?",
+        options: [
+          "Hopen op iets dat je niet ziet",
+          "Volledige, wetenschappelijke zekerheid hebben",
+          "Een gevoel dat na verloop van tijd altijd verdwijnt",
+          "Iets wat alleen profeten kunnen hebben",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Ether 12:6 ontvang je pas een getuigenis nádat je geloof op de proef is gesteld — niet ervoor.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wanneer toonde Christus zich volgens Ether 12 aan de mensen na zijn opstanding?",
+        options: [
+          "Pas nadat zij geloof in Hem hadden",
+          "Alleen aan mensen die nog nooit van Hem gehoord hadden",
+          "Aan iedereen, ongeacht geloof",
+          "Alleen aan zijn twaalf apostelen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen van Moroni in Ether 12 in de juiste volgorde.",
+        items: [
+          "Geloof is hopen op iets dat je niet ziet",
+          "Je ontvangt geen getuigenis vóórdat je geloof op de proef is gesteld",
+          "Christus toonde zich pas aan mensen die al geloof in Hem hadden",
+          "Zo kunnen ook wij deelgenoot worden van die hemelse gave, door geloof",
+        ],
+      },
+    ],
+  },
+  {
+    number: 118,
+    title: "Aflevering 118",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel staat in deze aflevering centraal?",
+        options: ["Geloofsartikel 6 (kerkorganisatie)", "Geloofsartikel 2", "Geloofsartikel 11", "Geloofsartikel 13"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke ambten noemt geloofsartikel 6 als onderdeel van dezelfde organisatie als de vroegchristelijke kerk?",
+        options: [
+          "Apostelen, profeten, herders, leraars, evangelisten",
+          "Alleen bisschoppen en priesters",
+          "Alleen de paus en kardinalen",
+          "Alleen de twaalf apostelen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Koos en Raphael heet de kerk officieel \"De Kerk van Jezus Christus van de Heiligen der Laatste Dagen\" omdat de kerk van Christus is, niet van de heiligen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld noemen ze van voortdurende openbaring in het Nieuwe Testament, om de vroege kerk te laten groeien?",
+        options: [
+          "De openbaring dat het evangelie ook aan niet-Joden gebracht mocht worden",
+          "De openbaring om de tempel in Jeruzalem te herbouwen",
+          "De openbaring om een nieuwe kalender in te voeren",
+          "De openbaring om Grieks als kerktaal te gebruiken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze lezen geloofsartikel 6 voor en bespreken de ambten die erin genoemd worden",
+          "Ze bespreken waarom de kerk \"van Jezus Christus\" heet, en niet \"Mormoonse kerk\"",
+          "Ze bespreken hoe de kerk na de apostelen verdween en later hersteld werd",
+          "Ze bespreken voortdurende openbaring, met voorbeelden uit het Nieuwe Testament",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 6 wordt beschreven hoe de kerk onder de Nephieten georganiseerd was. Welke ambtsdragers worden daar genoemd?",
+        options: ["Ouderlingen, priesters en leraren", "Alleen koningen", "Alleen profeten", "Ridders en edelen"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom kwamen de leden van de kerk volgens Moroni 6 dikwijls samen?",
+        options: [
+          "Om te vasten, te bidden en met elkaar te spreken over het welzijn van hun ziel, en om het avondmaal te nemen",
+          "Om alleen belastingen te innen",
+          "Om oorlogsplannen te bespreken",
+          "Om alleen feest te vieren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 6 werd niemand tot de doop toegelaten, tenzij die zich oprecht van zijn zonden had bekeerd.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze beschrijvingen van de vroege kerk uit Moroni 6 in de juiste volgorde.",
+        items: [
+          "Mensen werden pas gedoopt na oprechte bekering",
+          "Na de doop werden ze bij het volk van de kerk gerekend en hun naam opgeschreven",
+          "De leden kwamen vaak samen om te vasten, te bidden en te spreken",
+          "De bijeenkomsten werden geleid door de macht van de Heilige Geest",
+        ],
+      },
+    ],
+  },
+  {
+    number: 117,
+    title: "Aflevering 117",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk bijbelverhaal, uit het \"Kom en Volg mij\"-lesprogramma, bespreken Koos en Raphael in deze aflevering?",
+        options: ["David en Goliath", "Noach en de ark", "Jozef en zijn broers", "Daniël in de leeuwenkuil"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom besloot David om tegen Goliath te vechten?",
+        options: [
+          "Hij kon niet verdragen dat Goliath het volk en de God van Israël bespotte",
+          "De koning dwong hem ertoe",
+          "Hij wilde beroemd worden",
+          "Hij verloor een weddenschap",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "David weigerde het harnas van koning Saul te dragen omdat hij er niet aan gewend was en er niet in kon lopen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar had David geoefend met een slinger en stenen, voordat hij tegen Goliath vocht?",
+        options: [
+          "Als schaapherder, tegen leeuwen en beren die de kudde aanvielen",
+          "Als soldaat in het leger van koning Saul",
+          "Tijdens een speciale training aan het hof",
+          "Hij had nooit eerder een slinger gebruikt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken het verhaal van David en Goliath",
+          "Ze bespreken de afstammingslijn van David naar Christus",
+          "Ze filosoferen over voorbestemming versus keuzevrijheid",
+          "Koos vertelt een persoonlijk verhaal over een \"toevallige\" vondst als zegening",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 13 wordt uitgelegd dat hogepriesters al \"sedert de grondlegging der wereld\" geroepen en voorbereid waren, wegens hun...",
+        options: [
+          "Buitengewone geloof en goede werken",
+          "Afkomst en familienaam",
+          "Rijkdom en aanzien",
+          "Leeftijd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Alma 13 de reden dat sommigen deze heilige roeping wél kregen en anderen niet?",
+        options: [
+          "Ieder had oorspronkelijk gelijke kansen; sommigen verkozen de Geest te verwerpen door verstoktheid van hart",
+          "Het was volledig willekeurig",
+          "Alleen wie rijk geboren werd, kon geroepen worden",
+          "Iedereen kreeg exact dezelfde roeping",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 13 waren de hogepriesters vanaf het begin al hetzelfde als hun broeders, met dezelfde vrije keuze.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen uit Alma 13 over voorbeschikking in de juiste volgorde.",
+        items: [
+          "Aanvankelijk waren alle mensen gelijk, met dezelfde vrije keuze",
+          "Sommigen oefenden buitengewoon geloof en goede werken uit",
+          "Zij werden, naar Gods voorkennis, al vanaf de grondlegging der wereld voorbereid",
+          "Zij werden geroepen en geordend tot het heilige priesterschap",
+        ],
+      },
+    ],
+  },
 ];
