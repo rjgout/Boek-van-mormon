@@ -5473,4 +5473,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 69,
+    title: "Aflevering 69",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Met welk beeld legt Raphael de vijf stappen van het bekeringsproces uit?",
+        options: [
+          "Met de vijf vingers van zijn hand, van erkenning tot aan de belofte om het nooit meer te doen",
+          "Met de vijf golfslagen van een rivier",
+          "Met de vijf kleuren van een regenboog",
+          "Met de vijf seizoenen van het jaar",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael en Koos zijn het erover eens dat er geen zonde is die te zwaar is om vergeven te worden, zolang het bekeringsproces oprecht wordt doorlopen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemen Koos en Raphael als het grootste obstakel bij vergeving, vaak groter dan God zelf of anderen?",
+        options: [
+          "Jezelf vergeven",
+          "Het krijgen van toestemming van de kerkleiding",
+          "Het vinden van de juiste woorden voor een gebed",
+          "Het wachten op een teken van God",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat bedoelt Koos met het beeld van Christus' juk dat licht is?",
+        options: [
+          "Dat je je eigen zware juk aan de kant kunt leggen en samen met Christus zijn lichtere juk kunt dragen",
+          "Dat je nooit meer enige verantwoordelijkheid hoeft te dragen",
+          "Dat het juk van Christus zwaarder is dan je eigen juk",
+          "Dat het juk alleen voor kerkleiders bedoeld is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael legt de vijf stappen van bekering uit met zijn hand als beeld",
+          "Ze bespreken of er zonden zijn die niet vergeven kunnen worden",
+          "Ze bespreken waarom mensen zichzelf vaak het moeilijkst kunnen vergeven",
+          "Koos legt het beeld van Christus' lichte juk uit als afsluiting",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 24 spreekt de stem des Heren tot Alma en zijn volk, die in knechtschap leefden. Wat belooft Hij hun in vers 14?",
+        options: [
+          "Dat Hij hun lasten zo zal verlichten dat zij die zelfs niet meer op hun rug kunnen voelen",
+          "Dat Hij hen onmiddellijk fysiek zal bevrijden zonder verdere beproeving",
+          "Dat Hij hun lasten juist zwaarder zal maken als test",
+          "Dat Hij niets aan hun situatie zal veranderen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 24:15 versterkte de Heer Alma en zijn broeders zodat zij hun lasten met gemak konden dragen, en onderwierpen zij zich welgemoed en met geduld aan Gods wil.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt de Heer in Mosiah 24:13 tegen het volk in hun ellende?",
+        options: [
+          "Heft uw hoofd op en weest welgemoed, want Ik ben mij bewust van het verbond dat gij met Mij hebt gesloten",
+          "Jullie ellende is verdiend en er komt geen verlossing",
+          "Jullie moeten het probleem helemaal zelf oplossen",
+          "Er wordt niets tegen hen gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit Mosiah 24 in de juiste volgorde.",
+        items: [
+          "De stem des Heren komt tot het volk in hun ellende",
+          "Hij belooft zich aan hen te verbinden en hen te bevrijden",
+          "Hij verlicht de lasten die op hun schouders zijn gelegd",
+          "Zij onderwerpen zich welgemoed en met geduld aan Gods wil",
+        ],
+      },
+    ],
+  },
 ];
