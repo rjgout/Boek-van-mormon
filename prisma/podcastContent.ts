@@ -8481,4 +8481,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 35,
+    title: "Aflevering 35",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk woord gebruikt Koos liever dan 'bekering', en waarom?",
+        options: [
+          "'Je tot God keren', omdat 'bekering' voor hem vroeger een hel-en-verdoemenisachtige lading had",
+          "'Straf', omdat dat volgens hem duidelijker is",
+          "Hij gebruikt liever helemaal geen enkel woord voor dit onderwerp",
+          "'Genezing', omdat dat medisch klinkt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Gast Hans legt uit dat het Hebreeuwse woord voor 'zonde' letterlijk 'je doel voorbij schieten' betekent, en 'bekeren' letterlijk 'terugkeren'.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over het 'uitdagende pakketje' dat mensen volgens hem op aarde meekrijgen?",
+        options: [
+          "Geen herinnering aan het voorbestaan, een sterfelijk lichaam met gebreken, en zwakheden om van te leren",
+          "Een lichaam dat nooit ziek kan worden",
+          "Volledige herinnering aan het leven vóór de geboorte",
+          "Geen enkele uitdaging, want het leven zou juist heel makkelijk zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de kern van het verhaal dat Hans vertelt over 'Vader Kees' en het beeldje van 'Maria aan het kruis' in Nieuw-Guinea?",
+        options: [
+          "Dat cultuur en opvoeding het voor mensen erg moeilijk kunnen maken om de boodschap over Christus goed te begrijpen, ook al wordt die met liefde onderwezen",
+          "Dat er geen enkele missionaris ooit succes heeft gehad in Nieuw-Guinea",
+          "Dat het beeldje speciaal gemaakt was om mensen te misleiden",
+          "Dat vrouwen daar nooit een rol in de kerk mochten hebben",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Hans bespreekt verschillende definities van zonde en bekering",
+          "Koos legt de creditcard-vergelijking uit voor zonde en het zoenoffer",
+          "Koos vertelt over het 'uitdagende pakketje' van een sterfelijk lichaam en zwakheden",
+          "Hans vertelt het verhaal over Vader Kees en de noodzaak dat iedereen een kans krijgt om Christus te leren kennen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 22 vraagt de vader van koning Lamoni wat hij moet doen om het eeuwige leven te verkrijgen. Wat is zijn reactie in vers 18, als hij niet zeker weet of God bestaat?",
+        options: [
+          "Hij belooft al zijn zonden af te leggen om God te kennen, als God zich aan hem bekend wil maken",
+          "Hij weigert er verder iets voor te doen",
+          "Hij vraagt om eerst bewijs te zien voordat hij iets belooft",
+          "Hij stuurt een dienaar om het uit te zoeken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 22:16 zal de koning de hoop ontvangen waarnaar hij verlangt, als hij zich bekeert van al zijn zonden en zich in geloof tot God wendt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de koning in Alma 22:15 bereid op te geven om de vreugde van het eeuwige leven te ontvangen?",
+        options: [
+          "Alles wat hij bezit, zelfs zijn koninkrijk",
+          "Alleen een klein deel van zijn bezit",
+          "Niets, hij wil het gratis ontvangen",
+          "Alleen zijn vrije tijd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 22:15-18 in de juiste volgorde.",
+        items: [
+          "De koning vraagt wat hij moet doen om het eeuwige leven te verkrijgen",
+          "Hij is bereid alles op te geven, zelfs zijn koninkrijk",
+          "Aäron zegt dat hij zich moet bekeren en zich in geloof tot God moet wenden",
+          "De koning belooft al zijn zonden af te leggen om God te kennen",
+        ],
+      },
+    ],
+  },
 ];
