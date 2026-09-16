@@ -5097,4 +5097,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 73,
+    title: "Aflevering 73",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over zijn eigen doopgeschiedenis?",
+        options: [
+          "Dat hij twee keer gedoopt is, de tweede keer nadat hij eerder uit de kerk was gezet",
+          "Dat hij nooit gedoopt is geweest",
+          "Dat hij drie keer gedoopt is voor verschillende familieleden",
+          "Dat hij als baby werd gedoopt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat hij het herstel van zijn kerkelijke verbonden destijds niet als hulp heeft ervaren, maar eerder als een tegenwerking op zijn weg terug naar zijn hemelse vader.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vergelijking gebruikt Koos om zijn gevoel over de kerk te beschrijven?",
+        options: [
+          "Een schoolgemeenschap die alleen het gymnasiumniveau aanbiedt, waardoor mensen die dat niveau niet halen zich buitengesloten voelen",
+          "Een restaurant dat alleen voor VIP's toegankelijk is",
+          "Een sportclub die alleen kampioenen toelaat",
+          "Een bibliotheek die alleen wetenschappelijke boeken uitleent",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de bekende uitspraak die Raphael aanhaalt over de kerk, en de tegenstrijdigheid die hij daarbij opmerkt?",
+        options: [
+          "Dat de kerk een 'ziekenhuis voor zondaars' wordt genoemd, terwijl mensen er soms toch last van hebben dat 'zondaars' ook echt binnenkomen",
+          "Dat de kerk een 'bank voor goede daden' wordt genoemd",
+          "Dat de kerk een 'universiteit voor heiligen' wordt genoemd",
+          "Dat de kerk nooit met een vergelijking wordt omschreven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt over zijn eerdere excommunicatie en zijn tweede doop",
+          "Ze bespreken of excommunicatie een hulpmiddel of een tegenwerking is",
+          "Koos gebruikt de vergelijking met een school die alleen gymnasium aanbiedt",
+          "Ze bespreken de uitspraak dat de kerk een ziekenhuis voor zondaars is",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 26 wordt beschreven hoe wijd Christus zijn uitnodiging maakt. Wat zegt vers 25 daarover?",
+        options: [
+          "Christus roept niemand toe om weg te gaan, maar nodigt juist alle einden der aarde uit tot Hem te komen",
+          "Christus nodigt alleen de rechtvaardigen uit",
+          "Christus sluit mensen die fouten maken categorisch uit",
+          "Christus spreekt deze uitnodiging niet uit",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 26:28 zijn alle mensen gelijkelijk begunstigd door de Heer, en wordt niemand buitengesloten.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat heeft de Heer zijn volk geboden, volgens 2 Nephi 26:27?",
+        options: [
+          "Om alle mensen tot bekering te bewegen, want Hij heeft het heil aan iedereen om niet gegeven",
+          "Om alleen de rijken tot bekering te bewegen",
+          "Om niemand meer uit te nodigen tot bekering",
+          "Om alleen mensen binnen hun eigen familie te onderwijzen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 26 in de juiste volgorde.",
+        items: [
+          "Christus doet niets, tenzij het voor het welzijn van de wereld is",
+          "Hij roept niemand toe om weg te gaan, maar nodigt hen allen uit",
+          "Hij heeft niemand geboden om geen deel te hebben aan zijn heil",
+          "Alle mensen zijn gelijkelijk begunstigd en niemand wordt buitengesloten",
+        ],
+      },
+    ],
+  },
 ];
