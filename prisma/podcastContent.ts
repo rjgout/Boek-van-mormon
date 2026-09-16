@@ -6225,4 +6225,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 61,
+    title: "Aflevering 61",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over zijn persoonlijke situatie aan het begin van deze aflevering?",
+        options: [
+          "Dat hij, na een zware periode na zijn scheiding, nu een nieuwe vriendin heeft en erg gelukkig is",
+          "Dat hij een nieuwe baan heeft gevonden in het buitenland",
+          "Dat hij net een marathon heeft gelopen",
+          "Dat hij een nieuw huis heeft gekocht",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat het tweede grote gebod, heb je naaste lief als jezelf, ook impliceert dat gezonde liefde voor jezelf belangrijk is.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vraag proberen Koos en Raphael te beantwoorden over de grens tussen gezonde zelfliefde en egoïsme?",
+        options: [
+          "Vanaf welk punt voor jezelf opkomen omslaat in egoïsme waarbij je niets meer aan een ander gunt",
+          "Of zelfliefde alleen voor volwassenen is weggelegd",
+          "Of de kerk zelfliefde helemaal afkeurt",
+          "Of egoïsme altijd hetzelfde is als ambitie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld noemt Raphael over mensen die tiende betalen zonder nog naar de kerk te gaan?",
+        options: [
+          "Mensen in Utah die niet meer geloven of naar de kerk gaan, maar toch tiende betalen omdat ze in de zegeningen ervan geloven",
+          "Mensen die hun tiende juist nooit meer betalen",
+          "Mensen die hun tiende anoniem aan een willekeurig goed doel geven",
+          "Mensen die hun tiende alleen nog contant betalen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt over zijn nieuwe relatie en zijn herstel na een zware periode",
+          "Ze bespreken egoïsme bij kinderen en volwassenen aan de hand van voorbeelden",
+          "Ze bespreken de grens tussen gezonde zelfliefde en egoïsme",
+          "Ze bespreken of dingen doen vanwege de zegeningen die je ervoor terugkrijgt verkeerd is",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 4 roept koning Benjamin op om de armen te helpen, maar voegt daar in vers 27 een belangrijke voorwaarde aan toe. Welke?",
+        options: [
+          "Dat alles in wijsheid en ordelijkheid moet gebeuren, want het is niet nodig dat iemand harder loopt dan hij kracht heeft",
+          "Dat je jezelf volledig moet verwaarlozen om anderen te helpen",
+          "Dat alleen de rijksten verplicht zijn om te helpen",
+          "Dat hulp alleen op zondag gegeven mag worden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 4:27 is het noodzakelijk om ijverig te zijn, maar moeten alle dingen wel ordelijk gebeuren, zonder jezelf te overvragen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt koning Benjamin in vers 26 als concrete manieren om anderen te helpen?",
+        options: [
+          "De hongerigen voeden, de naakten kleden, de zieken bezoeken en in hun geestelijke en stoffelijke noden voorzien",
+          "Alleen financiële steun geven, verder niets",
+          "Alleen bidden voor anderen, zonder verdere actie",
+          "Uitsluitend hulp geven aan familieleden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze aansporingen uit Mosiah 4 in de juiste volgorde.",
+        items: [
+          "Geef van uw bezit aan de armen, ieder naar hetgeen hij heeft",
+          "Voed de hongerigen en kleed de naakten",
+          "Doe dit alles in wijsheid en ordelijkheid",
+          "Loop niet harder dan u kracht heeft, maar wees wel ijverig",
+        ],
+      },
+    ],
+  },
 ];
