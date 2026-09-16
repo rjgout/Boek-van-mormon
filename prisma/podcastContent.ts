@@ -7917,4 +7917,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 42,
+    title: "Aflevering 42",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat dit tweede deel van het gesprek met gast Michiel vooral over?",
+        options: [
+          "Transitie, kerklidmaatschap, het priesterschap en waar onze ware identiteit volgens hen op gegrond is",
+          "De organisatie van een liefdadigheidsactie",
+          "De aankoop van nieuw meubilair voor een kerkgebouw",
+          "Een reis door Scandinavië",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Michiel stelt dat onze ware identiteit als christenen gegrond is in het feit dat we een kind van God zijn, en dat onze gevoelens en verlangens daaraan ondergeschikt zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Michiel over het priesterschap bij iemand die als vrouw geboren is, maar als man gedoopt wordt?",
+        options: [
+          "Dat er bij het priesterschap altijd naar het geboortegeslacht wordt gekeken, dus die persoon zou het niet ontvangen",
+          "Dat iedereen automatisch het priesterschap krijgt bij de doop",
+          "Dat het priesterschap daar geen enkele rol in speelt",
+          "Dat alleen vrouwen het priesterschap kunnen ontvangen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vergelijking maakt Raphael om te laten zien dat het navolgen van het evangelie niet altijd makkelijk is?",
+        options: [
+          "Dat iemand met een sterke verslaving aan roken of alcohol ook wordt gevraagd dat op te geven voordat hij gedoopt wordt",
+          "Dat iedereen altijd meteen alles makkelijk vindt om op te geven",
+          "Dat het evangelie geen enkele eis aan iemand stelt",
+          "Dat er geen enkel voorbeeld van zo'n vergelijking bestaat",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken documentaires over mensen die na een transitie toch ongelukkig bleven",
+          "Ze bespreken dat het priesterschap gekoppeld is aan het geboortegeslacht",
+          "Ze bespreken wat er gebeurt als een bestaand lid van de kerk in transitie gaat",
+          "Michiel legt uit dat onze identiteit als kind van God boven onze gevoelens staat",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 7:48 wordt beschreven waarom we tot de Vader moeten bidden om vervuld te worden met liefde. Wat is het doel daarvan, volgens dit vers?",
+        options: [
+          "Opdat wij zonen van God zullen worden en Hem gelijk zullen zijn wanneer Hij verschijnt",
+          "Opdat wij nooit meer hoeven te bidden",
+          "Opdat wij rijker zullen worden",
+          "Er wordt in dit vers geen doel genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 7:48 zullen wij, als wij met die liefde vervuld zijn, gereinigd worden zoals Hij rein is.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Aan wie is de liefde geschonken waar Moroni 7:48 over spreekt?",
+        options: [
+          "Aan allen die ware volgelingen zijn van zijn Zoon Jezus Christus",
+          "Alleen aan de allereerste apostelen",
+          "Alleen aan koningen en leiders",
+          "Er wordt in dit vers niemand specifiek genoemd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 7:48 in de juiste volgorde.",
+        items: [
+          "Bid tot de Vader met alle kracht van uw hart",
+          "Dat gij vervuld zult zijn met de liefde die Hij aan ware volgelingen schenkt",
+          "Opdat gij zonen van God zult worden en Hem gelijk zult zijn",
+          "Opdat gij gereinigd zult worden zoals Hij rein is",
+        ],
+      },
+    ],
+  },
 ];
