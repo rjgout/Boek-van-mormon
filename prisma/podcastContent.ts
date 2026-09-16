@@ -4439,4 +4439,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 80,
+    title: "Aflevering 80",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke stichting heeft Koos meer dan tien jaar geleden zelf opgericht?",
+        options: [
+          "Een stichting die uitstapjes organiseert voor oudere mensen",
+          "Een stichting voor daklozenopvang",
+          "Een stichting voor jeugdsport",
+          "Een stichting voor muziekonderwijs",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "De stichting van Koos haalt mensen thuis op en brengt ze ook weer terug, en werkt inmiddels met veertien bussen en zo'n vijftig vrijwilligers.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos als voorbeeld van hoe God volgens hem achter de schermen werkt via andere mensen?",
+        options: [
+          "Dat twee zendelingen precies op het moment aankwamen dat hij hulp nodig had bij het tillen van zware meubels tijdens zijn verhuizing",
+          "Dat hij een onverwachte grote geldsom ontving",
+          "Dat zijn auto plotseling werd gerepareerd zonder dat hij ernaar vroeg",
+          "Dat hij een droom kreeg met de oplossing voor een probleem",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke film noemt Raphael als voorbeeld van het idee dat goedheid wordt doorgegeven van de één op de ander?",
+        options: [
+          "Pay It Forward",
+          "The Blind Side",
+          "Forrest Gump",
+          "It's a Wonderful Life",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt over de stichting die uitstapjes voor ouderen organiseert",
+          "Ze bespreken waarom vrijwilligers dit soort werk graag doen",
+          "Raphael noemt de film Pay It Forward als voorbeeld van doorgegeven goedheid",
+          "Koos vertelt over de zendelingen die precies op tijd kwamen helpen bij zijn verhuizing",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 2 leert koning Benjamin zijn volk een belangrijke les over dienstbetoon. Wat zegt hij in vers 17?",
+        options: [
+          "Wanneer je in dienst van je medemens bent, ben je louter in dienst van je God",
+          "Dienstbetoon aan anderen heeft geen enkele geestelijke waarde",
+          "Alleen dienstbetoon binnen de tempel telt echt mee",
+          "Je moet altijd eerst jezelf dienen voordat je anderen kan dienen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koning Benjamin vergelijkt zichzelf als koning met God: als hij, hun aardse koning, hen dient, behoren zij dan niet ook elkaar te dienen?",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt koning Benjamin in Mosiah 2:21 over hoezeer wij God zouden moeten dienen?",
+        options: [
+          "Zelfs als je Hem met je hele ziel zou dienen, zou je nog een onnutte dienstknecht zijn, omdat Hij ons alles geeft wat we hebben",
+          "Niemand hoeft God ooit te dienen",
+          "God heeft onze dienst helemaal niet nodig",
+          "Alleen koningen hoeven God te dienen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken van koning Benjamin uit Mosiah 2 in de juiste volgorde.",
+        items: [
+          "Hij vertelt het volk deze dingen opdat zij wijsheid zullen leren",
+          "Wanneer je in dienst van je medemens bent, ben je in dienst van God",
+          "Als hun koning hen dient, behoren zij elkaar dan niet ook te dienen",
+          "Zelfs wie God met zijn hele ziel dient, blijft een onnutte dienstknecht",
+        ],
+      },
+    ],
+  },
 ];
