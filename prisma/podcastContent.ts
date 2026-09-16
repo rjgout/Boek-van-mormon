@@ -5943,4 +5943,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 64,
+    title: "Aflevering 64",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk groot nieuws deelt Koos aan het begin van deze aflevering?",
+        options: [
+          "Dat hij van plan is om dit jaar opnieuw te trouwen",
+          "Dat hij een nieuwe baan heeft gevonden",
+          "Dat hij gaat verhuizen naar een ander land",
+          "Dat hij zijn eerste kleinkind heeft gekregen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat hij zijn eerdere huwelijksverzegeling bewust intact heeft gelaten, omdat hij het verbond van zijn ex-vrouw met haar hemelse vader belangrijk vindt, ook al gaat zij zelf niet meer naar de kerk.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is er nodig, volgens Koos en Raphael, voordat een huwelijksverzegeling in de tempel kan plaatsvinden?",
+        options: [
+          "Een wettig burgerlijk huwelijk volgens de wetten van het land",
+          "Een minimale relatieduur van tien jaar",
+          "Toestemming van alle familieleden zonder uitzondering",
+          "Een verplichte proefperiode van samenwonen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vindt Raphael jammer aan hoe de wereld vaak over het huwelijk spreekt?",
+        options: [
+          "Dat de belofte vaak beperkt wordt tot 'tot de dood ons scheidt', terwijl het huwelijk zoveel meer betekenis kan hebben",
+          "Dat er tegenwoordig te veel bruiloftsfeesten worden gegeven",
+          "Dat trouwringen te duur zijn geworden",
+          "Dat er te weinig aandacht is voor de juridische kant van het huwelijk",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt over zijn plannen om opnieuw te trouwen",
+          "Ze bespreken hoe een eerdere huwelijksverzegeling na een scheiding blijft bestaan",
+          "Ze bespreken de noodzaak van een burgerlijk huwelijk vóór een tempelverzegeling",
+          "Raphael reflecteert op hoe beperkt 'tot de dood ons scheidt' klinkt vergeleken met een eeuwig huwelijk",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Jakob 2 spreekt Jakob het volk toe over het huwelijk. Wat gebiedt de Heer daarover, volgens vers 27?",
+        options: [
+          "Dat geen enkele man meer dan één vrouw zal hebben, en geen bijvrouwen zal hebben",
+          "Dat huwelijken helemaal niet nodig zijn",
+          "Dat mannen zoveel vrouwen mogen hebben als ze willen",
+          "Dat het huwelijk uitsluitend voor de rijken is weggelegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Jakob 2:28 schept de Heer behagen in de kuisheid van vrouwen, en noemt Hij hoererij een gruwel in zijn ogen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt vers 30 over een mogelijke uitzondering op de regel van het huwelijk?",
+        options: [
+          "Dat de Heer zijn volk zelf zou gebieden als Hij voor zichzelf nageslacht wilde doen opstaan, maar anders moeten zij naar deze dingen luisteren",
+          "Dat er nooit onder enige omstandigheid een uitzondering mogelijk is",
+          "Dat de uitzondering alleen voor koningen gold",
+          "Dat er geen enkele reden ooit gegeven wordt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Jakob 2 in de juiste volgorde.",
+        items: [
+          "Jakob roept het volk op te luisteren naar het woord des Heren",
+          "Geen enkele man zal meer dan één vrouw hebben",
+          "De Heer schept behagen in de kuisheid der vrouwen",
+          "Als de Heer voor zichzelf nageslacht wil doen opstaan, zal Hij zijn volk apart gebieden",
+        ],
+      },
+    ],
+  },
 ];
