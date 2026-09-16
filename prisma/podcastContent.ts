@@ -5755,4 +5755,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 66,
+    title: "Aflevering 66",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vraag stelt Raphael herhaaldelijk in deze aflevering, over waarom er wereldwijd zo weinig leden zijn?",
+        options: [
+          "Waarom Hemelse Vader het niet makkelijker of duidelijker maakt voor mensen om het evangelie te herkennen en te accepteren",
+          "Waarom er te weinig kerkgebouwen zijn gebouwd",
+          "Waarom de kerk geen reclame maakt op televisie",
+          "Waarom er geen genoeg zendelingen zijn opgeleid",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat profeten duizenden jaren geleden al voorspelden dat er in de laatste dagen slechts weinigen het evangelie in hun leven zouden aanvaarden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld gebruikt Raphael om te laten zien dat mensen soms minder vrije keuzes maken dan ze zelf denken?",
+        options: [
+          "Het voorbeeld van een cavia die door een doolhof met schotten wordt gestuurd, vergelijkbaar met hoe reclame onze keuzes beïnvloedt",
+          "Het voorbeeld van een schaakspel tussen twee grootmeesters",
+          "Het voorbeeld van een loterij met miljoenen deelnemers",
+          "Het voorbeeld van een marathon met duizenden lopers",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Koos het woord 'uitverkoren' uit, zodat het geen negatieve klank krijgt?",
+        options: [
+          "Dat iedereen die het verlangen heeft om tot Gods kudde te behoren, daarmee ook automatisch uitverkoren is",
+          "Dat alleen mensen die in de kerk geboren zijn uitverkoren kunnen zijn",
+          "Dat uitverkoren zijn afhangt van iemands afkomst of nationaliteit",
+          "Dat niemand ooit echt uitverkoren kan worden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de trend dat meer jongeren weer op zoek gaan naar geloof",
+          "Raphael vraagt zich af waarom Hemelse Vader het niet makkelijker maakt",
+          "Raphael gebruikt het voorbeeld van de cavia in het doolhof over beïnvloede keuzes",
+          "Koos legt uit dat het woord 'uitverkoren' voor iedereen met het juiste verlangen geldt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 26 spreekt de Heer tot Alma over zijn volk. Wat zegt Hij in vers 18 over wie zijn naam gewillig draagt?",
+        options: [
+          "Gezegend is dit volk dat gewillig is zijn naam te dragen, want in zijn naam zullen zij worden geroepen en zij zijn de zijnen",
+          "Alleen wie geboren is in een bepaald land kan zijn naam dragen",
+          "Niemand kan ooit werkelijk zijn naam dragen",
+          "Het dragen van zijn naam is compleet onbelangrijk",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 26:23-24 verleent de Heer aan wie tot het einde gelooft een plaats aan zijn rechterhand, en zullen zij die Hem kennen tevoorschijn komen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de voorwaarde in Mosiah 26:24 om voor eeuwig een plaats aan Gods rechterhand te krijgen?",
+        options: [
+          "Dat zij in zijn naam geroepen worden en Hem kennen",
+          "Dat zij een bepaalde afkomst hebben",
+          "Dat zij nooit ergens om hoeven te vragen",
+          "Dat zij rijkdom vergaren tijdens hun leven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 26 in de juiste volgorde.",
+        items: [
+          "Gezegend is het volk dat gewillig is zijn naam te dragen",
+          "In zijn naam zullen zij worden geroepen en zij zijn de zijnen",
+          "Wie tot het einde gelooft, krijgt een plaats aan zijn rechterhand",
+          "Zij die Hem kennen, zullen tevoorschijn komen en voor eeuwig die plaats hebben",
+        ],
+      },
+    ],
+  },
 ];
