@@ -2000,4 +2000,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 106,
+    title: "Aflevering 106",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk nieuws bespreken Koos en Raphael in deze aflevering?",
+        options: [
+          "Een wereldwijde wijziging in het zondagsprogramma van de kerk, vanaf september",
+          "Een nieuwe tempel die gebouwd gaat worden in Nederland",
+          "Een nieuwe editie van het Boek van Mormon",
+          "Een wijziging in de doopleeftijd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat verandert er concreet aan het lesprogramma vanaf september?",
+        options: [
+          "Zondagsschool en priesterschap/ZTV worden weer beide elke week gegeven, binnen twee uur, dus korter per les",
+          "Er komt een derde uur bij, terug naar drie uur totaal",
+          "Alle lessen worden volledig online gegeven",
+          "Er komen helemaal geen lessen meer, alleen nog een preek",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos is aanvankelijk sceptisch en denkt dat 25 minuten per les te kort is om echt tot verdieping te komen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat stellen Koos en Raphael gekscherend voor als \"oplossing\" voor de korte lestijd?",
+        options: [
+          "Hun eigen podcast afspelen tijdens de les, gevolgd door nabespreking",
+          "De lessen helemaal afschaffen",
+          "Alleen nog schriftelijke huiswerkopdrachten geven",
+          "De diensten weer naar drie uur verlengen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael vertelt over het nieuwsbericht met de programmawijziging",
+          "Ze kijken terug op de eerdere wijziging van drie naar twee uur kerkdienst",
+          "Ze bespreken de nieuwe, kortere lestijden en of dat gaat werken",
+          "Ze grappen over hun podcast als vervanging voor lesvoorbereiding",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 28:30 wordt gesproken over hoe God zijn kinderen onderwijst. Hoe wordt dat daar omschreven?",
+        options: [
+          "Regel op regel, voorschrift op voorschrift, hier een weinig en daar een weinig",
+          "In één keer alles volledig geopenbaard, zonder verdere aanpassing",
+          "Alleen via droom en visioen, nooit via gewone instructie",
+          "Uitsluitend via geschreven brieven van apostelen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat belooft de Heer volgens 2 Nephi 28:30 aan wie zijn voorschriften ter harte neemt?",
+        options: [
+          "Hij zal hun meer geven, en zij zullen wijsheid leren",
+          "Hij zal hen meteen alle geheimen onthullen",
+          "Hij zal geen verdere voorschriften meer geven",
+          "Hij zal hen rijkdom schenken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 28:31 is het niet verkeerd om naar voorschriften van mensen te luisteren, zolang die door de macht van de Heilige Geest gegeven worden.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen uit 2 Nephi 28:30-31 in de juiste volgorde.",
+        items: [
+          "God geeft zijn kinderen regel op regel, voorschrift op voorschrift",
+          "Gezegend zijn zij die naar zijn voorschriften luisteren",
+          "Wie ontvangt, zal Hij meer geven",
+          "Vervloekt is wie vertrouwt op voorschriften zonder de macht van de Heilige Geest",
+        ],
+      },
+    ],
+  },
 ];
