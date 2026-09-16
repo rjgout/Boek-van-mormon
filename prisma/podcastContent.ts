@@ -1105,4 +1105,182 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 116,
+    title: "Aflevering 116",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vraag stelt Koos aan het begin van deze aflevering, die het hele gesprek op gang brengt?",
+        options: [
+          "Geniet jij nog wel een beetje van het leven?",
+          "Wat is jouw favoriete Bijbelboek?",
+          "Wil je ooit zendingspresident worden?",
+          "Welke muziek luister je het liefst?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom drinken Koos en Raphael geen alcohol, koffie of thee?",
+        options: [
+          "Vanwege het Woord van Wijsheid, een leefregel van hun kerk",
+          "Omdat het wettelijk verboden is in Nederland",
+          "Omdat ze er allergisch voor zijn",
+          "Omdat hun dokter het heeft afgeraden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat hij het idee dat je alcohol nodig hebt om iets gezellig te maken, herkent bij vrienden die geen lid van de kerk zijn.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe omschrijft Koos zijn eigen definitie van \"zonde\"?",
+        options: [
+          "God niet goed genoeg of niet vaak genoeg betrekken in je leven — \"zonder\" God leven",
+          "Elke overtreding van de Nederlandse wet",
+          "Iets wat alleen kerkleiders kunnen begaan",
+          "Uitsluitend het drinken van alcohol",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken waarvan ze zelf genieten in het leven",
+          "Ze bespreken het Woord van Wijsheid en het beeld dat buitenstaanders daarvan hebben",
+          "Ze bespreken of geboden je vrijheid beperken of juist beschermen",
+          "Ze bespreken of God wil dat we van het leven genieten",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Lehi in 2 Nephi 2:25 over het doel waarom mensen bestaan?",
+        options: [
+          "Adam viel, opdat de mensen zouden zijn; en de mensen zijn, opdat zij vreugde zullen hebben",
+          "Mensen bestaan alleen om te lijden en te boeten",
+          "Mensen bestaan om zich zoveel mogelijk af te zonderen van de wereld",
+          "Mensen bestaan om rijkdom te vergaren",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 2 zijn mensen, na verlost te zijn van de val, vrij om zelfstandig te handelen en te kiezen tussen vrijheid en eeuwig leven, of gevangenschap en dood.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is er nodig, volgens 2 Nephi 2, om de mensenkinderen van de val te verlossen?",
+        options: [
+          "De komst van de Messias in de volheid der tijden",
+          "Het bouwen van tempels",
+          "Het houden van de wet van Mozes",
+          "Het bereiken van rijkdom en aanzien",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen uit 2 Nephi 2 in de juiste volgorde.",
+        items: [
+          "Adam viel, opdat de mensen zouden bestaan",
+          "De mensen bestaan opdat zij vreugde zullen hebben",
+          "De Messias verlost de mensenkinderen van de val",
+          "Zij worden vrij om zelfstandig te kiezen tussen vrijheid en gevangenschap",
+        ],
+      },
+    ],
+  },
+  {
+    number: 115,
+    title: "Aflevering 115",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel bespreken Koos en Raphael in deze aflevering?",
+        options: [
+          "Geloofsartikel 5 (roeping door profetie en handoplegging)",
+          "Geloofsartikel 1",
+          "Geloofsartikel 8",
+          "Geloofsartikel 12",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is nodig, volgens geloofsartikel 5, om het evangelie te mogen prediken en verordeningen te bedienen?",
+        options: [
+          "Geroepen worden door profetie en handoplegging van iemand met het juiste gezag",
+          "Een universitaire theologische opleiding",
+          "Minstens tien jaar lidmaatschap van de kerk",
+          "Een aanbeveling van de burgemeester",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat hij, ook al draagt hij het priesterschap, zijn zesjarige zoon niet zomaar zelf het priesterschap mag geven zonder toestemming van iemand met de sleutels.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Koos leest een voorbeeld voor uit Numeri 27, waarin Mozes door handoplegging wie aanstelt als zijn opvolger?",
+        options: ["Jozua", "Aäron", "Kaleb", "Eleazar"],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze lezen geloofsartikel 5 voor en bespreken wat \"gezag\" precies inhoudt",
+          "Ze bespreken het voorbeeld van Mozes die Jozua door handoplegging aanstelt",
+          "Ze bespreken hoe Joseph Smith en Oliver Cowdery het priesterschap terug ontvingen",
+          "Ze bespreken waarom de zoon van Joseph Smith geen automatische opvolger werd",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 3 wordt beschreven hoe discipelen priesters en leraren ordenden. Wat deden ze eerst, voordat ze de handen oplegden?",
+        options: [
+          "Zij baden tot de Vader in de naam van Christus",
+          "Zij vastten veertig dagen",
+          "Zij reisden naar Jeruzalem",
+          "Zij wachtten op een droom",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In wiens naam ordenden de discipelen volgens Moroni 3 een priester of leraar?",
+        options: ["In de naam van Jezus Christus", "In hun eigen naam", "In de naam van de koning", "Zonder een naam te noemen"],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 3 ordenden de discipelen priesters en leraren door de macht van de Heilige Geest, die in hen was.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen van een ordening in Moroni 3 in de juiste volgorde.",
+        items: [
+          "De discipelen bidden tot de Vader in de naam van Christus",
+          "Zij leggen de handen op het hoofd van de persoon",
+          "Zij ordenen hem in de naam van Jezus Christus tot priester of leraar",
+          "Dit gebeurt door de macht van de Heilige Geest die in hen is",
+        ],
+      },
+    ],
+  },
 ];
