@@ -4627,4 +4627,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 78,
+    title: "Aflevering 78",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk vergelijk maakt Raphael tussen het geloof in Sinterklaas en het geloof in God?",
+        options: [
+          "Dat het voor kinderen soms makkelijker is om in Sinterklaas te geloven dan in een Hemelse Vader die ze ook niet kunnen zien",
+          "Dat Sinterklaas en God precies hetzelfde zijn",
+          "Dat zijn kinderen nooit in Sinterklaas hebben geloofd",
+          "Dat het geloof in Sinterklaas gevaarlijker is dan geloof in God",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat hij 'onrein' niet definieert als het maken van fouten, maar als het bewust afkeren van Christus en zijn zoenoffer niet willen gebruiken.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke theorie oppert Koos over hoe Joseph Smith God de Vader en Jezus Christus zag tijdens het eerste visioen?",
+        options: [
+          "Dat zijn geest in een andere dimensie met hen sprak, terwijl zijn lichaam gewoon op de grond lag",
+          "Dat iedereen die er die dag bij was hen ook gewoon kon zien",
+          "Dat het volledig een droom was zonder enige werkelijke ervaring",
+          "Dat hij hen zag via een telescoop",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom waarschuwen Koos en Raphael tegen een oppervlakkig geloof, waarbij je 'met je lippen belijdt' maar er verder niet naar leeft?",
+        options: [
+          "Omdat je dan niet voldoet aan het grootste gebod om God lief te hebben met heel je hart, verstand en kracht",
+          "Omdat de kerk daar een boete voor oplegt",
+          "Omdat oppervlakkig geloof nergens toe leidt in het dagelijks leven",
+          "Omdat het praktisch onmogelijk is om oppervlakkig te geloven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael vertelt over het gesprek met zijn kinderen over Sinterklaas",
+          "Ze bespreken hoe je 'onrein' zou moeten definiëren",
+          "Koos deelt zijn theorie over hoe Joseph Smith God zag tijdens het eerste visioen",
+          "Ze waarschuwen tegen een oppervlakkig, alleen met de lippen beleden geloof",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 7 legt Alma uit dat wij wedergeboren moeten worden. Wat is daarvoor nodig, volgens vers 14?",
+        options: [
+          "Bekering en doop tot vergeving van zonden, met geloof in het Lam Gods",
+          "Alleen het betalen van een offer in de tempel",
+          "Het uit het hoofd leren van alle geboden",
+          "Een speciale ceremonie die alleen voor profeten is weggelegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 7:21 kan geen vuilheid of iets wat onrein is in het koninkrijk van God worden ontvangen, en woont God niet in onheilige tempels.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waartoe roept Alma het volk op in vers 22-23, naast reinheid?",
+        options: [
+          "Ootmoedig, onderworpen, zachtmoedig en dankbaar te zijn, en de geboden nauwgezet te onderhouden",
+          "Zich volledig af te zonderen van de samenleving",
+          "Nooit meer iets aan God te vragen",
+          "Alleen op belangrijke feestdagen aan God te denken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 7 in de juiste volgorde.",
+        items: [
+          "Bekeer u en word wedergeboren om het koninkrijk der hemelen te beërven",
+          "Niets onreins kan in het koninkrijk van God worden ontvangen",
+          "Alma wil hen wakker schudden tot een besef van hun plicht jegens God",
+          "Wees ootmoedig, onderworpen en dankbaar in alle dingen",
+        ],
+      },
+    ],
+  },
 ];
