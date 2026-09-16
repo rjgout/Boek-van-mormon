@@ -1911,4 +1911,93 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 107,
+    title: "Aflevering 107",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is de bijzondere opzet van deze aflevering, samen met Renco en Dick van een andere podcast?",
+        options: [
+          "Ze hebben elkaars kerkdiensten bezocht en wisselen hun ervaringen uit",
+          "Ze nemen samen een liveshow op voor een groot publiek",
+          "Ze bespreken een gezamenlijk goede-doelenactie",
+          "Ze interviewen een kerkhistoricus",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat viel Koos vooral positief op tijdens zijn bezoek aan de Verrijzeniskerk?",
+        options: [
+          "De hoeveelheid mensen en gezinnen, de gebeden van de gastvrouw en de preek",
+          "De korte duur van de dienst",
+          "Het ontbreken van muziek",
+          "De strenge kledingvoorschriften",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vond het ongemakkelijk dat sommige mensen tijdens de liederen gingen staan en anderen niet, omdat dat in zijn eigen kerk altijd voor iedereen gelijk verloopt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover ging de preek die Raphael als \"stevig\" ervoer?",
+        options: [
+          "Of je een echte volgeling van Christus bent, of slechts meeloopt met de menigte",
+          "De geschiedenis van de kerkhervorming",
+          "Het belang van tienden geven",
+          "De opbouw van het Oude Testament",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos en Raphael vertellen over hun verwachtingen vooraf",
+          "Ze bespreken de grootte van de kerk, de muziek en het staan tijdens liederen",
+          "Ze bespreken de preek over discipelschap",
+          "Ze bespreken wat ze uit elkaars kerk zouden willen meenemen (zoals het avondmaal)",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Koos noemt het avondmaal een teken van het verbond. In Mosiah 5 legt koning Benjamin uit welke naam je op je neemt bij dat verbond. Welke?",
+        options: ["De naam van Christus", "De naam van de profeet", "Je eigen doopnaam", "De naam van je stam"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat worden de mensen genoemd die dit verbond sluiten, volgens Mosiah 5:7?",
+        options: [
+          "Kinderen van Christus, zijn zonen en dochters",
+          "Alleen dienstknechten, zonder verdere relatie",
+          "Vreemdelingen die nog niet welkom zijn",
+          "Verre bekenden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 5:8 is er geen andere naam gegeven waardoor redding komt dan de naam van Christus.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen uit Mosiah 5 in de juiste volgorde.",
+        items: [
+          "Het volk sluit een verbond met God",
+          "Zij worden geestelijk verwekt en kinderen van Christus genoemd",
+          "Zij nemen de naam van Christus op zich",
+          "Wie dat doet, zal ter rechterhand van God worden bevonden",
+        ],
+      },
+    ],
+  },
 ];
