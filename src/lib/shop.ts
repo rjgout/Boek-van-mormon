@@ -9,6 +9,41 @@ import { applyWeeklyXp } from "@/lib/leagues";
 // dat er ook bij komt na het Woordspel.
 export const HINT_PRICE_XP = 10;
 
+/**
+ * Totaal aantal hints dat je daadwerkelijk kan inzetten: het algemene,
+ * gekochte tegoed (User.hintBalance) plus alle per-partij verdiende
+ * tegoeden van nog lopende potjes (Woordspel + Raad het hoofdstuk) — zelfde
+ * optelsom als binnen zo'n lopend potje al getoond wordt (zie
+ * totalHintsAvailable in chapterGuess.ts en de myHintCredits-berekening in
+ * /api/scrabble/[gameId]), maar dan gesommeerd over ALLE lopende potjes
+ * tegelijk zodat het getal op de winkelpagina nooit lager oogt dan wat je
+ * daadwerkelijk hebt.
+ */
+export async function getTotalHintBalance(userId: string): Promise<number> {
+  const [user, chapterGuessSum, scrabbleAsPlayer1, scrabbleAsPlayer2] = await Promise.all([
+    prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { hintBalance: true } }),
+    prisma.chapterGuessGame.aggregate({
+      where: { userId, status: "IN_PROGRESS" },
+      _sum: { hintCredits: true },
+    }),
+    prisma.scrabbleGame.aggregate({
+      where: { player1Id: userId, status: "ACTIVE" },
+      _sum: { player1HintCredits: true },
+    }),
+    prisma.scrabbleGame.aggregate({
+      where: { player2Id: userId, status: "ACTIVE" },
+      _sum: { player2HintCredits: true },
+    }),
+  ]);
+
+  return (
+    user.hintBalance +
+    (chapterGuessSum._sum.hintCredits ?? 0) +
+    (scrabbleAsPlayer1._sum.player1HintCredits ?? 0) +
+    (scrabbleAsPlayer2._sum.player2HintCredits ?? 0)
+  );
+}
+
 export type BuyHintResult =
   | { ok: true; xpTotal: number; hintBalance: number }
   | { ok: false; error: string };
@@ -35,7 +70,10 @@ export async function buyHints(userId: string, quantity: number): Promise<BuyHin
         data: { hintBalance: { increment: quantity } },
       });
     });
-    return { ok: true, xpTotal: updated.xpTotal, hintBalance: updated.hintBalance };
+    // De teruggegeven hintBalance is het totaal incl. lopende potjes (zie
+    // getTotalHintBalance) — anders zou de winkelpagina na aankoop even een
+    // te laag getal tonen totdat er iets anders het opnieuw ophaalt.
+    return { ok: true, xpTotal: updated.xpTotal, hintBalance: await getTotalHintBalance(userId) };
   } catch (e) {
     if (e instanceof InsufficientXpError) {
       return { ok: false, error: `Je hebt niet genoeg XP (${cost} nodig).` };
