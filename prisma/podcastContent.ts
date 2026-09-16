@@ -6977,4 +6977,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 52,
+    title: "Aflevering 52",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat het gesprek met gast Shamantha in dit tweede deel vooral over?",
+        options: [
+          "Grenzen stellen rond kuisheid, bekering en het gevoel van vergeving en vreugde dat daarbij hoort",
+          "Het opzetten van een eigen bedrijf",
+          "De geschiedenis van tempels wereldwijd",
+          "Het kiezen van een studie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Shamantha vertelt dat ze zich, nadat ze zich bekeerde en het bij hemelse vader neerlegde, meteen licht en vrolijk voelde, in plaats van dat ze eerst lang verdrietig moest blijven.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe omschrijft Shamantha 'zonden' liever, om te laten zien waarom ze nodig zijn om te groeien?",
+        options: [
+          "Als gewichten die je oppakt en er sterker van wordt, niet als iets om voor altijd met je mee te dragen",
+          "Als iets wat volledig onbelangrijk is en genegeerd kan worden",
+          "Als een straf die nooit meer weggenomen kan worden",
+          "Als iets waar alleen andere mensen last van hebben",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld noemt Raphael om te laten zien hoe de kerk niet oordelend, maar juist welkomend zou moeten zijn?",
+        options: [
+          "Iemand verwelkomen die naar sigarettenrook ruikt, in plaats van daarop neer te kijken",
+          "Alleen mensen toelaten die perfecte kleding dragen",
+          "Alleen mensen verwelkomen die al heel lang lid zijn",
+          "Mensen weigeren die vragen durven stellen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Shamantha vertelt over het belang van grenzen rond kuisheid in haar relatie",
+          "Ze bespreken dat fouten pas fouten blijven als je ze niet ombuigt naar de Heer",
+          "Shamantha vertelt over het moment dat ze zich meteen vergeven en licht voelde",
+          "Ze bespreken dat de kerk een ziekenhuis voor zondaars is en niet mag oordelen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 36 beschrijft Alma de jongere wat er gebeurde nadat hij zich tot Christus wendde. Wat gebeurde er volgens vers 19?",
+        options: [
+          "Hij kon zich zijn pijnen niet meer herinneren en werd niet meer verscheurd door de gedachte aan zijn zonden",
+          "Hij werd juist nog banger dan daarvoor",
+          "Hij vergat volledig wat er gebeurd was, zonder enig leermoment",
+          "Er verandert niets in dit vers",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 36:20 werd Alma's ziel vervuld met een vreugde die even buitengewoon was als voordien zijn pijn was geweest.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe beschrijft Alma in vers 21 de vergelijking tussen zijn pijn en zijn vreugde?",
+        options: [
+          "Niets kon zo uitzonderlijk bitter zijn als zijn pijnen, en niets zo uitzonderlijk zoet als zijn vreugde",
+          "Zijn pijn was altijd sterker dan zijn vreugde",
+          "Hij voelde geen van beide echt sterk",
+          "Er wordt in dit vers geen vergelijking gemaakt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 36:19-21 in de juiste volgorde.",
+        items: [
+          "Alma kon zich zijn pijnen niet meer herinneren",
+          "Hij zag een wonderbaar licht en zijn ziel werd vervuld met vreugde",
+          "Die vreugde was even buitengewoon als voordien zijn pijn",
+          "Niets kon zo zoet zijn als die vreugde",
+        ],
+      },
+    ],
+  },
 ];
