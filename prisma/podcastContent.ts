@@ -7729,4 +7729,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 44,
+    title: "Aflevering 44",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Koos en Raphael het verschil tussen een gebod en een verbond?",
+        options: [
+          "Een gebod is een richtlijn die je onderhoudt met een belofte van zegeningen, terwijl een verbond een bewust aangegane wederzijdse relatie met God is",
+          "Er is helemaal geen verschil tussen die twee",
+          "Een gebod geldt alleen voor volwassenen, een verbond alleen voor kinderen",
+          "Een verbond is alleen voor priesterschapdragers, een gebod voor iedereen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vergelijkt een gebod met huisregels en een verbond met een huwelijk, om het verschil in wederzijdse toewijding te laten zien.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke verbonden noemen Koos en Raphael samen op in deze aflevering?",
+        options: [
+          "De doop, het huwelijksverbond (verzegeling), het priesterschapsverbond en het tempelverbond (begiftiging)",
+          "Alleen het huwelijksverbond",
+          "Alleen de doop",
+          "Alleen het priesterschapsverbond",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over de vorm van het doopvond die hij bij een doopdienst in de tempel hoorde uitleggen?",
+        options: [
+          "Dat het doopvond van bovenaf bekeken op een sleutelgat lijkt, als beeld voor de sleutel tot het koninkrijk van God",
+          "Dat het doopvond de vorm van een hart heeft",
+          "Dat het doopvond altijd buiten staat",
+          "Dat het doopvond nooit water bevat",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Ze bespreken dat er eigenlijk maar twee echte geboden zijn",
+          "Ze leggen het verschil tussen een gebod en een verbond uit",
+          "Raphael vertelt over de doop als sleutel tot het koninkrijk van God",
+          "Ze bespreken het huwelijksverbond, het priesterschapsverbond en de begiftiging",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 5 sluit het volk van koning Benjamin een verbond met God. Wat beloven ze volgens vers 5?",
+        options: [
+          "Dat zij voor de rest van hun leven Gods wil zullen doen en zijn geboden zullen gehoorzamen",
+          "Dat zij alleen op zondag gehoorzaam zullen zijn",
+          "Dat zij een tempel zullen bouwen",
+          "Dat zij nooit meer zullen bidden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 5:7 worden zij die het verbond hebben gesloten kinderen van Christus genoemd, zijn zonen en dochters, omdat hun hart door geloof in zijn naam is veranderd.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat wil koning Benjamin in Mosiah 5:8 dat iedereen die het verbond heeft gesloten, op zich neemt?",
+        options: [
+          "De naam van Christus",
+          "Een nieuwe wettelijke naam bij de overheid",
+          "Een speciale kledingstijl",
+          "Er wordt in dit vers niets specifieks gevraagd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 5:5-8 in de juiste volgorde.",
+        items: [
+          "Het volk is bereid een verbond met God aan te gaan om zijn geboden te gehoorzamen",
+          "Koning Benjamin zegt dat het verbond dat zij gesloten hebben rechtvaardig is",
+          "Wegens dat verbond worden zij kinderen van Christus genoemd",
+          "Hij wil dat zij de naam van Christus op zich nemen",
+        ],
+      },
+    ],
+  },
 ];
