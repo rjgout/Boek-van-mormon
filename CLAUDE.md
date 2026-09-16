@@ -169,6 +169,51 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
   worden met toestemming gebruikt — deel dit dus niet als losstaand
   bestand/export met een instantie die die toestemming niet apart heeft.
 
+## Podcastafleveringen verwerken (`prisma/podcastContent.ts`)
+
+Wanneer de eigenaar nieuwe `.vtt`-transcripten van "Geloof je dat ook?"
+aanlevert (bv. in een `VTT/`-map) om te verwerken tot leeroefeningen:
+
+- **Structuur per aflevering** (zie bestaande entries in
+  `prisma/podcastContent.ts` als voorbeeld): 4-5 `content`-oefeningen
+  (MULTIPLE_CHOICE/TRUE_FALSE/SEQUENCE) die gaan over wat er **daadwerkelijk**
+  in dat specifieke gesprek besproken wordt — geen generieke vragen — plus
+  4 `bomConnection`-oefeningen die het gesprek verbinden aan één concreet,
+  geverifieerd hoofdstuk/vers uit het Boek van Mormon. Sluit beide blokken
+  af met een SEQUENCE-oefening.
+- **`title`/`summary`**: gebruik altijd de placeholders
+  `title: "Aflevering N"` en
+  `summary: "Wordt bijgewerkt vanuit de podcastfeed."` — `syncPodcastFeed()`
+  in `src/lib/podcastFeed.ts` overschrijft deze velden toch bij elke sync
+  vanuit de RSS-feed, dus een eigen titel/samenvatting schrijven heeft geen zin.
+- **Transcript lezen**: een `.vtt`-bestand bevat WebVTT-timestamps en
+  `<v Speaker>`-tags; lees het gesprek inhoudelijk (wie zegt wat) in plaats
+  van te parsen op basis van de cue-nummers/tijden.
+- **BOM-verbinding kiezen en verifiëren**: zoek een hoofdstuk/passage die
+  **inhoudelijk** aansluit bij het onderwerp van het gesprek (niet een
+  toevallige losse zin), en haal de **exacte** Nederlandse verstekst op uit
+  `prisma/bomContent.json` (bv. via een kort `python3 -c "..."`-scriptje) —
+  nooit uit het geheugen citeren, parafrases moeten letterlijk kloppen met
+  de brontekst.
+- Vermijd bewust gevoelige/uit-context-provocerende passages als
+  BOM-connectie (bv. "de grote en gruwelijke kerk" uit 1 Nephi 13) tenzij
+  het gesprek daar expliciet over gaat.
+- Varieer BOM-hoofdstukken zoveel mogelijk over de afleveringen heen;
+  incidenteel hergebruik van eenzelfde hoofdstuk mag, mits met duidelijk
+  andere verzen/thema en alleen als dat aantoonbaar de beste match is.
+- Werk **per aflevering** dit patroon af: transcript lezen → onderwerpen
+  bepalen → BOM-tekst zoeken en verifiëren → TS-object toevoegen aan het
+  array → `npx tsc --noEmit`. Commit per 1-3 afleveringen naar de
+  werkbranch (nooit rechtstreeks naar `main`).
+- **Afsluitende validatie** nadat alle afleveringen zijn toegevoegd:
+  `npx tsc --noEmit`, een lokale import-test tegen een Postgres-instantie
+  (roep `importPodcastEpisodes()` uit `prisma/importPodcast.ts` rechtstreeks
+  aan met `podcastEpisodes`, niet de volledige `runSeed()`, want die roept
+  ook `syncPodcastFeed()` aan die een netwerkverzoek naar de echte RSS-feed
+  doet), controleer dat elke aflevering het verwachte aantal oefeningen
+  heeft, ruim de testdata daarna weer op, en tot slot
+  `rm -rf .next && npm run build`.
+
 ## Lokaal ontwikkelen
 
 ```bash
