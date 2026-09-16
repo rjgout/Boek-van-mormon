@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Herstelt een backup (gemaakt met scripts/backup.sh) in de bom-db container.
+# Herstelt een backup (gemaakt met scripts/backup.sh) in de jehova-db container.
 # LET OP: dit overschrijft de huidige database-inhoud.
 #
 # Gebruik:
@@ -8,7 +8,7 @@ set -euo pipefail
 
 DUMP_FILE="${1:?Gebruik: ./scripts/restore.sh <dump-bestand> [.env-bestand]}"
 ENV_FILE="${2:-}"
-CONTAINER="${BOM_DB_CONTAINER:-bom-db}"
+CONTAINER="${JEHOVA_DB_CONTAINER:-jehova-db}"
 
 if [ ! -f "$DUMP_FILE" ]; then
   echo "Bestand niet gevonden: $DUMP_FILE" >&2

@@ -1,31 +1,45 @@
 # Stack voor Portainer (of Container Manager) op je NAS.
 #
-# Gebruik:
+# ⚠️ Kom je van de oude "bom-game"-naamgeving? Migreer eerst je data,
+# vóórdat je deze stack (opnieuw) deployt:
+#   1. Stop de huidige stack in Portainer (Stacks -> bom-game -> Stop).
+#   2. Verplaats op de NAS (via File Station of SSH) de map
+#      /volume1/docker/bom-game naar /volume1/docker/jehova-game — dus
+#      inclusief de "postgres"-submap met al je bestaande data.
+#   3. Deploy deze (bijgewerkte) stack. De Postgres-gebruiker/database heten
+#      bewust nog steeds "bom" (zie environment hieronder) — dat is voor
+#      niemand zichtbaar en hoeft dus niet mee te veranderen.
+#   4. Controleer dat inloggen en je bestaande voortgang nog werken voordat
+#      je de oude map op de NAS opruimt.
+#
+# Gebruik (nieuwe installatie):
 #   1. Vervang hieronder elke *_PASSWORD/SESSION_SECRET-placeholder door je
 #      eigen waarde (zoek ze op met Ctrl+F — sommige komen op 2-3 plekken
 #      voor en moeten daar allemaal hetzelfde zijn).
 #   2. Plak dit in Portainer: Stacks -> Add stack -> Web editor -> plak ->
 #      Deploy the stack.
 #   3. Wijs je eigen reverse proxy / Cloudflare Tunnel naar poort 3000 van je
-#      NAS (of naar de container "bom-game" als je 'm op hetzelfde
+#      NAS (of naar de container "jehova-game" als je 'm op hetzelfde
 #      Docker-netwerk aansluit).
 #
 # Updates: geen automatische updater (Watchtower) — na een nieuwe push naar
-# main haal je 'm zelf op in Portainer via Stacks -> bom-game -> Pull and
+# main haal je 'm zelf op in Portainer via Stacks -> jehova-game -> Pull and
 # redeploy.
 #
 # Zie docs/DEPLOY-SYNOLOGY.md voor de volledige toelichting.
 
 services:
-  bom-game:
-    image: ghcr.io/rjgout/bom-game:latest
-    container_name: bom-game
+  jehova-game:
+    image: ghcr.io/rjgout/jehova-game:latest
+    container_name: jehova-game
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      DATABASE_URL: postgresql://bom:CHANGE_THIS_DB_PASSWORD@bom-db:5432/bom?schema=public
-      REDIS_URL: redis://:CHANGE_THIS_REDIS_PASSWORD@bom-redis:6379
+      # De gebruiker/database heten bewust nog "bom" — zie de migratienotitie
+      # bovenaan dit bestand voor waarom dat niet hoeft te veranderen.
+      DATABASE_URL: postgresql://bom:CHANGE_THIS_DB_PASSWORD@jehova-db:5432/bom?schema=public
+      REDIS_URL: redis://:CHANGE_THIS_REDIS_PASSWORD@jehova-redis:6379
       SESSION_SECRET: CHANGE_THIS_TO_A_LONG_RANDOM_STRING
       PORT: 3000
       # Zet tijdelijk op "true" als je test via een plain-http-adres (bv.
@@ -36,11 +50,11 @@ services:
       # Optioneel: alleen nodig als de links in bevestigings-/resetmails niet
       # vanzelf het juiste adres krijgen (zie .env.example). SMTP-instellingen
       # zelf stel je in via /adminbackend in de app, niet hier.
-      # APP_URL: "https://bom.jouwdomein.nl"
+      # APP_URL: "https://jehova.jouwdomein.nl"
     depends_on:
-      bom-db:
+      jehova-db:
         condition: service_healthy
-      bom-redis:
+      jehova-redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
@@ -49,25 +63,25 @@ services:
       start_period: 20s
       retries: 3
 
-  bom-db:
+  jehova-db:
     image: postgres:16-alpine
-    container_name: bom-db
+    container_name: jehova-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: bom
       POSTGRES_PASSWORD: CHANGE_THIS_DB_PASSWORD
       POSTGRES_DB: bom
     volumes:
-      - /volume1/docker/bom-game/postgres:/var/lib/postgresql/data
+      - /volume1/docker/jehova-game/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bom -d bom"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  bom-redis:
+  jehova-redis:
     image: redis:7-alpine
-    container_name: bom-redis
+    container_name: jehova-redis
     restart: unless-stopped
     command: ["redis-server", "--requirepass", "CHANGE_THIS_REDIS_PASSWORD", "--appendonly", "no"]
     healthcheck:

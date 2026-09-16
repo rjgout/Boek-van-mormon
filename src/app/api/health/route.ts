@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
-// Gebruikt door de Docker HEALTHCHECK van bom-game. Controleert de database
+// Gebruikt door de Docker HEALTHCHECK van jehova-game. Controleert de database
 // (kritiek: de app kan niet functioneren zonder), en rapporteert Redis
 // informatief (niet kritiek: de live-quiz werkt gedegradeerd zonder).
 export async function GET() {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Maakt een backup van de PostgreSQL-database in de bom-db container.
+# Maakt een backup van de PostgreSQL-database in de jehova-db container.
 #
 # Gebruik:
 #   ./scripts/backup.sh [.env-bestand] [doelmap]
@@ -10,7 +10,9 @@ set -euo pipefail
 
 ENV_FILE="${1:-}"
 DEST_DIR="${2:-backups}"
-CONTAINER="${BOM_DB_CONTAINER:-bom-db}"
+# De gebruiker/database heten bewust nog "bom" (zie hieronder) — dat is voor
+# niemand zichtbaar, alleen de containernaam is veranderd.
+CONTAINER="${JEHOVA_DB_CONTAINER:-jehova-db}"
 
 if [ -z "$ENV_FILE" ]; then
   if [ -f ".env" ]; then

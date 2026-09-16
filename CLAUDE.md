@@ -60,13 +60,19 @@ praktijk toegepast wordt.
 
 | Container | Rol | Persistent? |
 |---|---|---|
-| `bom-game` | Next.js-app + API + Socket.io-server (`server.ts`) | Nee, stateless |
-| `bom-db` | PostgreSQL — alle gebruikersdata | Ja (`bom_db_data`) |
-| `bom-redis` | Socket.io-adapter voor live-quiz | Nee, ephemeral |
+| `jehova-game` | Next.js-app + API + Socket.io-server (`server.ts`) | Nee, stateless |
+| `jehova-db` | PostgreSQL — alle gebruikersdata | Ja (`jehova_db_data`) |
+| `jehova-redis` | Socket.io-adapter voor live-quiz | Nee, ephemeral |
+
+Containernamen zijn puur infrastructuur, geen productbranding — de
+Postgres-gebruiker/database heten bewust nog "bom" (zie `.env.example`),
+dat is voor niemand zichtbaar en hoeft niet mee te veranderen.
 
 Build/deploy: GitHub Actions bouwt bij elke push naar `main` een image en
 publiceert 'm naar `ghcr.io` (`.github/workflows/docker-publish.yml`); een
-zelfgehoste instantie haalt 'm op via Portainer/Docker Compose.
+zelfgehoste instantie haalt 'm op via Portainer/Docker Compose. Zie
+`docs/DEPLOY-SYNOLOGY.md` voor de migratienotitie als je van een oudere
+`bom-game`-naamgeving komt.
 
 ## ⚠️ Harde regel: `server.ts`'s eager-importketen
 

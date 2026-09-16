@@ -13,20 +13,27 @@
 # en docs/DEPLOY-SYNOLOGY.md.
 
 services:
-  bom-game:
+  jehova-game:
     build: .
-    container_name: bom-game
+    container_name: jehova-game
     restart: unless-stopped
     depends_on:
-      bom-db:
+      jehova-db:
         condition: service_healthy
-      bom-redis:
+      jehova-redis:
         condition: service_healthy
     env_file:
       - .env
     environment:
-      DATABASE_URL: "postgresql://${POSTGRES_USER:-bom}:${POSTGRES_PASSWORD:?Zet POSTGRES_PASSWORD in .env}@bom-db:5432/${POSTGRES_DB:-bom}?schema=public"
-      REDIS_URL: "redis://:${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}@bom-redis:6379"
+      # POSTGRES_USER/POSTGRES_DB blijven bewust "bom" als standaard: dat is
+      # de gebruiker/database-naam waarmee bestaande installaties al draaien
+      # (Postgres kent die namen alleen toe bij de allereerste opstart van
+      # een lege datamap — wijzig dit dus niet zonder ook zelf de bestaande
+      # Postgres-gebruiker/database te hernoemen, anders kan de app niet
+      # meer inloggen). De containernaam hieronder is puur cosmetisch en
+      # veilig om te wijzigen.
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-bom}:${POSTGRES_PASSWORD:?Zet POSTGRES_PASSWORD in .env}@jehova-db:5432/${POSTGRES_DB:-bom}?schema=public"
+      REDIS_URL: "redis://:${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}@jehova-redis:6379"
     ports:
       - "${PORT:-3000}:3000"
     healthcheck:
@@ -36,25 +43,25 @@ services:
       start_period: 20s
       retries: 3
 
-  bom-db:
+  jehova-db:
     image: postgres:16-alpine
-    container_name: bom-db
+    container_name: jehova-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-bom}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Zet POSTGRES_PASSWORD in .env}
       POSTGRES_DB: ${POSTGRES_DB:-bom}
     volumes:
-      - bom_db_data:/var/lib/postgresql/data
+      - jehova_db_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-bom} -d ${POSTGRES_DB:-bom}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  bom-redis:
+  jehova-redis:
     image: redis:7-alpine
-    container_name: bom-redis
+    container_name: jehova-redis
     restart: unless-stopped
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?Zet REDIS_PASSWORD in .env}", "--appendonly", "no"]
     healthcheck:
@@ -67,7 +74,14 @@ services:
 
 volumes:
   # Persistente data (gebruikers, voortgang, XP, streaks, freezes, vrienden,
-  # competitie, spelresultaten, content) staat hier — NIET in de bom-game
+  # competitie, spelresultaten, content) staat hier — NIET in de jehova-game
   # container. Een container verwijderen en opnieuw starten (zonder deze
   # volume te verwijderen) laat alle data intact.
-  bom_db_data:
+  #
+  # LET OP bij een bestaande installatie die nog de oude volumenaam
+  # "bom_db_data" gebruikt: Docker maakt bij een naamswijziging een NIEUWE
+  # lege volume aan in plaats van de oude te hergebruiken. Migreer eerst de
+  # data (bv. `docker run --rm -v bom_db_data:/from -v jehova_db_data:/to
+  # alpine sh -c "cp -a /from/. /to/"` met beide containers gestopt) vóórdat
+  # je deze compose-file met de nieuwe naam opnieuw opstart.
+  jehova_db_data:

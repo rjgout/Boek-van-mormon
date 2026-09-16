@@ -95,7 +95,7 @@ automatische updates.
 Content laden (eenmalig, en telkens wanneer je content toevoegt/wijzigt):
 
 ```bash
-docker exec bom-game npm run db:seed
+docker exec jehova-game npm run db:seed
 ```
 
 Dit kan ook zonder terminal: een admin-account heeft op `/adminbackend` een
@@ -115,7 +115,7 @@ Zodra je toestemming hebt geregeld om de officiële tekst te gebruiken, kan
 je je eigen content laden via:
 
 ```bash
-docker exec bom-game npm run db:import -- /pad/naar/bestand.json
+docker exec jehova-game npm run db:import -- /pad/naar/bestand.json
 ```
 
 (kopieer het bestand eerst de container in met `docker cp`). Zie de
@@ -130,18 +130,18 @@ die deze toestemming niet apart geregeld heeft.
 
 ## Architectuur
 
-| Container    | Rol                                                                 | Persistent? |
-|--------------|----------------------------------------------------------------------|-------------|
-| `bom-game`   | Next.js-app + API-routes + de live-quiz Socket.io-server            | Nee — stateless, vervangbaar zonder dataverlies |
-| `bom-db`     | PostgreSQL — alle gebruikers, voortgang, XP, streaks, freezes, vrienden, competitie, quizresultaten en content | Ja — Docker-volume `bom_db_data` |
-| `bom-redis`  | Redis, actief gebruikt als Socket.io-adapter voor de live multiplayer-quiz | Nee — tijdelijke, vervangbare realtime-state |
+| Container      | Rol                                                                 | Persistent? |
+|----------------|----------------------------------------------------------------------|-------------|
+| `jehova-game`  | Next.js-app + API-routes + de live-quiz Socket.io-server            | Nee — stateless, vervangbaar zonder dataverlies |
+| `jehova-db`    | PostgreSQL — alle gebruikers, voortgang, XP, streaks, freezes, vrienden, competitie, quizresultaten en content | Ja — Docker-volume `jehova_db_data` |
+| `jehova-redis` | Redis, actief gebruikt als Socket.io-adapter voor de live multiplayer-quiz | Nee — tijdelijke, vervangbare realtime-state |
 
-`bom-game` is bewust stateless: hij is op elk moment te verwijderen en opnieuw
-te starten (bv. bij een update) zonder dataverlies, omdat alle persistente
-data in `bom-db` staat. Redis wordt écht gebruikt (niet als ongebruikte
-infrastructuur): elke room-broadcast van de live-quiz loopt via de
-Socket.io-Redis-adapter, wat het ook mogelijk maakt om later — zonder de
-multiplayer-architectuur te herbouwen — meerdere `bom-game`-instanties
+`jehova-game` is bewust stateless: hij is op elk moment te verwijderen en
+opnieuw te starten (bv. bij een update) zonder dataverlies, omdat alle
+persistente data in `jehova-db` staat. Redis wordt écht gebruikt (niet als
+ongebruikte infrastructuur): elke room-broadcast van de live-quiz loopt via
+de Socket.io-Redis-adapter, wat het ook mogelijk maakt om later — zonder de
+multiplayer-architectuur te herbouwen — meerdere `jehova-game`-instanties
 tegelijk te draaien.
 
 ## Lokaal ontwikkelen zonder Docker
@@ -176,7 +176,7 @@ leggen zodra een schemawijziging klaar is voor productie/commit.
 ./scripts/restore.sh backups/bom-20260101T000000Z.dump
 ```
 
-De database staat volledig in het Docker-volume `bom_db_data`. Een
+De database staat volledig in het Docker-volume `jehova_db_data`. Een
 container verwijderen en opnieuw starten laat de data intact; alleen het
 expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 
@@ -184,7 +184,7 @@ expliciet verwijderen van dat volume (`docker volume rm ...`) is destructief.
 
 - Live-spel-uitnodigingen komen alleen real-time binnen bij vrienden die op
   dat moment de site open hebben; anders deel je de speelcode handmatig.
-- Er draait momenteel één `bom-game`-instantie: de Redis-adapter zorgt dat
+- Er draait momenteel één `jehova-game`-instantie: de Redis-adapter zorgt dat
   Socket.io-broadcasts er al klaar voor zijn, maar het live-spel-geheugen
   zelf (spelersscores tijdens een actief spel) leeft nog in het geheugen van
   die ene instantie — voor meerdere instanties tegelijk zou dat ook naar
