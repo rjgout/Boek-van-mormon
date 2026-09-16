@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { faviconDataUrl } = await getBranding();
 
   return {
-    title: `${APP_NAME} — Boek van Mormon`,
+    title: APP_NAME,
     description: APP_TAGLINE,
     manifest: "/manifest.webmanifest",
     icons: {

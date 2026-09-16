@@ -1,6 +1,13 @@
-# Geloof je dat ook? — Boek van Mormon
+# Jehova
 
-Op een speelse, motiverende manier het Boek van Mormon lezen — in het Nederlands.
+Een algemene, interactieve leeromgeving voor schriftstudie — op een speelse,
+motiverende manier. Momenteel bevat de app één cursus/contentcollectie: het
+Boek van Mormon (in het Nederlands). Het datamodel (boeken, hoofdstukken,
+verzen, cursussen) is bewust niet aan dat ene schriftwerk gebonden, zodat
+er later andere collecties bij kunnen (bv. de Leer en Verbonden of de Parel
+van Grote Waarde) zonder herbouw. "Geloof je dat ook?" is de naam van de
+meegeleverde podcastcursus, een aparte contentbron binnen de app — niet de
+naam van de app zelf.
 
 Gebouwd om **zelf gehost** te worden: een self-contained Docker-opzet met
 een echte PostgreSQL-database en persistente volumes, zonder afhankelijkheid

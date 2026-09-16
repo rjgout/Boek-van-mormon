@@ -232,7 +232,20 @@ model DetectedAppUrl {
   updatedAt DateTime @updatedAt
 }
 
-// --- Content: Boek van Mormon structuur --------------------------------
+// --- Content: boek/hoofdstuk/vers-structuur -----------------------------
+//
+// Bewust generiek, niet gebonden aan één specifiek schriftwerk: Book is een
+// willekeurig boek binnen een cursus/schriftwerk, niet per se "een boek van
+// het Boek van Mormon". De huidige content (zie prisma/content.ts,
+// prisma/bomContent.json en prisma/importContent.ts) komt uitsluitend uit
+// het Boek van Mormon, maar een toekomstig schriftwerk (bv. de Leer en
+// Verbonden) kan met dezelfde Book/Chapter/Verse-modellen en dezelfde
+// import/Course-machinerie (zie src/lib/courses.ts) toegevoegd worden,
+// zonder schemawijziging hier. Zie het commentaar bij syncCourses() in
+// src/lib/courses.ts voor de ene plek die dan wél aangepast moet worden
+// (de "van voor naar achter"/"vrije keuze"-cursussen spannen nu bewust over
+// alle Book-rijen heen, wat pas fout wordt zodra er een tweede schriftwerk
+// bijkomt).
 
 model Book {
   id       String    @id @default(cuid())

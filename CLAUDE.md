@@ -6,11 +6,29 @@ deployvoorbeeld: zie `docs/DEPLOY-SYNOLOGY.md`.
 
 ## Wat dit is
 
-"Geloof je dat ook?" — een Nederlandstalige leerapp om het
-Boek van Mormon te lezen (lessen, oefeningen, XP, streaks, competitie,
-live multiplayer-quiz). Bewust gebouwd om **self-hosted** te draaien (geen
+**Jehova** — een algemene, interactieve leeromgeving voor schriftstudie
+(lessen, oefeningen, XP, streaks, competitie, live multiplayer-quiz). Het
+datamodel (`Book`/`Chapter`/`Verse`/`Course`, zie Database & migraties
+hieronder) is bewust niet aan één specifiek schriftwerk gebonden: het Boek
+van Mormon is vandaag de enige/eerste cursus/contentcollectie, maar de
+architectuur staat toe dat er later andere collecties bijkomen (bv. de Leer
+en Verbonden of de Parel van Grote Waarde) zonder herbouw. "Geloof je dat
+ook?" is de naam van de meegeleverde podcastcursus (zie
+`prisma/podcastContent.ts`) — een aparte contentbron binnen de app, niet de
+naam of technische identiteit van de app zelf (zie `src/lib/brand.ts`).
+Bewust gebouwd om **self-hosted** te draaien (geen
 cloud-platformafhankelijkheden), taal is overal Nederlands (UI, foutmeldingen,
-codecommentaar, commitmessages).
+codecommentaar, commitmessages). De huidige Nederlandstalige wekelijkse
+competitie is gekoppeld aan de huidige Nederlandstalige content — zie
+`LeagueSettings.localeCode` in `prisma/schema.prisma`, dat een toekomstige
+tweede taal/competitie niet blokkeert.
+
+Nieuwe code, teksten of bestandsnamen mogen "Boek van Mormon"/"BOM" dus
+alleen gebruiken waar dat feitelijk over de huidige content gaat (bv. een
+importscript voor die content, of een featurebeschrijving die vandaag klopt)
+— nooit als aanname dat de hele app daarom draait. Zie ook de sectie
+"Podcastafleveringen verwerken" hieronder voor hoe dat onderscheid in de
+praktijk toegepast wordt.
 
 ## Werkwijze
 

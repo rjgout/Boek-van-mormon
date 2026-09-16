@@ -12,7 +12,7 @@ export default async function HomePage() {
     <div className="flex flex-col items-center text-center gap-8 py-12">
       <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{APP_NAME}</p>
       <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-800 dark:text-brand-300 leading-tight">
-        Lees het Boek van Mormon,
+        Lees de Schriften,
         <br />
         op een speelse manier.
       </h1>

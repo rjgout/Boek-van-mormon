@@ -12,6 +12,16 @@ export const KIDS_SLUG = "kinderen";
  * Gebruikersvoortgang (UserCourseProgress) blijft intact, want Chapter-ID's
  * blijven stabiel over een re-import heen — alleen de CourseChapter-
  * koppelrijen worden hier weggegooid en herbouwd.
+ *
+ * Let op voor later: "van voor naar achter" en "vrije keuze" spannen hier
+ * bewust over ALLE Book-rijen heen, in `order` — correct zolang er maar één
+ * schriftwerk (nu: het Boek van Mormon) in de database staat. Komt er ooit
+ * een tweede schriftwerk bij (bv. de Leer en Verbonden, als eigen Book-rijen
+ * of via een nieuw "collectie"-veld op Book), dan moet deze functie die twee
+ * cursussen per schriftwerk gaan bouwen in plaats van over alles heen —
+ * anders vloeien ze door elkaar in één opeenvolging. Book/Chapter/Verse en
+ * de Course-typen zelf hebben daar geen wijziging voor nodig, alleen deze
+ * functie.
  */
 export async function syncCourses(db: PrismaClient): Promise<void> {
   const books = await db.book.findMany({
@@ -52,7 +62,7 @@ export async function syncCourses(db: PrismaClient): Promise<void> {
       slug: FRONT_TO_BACK_SLUG,
       type: "FRONT_TO_BACK",
       name: "Van voor naar achter",
-      description: "Eén vaste volgorde door het hele Boek van Mormon, hoofdstuk na hoofdstuk.",
+      description: "Eén vaste volgorde door alle boeken heen, hoofdstuk na hoofdstuk.",
       order: 1,
     },
   });
