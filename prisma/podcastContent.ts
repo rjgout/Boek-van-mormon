@@ -1466,4 +1466,187 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 112,
+    title: "Aflevering 112",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel bespreken Koos en Raphael in deze aflevering?",
+        options: [
+          "Geloofsartikel 4 (de eerste beginselen en verordeningen)",
+          "Geloofsartikel 7",
+          "Geloofsartikel 10",
+          "Geloofsartikel 3",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zijn volgens geloofsartikel 4 de vier eerste beginselen en verordeningen van het evangelie?",
+        options: [
+          "Geloof in Jezus Christus, bekering, doop door onderdompeling, handoplegging voor de Heilige Geest",
+          "Vasten, offergaven, tempeldienst, zending",
+          "Gebed, schriftstudie, tiende, kerkbezoek",
+          "Doop, avondmaal, huwelijk, begrafenis",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vergelijkt de doop met een sleutel die het pad opent dat terugleidt naar Hemelse Vader — niet het einddoel zelf, maar het begin.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom nemen leden van de kerk volgens Koos en Raphael elke week het avondmaal?",
+        options: [
+          "Om hun doopverbond te vernieuwen en dat verbond levend te houden",
+          "Omdat het verplicht is door de wet",
+          "Om hun lidmaatschap opnieuw te bevestigen elke maand",
+          "Om een nieuwe naam te ontvangen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze lezen geloofsartikel 4 voor en bespreken de volgorde van de vier beginselen",
+          "Ze bespreken waarom de doop gekoppeld is aan vergeving van zonden",
+          "Ze bespreken het avondmaal als vernieuwing van het doopverbond",
+          "Ze concluderen dat de doop een begin is, geen eindpunt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 31 legt Nephi \"de leer van Christus\" uit. Wat noemt hij als de poort waardoor je moet binnengaan?",
+        options: [
+          "Bekering en doop door onderdompeling",
+          "Het betalen van tiende",
+          "Het bouwen van een tempel",
+          "Het reizen naar Jeruzalem",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurt er volgens 2 Nephi 31 nadat je door de poort bent gegaan en de Heilige Geest hebt ontvangen?",
+        options: [
+          "Je moet met standvastig geloof in Christus voortgaan tot het einde",
+          "Dan is alles klaar en hoef je niets meer te doen",
+          "Dan mag je zelf bepalen of je nog geboden houdt",
+          "Dan begint het proces helemaal opnieuw",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 31 is er geen andere weg of naam onder de hemel gegeven waardoor de mens behouden kan worden in het koninkrijk van God.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit Nephi's \"leer van Christus\" in 2 Nephi 31 in de juiste volgorde.",
+        items: [
+          "Je gaat door de poort: bekering en doop",
+          "Je ontvangt de Heilige Geest",
+          "Je streeft standvastig voorwaarts, met hoop en liefde",
+          "Je volhardt tot het einde en ontvangt het eeuwige leven",
+        ],
+      },
+    ],
+  },
+  {
+    number: 111,
+    title: "Aflevering 111",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke prikkelende vraag stelt Koos aan het begin van deze aflevering, naar aanleiding van zijn Bijbellezing in Exodus?",
+        options: [
+          "Vindt Raphael dat God humor heeft?",
+          "Waarom werden er geen vrouwelijke profeten geroepen?",
+          "Waarom duurde de schepping zes dagen?",
+          "Waarom mocht Mozes het beloofde land niet in?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurde er toen Mozes zijn staf op de grond gooide, op Gods aanwijzing?",
+        options: ["De staf werd een slang", "De staf brak in tweeën", "De staf werd goud", "Er niets"],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Toen het volk in de woestijn klaagde over honger, stuurde God zowel manna als kwartels.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurde er nadat het volk bleef klagen en God vurige (giftige) slangen stuurde?",
+        options: [
+          "Mozes maakte een koperen slang; wie ernaar keek, werd genezen",
+          "Het volk moest veertig dagen vasten als straf",
+          "Alle slangen verdwenen vanzelf na een week",
+          "Mozes bad en de slangen werden onmiddellijk gedood",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit Exodus, zoals besproken in de aflevering, in de juiste volgorde.",
+        items: [
+          "Mozes' staf verandert in een slang bij de brandende struik",
+          "De tien plagen treffen Egypte, en de Israëlieten vertrekken",
+          "Het volk klaagt in de woestijn over honger en dorst",
+          "Vurige slangen bijten het klagende volk, en de koperen slang geneest hen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 33 legt Alma uit waar de koperen slang van Mozes een zinnebeeld van was. Waarvan?",
+        options: [
+          "Van Christus — wie op Hem vertrouwt en \"kijkt\", zal genezen worden",
+          "Van de wet van Mozes in het algemeen",
+          "Van de duivel die overwonnen moet worden",
+          "Van de twaalf stammen van Israël",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom kwamen sommigen om, ondanks dat de genezing zo eenvoudig was als kijken naar de slang?",
+        options: [
+          "Wegens de verstoktheid van hun hart wilden zij niet kijken",
+          "Ze waren te ver weg om het te zien",
+          "De slang was op dat moment kapot",
+          "Ze waren al genezen voordat ze konden kijken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 33 zouden mensen, als ze eenvoudig genezen konden worden door hun ogen op te slaan, dat zeker snel doen — tenzij hun hart verstokt is.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen van Alma over de koperen slang in Alma 33 in de juiste volgorde.",
+        items: [
+          "Mozes richtte in de wildernis een zinnebeeld op",
+          "Wie ernaar keek, leefde",
+          "Velen weigerden te kijken, wegens de verstoktheid van hun hart",
+          "Alma roept op de ogen op te slaan en in de Zoon van God te geloven",
+        ],
+      },
+    ],
+  },
 ];
