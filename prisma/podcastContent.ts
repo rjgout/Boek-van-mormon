@@ -2465,4 +2465,286 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 101,
+    title: "Aflevering 101",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar staat het getal '101' in deze aflevering symbool voor, volgens Raphael?",
+        options: [
+          "De eerste stappen om iets te leren, zoals bij een introductiecursus",
+          "Het aantal jaren dat de kerk al bestaat",
+          "Het honderdeneen-ste geloofsartikel",
+          "Een verwijzing naar hoofdstuk 101 van het Boek van Mormon",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat raadt Raphael iemand aan die voor het eerst meer over Christus wil leren?",
+        options: [
+          "Begin met het lezen van de vier evangeliën in het Nieuwe Testament, als een soort biografie",
+          "Begin met het uit het hoofd leren van de dertien geloofsartikelen",
+          "Begin met het lezen van Openbaringen",
+          "Begin met het bezoeken van een tempel",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Koos betekent bekering in gewone taal zoiets als: je leven dagelijks een beetje bijsturen zodat Christus daar een groter onderdeel van wordt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe beschrijft Koos het verschil tussen de 'natuurlijke mens' en de 'geestelijke mens' na een verandering van hart?",
+        options: [
+          "De geestelijke, goddelijke mens krijgt de overhand op de egoïstische, natuurlijke mens",
+          "De natuurlijke mens verdwijnt helemaal en keert nooit meer terug",
+          "Beide blijven precies even sterk, er verandert niets",
+          "De geestelijke mens bestaat alleen na de opstanding",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze verdelen luisteraars in groepen op basis van hun achtergrond met het christendom",
+          "Raphael raadt aan om te beginnen met de vier evangeliën als biografie van Christus",
+          "Koos legt uit wat de diepere vrede en vreugde is die Christus te bieden heeft",
+          "Ze bespreken hoe je Christus zou uitleggen aan iemand uit een niet-christelijk land",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 5 vraagt Alma aan de leden van de kerk of zij een bepaalde verandering hebben ondervonden. Welke?",
+        options: [
+          "Die machtige verandering van hart",
+          "Een verandering van uiterlijk voorkomen",
+          "Een verandering van woonplaats",
+          "Een verandering van naam",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 5 werd er in de harten van de vaderen een machtige verandering teweeggebracht doordat zij zich verootmoedigden en hun vertrouwen stelden in God, waarna zij tot het einde toe getrouw bleven.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vraagt Alma in Alma 5:14 letterlijk aan zijn broeders in de kerk?",
+        options: [
+          "Of zij geestelijk uit God geboren zijn en zijn beeld in hun gelaat hebben ontvangen",
+          "Of zij hun tienden al hebben betaald",
+          "Of zij alle geloofsartikelen uit hun hoofd kennen",
+          "Of zij al een tempel hebben bezocht",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen uit Alma 5 in de juiste volgorde.",
+        items: [
+          "Alma herinnert aan hoe de vaderen door hun geloof een machtige verandering ondergingen",
+          "Hij vraagt of de leden zelf die machtige verandering in hun hart hebben ondervonden",
+          "Hij vraagt of zij gestemd zijn het lied der verlossende liefde te zingen",
+          "Hij vraagt of zij dat gevoel op dit moment nog steeds bij zich dragen",
+        ],
+      },
+    ],
+  },
+  {
+    number: 100,
+    title: "Aflevering 100",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke mijlpaal vieren Koos en Raphael in deze aflevering?",
+        options: [
+          "Hun honderdste aflevering, exclusief de extra Vaderdag-special",
+          "Hun eerste verjaardag als podcast",
+          "Hun duizendste luisteraar",
+          "Het einde van de podcast",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt dat hij zijn toespraken altijd volledig woord voor woord uitschrijft, terwijl Koos zijn toespraken juist uit het hoofd doet.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar komt Raphaels zenuwachtigheid voor het geven van toespraken en getuigenissen volgens hemzelf vooral vandaan?",
+        options: [
+          "Faalangst, met name de angst voor wat andere mensen van hem denken",
+          "Een gebrek aan voorbereiding",
+          "Een negatieve ervaring in zijn jeugd met spreken in het openbaar",
+          "Het feit dat hij de taal niet goed beheerst",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe legt Koos uit waar faalangst vandaan komt, en hoe Satan daarmee omgaat?",
+        options: [
+          "Faalangst komt voort uit de natuurlijke mens, en Satan probeert die om die te versterken en te misbruiken",
+          "Faalangst wordt rechtstreeks door Satan zelf gecreëerd, zonder enige rol van de natuurlijke mens",
+          "Faalangst heeft niets te maken met de natuurlijke mens of Satan, het is puur toeval",
+          "Faalangst verdwijnt automatisch zodra iemand gedoopt wordt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze blikken terug op honderd afleveringen podcast",
+          "Ze bespreken hoe zij hun toespraken en getuigenissen voorbereiden",
+          "Raphael vertelt over zijn faalangst en angst voor andermans mening",
+          "Koos legt uit hoe Satan de natuurlijke mens en faalangst probeert te misbruiken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Moroni 8 zegt Mormon dat hij met vrijmoedigheid en gezag van God spreekt, en dat hij niet vreest wat de mens kan doen. Waarom niet, volgens hem?",
+        options: [
+          "Omdat de volmaakte liefde alle vrees uitdrijft",
+          "Omdat hij nooit bang is geweest van nature",
+          "Omdat niemand hem ooit tegenspreekt",
+          "Omdat hij zijn woorden altijd woord voor woord had opgeschreven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 8 is Mormon vervuld met naastenliefde, waardoor voor hem alle kinderen gelijk zijn en hij hen allen met een volmaakte liefde liefheeft.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Mormon in Moroni 8:16 als het lot van wie de wegen des Heren verdraaien, als zij zich niet bekeren?",
+        options: [
+          "Zij zullen verloren gaan",
+          "Zij worden meteen vergeven zonder gevolgen",
+          "Zij mogen alsnog in het koninkrijk komen",
+          "Er wordt met geen woord over hen gerept",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 8 in de juiste volgorde.",
+        items: [
+          "Wee hun die de wegen des Heren verdraaien, tenzij zij zich bekeren",
+          "Mormon spreekt met vrijmoedigheid en gezag van God",
+          "De volmaakte liefde drijft alle vrees uit",
+          "Mormon is vervuld met naastenliefde voor alle kinderen gelijk",
+        ],
+      },
+    ],
+  },
+  {
+    number: 99,
+    title: "Aflevering 99",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke gelijkenis brengt Koos naar voren omdat het toevallig hun 99ste aflevering is?",
+        options: [
+          "De gelijkenis van het verloren schaap, waarbij de herder 99 schapen achterlaat om het ene te zoeken",
+          "De gelijkenis van de verloren zoon",
+          "De gelijkenis van de tien jonkvrouwen",
+          "De gelijkenis van de zaaier",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael vertelt een verhaal over een vader die een spoorwissel moet vasthouden, waardoor hij moet kiezen tussen het redden van zijn eigen zoon of van alle treinpassagiers, als beeld voor het offer van Hemelse Vader.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Raphael de kern van een getuigenis, zoals gegeven tijdens een vasten- en getuigenisvergadering?",
+        options: [
+          "Getuigen van de waarheid van een evangeliebeginsel, vaak aan de hand van een persoonlijke ervaring",
+          "Een officieel certificaat laten zien van een afgeronde cursus",
+          "Een uitgeschreven toespraak van minstens tien minuten voorlezen",
+          "Alleen navertellen wat de bisschop heeft gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarover ontstaat een discussie tussen Koos en Raphael naar aanleiding van wat een luisteraar in de kerk had gezegd?",
+        options: [
+          "Of \"wees volmaakt\" eigenlijk \"wees één met God\" zou moeten betekenen, in plaats van perfectie zonder fouten",
+          "Of de kerk een nieuw gebouw nodig heeft",
+          "Of de doop op negenjarige leeftijd zou moeten plaatsvinden",
+          "Of muziek wel of niet is toegestaan tijdens de dienst",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos brengt de gelijkenis van het verloren schaap ter sprake vanwege de 99ste aflevering",
+          "Raphael vertelt het verhaal van de vader bij de spoorwissel",
+          "Ze leggen uit wat een getuigenis inhoudt en hoe een vasten- en getuigenisvergadering werkt",
+          "Ze bespreken de discussie over volmaaktheid en het voorbestaan",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 15 vertelt Christus aan het volk in Amerika over \"andere schapen\" die niet van deze kudde zijn. Wie bedoelt Hij daarmee?",
+        options: [
+          "Henzelf, want Hij moet ook hen leiden, zodat er één kudde en één herder zal zijn",
+          "Alleen de Romeinen",
+          "Alleen de engelen in de hemel",
+          "Niemand, het is puur symbolisch zonder werkelijke groep",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 15 hoorden de mensen in Amerika zowel de stem van Christus als dat zij Hem zagen, waardoor zij tot zijn schapen worden gerekend.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom had Christus in Jeruzalem niet meer over de andere schapen (het volk in Amerika) verteld, volgens 3 Nephi 15?",
+        options: [
+          "Omdat de Vader Hem gebood daar niets meer over te zeggen, wegens hun halsstarrigheid en ongeloof",
+          "Omdat Hij het gewoon vergeten was",
+          "Omdat er geen tijd meer over was",
+          "Omdat niemand daar ooit naar gevraagd had",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken van Christus uit 3 Nephi 15 in de juiste volgorde.",
+        items: [
+          "Hij zegt dat Hij nog andere schapen heeft, die niet van die kudde zijn",
+          "Hij legt uit dat Hij hen ook moet leiden, en zij zullen zijn stem horen",
+          "Hij legt uit waarom het volk in Jeruzalem niets van hen afwist",
+          "Hij zegt dat het volk in Amerika zijn stem heeft gehoord en Hem heeft gezien",
+        ],
+      },
+    ],
+  },
 ];
