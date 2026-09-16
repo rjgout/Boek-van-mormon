@@ -1,0 +1,878 @@
+WEBVTT
+
+00:00:00.010 --> 00:00:04.470
+<v Raphael>Welkom bij Geloof Je Dat Ook. In deze aflevering hebben we een gesprek dat zo
+
+00:00:04.470 --> 00:00:08.610
+<v Raphael>uitgebreid en interessant is, dat we het in twee delen hebben opgespitst.
+
+00:00:09.170 --> 00:00:12.550
+<v Intro>Vandaag luister je naar deel 1. Laten we erin duiken.
+
+00:00:19.510 --> 00:00:20.550
+<v Koos>Hey, Raphael.
+
+00:00:20.810 --> 00:00:21.550
+<v Raphael>Hallo, Koos.
+
+00:00:21.730 --> 00:00:24.730
+<v Koos>Welkom en welkom, Shamantha, vandaag bij ons.
+
+00:00:24.850 --> 00:00:25.190
+<v Shamantha>Dank je.
+
+00:00:25.610 --> 00:00:30.490
+<v Koos>En welkom, luisteraars. Leuk dat jullie er ook weer zijn. En het is wel mooi
+
+00:00:30.490 --> 00:00:32.250
+<v Koos>dat je bij ons bent, Samantha, vandaag.
+
+00:00:33.110 --> 00:00:38.210
+<v Koos>Wil je misschien iets over jezelf vertellen? Wie je bent? Of wat je denkt van,
+
+00:00:38.250 --> 00:00:40.310
+<v Koos>nou, is het leuk voor de luisteraars om te horen?
+
+00:00:42.670 --> 00:00:44.409
+<v Shamantha>Oh, leuk over mezelf.
+
+00:00:44.850 --> 00:00:45.010
+<v Koos>Ja.
+
+00:00:45.790 --> 00:00:52.610
+<v Shamantha>Nou, moeder van drie kinderen. 18, 20, 22. Bijna allemaal een jaar ouder.
+
+00:00:53.110 --> 00:00:54.810
+<v Shamantha>Getrouwd, drie katten, hond.
+
+00:00:55.830 --> 00:00:58.450
+<v Shamantha>Leuk. Ja, wat wil je nog meer weten?
+
+00:00:58.570 --> 00:00:59.570
+<v Koos>Misschien nog bezigheden?
+
+00:00:59.930 --> 00:01:04.750
+<v Shamantha>Ja, ik heb pas geleden, vorig jaar heb ik mijn pro-pruis gehaald.
+
+00:01:04.870 --> 00:01:05.550
+<v Koos>Oh, dat is goed.
+
+00:01:05.709 --> 00:01:10.170
+<v Shamantha>Met data-engineer. En nu hoop ik, dat was een bootcamp was dat,
+
+00:01:10.390 --> 00:01:14.590
+<v Shamantha>en nu hoop ik daar binnenkort hopelijk een baan in te krijgen.
+
+00:01:14.930 --> 00:01:20.050
+<v Shamantha>Of in ieder geval in de IT in te kunnen. Dus dat is een grote omslag voor mij.
+
+00:01:20.530 --> 00:01:21.790
+<v Shamantha>Hartstikke leuk, er zit er zin in.
+
+00:01:22.709 --> 00:01:28.190
+<v Koos>Zij-instromen noemen ze dat toch? Dat je, zeg maar, zij-instromen of zo, dat je wisselt van...
+
+00:01:28.730 --> 00:01:29.130
+<v Raphael>Omscholen.
+
+00:01:29.209 --> 00:01:30.990
+<v Koos>Of omscholen. Ja, omscholen.
+
+00:01:31.090 --> 00:01:32.250
+<v Shamantha>Van niets naar iets eigenlijk.
+
+00:01:32.550 --> 00:01:33.630
+<v Raphael>Dat had ik eigenlijk.
+
+00:01:34.209 --> 00:01:38.350
+<v Shamantha>Ja, dus nou ja, dan hoop ik eigenlijk een baan te vinden waar ik verder kan studeren.
+
+00:01:38.670 --> 00:01:43.170
+<v Raphael>Maar dat gaat vast wel makkelijk worden als IT'er, als vrouw zijnde in de IT-wereld.
+
+00:01:43.670 --> 00:01:47.630
+<v Shamantha>Ik heb heel veel gesolliciteerd. Ik denk dat het een beetje aan mijn leeftijd
+
+00:01:47.630 --> 00:01:49.290
+<v Shamantha>ligt. Mogen ze natuurlijk niet zeggen.
+
+00:01:50.910 --> 00:01:54.730
+<v Shamantha>Maar ja, en dan had je dan... geen ervaring hebt, dan is het heel makkelijk
+
+00:01:54.730 --> 00:01:56.710
+<v Shamantha>gezegd natuurlijk van, ja, geen ervaring.
+
+00:01:57.290 --> 00:02:01.670
+<v Shamantha>Wel goede gesprekken gehad allemaal, maar ja, je moet iemand hebben die je een kans geeft.
+
+00:02:01.870 --> 00:02:06.110
+<v Shamantha>Wie je denkt, hé, jij hebt geen kinderen, dus waarschijnlijk ga je ook niet hoppen.
+
+00:02:06.750 --> 00:02:09.669
+<v Shamantha>Je bent de komende 10, 15 jaar gewoon lekker hier waarschijnlijk.
+
+00:02:10.290 --> 00:02:11.810
+<v Shamantha>Als je naar je zin hebt, dus ja.
+
+00:02:12.110 --> 00:02:13.370
+<v Raphael>Ja, geen zwangerschapslof meer.
+
+00:02:13.590 --> 00:02:14.730
+<v Shamantha>Nee, precies. Inderdaad.
+
+00:02:14.750 --> 00:02:18.970
+<v Koos>Gewoon ideaal. Dus, luisteraars, als je nog een data-engineer nodig hebt, laat het ons weten.
+
+00:02:19.230 --> 00:02:19.750
+<v Raphael>Ja, precies.
+
+00:02:20.669 --> 00:02:24.690
+<v Koos>Je vertelde net, voordat het We begonnen met de uitzending dat je ook heel wat
+
+00:02:24.690 --> 00:02:25.910
+<v Koos>stappen al gezet had vandaag.
+
+00:02:26.070 --> 00:02:30.310
+<v Koos>Het is van 9.000, nou, bijna tegen de 10.000 aan.
+
+00:02:30.570 --> 00:02:33.190
+<v Shamantha>Probeer er echt bijna 10.000 stappen elke dag te nemen.
+
+00:02:33.410 --> 00:02:35.669
+<v Koos>Elke dag, dus dat vind ik ook hartstikke mooi, dat je wat aan beweging doet.
+
+00:02:36.090 --> 00:02:38.550
+<v Raphael>Ja, dat gaat ook wel makkelijker met een hond, zei je.
+
+00:02:38.770 --> 00:02:41.590
+<v Shamantha>Ja, dat zeker. Zeker, want dan ga je zelfs in de regen naar buiten.
+
+00:02:42.030 --> 00:02:43.990
+<v Raphael>Ja, een beetje verplichting inderdaad.
+
+00:02:44.110 --> 00:02:44.850
+<v Shamantha>Ja, precies.
+
+00:02:45.030 --> 00:02:45.990
+<v Raphael>En ook andere hobby's?
+
+00:02:47.310 --> 00:02:52.010
+<v Shamantha>Oh, heel veel eigenlijk. Ik hou van zingen. Dat doe ik laatst nog niet zoveel mee op dit moment.
+
+00:02:52.870 --> 00:02:56.150
+<v Shamantha>Ik hou van tekenen en schilderen. Dat doe ik ook niet zoveel op dit moment.
+
+00:02:57.210 --> 00:03:03.310
+<v Shamantha>Ik hou ervan om in de tuin bezig te zijn. Ik hou van koken. Dat doe ik ook niet zoveel op dit moment.
+
+00:03:04.490 --> 00:03:09.690
+<v Shamantha>Wat doe je eigenlijk wel op dit moment? Lezen. Ja, ik ben nu meer bezig met esoterie.
+
+00:03:10.330 --> 00:03:11.530
+<v Koos>Oké, dat klinkt ook wel goed.
+
+00:03:11.890 --> 00:03:14.670
+<v Shamantha>Ja, heel leuk. De chakras en dat soort dingen.
+
+00:03:14.870 --> 00:03:17.090
+<v Koos>En energieën. Ja, ook tof.
+
+00:03:18.140 --> 00:03:22.360
+<v Koos>Vind ik zelf ook altijd wel interessant. Ik heb ook wel een beetje mee bezig
+
+00:03:22.360 --> 00:03:25.400
+<v Koos>gehouden. Want jij bent ook best wel een gelovig persoon, toch? Ja.
+
+00:03:25.880 --> 00:03:28.180
+<v Koos>Mooi? Dus daar gaan we het vandaag ook weer een beetje op hebben.
+
+00:03:28.320 --> 00:03:28.480
+<v Shamantha>Ja, zeer.
+
+00:03:28.600 --> 00:03:30.980
+<v Raphael>En ook misschien wel voor de luisteraars. Ook wel goed om te weten.
+
+00:03:31.280 --> 00:03:33.520
+<v Raphael>Ook jij gaat naar dezelfde kerk als waar wij naartoe gaan.
+
+00:03:33.740 --> 00:03:34.060
+<v Shamantha>Klopt.
+
+00:03:34.300 --> 00:03:35.940
+<v Koos>Dat had ik nou zo geheim willen houden.
+
+00:03:36.120 --> 00:03:37.860
+<v Raphael>Oké, goed. Sorry, Koos.
+
+00:03:38.460 --> 00:03:42.060
+<v Koos>Jammer. Misschien kunnen ze het er tussenuit filteren of raden.
+
+00:03:42.140 --> 00:03:43.060
+<v Koos>Maar jij hebt het al verklapt.
+
+00:03:43.280 --> 00:03:43.480
+<v Shamantha>Ja.
+
+00:03:43.980 --> 00:03:46.680
+<v Koos>Ja, maar nee, leuk. Leuk dat we elkaar zondags altijd in de kerk zien.
+
+00:03:47.280 --> 00:03:49.260
+<v Raphael>Ja, zelfs de unit.
+
+00:03:49.900 --> 00:03:50.160
+<v Koos>Yes.
+
+00:03:52.660 --> 00:03:53.680
+<v Shamantha>Ja, klopt.
+
+00:03:53.840 --> 00:03:56.680
+<v Koos>Mooi. En waar wil jij het over hebben dan, Samantha?
+
+00:03:57.260 --> 00:04:02.960
+<v Shamantha>Nou, ik vind het altijd wel interessant. Ik heb ooit een keer te horen gekregen in een zegen.
+
+00:04:03.160 --> 00:04:03.480
+<v Koos>Ja.
+
+00:04:03.780 --> 00:04:09.360
+<v Shamantha>Voor mensen die geen lid van de kerk zijn. Dat is, we geloven dat we de macht van God hebben.
+
+00:04:09.440 --> 00:04:14.800
+<v Shamantha>Dat we in de naam van God kunnen spreken door handoplegging.
+
+00:04:15.340 --> 00:04:18.600
+<v Shamantha>En dat wordt door de mannen voornamelijk gedaan, de waardige mannen.
+
+00:04:19.540 --> 00:04:23.760
+<v Shamantha>En ik had dus een keer een periode dat ik het even wat extra nodig had.
+
+00:04:24.140 --> 00:04:27.940
+<v Shamantha>Je kan bidden en dat soort dingen, maar soms wil je even wat extra's.
+
+00:04:28.899 --> 00:04:32.600
+<v Shamantha>En daar werd op een gegeven moment ingezegd dat ik moest houden van het donkere in mij.
+
+00:04:33.440 --> 00:04:38.380
+<v Shamantha>En daar moest ik over nadenken. Want wat bedoelde helemaal zijn vader nou met het donkere?
+
+00:04:39.610 --> 00:04:45.029
+<v Shamantha>En ja, ying, yang, donker, licht, het heeft elkaar nodig.
+
+00:04:47.230 --> 00:04:51.710
+<v Shamantha>En ja, dan heeft het dus eigenlijk wat te maken met de dingen die we niet goed doen.
+
+00:04:52.690 --> 00:04:54.990
+<v Shamantha>Zonde vind ik een beetje, je houdt niet zo van dat woord eigenlijk.
+
+00:04:55.270 --> 00:05:01.230
+<v Shamantha>Maar eigenlijk als je keuzes maakt die je niet richting onze vader brengen.
+
+00:05:01.570 --> 00:05:05.250
+<v Koos>Ja, precies. Ja, want zo kijk ik ook naar zonde. Zonde is eigenlijk iets wat
+
+00:05:05.250 --> 00:05:10.529
+<v Koos>je van God afhoudt. Dus eigenlijk alles wat je van God afhoudt of van God afbrengt
+
+00:05:10.529 --> 00:05:12.910
+<v Koos>of zo, dat noem ik dan zonde.
+
+00:05:13.270 --> 00:05:13.450
+<v Shamantha>Ja.
+
+00:05:13.770 --> 00:05:14.610
+<v Koos>Ja, oké.
+
+00:05:15.430 --> 00:05:19.670
+<v Shamantha>Hebben jullie er wel eens over nagedacht, hoe dat werkt? Want in de kerk krijg
+
+00:05:19.670 --> 00:05:22.529
+<v Shamantha>je altijd te horen natuurlijk, je bent altijd met licht bezig.
+
+00:05:22.910 --> 00:05:23.190
+<v Koos>Ja.
+
+00:05:23.550 --> 00:05:26.589
+<v Shamantha>En altijd je verbeteren en weet ik veel.
+
+00:05:26.770 --> 00:05:32.190
+<v Shamantha>We vinden het soms best lastig om te kijken naar zonde.
+
+00:05:32.649 --> 00:05:33.930
+<v Shamantha>Dingen die we fout doen.
+
+00:05:34.630 --> 00:05:39.089
+<v Shamantha>Of die een ander fout doet. Dat vinden we altijd heel spannend om over te spreken.
+
+00:05:39.290 --> 00:05:44.589
+<v Koos>Ja, wat is goed, wat is fout. Maar ik zie het bij mezelf als een soort van,
+
+00:05:44.589 --> 00:05:45.950
+<v Koos>ik heb een natuurlijke mens.
+
+00:05:46.250 --> 00:05:53.670
+<v Koos>Een kant die last heeft van drangen, van verslavingen, van laaiheid.
+
+00:05:57.490 --> 00:06:01.029
+<v Koos>Wat jij misschien wel donkere kant noemt. Ik noem dat natuurlijke mens.
+
+00:06:01.029 --> 00:06:03.510
+<v Koos>En ik heb ook een soort van goddelijke kant.
+
+00:06:03.790 --> 00:06:07.550
+<v Koos>Een kant geestelijk dat ik graag het goede wil kiezen.
+
+00:06:07.690 --> 00:06:12.370
+<v Koos>Dat God belangrijk voor me is. Dat ik graag wil geloven. Dat ik wil hopen. Dat ik wil lief hebben.
+
+00:06:12.790 --> 00:06:15.270
+<v Koos>Dus dat is een soort van strijd in mij.
+
+00:06:15.730 --> 00:06:19.470
+<v Koos>Dat ying en dat yang. Ik zou het ook kunnen noemen. Dat donker en dat licht.
+
+00:06:20.130 --> 00:06:22.010
+<v Koos>Zo kijk ik er voor mezelf tegenaan.
+
+00:06:22.390 --> 00:06:27.090
+<v Raphael>En ik zie dat we hier op deze aarde zijn gekomen omdat we willen leren.
+
+00:06:28.550 --> 00:06:34.590
+<v Raphael>En dat we bij ons hemels vader willen terugkeren. En dat maakt niet uit wat we eigenlijk doen.
+
+00:06:35.010 --> 00:06:37.710
+<v Raphael>Zolang we maar gericht blijven op Christus en elke keer weer terugkeren.
+
+00:06:37.890 --> 00:06:41.050
+<v Raphael>Dus elke keer weer bijsturen om op Christus gericht te zijn.
+
+00:06:42.030 --> 00:06:46.830
+<v Raphael>En dus dan, dus eigenlijk kunnen we dus, we maken eigenlijk geen fouten in deze wereld.
+
+00:06:47.470 --> 00:06:51.950
+<v Raphael>We zijn hier om te leren en om dus vooruitgang te maken. Dus we moeten eigenlijk
+
+00:06:51.950 --> 00:06:52.950
+<v Raphael>vooruitgang blijven boeken.
+
+00:06:53.150 --> 00:06:57.590
+<v Raphael>En dat doe je dus door bepaalde keuzes te maken. En we hebben dus eigenlijk
+
+00:06:57.590 --> 00:07:02.330
+<v Raphael>door onze cultuur dingen te horen van dat is niet goed.
+
+00:07:03.470 --> 00:07:06.790
+<v Koos>Dat is goed, dat is fout, maar ja. Maar het is eigenlijk lering,
+
+00:07:06.910 --> 00:07:08.090
+<v Koos>het is eigenlijk ervaring.
+
+00:07:08.230 --> 00:07:12.770
+<v Koos>En ervaring is waarheid eigenlijk, want waarheid is datgene wat is,
+
+00:07:12.870 --> 00:07:15.050
+<v Koos>wat is geweest, wat nu is en wat zal zijn.
+
+00:07:15.350 --> 00:07:20.690
+<v Koos>Dus wat je ervaart, de keuze die je maakt en het effect daarvan, dat is waarheid.
+
+00:07:21.450 --> 00:07:24.870
+<v Raphael>Kijk, want Satan had natuurlijk ook gewoon zijn kennis van hemelsvader.
+
+00:07:25.150 --> 00:07:26.670
+<v Raphael>Die heeft hij ook niet gewoon uit de lucht geplukt.
+
+00:07:26.950 --> 00:07:27.150
+<v Koos>Nee.
+
+00:07:27.710 --> 00:07:30.910
+<v Raphael>Dus ook zijn kennis is gewoon gebaseerd op waarheid.
+
+00:07:31.950 --> 00:07:38.110
+<v Shamantha>Ik vond dat het interessant, want ik heb wel geworsteld met bepaalde geboden.
+
+00:07:39.590 --> 00:07:43.870
+<v Shamantha>Die zeker in de kerk wel als heftig wordt bekeken.
+
+00:07:44.470 --> 00:07:45.710
+<v Koos>Bij een voorbeeld.
+
+00:07:45.810 --> 00:07:50.050
+<v Shamantha>Ja, kuisheid bijvoorbeeld. En daarbij mensen heel makkelijk,
+
+00:07:50.230 --> 00:07:52.070
+<v Shamantha>wat zeggen we altijd tegen elkaar? Rennen.
+
+00:07:52.850 --> 00:07:56.130
+<v Shamantha>Als je in een situatie zit wat niet goed is, wegrennen.
+
+00:07:57.350 --> 00:08:00.930
+<v Shamantha>Maar wat gebeurt er als je bij een ravijn staat en je rent weg?
+
+00:08:01.610 --> 00:08:02.770
+<v Raphael>Je gaat aan welke kant je op rent?
+
+00:08:03.010 --> 00:08:06.070
+<v Shamantha>Ja, precies. Maar waarschijnlijk ren je kaart weg.
+
+00:08:07.610 --> 00:08:13.190
+<v Shamantha>Dan denk je, ik moet snel wegrennen. En pom, je ligt hier in een ander ravijn. Omdat je niet uitkijkt.
+
+00:08:13.790 --> 00:08:18.030
+<v Shamantha>Omdat je niet rustig bekijkt. Waar sta ik? Oh, dit is niet zo handig.
+
+00:08:18.290 --> 00:08:21.230
+<v Shamantha>Ik draai me om en ik kies ervoor om weg te lopen.
+
+00:08:22.190 --> 00:08:25.990
+<v Shamantha>Zonder angst. Meer van, hé, wacht even, dit is niet goed.
+
+00:08:26.130 --> 00:08:32.990
+<v Shamantha>Ik heb in de situatie gezeten dat ik niet zo'n goede plek zat eigenlijk,
+
+00:08:33.470 --> 00:08:35.390
+<v Shamantha>maar ik heb altijd helemaal zijn vader bij me gehad.
+
+00:08:35.549 --> 00:08:37.970
+<v Shamantha>Ik heb altijd hem erbij gevraagd.
+
+00:08:38.290 --> 00:08:44.150
+<v Shamantha>Dus je kan denken, ik zit hier in een goede plek, ik maak keuzes die niet zo handig zijn.
+
+00:08:45.030 --> 00:08:50.250
+<v Shamantha>Maar ik moest dingen leren en dingen gebeurden. Ik heb in mijn verleden,
+
+00:08:50.270 --> 00:08:53.010
+<v Shamantha>toen ik jong was, heb ik dingen meegemaakt.
+
+00:08:53.770 --> 00:08:58.350
+<v Shamantha>Als jij als kleinkind of baby iets meemaakt, bijvoorbeeld seksmisbruik.
+
+00:08:59.010 --> 00:09:06.030
+<v Shamantha>Wat gebeurt er dan? Op dat moment dat dat gebeurt, wordt je vrije keuze geef je af.
+
+00:09:06.510 --> 00:09:10.950
+<v Shamantha>Dat doe je niet bewust, helemaal niet. Maar die wordt op dat moment geef je
+
+00:09:10.950 --> 00:09:13.330
+<v Shamantha>af. Je hebt geen grenzen meer.
+
+00:09:14.110 --> 00:09:16.250
+<v Shamantha>Dus mensen kunnen heel makkelijk over je grenzen gaan.
+
+00:09:17.270 --> 00:09:20.410
+<v Shamantha>En toen op een gegeven moment, ik bezig was met die wet van kruisheid.
+
+00:09:20.410 --> 00:09:24.770
+<v Shamantha>En als je tiener wordt, dan ben je daarmee in aanraking.
+
+00:09:25.090 --> 00:09:29.950
+<v Shamantha>Dan ben je dan mee aan het worstelen. Maar als je ergens een schuldgevolg kunt
+
+00:09:29.950 --> 00:09:34.410
+<v Shamantha>krijgen, is het wel dat soort geboden als je die overtreedt.
+
+00:09:35.250 --> 00:09:41.590
+<v Shamantha>Want ik heb heel wat te horen van, ik ben zelfs opgevoed met seks, met seksualiteit.
+
+00:09:42.530 --> 00:09:50.010
+<v Shamantha>Ja, je kan je beter laten doden dan laten verkrachten. Dat is mijn jonge basis.
+
+00:09:50.990 --> 00:09:56.750
+<v Shamantha>En dat slaat natuurlijk ook nergens op, hè. Maar het was een vrij dogmatische tijd, denk ik.
+
+00:09:57.070 --> 00:09:57.370
+<v Koos>Ja.
+
+00:09:58.720 --> 00:10:03.460
+<v Shamantha>En dan ga je er wel eens de mis mee in. Dan denk je, oh, dan voel je je schuldig.
+
+00:10:04.280 --> 00:10:08.020
+<v Shamantha>En nog een keertje. En ik denk, het moet toch lukken. En ik heb altijd gedacht,
+
+00:10:08.160 --> 00:10:11.660
+<v Shamantha>waarom heeft hem al zijn vader die wet ingesteld?
+
+00:10:13.340 --> 00:10:16.179
+<v Shamantha>Want ik krijg het niet voor elkaar. Waarom lukt dat nou niet?
+
+00:10:16.600 --> 00:10:21.420
+<v Shamantha>En weer proberen. En weer proberen. Op een gegeven moment ga je bijna de moed op geven.
+
+00:10:23.700 --> 00:10:26.320
+<v Shamantha>Maar ik dacht, hem al zijn vader heeft het niet voor niets gegeven.
+
+00:10:26.960 --> 00:10:30.040
+<v Shamantha>En op een gegeven moment ben ik verhuisd naar Arnhem.
+
+00:10:30.600 --> 00:10:35.420
+<v Shamantha>En daar kwam ik een vriendin tegen. Of daar ontmoette ik iemand en er werd een vriendin van mij.
+
+00:10:35.640 --> 00:10:39.900
+<v Shamantha>En ik voelde iedere keer door de geest dat ik, als er iets was gebeurd,
+
+00:10:39.980 --> 00:10:40.980
+<v Shamantha>dat ik het haar moest vertellen.
+
+00:10:41.679 --> 00:10:47.620
+<v Shamantha>En ik dacht, oké, doe maar. En ze reageerde zo goed, zo lief.
+
+00:10:48.780 --> 00:10:54.160
+<v Shamantha>Ik kwam op een gegeven moment achter door dat ik die wet wilde naleven dat ik
+
+00:10:54.160 --> 00:10:55.480
+<v Shamantha>seksumisbruik ben geweest.
+
+00:10:56.100 --> 00:10:59.760
+<v Shamantha>Dat was ik nooit achtergekomen, want ik heb het helemaal weg.
+
+00:10:59.900 --> 00:11:01.160
+<v Shamantha>Ik ben heel jong geweest.
+
+00:11:02.799 --> 00:11:07.360
+<v Shamantha>En waar hoorde je het? En dan ging ik naar haar toe en dan zei ze tegen mij,
+
+00:11:08.040 --> 00:11:10.340
+<v Shamantha>het maakt niet uit, het gaat je lukken.
+
+00:11:10.700 --> 00:11:14.179
+<v Shamantha>Je bent goed bezig. En toen dacht ik, maar gisteren, weet je wel.
+
+00:11:14.620 --> 00:11:17.080
+<v Shamantha>Nee, je bent goed bezig. Je vertelde toch aan mij.
+
+00:11:19.140 --> 00:11:24.299
+<v Shamantha>Je bestekt je hemelse vader erbij. Het gaat goed komen. Er komt wat je dingen hebt meegemaakt.
+
+00:11:24.960 --> 00:11:28.000
+<v Shamantha>Want in dit is mijn geval, ik heb dingen meegemaakt dan.
+
+00:11:28.299 --> 00:11:32.880
+<v Shamantha>Maar er kunnen allerlei situaties zijn waarom mensen niet in staat zijn om op
+
+00:11:32.880 --> 00:11:36.000
+<v Shamantha>dat moment zo'n wet te gehoorzamen.
+
+00:11:36.880 --> 00:11:43.420
+<v Shamantha>En ook met andere wetten. En het ding is, doordat zij zo bemoedigend was,
+
+00:11:43.720 --> 00:11:46.679
+<v Shamantha>kreeg ik ruimte om te voelen.
+
+00:11:47.580 --> 00:11:51.460
+<v Shamantha>Ruimte om niet te schamen. Want zij zei niet tegen mij.
+
+00:11:51.640 --> 00:11:56.040
+<v Shamantha>Nou moet je toch echt zorgen dat je dat niet meer doet. Want je weet toch hoe het zit.
+
+00:11:56.660 --> 00:11:59.880
+<v Shamantha>Dat zeg je wel hard genoeg tegen jezelf. Zij bleef tegen mij zeggen.
+
+00:12:00.559 --> 00:12:02.600
+<v Shamantha>Gaat goed komen. Het gaat je
+
+00:12:02.600 --> 00:12:06.900
+<v Shamantha>lukken. Je zult merken dat de tijd dat het misgaat. Dat zou ik zo zeggen.
+
+00:12:07.360 --> 00:12:11.299
+<v Shamantha>Dat daar steeds meer tijd tussen gaat zitten. En.
+
+00:12:12.250 --> 00:12:15.730
+<v Shamantha>Ik vind het de grootste wet die er is, die hemelsvader heeft gegeven.
+
+00:12:16.110 --> 00:12:23.350
+<v Shamantha>Want doordat ik dus die wet wilde houden, ben ik erachter dingen gekomen die
+
+00:12:23.350 --> 00:12:26.330
+<v Shamantha>ik moest weten om te kunnen gaan helen.
+
+00:12:28.070 --> 00:12:34.090
+<v Shamantha>En langzaam heb ik mijn vrije keuze weer teruggekregen. Maar je komt in je leven al die dingen tegen.
+
+00:12:35.130 --> 00:12:39.670
+<v Shamantha>In een situatie waar je weer de mist in kan gaan, laat ik het even de mist in noemen.
+
+00:12:40.429 --> 00:12:44.430
+<v Shamantha>Dan vindt de hemelsvader een stukje de mist ingaan. Dat klinkt even heel erg
+
+00:12:44.430 --> 00:12:47.690
+<v Shamantha>lastig. Als je dat in de kerk zegt, weet je wel.
+
+00:12:48.390 --> 00:12:52.210
+<v Shamantha>En dan gaat het niet per se, de hemelsvader gaat niet per se om dat je de mist
+
+00:12:52.210 --> 00:12:55.930
+<v Shamantha>ingaat. Want hij weet dat dat soms moet gebeuren.
+
+00:12:56.530 --> 00:13:01.210
+<v Shamantha>Zodat je dingen gaat zien. En ik moest dingen gaan zien.
+
+00:13:01.770 --> 00:13:05.970
+<v Shamantha>Ik moest iedere keer kijken van, maar wat gebeurt er nou? Waarom is het nou
+
+00:13:05.970 --> 00:13:07.610
+<v Shamantha>weer gebeurd? Oh, nu weer.
+
+00:13:08.310 --> 00:13:11.990
+<v Shamantha>Wat gebeurt er nou? Dus niet wegrennen op dat moment, want ik moest op dat moment
+
+00:13:11.990 --> 00:13:18.530
+<v Shamantha>eerst met de Heer kijken wat gebeurt er nou en waar komt het nou vandaan.
+
+00:13:18.830 --> 00:13:23.790
+<v Shamantha>Ik heb zelfs echt door de geest een keer gevoeld, blijf bij die afgrond even staan.
+
+00:13:24.030 --> 00:13:28.790
+<v Shamantha>En ik zei in mijn gebed natuurlijk zo van, ja maar ik heb geleerd dat we altijd
+
+00:13:28.790 --> 00:13:33.890
+<v Shamantha>weg moeten rennen van, nee je staat er nu toch al, blijf even staan.
+
+00:13:34.310 --> 00:13:35.750
+<v Shamantha>Kijk hoe diep die afgrond is.
+
+00:13:36.850 --> 00:13:42.390
+<v Shamantha>Kijk het kwaad in het gezicht. Waar zitten de rimpels? Welke kleur ogen wij spreken?
+
+00:13:43.770 --> 00:13:47.130
+<v Shamantha>Elk vlekje, elk dingetje en neem het goed in je op.
+
+00:13:47.690 --> 00:13:52.290
+<v Shamantha>Maak dan een keuze, keuzevrijheid. Draai je om en loop weg.
+
+00:13:52.750 --> 00:13:57.790
+<v Shamantha>Zonder angst, maar uit keuze. Want je weet, dit is niet de plek waar ik wil zijn.
+
+00:13:59.320 --> 00:14:07.280
+<v Shamantha>En ja, ik heb de hemelsvader zo dichtbij gevoeld en ik ben zo anders tegen dat
+
+00:14:07.280 --> 00:14:08.980
+<v Shamantha>donkere stuk van me aan gaan kijken.
+
+00:14:09.220 --> 00:14:14.160
+<v Shamantha>Want tuurlijk, we hebben allemaal dingen, dan zijn we zagrijndig tegen ons partner
+
+00:14:14.160 --> 00:14:18.780
+<v Shamantha>of tegen de kinderen, dat zijn ook dingen. Maar er zijn zoveel leden die met
+
+00:14:18.780 --> 00:14:21.580
+<v Shamantha>veel heftigere dingen borstelen.
+
+00:14:22.620 --> 00:14:25.900
+<v Shamantha>En die dingen moeten ook bespreekbaar worden.
+
+00:14:26.140 --> 00:14:30.920
+<v Shamantha>En dat stukje, als wij met dat vingertje gaan wijzen naar elkaar,
+
+00:14:31.480 --> 00:14:34.660
+<v Shamantha>dan maken we eigenlijk lawaai, ruis.
+
+00:14:35.820 --> 00:14:41.400
+<v Shamantha>Dan kan die persoon die daarmee moet dealen, kan niet goed luisteren wat hij
+
+00:14:41.400 --> 00:14:43.580
+<v Shamantha>moet horen van de Heilige Geest.
+
+00:14:44.000 --> 00:14:49.060
+<v Shamantha>Om te zien wat voor hem of haar persoonlijk noodzakelijk is om te leren.
+
+00:14:49.400 --> 00:14:53.020
+<v Shamantha>Om vervolgens het los te kunnen laten, nooit meer te hoeven doen.
+
+00:14:53.220 --> 00:14:56.200
+<v Shamantha>Want daar ga je natuurlijk voor. Want we hebben het hier natuurlijk wel over
+
+00:14:56.200 --> 00:15:01.220
+<v Shamantha>de situatie dat je natuurlijk je helemaal goed aan de geboden wil houden.
+
+00:15:02.900 --> 00:15:12.500
+<v Shamantha>En ja, ik heb echt wel geleerd dat geboden vooral in sommige gevallen echt een doel zijn en niet...
+
+00:15:12.500 --> 00:15:16.480
+<v Raphael>Ja, een hulpmiddel, vind ik dat. Want wij hebben natuurlijk maar twee geboden
+
+00:15:16.480 --> 00:15:19.160
+<v Raphael>waar we ons aan ons moeten houden. En de rest allemaal een hulpmiddel.
+
+00:15:19.640 --> 00:15:23.080
+<v Shamantha>Nou, inderdaad, ja. Nog niet eens op die manier over nagedacht.
+
+00:15:23.220 --> 00:15:24.840
+<v Shamantha>Het is inderdaad een hulpmiddel, inderdaad.
+
+00:15:25.300 --> 00:15:28.660
+<v Koos>Wat jij beschrijft, klinkt voor mij, jij noemt het een donkere stuk of zo.
+
+00:15:28.660 --> 00:15:34.000
+<v Koos>Maar hoe ik het nu beluister, klinkt het meer als een helingsproces.
+
+00:15:34.520 --> 00:15:35.180
+<v Shamantha>Dat is het.
+
+00:15:35.380 --> 00:15:38.420
+<v Koos>Want ja, zonder dat jij dat door hebt gehad. Maar volgens mij ben je gewoon
+
+00:15:38.420 --> 00:15:41.580
+<v Koos>getraumatiseerd geraakt zonder dat je dat wist.
+
+00:15:41.780 --> 00:15:44.440
+<v Koos>Maar als een kind dat overkomt, eigenlijk is dat een trauma.
+
+00:15:44.680 --> 00:15:50.440
+<v Koos>Als je eigenlijk bijna je hele leven lang niet meer echt te boven komt.
+
+00:15:50.760 --> 00:15:54.060
+<v Koos>Heel veel kinderen komen er niet meer echt goed te boven. Dan blijf je je hele
+
+00:15:54.060 --> 00:15:55.260
+<v Koos>leven lang je meeslepen.
+
+00:15:55.900 --> 00:16:01.060
+<v Koos>Dus ik vind het heel knap als ik dat zo beluister. Hoe jij dus een proces bent doorgegaan.
+
+00:16:01.400 --> 00:16:07.500
+<v Koos>En je er nu zo over kunt spreken dat het lijkt alsof je daar niet nog een traumatische
+
+00:16:07.500 --> 00:16:09.880
+<v Koos>nasleep van lijkt te ervaren.
+
+00:16:11.400 --> 00:16:12.560
+<v Shamantha>Die heb ik wel.
+
+00:16:12.800 --> 00:16:13.440
+<v Koos>Nog steeds.
+
+00:16:14.000 --> 00:16:19.180
+<v Shamantha>Maar ik heb ook een heel sterk getuigenis.
+
+00:16:20.160 --> 00:16:26.000
+<v Shamantha>Door die geboden na te leven, daardoor heel ik. Niet om ze al perfect te kunnen.
+
+00:16:26.380 --> 00:16:28.460
+<v Shamantha>Nee, om mijn streven...
+
+00:16:29.060 --> 00:16:31.420
+<v Shamantha>om dat na te kunnen leven...
+
+00:16:32.310 --> 00:16:37.730
+<v Shamantha>En dat steeds beter. Die afstand dat iets misgaat. En of het nou dat is.
+
+00:16:37.830 --> 00:16:39.930
+<v Shamantha>Maar er zijn ook mensen die moeite met pornografie.
+
+00:16:40.190 --> 00:16:42.150
+<v Shamantha>Of noem maar even wat heftiger dingen.
+
+00:16:43.270 --> 00:16:49.150
+<v Shamantha>Want de afstand dat we eventjes een zwak moment hebben.
+
+00:16:49.410 --> 00:16:52.370
+<v Shamantha>Die afstand wordt steeds groter. En dat is interessant om naar te kijken.
+
+00:16:52.490 --> 00:16:53.710
+<v Shamantha>En daar kijkt de heer ook naar.
+
+00:16:54.110 --> 00:16:57.870
+<v Shamantha>Hij kijkt er niet altijd naar of je het voor elkaar krijgt. Hij kijkt er naar
+
+00:16:57.870 --> 00:16:59.930
+<v Shamantha>hoe vaak ben jij bereid om op te staan.
+
+00:16:59.990 --> 00:17:05.310
+<v Shamantha>Niet de moed op te geven. En Christus is degene waardoor je kan genezen.
+
+00:17:06.250 --> 00:17:10.910
+<v Koos>Ja, precies. Hij is de grote genezen. Ja, precies.
+
+00:17:11.310 --> 00:17:18.010
+<v Shamantha>En die wet van kuisheid is denk ik een van de moeilijkste wetten voor de meeste mensen.
+
+00:17:18.690 --> 00:17:20.990
+<v Shamantha>De meesten zijn al blij als ze op een gegeven moment getrouwd zijn.
+
+00:17:21.150 --> 00:17:23.030
+<v Shamantha>Zo, daar hebben we dat stukje wel gehad.
+
+00:17:23.510 --> 00:17:29.630
+<v Shamantha>Maar in huwelijken gebeuren ook nog genoeg dingen dat dat best een lastig ding is.
+
+00:17:29.630 --> 00:17:33.190
+<v Raphael>Ja, daar hebben we zelfs een aflevering over gemaakt. Dat Koos en ik staan er
+
+00:17:33.190 --> 00:17:35.770
+<v Raphael>wel ietsje anders in. Over de wet van kuisheid.
+
+00:17:36.869 --> 00:17:40.109
+<v Raphael>En dat is trouwens ook wel een hele leuke aflevering om te luisteren.
+
+00:17:40.190 --> 00:17:41.230
+<v Raphael>Mocht je hem nog niet geluisterd hebben.
+
+00:17:41.450 --> 00:17:42.010
+<v Shamantha>Nee, nog niet. Dat ga ik zeker doen.
+
+00:17:43.630 --> 00:17:45.869
+<v Raphael>Eigenlijk in het kort is wat ik dan vind.
+
+00:17:46.530 --> 00:17:50.630
+<v Raphael>Is dat waarvoor de wet van kuisheid hebben. Is omdat eigenlijk het belangrijkste
+
+00:17:50.630 --> 00:17:51.930
+<v Raphael>in deze wereld is het gezin.
+
+00:17:52.670 --> 00:17:54.109
+<v Raphael>En de wet van kuisheid die helpt
+
+00:17:54.109 --> 00:17:57.609
+<v Raphael>daarbij. Dat je een gezin kan hebben waar kinderen in kunnen opgroeien.
+
+00:17:58.090 --> 00:18:01.369
+<v Raphael>en normen en waardes kan meegeven, zodat zij hetzelfde kunnen doen.
+
+00:18:02.010 --> 00:18:06.490
+<v Raphael>En als je bijvoorbeeld al een partner hebt uitgezocht, of uitgezocht,
+
+00:18:06.590 --> 00:18:11.450
+<v Raphael>je bent voordat je getrouwd bent, ben je met elkaar en eigenlijk heb je al zoiets
+
+00:18:11.450 --> 00:18:13.550
+<v Raphael>van, wij blijven bij elkaar, wij gaan naar gezin.
+
+00:18:14.090 --> 00:18:17.590
+<v Raphael>En dan heb ik al zoiets van, dan maakt het toch eigenlijk allemaal niks meer uit.
+
+00:18:18.070 --> 00:18:22.970
+<v Raphael>Want die verbindenis heb je al. Wat zegt nou zo'n ja-woord in het stadhuis of
+
+00:18:22.970 --> 00:18:26.109
+<v Raphael>in het gemeentehuis waar je kan trouwen tegenwoordig door een ambtenaar, een handtekening.
+
+00:18:26.590 --> 00:18:30.250
+<v Raphael>Wat stelt er nou allemaal voor? Dat stelt zo'n zoveel God eigenlijk, ja.
+
+00:18:30.970 --> 00:18:32.230
+<v Shamantha>Dat kan ik wel door zeggen.
+
+00:18:33.070 --> 00:18:37.849
+<v Raphael>Dit was deel 1 van onze aflevering. Vergeet niet om ook deel 2 te luisteren.
+
+00:18:38.010 --> 00:18:40.470
+<v Raphael>Waar we verder gaan met het boeiende gesprek.
+
+00:18:40.950 --> 00:18:43.030
+<v Raphael>Bedankt voor het luisteren en tot volgende week.
+
+00:18:50.530 --> 00:18:54.410
+<v Raphael>Bedankt voor het luisteren. We hopen dat je hebt genoten van deze aflevering.
+
+00:18:55.130 --> 00:18:58.730
+<v Raphael>Vergeet niet om je te abonneren, de meldingen in te schakelen,
+
+00:18:59.190 --> 00:19:03.030
+<v Raphael>een beoordeling achter te laten en de aflevering te delen met anderen.
+
+00:19:03.770 --> 00:19:08.349
+<v Raphael>Wil je ons steunen? Dat kan eenvoudig door op onze website geloofjerdatook.nl
+
+00:19:08.349 --> 00:19:11.690
+<v Raphael>op de knop sponsor te klikken. Tot volgende week!
+
