@@ -151,6 +151,14 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
   gewijzigd en waarom wanneer dat relevant is.
 - Geen ORM-modelduplicatie in aparte typebestanden: types komen uit
   `@prisma/client` of worden lokaal in het bestand zelf gedefinieerd.
+- **Geen merknamen in zichtbare/leesbare tekst.** Een feature mag intern
+  geïnspireerd zijn op een bekend concept (bv. een woordraadspel, een
+  asynchroon bordspel), maar de naam van dat bekende merk/product hoort
+  nooit in UI-tekst, documentatie of codecommentaar terecht te komen (bv.
+  niet "Wordle-stijl" of "net als Wordfeud") — beschrijf het mechanisme zelf
+  in plaats daarvan. Interne codenamen (bestandsnamen, functie-/modelnamen)
+  zijn hierop de uitzondering: die omdopen is een aparte, grotere refactor
+  en levert gebruikers niets op, dus dat gebeurt niet automatisch mee.
 
 ## Content & auteursrecht (relevant bij wijzigingen aan content/seeds)
 
