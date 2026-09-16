@@ -3593,4 +3593,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 89,
+    title: "Aflevering 89",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie zijn de gasten in deze bijzondere aflevering, met wie Koos en Raphael eerder al eens hun kerkbezoek bespraken?",
+        options: [
+          "Renco en Dick, makers van een andere geloofspodcast, die de kerk van Koos en Raphael hadden bezocht",
+          "Twee zendelingen uit Amerika",
+          "De bisschop van hun eigen wijk",
+          "Twee wetenschappers die onderzoek doen naar religie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Renco en Dick vertellen dat zij bij het kerkbezoek van Koos en Raphaels kerk een jeugdwerkprogramma over de geschiedenis van de kerk meemaakten, wat een ander beeld gaf dan een reguliere dienst.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk praktisch verschil rond het avondmaal viel Renco op, vergeleken met zijn eigen kerk?",
+        options: [
+          "Bij Koos en Raphaels kerk blijven de korsten aan het brood zitten, terwijl die bij Renco's kerk eraf gehaald worden",
+          "Bij Koos en Raphaels kerk wordt er nooit brood gebruikt",
+          "Bij Renco's kerk wordt het avondmaal elke week gevierd",
+          "Bij Koos en Raphaels kerk zit er geen enkele betekenis achter het avondmaal",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom kozen Koos en Raphael er lange tijd voor om niet expliciet de naam van hun kerk te noemen in hun podcast?",
+        options: [
+          "Ze wilden niet dat luisteraars zouden denken dat het een podcast namens de kerk zelf was",
+          "Ze schaamden zich voor hun geloof",
+          "Ze wisten zelf de officiële naam niet goed",
+          "De kerkleiding had het hun verboden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Renco en Dick vertellen over hun bezoek aan de kerk van Koos en Raphael",
+          "Ze bespreken waarom Koos en Raphael later pas de naam van hun kerk gingen noemen",
+          "Ze vergelijken het onderwijsprogramma en de lesstructuur van de kerk met andere kerken",
+          "Ze spreken af dat Koos en Raphael op hun beurt de kerken van Renco en Dick gaan bezoeken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 26 wordt beschreven hoe God alle mensen uitnodigt tot Hem te komen. Wie sluit Hij daarbij uit, volgens vers 33?",
+        options: [
+          "Niemand; Hij verwerpt niemand die tot Hem komt, zwart of blank, slaaf of vrije, man of vrouw",
+          "Iedereen die niet tot een bepaalde kerk behoort",
+          "Alleen mensen die nooit gedoopt zijn geweest",
+          "Alleen mensen buiten het volk van Israël",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 26:33 zijn allen voor God gelijk, zowel de Joden als de andere volken.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt 2 Nephi 26:33 over hoe de Heer te werk gaat onder de mensenkinderen?",
+        options: [
+          "Hij doet niets, tenzij het de mensenkinderen duidelijk is",
+          "Hij handelt altijd in het geheim, zonder dat mensen het ooit kunnen begrijpen",
+          "Hij doet alleen dingen die door één bepaalde kerk goedgekeurd zijn",
+          "Hij houdt zich volledig afzijdig van de mensheid",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachten uit 2 Nephi 26:33 in de juiste volgorde.",
+        items: [
+          "Geen van de ongerechtigheden in de wereld komt van de Heer",
+          "Hij nodigt allen uit om tot Hem te komen en deel te hebben aan zijn goedheid",
+          "Hij verwerpt niemand die tot Hem komt, ongeacht afkomst",
+          "Allen zijn voor God gelijk, zowel Joden als andere volken",
+        ],
+      },
+    ],
+  },
 ];
