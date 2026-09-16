@@ -1283,4 +1283,187 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 114,
+    title: "Aflevering 114",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke gasten schuiven in deze aflevering aan bij Koos en Raphael?",
+        options: [
+          "David en Kevin, makers van de Belgische podcast \"De Kast van Mormon\"",
+          "Twee zendingspresidenten uit Utah",
+          "Een historicus en een archeoloog",
+          "Twee muzikanten van het kerkkoor",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is het \"Jesus Loves You\"-initiatief dat David beschrijft?",
+        options: [
+          "Gratis plastic poppetjes die mensen weggeven aan wie steun kan gebruiken",
+          "Een jaarlijkse liefdadigheidsloop",
+          "Een gratis Bijbel-app",
+          "Een reeks kerstkaarten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "David vertelt dat hij als wetenschapper en computeringenieur het Boek van Mormon onderzocht en tot de conclusie kwam dat de meest simpele verklaring is dat het goddelijke openbaring is.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom kozen David en Kevin ervoor om de naam van hun kerk wél expliciet in hun podcastnaam en -omschrijving te noemen?",
+        options: [
+          "Om heel bewust het nieuws over hun kerk in een positief daglicht te kunnen behandelen",
+          "Omdat het verplicht was door de kerk",
+          "Om reclame-inkomsten te verhogen",
+          "Om verwarring met andere podcasts te voorkomen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "David en Kevin stellen zichzelf en hun podcast voor",
+          "David vertelt zijn bekeringsverhaal als voormalig atheïstische wetenschapper",
+          "David vertelt over het \"Jesus Loves You\"-poppetjesinitiatief",
+          "Kevin sluit af met een uitnodiging gebaseerd op Moroni 10",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Kevin citeert aan het eind van de aflevering Moroni 10:3-5. Waartoe spoort Moroni de lezer daar toe aan?",
+        options: [
+          "Om God in de naam van Christus te vragen of het Boek van Mormon waar is",
+          "Om het boek driemaal te lezen voordat je het gelooft",
+          "Om naar een profeet te reizen voor bevestiging",
+          "Om te wachten op een droom",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Met welke drie dingen moet je die vraag volgens Moroni 10:4 stellen om een antwoord te ontvangen?",
+        options: [
+          "Een oprecht hart, een eerlijke bedoeling en geloof in Christus",
+          "Een getuige, een notaris en een advocaat",
+          "Vasten, een offer en een gelofte",
+          "Geduld, geld en tijd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 10:5 kun je door de macht van de Heilige Geest de waarheid van alle dingen kennen, niet alleen van het Boek van Mormon.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit Moroni's aansporing in Moroni 10 in de juiste volgorde.",
+        items: [
+          "Bedenk hoe barmhartig de Heer is geweest sinds de schepping van Adam",
+          "Vraag God, de eeuwige Vader, in de naam van Christus of het waar is",
+          "Vraag met een oprecht hart, een eerlijke bedoeling en geloof in Christus",
+          "Ontvang de waarheid geopenbaard door de macht van de Heilige Geest",
+        ],
+      },
+    ],
+  },
+  {
+    number: 113,
+    title: "Aflevering 113",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Uit welk bijbelboek leest Koos aan het begin van deze aflevering, waarin Mozes zijn laatste woorden aan het volk geeft?",
+        options: ["Deuteronomium", "Genesis", "Exodus", "Numeri"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurde er met de eerste stenen tafelen die Mozes van de berg meebracht?",
+        options: [
+          "Mozes gooide ze kapot uit woede over het gouden kalf",
+          "Ze werden gestolen door de Filistijnen",
+          "Ze smolten in de zon",
+          "Ze werden in de ark van het verbond bewaard en nooit meer gezien",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael geloven dat de tweede set stenen tafelen een eenvoudigere versie van de wet bevatte dan de eerste set.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke lastige vraag stellen Koos en Raphael zich over \"de andere wang toekeren\"?",
+        options: [
+          "Of het christelijk is om altijd maar alles over je heen te laten komen",
+          "Of je wel of niet naar de kerk mag gaan zonder tien te betalen",
+          "Of je wel mag werken op zondag",
+          "Of je kinderen wel opvoeding mogen krijgen buiten de kerk",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken Mozes' laatste boodschap in Deuteronomium",
+          "Ze bespreken de twee sets stenen tafelen met de tien geboden",
+          "Ze bespreken overeenkomsten tussen de oudtestamentische tabernakel en de tempel van nu",
+          "Ze bespreken of \"de andere wang toekeren\" betekent dat je alles moet accepteren",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 3 Nephi 12 (de leer op de tempel) leert Christus over \"de andere wang toekeren\". Wat zegt Hij precies?",
+        options: [
+          "Het kwaad niet te weerstaan, en wie u op de rechterwang slaat, ook de andere toe te keren",
+          "Om altijd onmiddellijk terug te vechten",
+          "Om conflicten volledig te vermijden",
+          "Om een rechtszaak aan te spannen tegen wie je kwaad doet",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat leert Christus in datzelfde hoofdstuk over hoe je met je vijanden moet omgaan?",
+        options: [
+          "Heb uw vijanden lief, zegen hen die u vervloeken en bid voor wie u vervolgen",
+          "Vermijd vijanden volledig en negeer ze",
+          "Beantwoord kwaad met kwaad, oog om oog",
+          "Vraag de rechter om wraak te nemen namens jou",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 3 Nephi 12 is het doel van het liefhebben van je vijanden dat je kinderen wordt van je Vader in de hemel.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze leringen van Christus uit 3 Nephi 12 in de juiste volgorde.",
+        items: [
+          "Weersta het kwaad niet, en keer de andere wang toe",
+          "Geef aan wie van u vraagt, en wend u niet af van wie wil lenen",
+          "Heb uw vijanden lief en zegen wie u vervloeken",
+          "Zo wordt u kinderen van uw Vader in de hemel",
+        ],
+      },
+    ],
+  },
 ];
