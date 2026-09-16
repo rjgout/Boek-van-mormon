@@ -7447,4 +7447,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 47,
+    title: "Aflevering 47",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar gaat het gesprek van Koos en Raphael in deze aflevering vooral over?",
+        options: [
+          "Dinosaurussen, het ontstaan van de aarde en hoe tijd voor God heel anders kan zijn dan voor ons",
+          "De aankoop van nieuwe podcastapparatuur",
+          "Een reis naar Israël",
+          "De organisatie van een jeugdactiviteit",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael bespreken dat een 'scheppingsdag' in de schriften voor God misschien wel een heel andere tijdsduur betekende dan onze 24 uur, zoals miljoenen jaren.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Koos als iets wat volgens boeken als Mozes of Abraham al eerder is gebeurd, namelijk dat deze aarde niet de eerste zou zijn?",
+        options: [
+          "Dat er al meerdere werelden geschapen waren voordat deze aarde gemaakt werd",
+          "Dat de aarde plat was tot honderd jaar geleden",
+          "Dat er nooit dinosaurussen hebben bestaan",
+          "Dat de mensheid al een miljard jaar bestaat",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gelooft Koos over dieren, zoals dinosaurussen of huisdieren, met betrekking tot het leven na dit leven?",
+        options: [
+          "Dat ze ook een soort energie of leven hebben dat op een of andere manier teruggaat naar God",
+          "Dat dieren geen enkele vorm van leven of energie hebben",
+          "Dat alleen huisdieren een ziel hebben, wilde dieren niet",
+          "Dat dit onderwerp nooit ter sprake komt",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Koos vertelt over zijn hobby van oude dingen en stenen verzamelen",
+          "Ze bespreken of dinosaurussen echt op deze aarde hebben geleefd",
+          "Ze bespreken dat scheppingsdagen voor God een heel andere tijdsduur konden zijn",
+          "Ze bespreken of dieren ook een vorm van leven na dit leven hebben",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 40:8 wordt uitgelegd hoe tijd voor God werkt. Wat zegt dit vers daarover?",
+        options: [
+          "Alles is als één dag bij God, en tijd wordt alleen gemeten door de mens",
+          "God ervaart tijd exact zoals mensen dat doen",
+          "Tijd bestaat niet voor mensen, maar wel voor God",
+          "Er wordt in dit vers niets over tijd gezegd",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 40:8 maakt het niet uit dat mensen niet allemaal op hetzelfde moment sterven, want tijd is vanuit Gods perspectief toch anders dan hoe wij die ervaren.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom, volgens Alma 40:8, doet het er niet toe of er meer dan één moment is vastgesteld waarop mensen weer zullen opstaan?",
+        options: [
+          "Omdat alles voor God als één dag is, en tijd alleen door de mens gemeten wordt",
+          "Omdat er sowieso maar één mens ooit zal opstaan",
+          "Omdat opstanding sowieso niet bestaat",
+          "Er wordt in dit vers geen reden gegeven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Alma 40:8 in de juiste volgorde.",
+        items: [
+          "Of er meer dan één tijd is gesteld om op te staan, doet er niet toe",
+          "Want niet iedereen sterft op hetzelfde moment",
+          "En dat doet er ook niet toe",
+          "Want alles is als één dag bij God, en tijd wordt alleen door de mens gemeten",
+        ],
+      },
+    ],
+  },
 ];
