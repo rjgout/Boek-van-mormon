@@ -223,4 +223,357 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    // Titel/samenvatting: kale placeholder, zie de toelichting bij aflevering
+    // 128 hierboven — de podcastfeed-sync overschrijft deze toch.
+    number: 126,
+    title: "Aflevering 126",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Met welke stichting werken gasten Lisette en Sheila in deze aflevering vooral samen?",
+        options: ["Stichting Babyspullen", "De Voedselbank", "Jantje Beton", "Het Rode Kruis"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat doet Stichting Babyspullen precies?",
+        options: [
+          "Ze maken babystartpakketten voor aanstaande moeders die in armoede leven",
+          "Ze bouwen speeltuinen voor arme wijken",
+          "Ze geven gratis kinderopvang aan alleenstaande ouders",
+          "Ze verzorgen zwangerschapscursussen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Sheila vertelt dat de kerk een deel van het gedoneerde geld inhoudt als vergoeding voor de organisatie.",
+        answer: false,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoeveel baby's worden er volgens Lisette dagelijks in armoede geboren in Nederland?",
+        options: ["5", "15", "35", "70"],
+        correctIndex: 2,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Lisette en Sheila stellen zichzelf voor",
+          "Ze vertellen over het Strength of Women-evenement van 2024",
+          "Ze leggen de landelijke inzamelactie voor Stichting Babyspullen uit",
+          "Koos vertelt over de wet van de tiende en het beginsel van vasten",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt koning Benjamin in Mosiah 4 dat je moet doen als een bedelaar je om hulp vraagt?",
+        options: [
+          "Hem van je overvloed geven, en hem niet tevergeefs laten smeken",
+          "Hem wegsturen, want zijn armoede is zijn eigen schuld",
+          "Hem alleen helpen als hij eerst laat zien dat hij zich bekeerd heeft",
+          "Hem doorverwijzen naar de overheid",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke reden geeft koning Benjamin waarom niemand het recht heeft om te oordelen wie hulp \"verdient\"?",
+        options: [
+          "Omdat wij allemaal zelf bedelaars zijn, afhankelijk van God voor alles wat we hebben",
+          "Omdat de wet dat verbiedt",
+          "Omdat armoede altijd door onrecht komt",
+          "Omdat rijkdom een teken van Gods ongenoegen is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 4 blijft iemand die een bedelaar afwijst met de gedachte \"dat is zijn eigen schuld\" zonder gevolgen, zolang hij zelf niets te verwijten valt.",
+        answer: false,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen van koning Benjamin in Mosiah 4 in de juiste volgorde.",
+        items: [
+          "Hij roept op om de noodlijdende te helpen met wat je zelf bezit",
+          "Hij waarschuwt tegen de gedachte dat armoede altijd iemands eigen schuld is",
+          "Hij legt uit dat we allen bedelaars zijn, afhankelijk van God voor alles",
+          "Hij zegt dat je naar vermogen moet geven, in wijsheid en ordelijkheid",
+        ],
+      },
+    ],
+  },
+  {
+    number: 125,
+    title: "Aflevering 125",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk onderwerp staat in deze aflevering centraal, als vervolg op een eerdere aflevering?",
+        options: [
+          "De verwachtingen die Hemelse Vader van ons heeft, en onze verwachtingen van Hem",
+          "De geschiedenis van het eerste visioen",
+          "Het kiezen van een zendingsgebied",
+          "Het opvoeden van kinderen zonder geloof",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vindt het woord \"verwachting\" eigenlijk niet helemaal passend voor wat hij voor zijn eigen kinderen voelt — hij noemt het liever \"hoop\".",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarin kun je volgens Koos en Raphael persoonlijke aanwijzingen over Gods verwachtingen van jou terugvinden?",
+        options: ["Een patriarchale zegen", "Een droom", "Een horoscoop", "Een priesterschapsinterview"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over zijn zus, na haar ernstige auto-ongeluk?",
+        options: [
+          "Ze kreeg een zegen, ontwaakte uit coma, maar is niet meer helemaal de oude geworden",
+          "Ze overleed enkele dagen na het ongeluk",
+          "Ze herstelde volledig zonder enige blijvende gevolgen",
+          "Ze weigerde een priesterschapszegen te ontvangen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken wat een patriarchale zegen zegt over verwachtingen",
+          "Koos legt uit dat hij zijn kinderen liever geluk gunt dan verwachtingen oplegt",
+          "Raphael vertelt over de zegen die zijn zus kreeg na haar ongeluk",
+          "Ze concluderen dat sommige antwoorden pas later in het leven komen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarmee vergelijkt Alma het geloof in Alma 32?",
+        options: [
+          "Met een zaadje dat je in je hart moet planten en laten groeien",
+          "Met een steen die nooit verandert",
+          "Met een rivier die altijd dezelfde kant op stroomt",
+          "Met een lamp die je nooit hoeft bij te vullen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 32 is geloof hetzelfde als een volmaakte kennis van iets hebben.",
+        answer: false,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat moet je volgens Alma doen om te ontdekken of het woord goed is?",
+        options: [
+          "Het woord in je hart planten en de proef op de som nemen",
+          "Wachten tot iemand anders het je vertelt",
+          "Het bewijzen met wetenschappelijk onderzoek",
+          "Het pas geloven nadat je een wonder hebt gezien",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen uit Alma's gelijkenis van het zaadje in Alma 32 in de juiste volgorde.",
+        items: [
+          "Je plant het zaadje/woord en geeft het geen ongeloof",
+          "Het zaadje begint te zwellen en te ontspruiten",
+          "Je verzorgt de boom met ijver, geduld en geloof",
+          "Uiteindelijk pluk je de vrucht, die uiterst kostbaar is",
+        ],
+      },
+    ],
+  },
+  {
+    number: 124,
+    title: "Aflevering 124",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel bespreken Koos en Raphael in deze aflevering?",
+        options: ["Geloofsartikel 8", "Geloofsartikel 4", "Geloofsartikel 9", "Geloofsartikel 13"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt geloofsartikel 8 over de Bijbel en het Boek van Mormon?",
+        options: [
+          "De Bijbel is het woord van God voor zover juist vertaald; het Boek van Mormon is het woord van God",
+          "Beide boeken zijn woordelijk letterlijk gedicteerd door engelen",
+          "Alleen het Boek van Mormon is het woord van God",
+          "Beide boeken zijn menselijke verzinsels zonder goddelijke inspiratie",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat Nephi zijn kroniek soms wel 35 jaar na de gebeurtenissen zelf opschreef, door inspiratie van de Geest.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom staat er bij de Bijbel wél \"voor zover juist vertaald\", maar niet bij het Boek van Mormon?",
+        options: [
+          "Omdat het Boek van Mormon rechtstreeks door inspiratie vertaald is, terwijl de Bijbel eeuwenlang is overgeschreven en herzien",
+          "Omdat de Bijbel helemaal niet vertaald hoeft te worden",
+          "Omdat het Boek van Mormon geen vertaling is, maar oorspronkelijk in het Nederlands geschreven is",
+          "Omdat er geen verschil is tussen beide boeken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze lezen geloofsartikel 8 voor en bespreken wat \"het woord van God\" betekent",
+          "Ze bespreken hoe Nephi door inspiratie kon opschrijven wat 35 jaar eerder gebeurde",
+          "Ze bespreken de verloren pagina's van de vertaling van het Boek van Mormon",
+          "Ze bespreken waarom bij de Bijbel \"voor zover juist vertaald\" staat en bij het Boek van Mormon niet",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 1 Nephi 11 legt een engel aan Nephi uit waar de ijzeren roede uit Lehi's droom voor staat. Waarvoor staat die?",
+        options: [
+          "Het woord van God",
+          "Het priesterschap",
+          "De liefde van God",
+          "De tempel",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar leidt de ijzeren roede volgens 1 Nephi 11 naartoe?",
+        options: [
+          "Naar de boom des levens",
+          "Naar het grote en ruime gebouw",
+          "Naar de rivier van vuil water",
+          "Naar het land van belofte",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 1 Nephi 11 zijn de wateren waar de roede naartoe leidt een zinnebeeld van de liefde van God.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit Lehi's droom en de uitleg ervan in 1 Nephi 11 in de juiste volgorde.",
+        items: [
+          "Een engel toont Nephi een visioen dat lijkt op de droom van zijn vader",
+          "Hij ziet de Zoon van God onder de mensen komen",
+          "De engel legt uit dat de ijzeren roede het woord van God is",
+          "De roede voert naar de boom des levens, bij de wateren die Gods liefde voorstellen",
+        ],
+      },
+    ],
+  },
+  {
+    number: 123,
+    title: "Aflevering 123",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk onderwerp bespreken Koos en Raphael in deze aflevering, te beginnen met herinneringen aan Sinterklaas?",
+        options: [
+          "Verwachtingen, en wat er gebeurt als die niet uitkomen",
+          "Het vieren van kerstfeest binnen de kerk",
+          "Het geven van cadeaus als liefdadigheid",
+          "De geschiedenis van Nederlandse feestdagen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vertelt dat hij ooit zijn baan kwijtraakte omdat een teamlid een belangrijke deadline niet haalde.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurde er toen Koos lage verwachtingen had van een stagiair?",
+        options: [
+          "De stagiair overtrof zijn verwachtingen, wat Koos blij verraste",
+          "De stagiair voldeed precies aan de lage verwachtingen",
+          "De stagiair stelde teleur, zoals verwacht",
+          "Koos had helemaal geen stagiair die periode",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Koos de relatie tussen de hoogte van een verwachting en teleurstelling?",
+        options: [
+          "Hoe hoger de verwachting, hoe zwaarder de teleurstelling als die niet uitkomt",
+          "Verwachtingen hebben geen enkel verband met teleurstelling",
+          "Lage verwachtingen leiden juist tot de grootste teleurstelling",
+          "Teleurstelling hangt alleen af van geluk, niet van verwachtingen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze herinneren zich hun kinderlijke verwachtingen rond Sinterklaas",
+          "Ze bespreken verwachtingen op het werk en de gevolgen als die niet worden waargemaakt",
+          "Koos vertelt over een stagiair die zijn lage verwachtingen overtrof",
+          "Ze concluderen dat je je verwachtingen kunt bijstellen om teleurstelling te beperken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Koos noemt dat teleurstelling hoort bij het \"tegenstellingenpatroon\" van het leven. In welk hoofdstuk van het Boek van Mormon legt Lehi dit principe uit aan zijn zoon Jakob?",
+        options: ["2 Nephi 2", "Alma 32", "Mosiah 4", "Moroni 10"],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Lehi in 2 Nephi 2 dat er móét zijn, wil er ooit gerechtigheid of goddeloosheid, heiligheid of ellende kunnen bestaan?",
+        options: [
+          "Een tegenstelling in alle dingen",
+          "Een tempel op aarde",
+          "Een profeet die leeft",
+          "Een geschreven wet",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Lehi in 2 Nephi 2 kon de mens niet zelfstandig handelen (agency uitoefenen), tenzij hij door het één of het ander verlokt werd.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze stappen van Lehi's redenering in 2 Nephi 2 in de juiste volgorde.",
+        items: [
+          "Hij legt uit dat er een tegenstelling in alle dingen moet zijn",
+          "Hij redeneert dat zonder wet er geen zonde en geen gerechtigheid kan bestaan",
+          "Hij legt uit dat God de mens zelfstandig liet handelen",
+          "Hij zegt dat de mens niet kon handelen zonder door iets verlokt te worden",
+        ],
+      },
+    ],
+  },
 ];
