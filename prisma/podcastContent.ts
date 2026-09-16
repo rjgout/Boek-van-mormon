@@ -2747,4 +2747,192 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 98,
+    title: "Aflevering 98",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vraag stelt Raphael centraal in deze aflevering, over het lijden van Christus?",
+        options: [
+          "Of het lijden van Christus buiten de Hof van Gethsemane, zoals de geseling en de kruisiging, ook voor onze zonden was",
+          "Of Christus wel echt bestaan heeft",
+          "Of Christus meer dan één keer is gestorven",
+          "Of het lijden van Christus alleen symbolisch bedoeld was",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos en Raphael concluderen dat het verzoeningswerk voor de vergeving van zonden al was afgerond in de Hof van Gethsemane, en dat wat daarna kwam het lijden was dat ieder onschuldig veroordeeld mens had kunnen ondergaan.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat deed Christus volgens Koos en Raphael in de periode tussen zijn dood en zijn opstanding?",
+        options: [
+          "Hij ging naar het geestenrijk om het evangelie te laten verkondigen aan wie het nog niet gehoord had",
+          "Hij bleef drie dagen volledig bewusteloos zonder enige activiteit",
+          "Hij keerde meteen na zijn dood terug naar de aarde in een opgestaan lichaam",
+          "Hij verscheen meteen aan zijn discipelen in Jeruzalem",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is bijzonder aan het opgestane lichaam van Christus, in vergelijking met de lichamen die andere mensen ooit zullen terugkrijgen?",
+        options: [
+          "Christus behoudt zijn littekens, terwijl andere mensen een volmaakt lichaam zonder mankementen terugkrijgen",
+          "Christus heeft geen lichaam, andere mensen wel",
+          "Alleen Christus kan na de opstanding nog eten",
+          "Christus' lichaam is onzichtbaar voor mensen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Raphael herinnert aan de allereerste aflevering over het lijden van Christus",
+          "Ze bespreken of het lijden buiten Gethsemane ook voor onze zonden was",
+          "Ze bespreken wat Christus deed in de periode tussen zijn dood en opstanding",
+          "Ze bespreken waarom Christus zijn littekens na de opstanding behoudt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Alma 7 profeteert Alma dat Christus pijnen, ziekten en zwakheden van zijn volk op zich zal nemen. Met welk doel, volgens vers 12?",
+        options: [
+          "Opdat zijn binnenste met barmhartigheid vervuld zal worden, zodat Hij naar het vlees weet hoe zijn volk te hulp te komen",
+          "Alleen om zijn eigen kracht te tonen aan de mensen",
+          "Om zelf nooit meer pijn te hoeven voelen",
+          "Om andere profeten overbodig te maken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Alma 7 zal Christus ook de dood op zich nemen, om de banden des doods die zijn volk binden los te maken.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt Alma in vers 13 over hoe de Zoon van God lijdt?",
+        options: [
+          "Hij lijdt naar het vlees om de zonden van zijn volk op zich te nemen en hun overtredingen uit te wissen",
+          "Hij lijdt alleen in de geest, nooit naar het vlees",
+          "Hij lijdt niet echt, het is alleen een verhaal",
+          "Hij laat anderen voor hem lijden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze profetische uitspraken uit Alma 7 in de juiste volgorde.",
+        items: [
+          "Hij zal pijnen, benauwingen en allerlei verzoekingen doorstaan",
+          "Hij zal de pijnen en ziekten van zijn volk op zich nemen",
+          "Hij zal de dood op zich nemen om de banden des doods los te maken",
+          "De Zoon van God lijdt naar het vlees om de zonden van zijn volk uit te wissen",
+        ],
+      },
+    ],
+  },
+  {
+    number: 97,
+    title: "Aflevering 97",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk voorbeeld gebruikt Raphael om te beargumenteren dat je eerst goed voor jezelf moet zorgen voordat je een ander kan helpen?",
+        options: [
+          "Het zuurstofmasker in het vliegtuig, dat je eerst zelf moet opdoen voordat je een ander helpt",
+          "Het voorbeeld van de barmhartige Samaritaan",
+          "Het voorbeeld van de rijke jongeling",
+          "Het voorbeeld van de wijze en dwaze bouwer",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat een eerdere poging om de wet van toewijding (de \"Verenigde Orde\") te leven historisch niet goed functioneerde.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk beeld gebruikt Koos om uit te leggen hoe Christus mensen volgens hem het liefst helpt?",
+        options: [
+          "Door mensen te leren vissen, zodat zij daarna voor zichzelf kunnen zorgen",
+          "Door mensen altijd meteen alles te geven wat ze nodig hebben",
+          "Door mensen nooit te helpen, zodat ze zelfredzaam worden",
+          "Door alleen rijke mensen te helpen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over zijn ervaring met het sneeuwvrij maken van de oprit van zijn buren?",
+        options: [
+          "Een andere buurman vroeg zich af waarom hij dat deed, aangezien niemand erom gevraagd had",
+          "Zijn buren hadden er specifiek om gevraagd",
+          "Hij deed het alleen voor geld",
+          "De gemeente had hem daartoe verplicht",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken of Christus meer links of rechts georiëteerd zou zijn",
+          "Ze bespreken de wet van toewijding en waarom die historisch niet goed werkte",
+          "Raphael vertelt het verhaal over het sneeuwvrij maken van de oprit van de buren",
+          "Ze bespreken wat het echt betekent om je naaste lief te hebben",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 4 Nephi wordt beschreven hoe het volk leefde nadat Christus in Amerika was verschenen. Wat hadden zij, volgens vers 3?",
+        options: [
+          "Alle dingen gemeenschappelijk, zodat er geen armen en rijken meer waren",
+          "Ieder zijn eigen bezit, strikt gescheiden van de rest",
+          "Een systeem van slavernij voor wie niet meewerkte",
+          "Geen enkele vorm van bezit of eigendom, zelfs geen voedsel",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 4 Nephi 1 was er onder dat volk geen twist, omdat de liefde voor God in hun hart woonde.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe worden de Nephieten en Lamanieten na verloop van tijd in 4 Nephi beschreven?",
+        options: [
+          "Als één volk, kinderen van Christus en erfgenamen van het koninkrijk van God",
+          "Als nog steeds twee compleet gescheiden volkeren in permanente oorlog",
+          "Als een volk dat alleen uit rovers en moordenaars bestond",
+          "Als een volk zonder enige vorm van geloof",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze beschrijvingen uit 4 Nephi 1 in de juiste volgorde.",
+        items: [
+          "Het gehele volk was tot de Heer bekeerd en behandelde elkaar rechtvaardig",
+          "Zij hadden alle dingen gemeenschappelijk, zonder armen of rijken",
+          "Er was geen twist meer wegens de liefde voor God in hun hart",
+          "Zij werden gezegend en voorspoedig gemaakt gedurende meer dan honderd jaar",
+        ],
+      },
+    ],
+  },
 ];
