@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { SESSION_COOKIE, hashPassword, verifyPassword } from "@/lib/auth";
 import { generateDiscriminator, HANDLE_REGEX, HANDLE_MIN_LENGTH, HANDLE_MAX_LENGTH } from "@/lib/handle";
+import { setIncognito, INCOGNITO_DURATIONS_HOURS } from "@/lib/presence";
 
 const patchSchema = z.object({
   handle: z
@@ -26,6 +27,17 @@ const patchSchema = z.object({
   notifyAchievements: z.boolean().optional(),
   notifyWordGame: z.boolean().optional(),
   changelogEnabled: z.boolean().optional(),
+  // Vrienden-aanwezigheid (zie src/lib/presence.ts).
+  shareOnlineStatus: z.boolean().optional(),
+  shareCurrentActivity: z.boolean().optional(),
+  // Geen kolomnaam maar een actie: getal = incognito voor zoveel uur
+  // aanzetten (te beginnen vanaf nu), null = direct weer uitzetten.
+  // Serverbepaald vanuit een vaste lijst i.p.v. een los aantal uren of een
+  // kant-en-klare vervaltijd van de client aan te nemen.
+  incognitoHours: z
+    .union([z.literal(INCOGNITO_DURATIONS_HOURS[0]), z.literal(INCOGNITO_DURATIONS_HOURS[1]), z.literal(INCOGNITO_DURATIONS_HOURS[2]), z.literal(INCOGNITO_DURATIONS_HOURS[3])])
+    .nullable()
+    .optional(),
 });
 
 const MAX_DISCRIMINATOR_ATTEMPTS = 25;
@@ -74,10 +86,24 @@ export async function PATCH(req: NextRequest) {
   if (Object.keys(parsed.data).length === 0) {
     return NextResponse.json({ error: "Niets om op te slaan" }, { status: 400 });
   }
-  const { handle, ...rest } = parsed.data;
+  const { handle, incognitoHours, ...rest } = parsed.data;
+
+  if (incognitoHours !== undefined) {
+    await setIncognito(user.id, incognitoHours);
+  }
+  // Vrienden live laten meekrijgen van een aanpassing hier gebeurt bewust
+  // niet vanuit deze routehandler: dit bestand wordt door Next's eigen
+  // bundelaar geladen, wat een ANDERE modulinstantie van gameServer.ts
+  // oplevert dan die server.ts via tsx laadt en waar de echte, actieve
+  // Socket.io-server op leeft (getIO() zou hier altijd null teruggeven). De
+  // client stuurt daarom na een geslaagde patch zelf een klein
+  // "presence_settings_changed"-signaal over de al bestaande socketverbinding
+  // (zie ProfileClient.tsx), die wél op de juiste instantie draait.
 
   if (handle === undefined) {
-    await prisma.user.update({ where: { id: user.id }, data: rest });
+    if (Object.keys(rest).length > 0) {
+      await prisma.user.update({ where: { id: user.id }, data: rest });
+    }
     return NextResponse.json({ ok: true });
   }
 

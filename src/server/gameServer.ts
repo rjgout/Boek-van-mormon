@@ -11,6 +11,7 @@ import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeLesson, completeChapterGuess } from "@/lib/streak";
 import { checkAndAwardAchievements } from "@/lib/achievements";
 import { notifyNewAchievements } from "@/lib/notify";
+import { broadcastPresenceUpdate, setCurrentActivity, clearCurrentActivity } from "@/lib/presence";
 import { generateChapterGuessQuestions, labelsFor, computeHintEffect, type LiveQuestionSeed, type ChapterLabel } from "@/lib/chapterGuess";
 import {
   BOARD,
@@ -620,6 +621,31 @@ export function initGameServer(httpServer: HttpServer) {
     await prisma.user
       .update({ where: { id: user.id }, data: { onlineSocketCount: { increment: 1 }, lastSeenAt: new Date() } })
       .catch(() => {});
+    broadcastPresenceUpdate(ioInstance, user.id).catch(() => {});
+
+    // Vrienden-activiteit (zie src/lib/presence.ts): de client stuurt zelf al
+    // een herkenbaar label mee (bv. "Leest Alma 32"), nooit een technisch ID
+    // — deze handler valideert alleen lengte/vorm, verzint geen eigen tekst.
+    socket.on("activity_update", (data: { icon?: string; label?: string } | null) => {
+      if (!data || typeof data.icon !== "string" || typeof data.label !== "string") {
+        clearCurrentActivity(user.id);
+      } else {
+        setCurrentActivity(user.id, data.icon.slice(0, 4), data.label);
+      }
+      broadcastPresenceUpdate(ioInstance, user.id).catch(() => {});
+    });
+
+    // De privacy-instellingen zelf (aan/uit-zetten, incognito) worden gezet
+    // via /api/account — een gewone Next-routehandler, die via Next's eigen
+    // bundeling een ANDERE modulinstantie van dit bestand gebruikt en dus
+    // geen toegang heeft tot de echte, actieve ioInstance hierboven. De
+    // client stuurt daarom na een geslaagde patch dit signaal over de
+    // toch al open socketverbinding, zodat de instantie die er wél toe
+    // doet de herberekende status (opnieuw uit de database gelezen, dus
+    // altijd actueel) naar vrienden kan pushen.
+    socket.on("presence_settings_changed", () => {
+      broadcastPresenceUpdate(ioInstance, user.id).catch(() => {});
+    });
 
     socket.on("join_game", async ({ code }: { code: string }) => {
       const upperCode = code.toUpperCase();
@@ -972,9 +998,16 @@ export function initGameServer(httpServer: HttpServer) {
           data: { onlineSocketCount: { decrement: 1 }, lastSeenAt: new Date() },
         })
         .then(async (updated) => {
-          if (updated.onlineSocketCount < 0) {
+          let socketCount = updated.onlineSocketCount;
+          if (socketCount < 0) {
             await prisma.user.update({ where: { id: user.id }, data: { onlineSocketCount: 0 } });
+            socketCount = 0;
           }
+          // Alleen de activiteit wissen als dit echt de laatste open
+          // tab/apparaat was — anders verdwijnt "Leest Alma 32" ten onrechte
+          // zodra je één van meerdere tabbladen sluit.
+          if (socketCount === 0) clearCurrentActivity(user.id);
+          await broadcastPresenceUpdate(ioInstance, user.id);
         })
         .catch(() => {});
 

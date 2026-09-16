@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { getFriendStatusMap } from "@/lib/presence";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -27,5 +28,11 @@ export async function GET() {
     .filter((f) => f.status === "PENDING" && f.senderId === user.id)
     .map((f) => ({ friendshipId: f.id, to: f.receiver }));
 
-  return NextResponse.json({ friends, incoming, outgoing });
+  // Statusinformatie wordt hier per vriend berekend op basis van DIENS eigen
+  // instellingen (zie computeFriendStatus in src/lib/presence.ts) — een
+  // vriend die niets deelt komt hier gewoon niet in de map voor, in plaats
+  // van met een "verborgen" waarde, zodat er ook via deze route niets lekt.
+  const statusByUserId = await getFriendStatusMap(friends.map((f) => f.id));
+
+  return NextResponse.json({ friends, incoming, outgoing, statusByUserId });
 }

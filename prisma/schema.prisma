@@ -53,6 +53,21 @@ model User {
   // voor "hoe lang geleden" op het adminoverzicht.
   onlineSocketCount  Int       @default(0)
   lastSeenAt         DateTime?
+  // Vrienden-aanwezigheid (zie src/lib/presence.ts): allebei standaard UIT,
+  // zelfde privacy-by-default-principe als searchableByEmail hierboven —
+  // een bestaande of nieuwe gebruiker wordt nooit automatisch zichtbaar.
+  // shareCurrentActivity is een sub-instelling die alleen iets betekent als
+  // shareOnlineStatus ook aan staat (server-side afgedwongen, zie presence.ts
+  // — niet alleen client-side verborgen). "Laatst actief X geleden" heeft
+  // bewust geen eigen schakelaar: dat valt onder shareOnlineStatus, want het
+  // is strikt minder onthullend dan een live groene stip.
+  shareOnlineStatus    Boolean   @default(false)
+  shareCurrentActivity Boolean   @default(false)
+  // Tijdelijk "onzichtbaar voor vrienden" zonder de permanente instellingen
+  // hierboven aan te raken — null = niet actief. Automatisch verlopen via
+  // runIncognitoExpiryTick() in scheduler.ts (self-gating, net als de
+  // andere ticks daar), of handmatig eerder uitgezet.
+  invisibleUntil       DateTime?
   // Beste ooit behaalde positie op de Nederlandse ranglijst (zie
   // /api/leaderboard?scope=national) — opportunistisch bijgewerkt telkens als
   // die ranglijst voor deze gebruiker wordt berekend, zodat het profiel dit

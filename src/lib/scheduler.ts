@@ -3,6 +3,8 @@ import { addDays, dayKey, weekStartKey, amsterdamNow, type AmsterdamTime } from 
 import { resolveWeeklyPlacement, getLeagueSettings, TIER_ORDER, TIER_LABELS } from "@/lib/leagues";
 import { notifyDailyReminder, notifyWeeklyResult, notifySeasonResult, notifyWordGame } from "@/lib/notify";
 import { wordGameDayKey } from "@/lib/wordGame";
+import { broadcastPresenceUpdate } from "@/lib/presence";
+import { getIO } from "@/server/gameServer";
 
 const TICK_MS = 60_000;
 // Vast (niet instelbaar) moment voor de wekelijkse uitslag — dit is geen
@@ -238,6 +240,27 @@ async function runWordGameNotificationTick(): Promise<void> {
   }
 }
 
+/**
+ * Zet tijdelijke "onzichtbaar voor vrienden" (User.invisibleUntil) automatisch
+ * weer uit zodra de gekozen periode voorbij is, en meldt dat direct aan
+ * vrienden (anders zou iemand pas na een eigen actie weer online lijken).
+ * Query is goedkoop (meestal 0 rijen), dus geen aparte self-gating nodig
+ * zoals bij de dag-/weekgebonden ticks hierboven.
+ */
+async function runIncognitoExpiryTick(): Promise<void> {
+  const expired = await prisma.user.findMany({
+    where: { invisibleUntil: { lte: new Date() } },
+    select: { id: true },
+  });
+  if (expired.length === 0) return;
+
+  const io = getIO();
+  for (const user of expired) {
+    await prisma.user.update({ where: { id: user.id }, data: { invisibleUntil: null } }).catch(() => {});
+    await broadcastPresenceUpdate(io, user.id).catch(() => {});
+  }
+}
+
 let started = false;
 
 /** Start de in-process schedulers — bewust geen losse cron-infrastructuur (zie ook src/lib/leagues.ts). Eenmalig aan te roepen vanuit server.ts. */
@@ -249,5 +272,6 @@ export function startNotificationSchedulers(): void {
     runWeeklyResultTick().catch((e) => console.error("Wekelijkse uitslag mislukt:", e));
     runSeasonRolloverTick().catch((e) => console.error("Seizoensafsluiting mislukt:", e));
     runWordGameNotificationTick().catch((e) => console.error("Woord-van-de-dag-melding mislukt:", e));
+    runIncognitoExpiryTick().catch((e) => console.error("Incognito-vervaltijd mislukt:", e));
   }, TICK_MS);
 }

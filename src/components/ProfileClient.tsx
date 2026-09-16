@@ -7,6 +7,7 @@ import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
 import { formatTag } from "@/lib/handle";
 import { enableBrowserPush, disableBrowserPush, isPushSupported } from "@/lib/pushClient";
+import { getSocket } from "@/lib/socketClient";
 import ThemeToggle from "@/components/ThemeToggle";
 
 interface AchievementView {
@@ -23,6 +24,9 @@ interface ProfileData {
   discriminator: string;
   email: string;
   searchableByEmail: boolean;
+  shareOnlineStatus: boolean;
+  shareCurrentActivity: boolean;
+  incognitoActive: boolean;
   emailNotificationsEnabled: boolean;
   pushNotificationsEnabled: boolean;
   dailyReminderTime: string;
@@ -85,12 +89,63 @@ export default function ProfileClient() {
     setSavingPrivacy(false);
   }
 
-  async function saveAccountPatch(patch: Record<string, boolean | string>) {
+  async function saveAccountPatch(patch: Record<string, boolean | string | number | null>) {
     await fetch("/api/account", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(patch),
     }).catch(() => {});
+  }
+
+  const [savingPresence, setSavingPresence] = useState(false);
+
+  // De routehandler zelf kan vrienden niet live laten meekrijgen van een
+  // wijziging (zie de toelichting bij /api/account/route.ts) — dit signaal
+  // over de al bestaande socketverbinding bereikt wél de instantie die de
+  // echte Socket.io-server draait.
+  function notifyPresenceSettingsChanged() {
+    getSocket().emit("presence_settings_changed");
+  }
+
+  async function toggleShareOnlineStatus() {
+    if (!data) return;
+    const next = !data.shareOnlineStatus;
+    // Activiteit delen zonder online-status delen is zinloos (je ziet
+    // toch nooit de groene stip) — dus gelijk meenemen als je online-status
+    // uitzet, zodat de instellingen nooit tegenstrijdig blijven staan.
+    setData({ ...data, shareOnlineStatus: next, shareCurrentActivity: next ? data.shareCurrentActivity : false });
+    setSavingPresence(true);
+    await saveAccountPatch(next ? { shareOnlineStatus: next } : { shareOnlineStatus: next, shareCurrentActivity: false });
+    setSavingPresence(false);
+    notifyPresenceSettingsChanged();
+  }
+
+  async function toggleShareCurrentActivity() {
+    if (!data || !data.shareOnlineStatus) return;
+    const next = !data.shareCurrentActivity;
+    setData({ ...data, shareCurrentActivity: next });
+    setSavingPresence(true);
+    await saveAccountPatch({ shareCurrentActivity: next });
+    setSavingPresence(false);
+    notifyPresenceSettingsChanged();
+  }
+
+  async function activateIncognito(hours: 1 | 4 | 12 | 24) {
+    if (!data) return;
+    setData({ ...data, incognitoActive: true });
+    setSavingPresence(true);
+    await saveAccountPatch({ incognitoHours: hours });
+    setSavingPresence(false);
+    notifyPresenceSettingsChanged();
+  }
+
+  async function deactivateIncognito() {
+    if (!data) return;
+    setData({ ...data, incognitoActive: false });
+    setSavingPresence(true);
+    await saveAccountPatch({ incognitoHours: null });
+    setSavingPresence(false);
+    notifyPresenceSettingsChanged();
   }
 
   async function toggleEmailNotifications() {
@@ -482,6 +537,67 @@ export default function ProfileClient() {
             </span>
           </span>
         </label>
+      </section>
+
+      <section className="card flex flex-col gap-3">
+        <h2 className="font-extrabold text-lg dark:text-slate-100">Online & activiteit</h2>
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            className="mt-1 h-5 w-5 accent-brand-500"
+            checked={data.shareOnlineStatus}
+            onChange={toggleShareOnlineStatus}
+            disabled={savingPresence}
+          />
+          <span className="text-sm dark:text-slate-200">
+            Online status delen met vrienden.
+            <br />
+            <span className="text-slate-400 dark:text-slate-500">
+              Staat standaard uit. Aan → vrienden zien of je online bent, en anders &ldquo;laatst actief X geleden&rdquo;.
+            </span>
+          </span>
+        </label>
+
+        {data.shareOnlineStatus && (
+          <label className="flex items-start gap-3 cursor-pointer pl-8">
+            <input
+              type="checkbox"
+              className="mt-1 h-5 w-5 accent-brand-500"
+              checked={data.shareCurrentActivity}
+              onChange={toggleShareCurrentActivity}
+              disabled={savingPresence}
+            />
+            <span className="text-sm dark:text-slate-200">
+              Ook mijn huidige activiteit delen (bv. &ldquo;📖 Leest Alma 32&rdquo;) i.p.v. alleen dat ik online ben.
+            </span>
+          </label>
+        )}
+
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex flex-col gap-2">
+          <p className="text-sm dark:text-slate-200">🔒 Tijdelijk onzichtbaar voor vrienden</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">
+            Gebruikt de app zonder dat vrienden je status zien, zonder de instellingen hierboven te wijzigen. Zet
+            zichzelf automatisch weer uit.
+          </p>
+          {data.incognitoActive ? (
+            <button className="btn-secondary self-start !px-4 !py-2" onClick={deactivateIncognito} disabled={savingPresence}>
+              Zet onzichtbaar-modus nu uit
+            </button>
+          ) : (
+            <div className="flex gap-2 flex-wrap">
+              {([1, 4, 12, 24] as const).map((hours) => (
+                <button
+                  key={hours}
+                  className="btn-secondary !px-3 !py-1.5 !text-xs"
+                  onClick={() => activateIncognito(hours)}
+                  disabled={savingPresence}
+                >
+                  {hours} uur
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
 
       <section className="card flex flex-col gap-3">

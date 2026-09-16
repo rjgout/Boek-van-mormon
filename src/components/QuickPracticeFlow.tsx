@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ExerciseCard, type Exercise } from "@/components/LessonFlow";
+import { useActivityStatus } from "@/lib/useActivity";
 
 interface Answer {
   exerciseId: string;
@@ -22,6 +23,7 @@ interface Summary {
 }
 
 export default function QuickPracticeFlow({ exercises }: { exercises: Exercise[] }) {
+  useActivityStatus("✏️", "Aan het oefenen");
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);

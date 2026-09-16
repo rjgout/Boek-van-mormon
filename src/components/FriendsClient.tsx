@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { formatTag } from "@/lib/handle";
+import { getSocket } from "@/lib/socketClient";
 
 interface FriendUser {
   id: string;
@@ -11,10 +12,17 @@ interface FriendUser {
   currentStreak: number;
 }
 
+interface FriendStatus {
+  online: boolean;
+  activity?: { icon: string; label: string };
+  lastSeenLabel?: string;
+}
+
 interface FriendsData {
   friends: FriendUser[];
   incoming: { friendshipId: string; from: FriendUser }[];
   outgoing: { friendshipId: string; to: FriendUser }[];
+  statusByUserId: Record<string, FriendStatus>;
 }
 
 interface SearchResult {
@@ -38,6 +46,35 @@ export default function FriendsClient() {
 
   useEffect(() => {
     load();
+  }, []);
+
+  // Live updates: dezelfde altijd-open socketverbinding die ook
+  // uitnodigingen binnenkrijgt (zie InviteListener.tsx) — de server pusht
+  // hierop al naar `user:${jouwId}` zodra een vriend van status verandert,
+  // dus alleen luisteren en de kaart bijwerken hoeft hier verder niets te
+  // abonneren/joinen.
+  useEffect(() => {
+    const socket = getSocket();
+    function onStatusUpdate(payload: { userId: string; hidden: boolean } & Partial<FriendStatus>) {
+      setData((prev) => {
+        if (!prev) return prev;
+        const next = { ...prev.statusByUserId };
+        if (payload.hidden) {
+          delete next[payload.userId];
+        } else {
+          next[payload.userId] = {
+            online: !!payload.online,
+            activity: payload.activity,
+            lastSeenLabel: payload.lastSeenLabel,
+          };
+        }
+        return { ...prev, statusByUserId: next };
+      });
+    }
+    socket.on("friend_status_update", onStatusUpdate);
+    return () => {
+      socket.off("friend_status_update", onStatusUpdate);
+    };
   }, []);
 
   useEffect(() => {
@@ -165,10 +202,22 @@ export default function FriendsClient() {
         <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Jouw vrienden ({data.friends.length})</h2>
         {data.friends.length === 0 && <p className="text-slate-400 dark:text-slate-500">Nog geen vrienden — zoek iemand hierboven!</p>}
         <div className="flex flex-col gap-2">
-          {data.friends.map((f) => (
+          {data.friends.map((f) => {
+            const status = data.statusByUserId[f.id];
+            return (
             <div key={f.id} className="card flex items-center justify-between !py-3">
               <div>
-                <div className="font-bold">{formatTag(f.handle, f.discriminator)}</div>
+                <div className="font-bold flex items-center gap-1.5">
+                  {status?.online && <span aria-hidden title="Online">🟢</span>}
+                  {formatTag(f.handle, f.discriminator)}
+                </div>
+                {status?.activity ? (
+                  <div className="text-xs text-brand-600 dark:text-brand-300 font-semibold">
+                    {status.activity.icon} {status.activity.label}
+                  </div>
+                ) : status && !status.online && status.lastSeenLabel ? (
+                  <div className="text-xs text-slate-400 dark:text-slate-500">💤 Laatst actief {status.lastSeenLabel}</div>
+                ) : null}
                 <div className="text-xs text-slate-400 dark:text-slate-500">
                   🔥 {f.currentStreak} streak · ⭐ {f.xpTotal} XP
                 </div>
@@ -183,7 +232,8 @@ export default function FriendsClient() {
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     </div>

@@ -65,6 +65,11 @@ export async function GET() {
     discriminator: user.discriminator,
     email: user.email,
     searchableByEmail: user.searchableByEmail,
+    shareOnlineStatus: user.shareOnlineStatus,
+    shareCurrentActivity: user.shareCurrentActivity,
+    // Alleen of het (nog) actief is, nooit het exacte tijdstip — de client
+    // heeft alleen "sta ik nu op onzichtbaar" nodig om de knop goed te tonen.
+    incognitoActive: !!(user.invisibleUntil && user.invisibleUntil > new Date()),
     emailNotificationsEnabled: user.emailNotificationsEnabled,
     pushNotificationsEnabled: user.pushNotificationsEnabled,
     dailyReminderTime: user.dailyReminderTime,

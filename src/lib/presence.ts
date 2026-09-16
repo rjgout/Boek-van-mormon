@@ -1,0 +1,129 @@
+import type { Server as SocketIOServer } from "socket.io";
+import { prisma } from "@/lib/db";
+import { formatElapsedDutch } from "@/lib/dates";
+
+export const INCOGNITO_DURATIONS_HOURS = [1, 4, 12, 24] as const;
+export type IncognitoDurationHours = (typeof INCOGNITO_DURATIONS_HOURS)[number];
+
+const MAX_ACTIVITY_LABEL_LENGTH = 60;
+
+// In-memory, per userId — bewust niet in Postgres (zie de toelichting bij
+// User.shareCurrentActivity in schema.prisma): een activiteit is vluchtig,
+// en dit zou anders bij elke paginanavigatie een databaseschrijving
+// betekenen. Zelfde aanpak als de al bestaande RoomState-map in
+// gameServer.ts — geldt dus ook dezelfde beperking: correct bij precies één
+// actieve app-instantie (zie de Redis-toelichting daar voor het
+// multi-instance-scenario).
+const currentActivity = new Map<string, { icon: string; label: string }>();
+
+/** Nooit een technisch ID doorgeven — de aanroeper stelt zelf al een
+ * herkenbaar label samen (bv. "Leest Alma 32"), dit bestand valideert alleen
+ * lengte/aanwezigheid. */
+export function setCurrentActivity(userId: string, icon: string, label: string): void {
+  const trimmed = label.trim().slice(0, MAX_ACTIVITY_LABEL_LENGTH);
+  if (!trimmed) return;
+  currentActivity.set(userId, { icon, label: trimmed });
+}
+
+export function clearCurrentActivity(userId: string): void {
+  currentActivity.delete(userId);
+}
+
+export interface FriendStatusView {
+  online: boolean;
+  activity?: { icon: string; label: string };
+  lastSeenLabel?: string;
+}
+
+interface PresenceRow {
+  id: string;
+  shareOnlineStatus: boolean;
+  shareCurrentActivity: boolean;
+  invisibleUntil: Date | null;
+  onlineSocketCount: number;
+  lastSeenAt: Date | null;
+}
+
+export const PRESENCE_SELECT = {
+  id: true,
+  shareOnlineStatus: true,
+  shareCurrentActivity: true,
+  invisibleUntil: true,
+  onlineSocketCount: true,
+  lastSeenAt: true,
+} as const;
+
+/**
+ * Wat vrienden van deze gebruiker mogen zien — puur op basis van diens eigen
+ * instellingen, ongeacht wie er kijkt (voor de zichtbaarheid maakt het niet
+ * uit WELKE vriend kijkt, dus één berekening per gebruiker volstaat). Geeft
+ * `null` terug als er niets getoond mag worden (uitgeschakeld of incognito)
+ * — de aanroeper moet dat als "niets tonen" behandelen, nooit als "offline
+ * tonen": ook "offline" is al informatie die niet gedeeld is.
+ */
+export function computeFriendStatus(user: PresenceRow): FriendStatusView | null {
+  if (!user.shareOnlineStatus) return null;
+  if (user.invisibleUntil && user.invisibleUntil > new Date()) return null;
+
+  const online = user.onlineSocketCount > 0;
+  const view: FriendStatusView = { online };
+
+  if (online && user.shareCurrentActivity) {
+    const activity = currentActivity.get(user.id);
+    if (activity) view.activity = activity;
+  }
+  if (!online && user.lastSeenAt) {
+    view.lastSeenLabel = formatElapsedDutch(user.lastSeenAt);
+  }
+  return view;
+}
+
+export async function getAcceptedFriendIds(userId: string): Promise<string[]> {
+  const friendships = await prisma.friendship.findMany({
+    where: { status: "ACCEPTED", OR: [{ senderId: userId }, { receiverId: userId }] },
+    select: { senderId: true, receiverId: true },
+  });
+  return friendships.map((f) => (f.senderId === userId ? f.receiverId : f.senderId));
+}
+
+/** Voor het initieel laden van de vriendenlijst — één keer alle statussen
+ * tegelijk berekenen i.p.v. per vriend een broadcast te simuleren. */
+export async function getFriendStatusMap(friendIds: string[]): Promise<Record<string, FriendStatusView>> {
+  if (friendIds.length === 0) return {};
+  const users = await prisma.user.findMany({ where: { id: { in: friendIds } }, select: PRESENCE_SELECT });
+  const map: Record<string, FriendStatusView> = {};
+  for (const u of users) {
+    const status = computeFriendStatus(u);
+    if (status) map[u.id] = status;
+  }
+  return map;
+}
+
+/**
+ * Pusht de actuele status van `userId` naar alle geaccepteerde vrienden die
+ * nu verbonden zijn — via de al bestaande, altijd-open `user:${id}`-room
+ * (zie initGameServer in gameServer.ts), dus geen aparte
+ * "volg-deze-vriend"-room nodig en de update komt aan ongeacht welke pagina
+ * die vriend open heeft staan. `hidden: true` betekent expliciet "laat niets
+ * (meer) zien" (bv. na het uitzetten van delen, of bij incognito) i.p.v.
+ * gewoon niets te sturen — anders zou een vriend een ingetrokken status
+ * kunnen blijven tonen totdat die zelf de pagina ververst.
+ */
+export async function broadcastPresenceUpdate(io: SocketIOServer | null, userId: string): Promise<void> {
+  if (!io) return;
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: PRESENCE_SELECT });
+  if (!user) return;
+
+  const status = computeFriendStatus(user);
+  const friendIds = await getAcceptedFriendIds(userId);
+  const payload = status ? { userId, hidden: false as const, ...status } : { userId, hidden: true as const };
+  for (const friendId of friendIds) {
+    io.to(`user:${friendId}`).emit("friend_status_update", payload);
+  }
+}
+
+/** Zet incognito aan (met vervaltijd) of uit (hours = null). */
+export async function setIncognito(userId: string, hours: IncognitoDurationHours | null): Promise<void> {
+  const invisibleUntil = hours === null ? null : new Date(Date.now() + hours * 60 * 60 * 1000);
+  await prisma.user.update({ where: { id: userId }, data: { invisibleUntil } });
+}

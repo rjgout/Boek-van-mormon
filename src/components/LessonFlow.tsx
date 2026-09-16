@@ -5,6 +5,7 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import { ACHIEVEMENT_DISPLAY } from "@/lib/achievementDisplay";
 import { normalizeAnswer } from "@/lib/exerciseGen";
+import { useActivityStatus } from "@/lib/useActivity";
 
 export type ExerciseType = "FILL_BLANK" | "WORD_BANK" | "TRUE_FALSE" | "MULTIPLE_CHOICE" | "SEQUENCE" | "IMAGE_CHOICE";
 
@@ -77,6 +78,8 @@ export default function LessonFlow({ chapterId, bookName, chapterNumber, nextCha
 
   const current = exercises[index];
   const exerciseById = useMemo(() => new Map(exercises.map((e) => [e.id, e])), [exercises]);
+
+  useActivityStatus("📖", `Leest ${bookName} ${chapterNumber}`);
 
   // Registreer dat dit hoofdstuk gelezen wordt, los van of de quiz erna
   // wordt afgemaakt (nodig voor "ga verder waar je gebleven was" en om
