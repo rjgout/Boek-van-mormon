@@ -3405,4 +3405,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 91,
+    title: "Aflevering 91",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke bijzondere gebeurtenis vertelt Koos dat hij net heeft meegemaakt in een tempel in Zwitserland?",
+        options: [
+          "Zijn eigen huwelijksverzegeling met zijn vrouw",
+          "De doop van zijn kind",
+          "Zijn eigen ordinatie tot priester",
+          "Een patriarchale zegen voor zijn vrouw",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat het altaar in de tempel symbolisch voor Christus staat, en dat hij en zijn vrouw daar hun handen op legden tijdens de verzegeling.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Tot welke stam van Israël behoren Koos en Raphael volgens hun patriarchale zegen?",
+        options: [
+          "De stam van Efraïm",
+          "De stam van Juda",
+          "De stam van Levi",
+          "De stam van Benjamin",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Raphael over het volk dat al vóór de Nephieten en Lamanieten in Amerika aankwam, en wiens verslag ook in het Boek van Mormon is opgenomen?",
+        options: [
+          "Zij kwamen van de toren van Babel en hun taal werd niet verward",
+          "Zij kwamen rechtstreeks uit het oude Egypte",
+          "Zij spraken dezelfde taal als de Nephieten",
+          "Zij lieten helemaal geen enkel geschreven verslag na",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos vertelt over zijn huwelijksverzegeling in de tempel in Zwitserland",
+          "Ze bespreken het verbondsvolk en de stammen van Israël",
+          "Ze bespreken de patriarchale zegen en de stam van Efraïm",
+          "Raphael vertelt over het volk van de toren van Babel in het Boek van Mormon",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Ether 1 wordt verteld hoe de broer van Jered de Heer aanroept bij de toren van Babel. Wat vraagt hij?",
+        options: [
+          "Dat de Heer hun taal niet zal verwarren, zodat zij elkaars woorden kunnen blijven verstaan",
+          "Dat de Heer hen onmiddellijk naar Amerika zal verplaatsen",
+          "Dat de Heer de toren zelf zal laten instorten",
+          "Dat de Heer hen rijkdom zal geven voor de reis",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Ether 1 had de Heer medelijden met Jered en zijn broer, zodat hun taal niet werd verward toen de talen van de rest van het volk wel werden verward.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vraagt Jered aan zijn broer nadat hun eigen taal gespaard was gebleven?",
+        options: [
+          "Om de Heer opnieuw aan te roepen, zodat ook de taal van hun vrienden gespaard zou blijven",
+          "Om meteen op reis te gaan zonder verder iets te vragen",
+          "Om de Heer te vragen alle andere talen alsnog te herstellen",
+          "Om zelf een nieuwe toren te bouwen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gebeurtenissen uit Ether 1 in de juiste volgorde.",
+        items: [
+          "De Heer verwart de taal van het volk bij de grote toren",
+          "Jered vraagt zijn broer de Heer aan te roepen zodat hun taal niet verward wordt",
+          "De Heer heeft medelijden en hun taal wordt niet verward",
+          "Jered vraagt zijn broer opnieuw te bidden, ook voor hun vrienden en gezinnen",
+        ],
+      },
+    ],
+  },
 ];
