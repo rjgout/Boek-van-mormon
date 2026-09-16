@@ -146,14 +146,16 @@ export default function AdminBrandingClient() {
       </summary>
 
       <p className="text-sm text-slate-500 dark:text-slate-400">
-        Een eigen logo vervangt de tekst en het boek-emoji in de header overal in de app.
+        Een eigen logo vervangt de tekst en het boek-emoji in de header én op het welkomscherm, overal
+        in de app.
       </p>
 
       <div className="flex flex-col gap-2">
         <p className="font-bold text-sm dark:text-slate-100">App-naam</p>
         <p className="text-xs text-slate-500 dark:text-slate-400">
-          Vervangt de naam &ldquo;Jehova&rdquo; op het welkomscherm (en overal elders waar geen eigen logo
-          staat). Leeg laten = standaardnaam.
+          Alleen zichtbaar als tekst zolang er geen logo hieronder is ingesteld: dan gebruikt de
+          browsertab/paginatitel en (bij geen logo) de header en het welkomscherm deze naam i.p.v.
+          &ldquo;Jehova&rdquo;. Leeg laten = standaardnaam.
         </p>
         <form
           className="flex items-center gap-2"

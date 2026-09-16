@@ -7,13 +7,20 @@ import InstallAppCard from "@/components/InstallAppCard";
 import WelcomeCta from "@/components/WelcomeCta";
 
 export default async function HomePage() {
-  const [user, { appName }] = await Promise.all([getCurrentUser(), getBranding()]);
+  const [user, { appName, logoDataUrl }] = await Promise.all([getCurrentUser(), getBranding()]);
   if (user) redirect("/dashboard");
   const displayName = resolveAppName(appName);
 
   return (
     <div className="flex flex-col items-center text-center gap-8 py-12">
-      <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{displayName}</p>
+      {/* Zelfde logo-vervangt-tekst-patroon als de header (zie layout.tsx):
+          staat er een eigen logo, dan toont dat i.p.v. de tekstnaam. */}
+      {logoDataUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={logoDataUrl} alt={displayName} className="h-10 w-auto" />
+      ) : (
+        <p className="text-sm font-bold uppercase tracking-wide text-brand-500 dark:text-brand-400">{displayName}</p>
+      )}
       <h1 className="text-4xl sm:text-5xl font-extrabold text-brand-800 dark:text-brand-300 leading-tight">
         Lees de Schriften,
         <br />
