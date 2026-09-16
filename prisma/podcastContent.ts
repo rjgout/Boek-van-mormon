@@ -6413,4 +6413,192 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 59,
+    title: "Aflevering 59",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt Koos over zijn beklimming van de Ben Nevis, de hoogste berg van Schotland?",
+        options: [
+          "Hij beklom de berg op zijn slippers, en het weer sloeg om van regen naar hagel en sneeuw",
+          "Hij beklom de berg samen met de hele podcastploeg",
+          "Hij moest halverwege omkeren vanwege het slechte weer",
+          "Hij deed de beklimming in de zomer zonder problemen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos vindt het bewust opzoeken van zulke uitdagingen (zoals de bergbeklimming) een manier om te ervaren dat hij leeft, iets wat hij in het voor-aardse leven niet kon ervaren.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Koos als het allereerste en grootste doel van dit aardse leven?",
+        options: [
+          "Een sterfelijk lichaam ontvangen — zelfs als iemand heel jong of ongeboren sterft, is dat doel al bereikt",
+          "Zoveel mogelijk landen bezoeken en ervaringen verzamelen",
+          "Een succesvolle studie en carrière opbouwen",
+          "Zo lang mogelijk leven om zoveel mogelijk fouten te kunnen maken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarmee vergelijkt Raphael het verleggen van grenzen, zoals bij het beklimmen van een berg?",
+        options: [
+          "Met het trainen van spieren: ze kapot maken en daarna rust geven om te herstellen en sterker te worden",
+          "Met het leren van een nieuwe taal",
+          "Met het besturen van een auto",
+          "Met het bakken van brood",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Koos vertelt over zijn beklimming van de Ben Nevis op slippers",
+          "Ze bespreken of je uitdagingen actief moet opzoeken of juist niet",
+          "Ze bespreken het doel van het aardse leven en de gelijkenis van de wijngaard",
+          "Ze bespreken de kruistochten en het belang van niet oordelen over anderen",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Volgens 2 Nephi 2:25 waarom viel Adam?",
+        options: [
+          "Opdat de mensen zouden zijn; en de mensen zijn, opdat zij vreugde zullen hebben",
+          "Om de mensheid te straffen voor altijd",
+          "Om te voorkomen dat er ooit nog mensen op aarde zouden komen",
+          "Om de duivel de overwinning te geven",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 2:23 zouden Adam en Eva, als ze in de hof van Eden waren gebleven, geen vreugde hebben gekend, omdat ze ook geen ellende kenden.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zou er volgens 2 Nephi 2:22-23 gebeurd zijn als Adam niet overtreden had?",
+        options: [
+          "Alle dingen zouden voor eeuwig in dezelfde staat zijn gebleven, en Adam en Eva zouden geen kinderen hebben gekregen",
+          "Adam en Eva zouden onmiddellijk zijn gestorven",
+          "De aarde zou nooit geschapen zijn",
+          "Er zou dan direct een oordeel hebben plaatsgevonden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 2:22-25 in de juiste volgorde.",
+        items: [
+          "Als Adam niet was gevallen, waren alle dingen in dezelfde staat gebleven",
+          "Adam en Eva zouden geen kinderen hebben gekregen en geen vreugde hebben gekend",
+          "Alle dingen zijn gedaan in de wijsheid van Hem die alle dingen weet",
+          "Adam viel, opdat de mensen zouden zijn; en de mensen zijn, opdat zij vreugde zullen hebben",
+        ],
+      },
+    ],
+  },
+  {
+    number: 58,
+    title: "Aflevering 58",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat vertelt gast Arnold over de oorzaak van zijn depressie?",
+        options: [
+          "Het had te maken met een moeilijke jeugd — zijn ouders hadden PTSS door de Tweede Wereldoorlog en gingen later uit elkaar",
+          "Het kwam volledig door de coronacrisis",
+          "Het kwam door problemen op zijn werk als onderwijsassistent",
+          "Hij noemt geen enkele oorzaak",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Arnold onderging EMDR-behandeling en gebruikte een tijd lang medicatie om zijn PTSS en depressie te helpen verwerken.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Arnold als een belangrijke oorzaak van schaamte om hulp te zoeken bij een depressie?",
+        options: [
+          "Het idee dat je perfect moet zijn, en hulp zoeken zou dan voelen als falen",
+          "Het idee dat een depressie niet bestaat",
+          "Het idee dat je hulp alleen via de kerkleiders mag zoeken",
+          "Het idee dat medicatie altijd verboden is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe leggen Koos en Raphael uit dat gebed en professionele hulp (zoals een huisarts of psycholoog) zich tot elkaar verhouden?",
+        options: [
+          "Die hulp is juist vaak het antwoord op het gebed, in plaats van dat God de depressie op magische wijze wegneemt",
+          "Gebed maakt professionele hulp altijd overbodig",
+          "Professionele hulp en geloof sluiten elkaar volledig uit",
+          "Alleen wonderen zoals in de Bijbel kunnen een depressie genezen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in het gesprek aan bod komen.",
+        items: [
+          "Arnold vertelt over zijn jeugd en de scheiding van zijn ouders",
+          "Arnold beschrijft wat de depressie voor hem betekende en hoe hij hulp zocht",
+          "Ze bespreken de schaamte en de mythe van perfectie in de kerk",
+          "Ze bespreken hoe hemelse vader door mensen en therapie heen kan werken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In het gesprek wordt gezegd dat 'wees gij volmaakt' eigenlijk 'wees één met God' zou moeten betekenen. Wat zegt Moroni 10:32 over hoe je volmaakt wordt in Christus?",
+        options: [
+          "Door zijn genade, als je tot Christus komt, u van goddeloosheid onthoudt en God liefhebt met al uw macht, verstand en kracht",
+          "Door zelf nooit meer een fout te maken",
+          "Door zoveel mogelijk geboden perfect na te leven zonder hulp",
+          "Volmaaktheid wordt in dit vers niet besproken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Moroni 10:32 is het Gods genade die maakt dat je volmaakt kunt zijn in Christus, niet je eigen kracht alleen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat gebeurt er volgens Moroni 10:33 als je door Gods genade volmaakt bent in Christus?",
+        options: [
+          "Dan ben je geheiligd in Christus, dankzij het bloed van Christus, tot vergeving van je zonden",
+          "Dan hoef je nooit meer hulp te vragen aan anderen",
+          "Dan verdwijnen al je aardse beproevingen onmiddellijk",
+          "Dan word je vrijgesteld van verdere geboden",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Moroni 10:32-33 in de juiste volgorde.",
+        items: [
+          "Kom tot Christus en wordt vervolmaakt in Hem",
+          "Onthoud u van alle goddeloosheid en heb God lief met al uw macht, verstand en kracht",
+          "Door Gods genade kunt gij volmaakt zijn in Christus",
+          "Dan zijt gij geheiligd in Christus door het vergieten van zijn bloed",
+        ],
+      },
+    ],
+  },
 ];
