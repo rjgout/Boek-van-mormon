@@ -1649,4 +1649,182 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 110,
+    title: "Aflevering 110",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk geloofsartikel bespreken Koos en Raphael in deze aflevering?",
+        options: [
+          "Geloofsartikel 3 (redding door de verzoening en gehoorzaamheid)",
+          "Geloofsartikel 6",
+          "Geloofsartikel 9",
+          "Geloofsartikel 12",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt geloofsartikel 3 over hoe de mensheid gered kan worden?",
+        options: [
+          "Door de verzoening van Christus, én door gehoorzaamheid aan de wetten en verordeningen van het evangelie",
+          "Alleen door één keer te verklaren dat je Christus accepteert",
+          "Alleen door goede werken, zonder dat Christus nodig is",
+          "Door geboorte in een bepaald land",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat sommige andere christelijke stromingen geloven dat je alleen Christus als redder hoeft te accepteren, zonder verdere verordeningen — iets waarin hun kerk dus verschilt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke verordening noemen Koos en Raphael als absolute noodzaak om in het koninkrijk van God te komen?",
+        options: ["Doop", "Het huwelijk", "Vasten", "Tempelbezoek"],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze lezen geloofsartikel 3 voor en bespreken wat opvalt",
+          "Ze bespreken hoe dit verschilt van \"eenmalig accepteren is genoeg\"-geloofsopvattingen",
+          "Ze proberen te achterhalen welke \"wetten\" precies bedoeld worden",
+          "Ze concluderen dat geloof zonder werken dood is",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke beroemde uitspraak doet Nephi in 2 Nephi 25:23 over genade en eigen inspanning?",
+        options: [
+          "Wij weten dat wij, na alles wat wij kunnen doen, door genade worden gered",
+          "Genade is niet nodig als je genoeg goede werken doet",
+          "Alleen wie de wet van Mozes volledig houdt, wordt gered",
+          "Redding is volledig onafhankelijk van Christus",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom bleven Nephi en zijn volk de wet van Mozes onderhouden, terwijl ze al in Christus geloofden?",
+        options: [
+          "Ze zagen ernaar uit naar Christus, totdat de wet vervuld zou zijn, en hielden de wet vanwege de geboden",
+          "Ze wisten nog niets van Christus",
+          "De wet van Mozes had niets met Christus te maken",
+          "Ze deden het uit angst voor straf, niet uit geloof",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 25:26 schreven Nephi en de zijnen over Christus, verheugden zij zich in Christus en profeteerden zij over Christus, opdat hun kinderen zouden weten op welke bron zij konden vertrouwen voor vergeving.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen uit 2 Nephi 25 in de juiste volgorde.",
+        items: [
+          "Nephi's volk gelooft in Christus, maar houdt ook de wet van Mozes",
+          "Zij zien standvastig naar Christus uit, totdat de wet vervuld zal zijn",
+          "Zij schrijven, prediken en profeteren over Christus",
+          "Zij worden, na alles wat zij kunnen doen, door genade gered",
+        ],
+      },
+    ],
+  },
+  {
+    number: 109,
+    title: "Aflevering 109",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welke vraag van een luisteraar bespreken Koos en Raphael in deze aflevering?",
+        options: [
+          "Is geen seks voor het huwelijk wel zo'n goed idee?",
+          "Mag je trouwen zonder kerkelijke plechtigheid?",
+          "Hoeveel kinderen moet je krijgen?",
+          "Mag je scheiden als lid van de kerk?",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is volgens Koos het verschil tussen de twee grote geboden en de vijf wetten?",
+        options: [
+          "De twee geboden (God en je naaste liefhebben) vallen onder de wet van het evangelie, één van de vijf wetten",
+          "Er is helemaal geen verschil",
+          "De vijf wetten zijn ouder dan de twee geboden",
+          "De twee geboden gelden alleen voor profeten",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat een huwelijk voor de wet, zonder tempelverzegeling, in hun geloofsovertuiging niet \"voor tijd en alle eeuwigheid\" geldt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom is exclusiviteit (alleen seks met je huwelijkspartner) volgens Raphael belangrijk?",
+        options: [
+          "Het beschermt het gezin en de relatie tegen schade van buitenaf",
+          "Het heeft geen enkele functie, het is puur een regel",
+          "Het is alleen belangrijk voor de kerkleider, niet voor gewone leden",
+          "Het voorkomt uitsluitend financiële problemen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken de luisteraarsvraag over seks voor het huwelijk",
+          "Ze bespreken het verschil tussen de twee geboden en de vijf wetten",
+          "Ze bespreken wat een eeuwig huwelijk (verzegeling) anders maakt dan een gewoon huwelijk",
+          "Ze bespreken waarom exclusiviteit een relatie beschermt",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Jakob 2 waarschuwt Jakob het volk streng tegen onkuisheid. Wat zegt de Heer daar via Jakob over de kuisheid van vrouwen?",
+        options: [
+          "Ik, de Heer God, schep behagen in de kuisheid der vrouwen",
+          "Kuisheid is alleen belangrijk voor priesters",
+          "Kuisheid is een menselijke uitvinding, geen goddelijk gebod",
+          "Alleen mannen hoeven kuis te zijn",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Hoe noemt Jakob hoererij (onkuisheid) in dit hoofdstuk?",
+        options: ["Een gruwel in Gods ogen", "Een klein foutje zonder gevolgen", "Een privékwestie die niemand aangaat", "Een wettelijk toegestane keuze"],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Jakob 2 waarschuwt de Heer dat het land vervloekt zal worden als het volk zijn geboden, waaronder kuisheid, niet onderhoudt.",
+        answer: true,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze gedachtestappen van Jakob over kuisheid in Jakob 2 in de juiste volgorde.",
+        items: [
+          "Jakob spreekt het volk streng toe over hun zonden",
+          "Hij zegt dat de Heer behagen schept in de kuisheid der vrouwen",
+          "Hij noemt hoererij een gruwel in Gods ogen",
+          "Hij waarschuwt dat het land vervloekt wordt als de geboden niet onderhouden worden",
+        ],
+      },
+    ],
+  },
 ];
