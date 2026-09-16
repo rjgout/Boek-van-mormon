@@ -4063,4 +4063,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 84,
+    title: "Aflevering 84",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar ergert Koos zich aan, als het gaat om hoe zijn kerk soms door anderen wordt gezien?",
+        options: [
+          "Dat mensen zeggen dat zijn kerk geen christelijke kerk zou zijn",
+          "Dat mensen de kerkdiensten te lang vinden duren",
+          "Dat mensen denken dat de kerk geen liederen zingt",
+          "Dat mensen denken dat de kerk geen tempels heeft",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Raphael legt uit dat de bijnaam 'mormonen' oorspronkelijk als scheldnaam werd gebruikt, verwijzend naar het Boek van Mormon, en dat de kerk sinds 2018 weer bewust de officiële naam gebruikt.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarom kunnen Koos en Raphael zich niet vinden in het argument dat een kerk met meer geschriften dan alleen de Bijbel 'niet van God' zou zijn?",
+        options: [
+          "Omdat de Bijbel zelf oorspronkelijk uit meer boeken bestond en God vandaag de dag nog steeds openbaringen geeft",
+          "Omdat de Bijbel toch niet meer relevant is",
+          "Omdat alle christelijke kerken het daar toch al mee eens zijn",
+          "Omdat er geen enkel verband is tussen de Bijbel en het Boek van Mormon",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Raphael als het belangrijkste verschil tussen hun kerk en andere christelijke kerken?",
+        options: [
+          "Dat zij geloven dat Christus door een levende profeet zijn kerk vandaag de dag nog rechtstreeks bestuurt",
+          "Dat alleen hun kerk in Jezus Christus gelooft",
+          "Dat andere kerken helemaal geen leiders hebben",
+          "Dat hun kerk als enige de tien geboden erkent",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Koos ergert zich eraan dat mensen zeggen dat zijn kerk geen christelijke kerk is",
+          "Ze bespreken de herkomst en geschiedenis van de bijnaam 'mormonen'",
+          "Ze bespreken waarom er meer geschriften dan alleen de Bijbel kunnen bestaan",
+          "Raphael legt uit wat hun kerk onderscheidt van andere christelijke kerken",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In 2 Nephi 29 profeteert Nephi dat velen zullen zeggen: \"Een Bijbel! Wij hebben een Bijbel en er kan niet nog méér Bijbel zijn.\" Hoe reageert de Heer daarop, volgens vers 8?",
+        options: [
+          "Hij vraagt waarom zij morren, terwijl Hij dezelfde woorden tot verschillende naties spreekt",
+          "Hij geeft hun meteen gelijk en stopt met verdere openbaring",
+          "Hij zegt dat de Bijbel de enige tekst is die ooit nodig zal zijn",
+          "Hij negeert de vraag volledig",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens 2 Nephi 29:9 zegt de Heer dat zijn werk nog niet voltooid is, en dat het feit dat Hij al één woord heeft gesproken niet betekent dat Hij er geen tweede kan spreken.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zegt 2 Nephi 29:10 over de veronderstelling dat de Bijbel alle woorden van God bevat?",
+        options: [
+          "Dat is een verkeerde veronderstelling; God kan meer hebben laten opschrijven",
+          "Dat is volledig juist, er is niets meer te verwachten",
+          "De Bijbel bevat inderdaad letterlijk elk woord van God",
+          "Dit onderwerp wordt in dit vers niet besproken",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit 2 Nephi 29 in de juiste volgorde.",
+        items: [
+          "Velen zullen zeggen: een Bijbel, wij hebben een Bijbel en hebben niet meer nodig",
+          "De Heer vraagt waarom zij morren omdat zij meer van zijn woord zullen ontvangen",
+          "Zijn werk is nog niet voleindigd, noch zal het dat zijn vóór het einde van het mensdom",
+          "Wie een Bijbel heeft, moet niet veronderstellen dat die al Gods woorden bevat",
+        ],
+      },
+    ],
+  },
 ];
