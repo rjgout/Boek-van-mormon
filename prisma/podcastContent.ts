@@ -4251,4 +4251,98 @@ export const podcastEpisodes: PodcastEpisodeSeed[] = [
       },
     ],
   },
+  {
+    number: 82,
+    title: "Aflevering 82",
+    summary: "Wordt bijgewerkt vanuit de podcastfeed.",
+    content: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar draait het gesprek in deze aflevering vooral om?",
+        options: [
+          "Of je de weg naar het eeuwige leven voor jezelf bewandelt, of dat je daar anderen bij nodig hebt",
+          "Of je beter alleen of samen kunt reizen",
+          "Of de podcast een betaalde baan zou kunnen worden",
+          "Of engelen wel of niet bestaan",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Koos legt uit dat hij, ook na zijn scheiding, het huwelijksverbond met zijn ex-partner niet heeft verbroken, zodat zij zelf altijd de mogelijkheid behoudt om er via dat verbond zegeningen aan te ontlenen.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat noemt Koos als bron van hulp die we niet altijd kunnen zien, naast de mensen om ons heen?",
+        options: [
+          "Beschermengelen en geestelijke begeleiders",
+          "Alleen wetenschappelijke instanties",
+          "Alleen de overheid",
+          "Niets, hij gelooft niet in onzichtbare hulp",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat concluderen Koos en Raphael over of je ooit echt alleen bent?",
+        options: [
+          "Dat je nooit echt alleen bent, dankzij de Heilige Geest en de mensen om je heen die willen helpen",
+          "Dat iedereen uiteindelijk toch helemaal alleen voor zijn eigen redding staat",
+          "Dat je alleen niet alleen bent als je getrouwd bent",
+          "Dat eenzaamheid volledig onvermijdelijk is",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze onderwerpen in de volgorde waarin ze in de aflevering aan bod komen.",
+        items: [
+          "Ze bespreken of ze de podcast ooit tot een betaalde baan zouden kunnen maken",
+          "Koos legt uit dat de weg naar het eeuwige leven wel voor jezelf is, maar niet alleen",
+          "Raphael vertelt over het verzegelingsverbond en de individuele keuze daarin",
+          "Ze bespreken beschermengelen en of ze zich ooit echt alleen hebben gevoeld",
+        ],
+      },
+    ],
+    bomConnection: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "In Mosiah 18 doopt Alma het volk bij de wateren van Mormon. Waartoe verklaren zij zich bereid, volgens vers 8?",
+        options: [
+          "Elkaars lasten te dragen, opdat zij licht zullen zijn",
+          "Alleen voor zichzelf te zorgen",
+          "Zich volledig van de rest van het volk af te zonderen",
+          "Nooit meer met anderen te spreken over hun geloof",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Volgens Mosiah 18:9 verklaren zij zich ook bereid om te treuren met hen die treuren en te vertroosten wie vertroosting nodig heeft.",
+        answer: true,
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waarvan getuigt de doop volgens Mosiah 18:10?",
+        options: [
+          "Dat je een verbond met de Heer bent aangegaan om Hem te dienen en zijn geboden te onderhouden",
+          "Dat je nu volledig op jezelf staat, zonder gemeenschap",
+          "Dat je nooit meer fouten zult maken",
+          "Dat je een speciale status krijgt boven anderen",
+        ],
+        correctIndex: 0,
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze uitspraken uit Mosiah 18 in de juiste volgorde.",
+        items: [
+          "Alma vraagt of zij verlangend zijn tot de kudde Gods toe te treden",
+          "Zij verklaren zich bereid elkaars lasten te dragen",
+          "Zij verklaren zich bereid te treuren met hen die treuren en te troosten",
+          "Alma vraagt of zij zich dan willen laten dopen als getuigenis van dat verbond",
+        ],
+      },
+    ],
+  },
 ];
