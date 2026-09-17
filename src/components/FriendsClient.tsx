@@ -156,8 +156,10 @@ export default function FriendsClient() {
 
   if (!data) return <p className="text-slate-400 dark:text-slate-500">Laden...</p>;
 
+  const onlineCount = Object.values(data.statusByUserId).filter((s) => s.online).length;
+
   return (
-    <div className="max-w-3xl mx-auto flex flex-col gap-7">
+    <div className="max-w-3xl mx-auto flex flex-col gap-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300 flex items-center gap-2">
           <span aria-hidden>👥</span> Vrienden
@@ -167,8 +169,23 @@ export default function FriendsClient() {
         </p>
       </div>
 
+      {data.friends.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="card !py-4 flex flex-col items-center gap-0.5">
+            <div className="text-xl font-extrabold text-brand-600 dark:text-brand-300">👥 {data.friends.length}</div>
+            <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Vrienden</div>
+          </div>
+          <div className="card !py-4 flex flex-col items-center gap-0.5">
+            <div className="text-xl font-extrabold text-green-600 dark:text-green-400">🟢 {onlineCount}</div>
+            <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Nu online</div>
+          </div>
+        </div>
+      )}
+
       <div className="card flex flex-col gap-3">
-        <p className="font-bold text-sm dark:text-slate-100">Vriend toevoegen</p>
+        <p className="font-bold text-sm dark:text-slate-100 flex items-center gap-2">
+          <span aria-hidden>➕</span> Vriend toevoegen
+        </p>
         <div className="flex gap-2 flex-wrap sm:flex-nowrap">
           <input
             className="input flex-1"
@@ -183,7 +200,10 @@ export default function FriendsClient() {
         {results && results.length > 0 && (
           <div className="flex flex-col gap-2">
             {results.map((r) => (
-              <div key={r.id} className="flex items-center justify-between gap-3 !py-2">
+              <div
+                key={r.id}
+                className="flex items-center justify-between gap-3 rounded-xl px-2 !py-2 hover:bg-brand-50 dark:hover:bg-slate-700"
+              >
                 <span className="flex items-center gap-2 dark:text-slate-100">
                   <Avatar id={r.id} handle={r.handle} size="sm" />
                   {formatTag(r.handle, r.discriminator)}
@@ -204,11 +224,19 @@ export default function FriendsClient() {
 
       {data.incoming.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h2 className="font-extrabold text-slate-700 dark:text-slate-200">Verzoeken</h2>
+          <h2 className="font-extrabold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+            Verzoeken
+            <span className="inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 rounded-full bg-gold-50 dark:bg-slate-700 text-gold-700 dark:text-gold-400 text-xs font-extrabold">
+              {data.incoming.length}
+            </span>
+          </h2>
           <div className="flex flex-col gap-2">
             {data.incoming.map(({ friendshipId, from }) => (
-              <div key={friendshipId} className="card flex items-center justify-between gap-3 flex-wrap !py-3">
-                <span className="flex items-center gap-2 font-bold">
+              <div
+                key={friendshipId}
+                className="card !py-3 bg-gold-50 dark:bg-slate-800 border-gold-400/30 dark:border-slate-700 flex items-center justify-between gap-3 flex-wrap"
+              >
+                <span className="flex items-center gap-2 font-bold dark:text-slate-100">
                   <Avatar id={from.id} handle={from.handle} />
                   {formatTag(from.handle, from.discriminator)}
                 </span>
@@ -233,6 +261,7 @@ export default function FriendsClient() {
             {data.outgoing.map(({ friendshipId, to }) => (
               <div key={friendshipId} className="card flex items-center gap-2 !py-3 text-slate-500 dark:text-slate-400">
                 <Avatar id={to.id} handle={to.handle} size="sm" />
+                <span aria-hidden>⏳</span>
                 Wachten op {formatTag(to.handle, to.discriminator)}
               </div>
             ))}
@@ -254,11 +283,17 @@ export default function FriendsClient() {
             return (
               <div key={f.id} className="card flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <Avatar id={f.id} handle={f.handle} />
+                  <span
+                    className={`shrink-0 rounded-full ${status?.online ? "ring-2 ring-green-400 ring-offset-2 dark:ring-offset-slate-800" : ""}`}
+                  >
+                    <Avatar id={f.id} handle={f.handle} />
+                  </span>
                   <div className="min-w-0">
                     <div className="font-bold flex items-center gap-1.5 dark:text-slate-100">
-                      {status?.online && <span aria-hidden title="Online" className="w-2 h-2 rounded-full bg-green-500 shrink-0" />}
                       <span className="truncate">{formatTag(f.handle, f.discriminator)}</span>
+                      {status?.online && (
+                        <span className="text-[10px] font-bold uppercase text-green-600 dark:text-green-400 shrink-0">Online</span>
+                      )}
                     </div>
                     {status?.activity ? (
                       <div className="text-xs text-brand-600 dark:text-brand-300 font-semibold truncate">
