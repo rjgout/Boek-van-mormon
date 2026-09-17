@@ -120,7 +120,7 @@ export default function WordGameClient() {
             {row.word.split("").map((letter, j) => (
               <div
                 key={j}
-                className={`aspect-square rounded-lg border-2 flex items-center justify-center text-xl font-extrabold uppercase animate-pop ${TILE_STYLES[row.result[j]]}`}
+                className={`no-select aspect-square rounded-lg border-2 flex items-center justify-center text-xl font-extrabold uppercase animate-pop ${TILE_STYLES[row.result[j]]}`}
               >
                 {letter}
               </div>
@@ -133,7 +133,7 @@ export default function WordGameClient() {
             {Array.from({ length: game.wordLength }, (_, j) => (
               <div
                 key={j}
-                className="aspect-square rounded-lg border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-xl font-extrabold uppercase dark:text-slate-100"
+                className="no-select aspect-square rounded-lg border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center text-xl font-extrabold uppercase dark:text-slate-100"
               >
                 {guess[j] ?? ""}
               </div>

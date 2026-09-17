@@ -48,3 +48,59 @@ body {
   @apply w-full rounded-2xl border-2 border-slate-200 px-4 py-3 text-base outline-none focus:border-brand-400 transition bg-white text-slate-800;
   @apply dark:bg-slate-900 dark:border-slate-600 dark:text-slate-100;
 }
+
+/* --- Native-app-gevoel op touch devices ----------------------------------
+ *
+ * Bewust NIET op de hele pagina (body/*): inhoudelijke tekst — de
+ * Schriftteksten, samenvattingen, uitleg — moet gewoon selecteerbaar en
+ * kopieerbaar blijven. Dit raakt alleen echte bedienings-elementen:
+ *  - `button`/.btn-varianten: dekt alle knoppen, antwoordopties, speltegels
+ *    en tabbladen in de app, die vrijwel allemaal als <button> gebouwd zijn
+ *    (ook wanneer .btn-primary/.btn-secondary/.btn-ice op een <Link>/<a>
+ *    staat i.p.v. een <button>, vandaar dat die drie ook los genoemd staan).
+ *  - `a.card`: kaarten die als hele klikbare navigatietegel fungeren (bv.
+ *    het cursus-/lesoverzicht, hoofdstukkenrooster) — bewust een samengestelde
+ *    selector (element ÉN class), zodat een gewone `<div class="card">` met
+ *    leesbare inhoud (podcastsamenvatting, personenkaartje, ...) hier NIET
+ *    door geraakt wordt.
+ *  - header/bottomnav-links: de vaste navigatiebalken bovenaan en onderaan.
+ * `-webkit-touch-callout: none` voorkomt op iOS specifiek het contextmenu
+ * ("Open in nieuw tabblad"/"Kopieer") bij lang indrukken van een link;
+ * `user-select: none` voorkomt de tekstselectie-blauwe-markering/vergrootglas
+ * bij lang indrukken, op alle touch-platforms.
+ */
+button,
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-ice,
+a.card,
+header nav a,
+nav[aria-label="Hoofdnavigatie"] a {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Kleine, herbruikbare uitzondering voor losse gevallen die geen knop/link
+ * zijn maar wel als bediening/score gelden (bv. speltegels of statuspillen
+ * die als <div>/<span> gebouwd zijn) — zie bv. WordGameClient.tsx. */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Scrollbar overal verbergen zonder het scrollen zelf te beïnvloeden —
+ * cross-browser (Firefox/oude Edge via eigenschappen, WebKit/Chromium via
+ * het ::-webkit-scrollbar-pseudo-element). Geldt voor de pagina zelf én
+ * voor losse scrollbare panelen/lijsten/kaarten binnen de app. */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* oudere Edge/IE */
+}
+*::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, nieuwe Edge */
+  width: 0;
+  height: 0;
+}

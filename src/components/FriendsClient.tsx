@@ -270,10 +270,10 @@ export default function FriendsClient() {
                   </div>
                 </div>
                 <div className="flex gap-2 flex-wrap">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-gold-50 text-gold-700 dark:bg-slate-700 dark:text-gold-400 text-xs font-bold px-2.5 py-1">
+                  <span className="no-select inline-flex items-center gap-1 rounded-full bg-gold-50 text-gold-700 dark:bg-slate-700 dark:text-gold-400 text-xs font-bold px-2.5 py-1">
                     🔥 {f.currentStreak}
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-700 dark:bg-slate-700 dark:text-brand-300 text-xs font-bold px-2.5 py-1">
+                  <span className="no-select inline-flex items-center gap-1 rounded-full bg-brand-50 text-brand-700 dark:bg-slate-700 dark:text-brand-300 text-xs font-bold px-2.5 py-1">
                     ⭐ {f.xpTotal} XP
                   </span>
                 </div>
