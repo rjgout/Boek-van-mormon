@@ -31,7 +31,15 @@ export type IntroBlock =
   | { type: "scripture"; bookSlug: string; chapterNumber: number; verseNumbers?: number[]; label?: string }
   // Link naar iets echts binnen de app (lezer, cursusoverzicht, personen).
   | { type: "readMore"; label: string; href: string }
-  // Vast eindscherm met de 3 keuzes — alleen gebruikt in de laatste les.
+  // Diepe link naar een echt hoofdstuk in de lezer — leest live het bestaande
+  // Chapter-id op (nooit een hardcoded /lesson/<id>, want dat id verschilt
+  // per omgeving), net als het scripture-blok hierboven nooit gekopieerde
+  // tekst gebruikt.
+  | { type: "chapterLink"; bookSlug: string; chapterNumber: number; label: string }
+  // Vast eindscherm met de 3 keuzes — alleen gebruikt als laatste blok van de
+  // laatste les (zie IntroLessonFlow.tsx: dit blok wordt uit de content-
+  // blokken gelicht en na de eindtoets getoond, in plaats van de
+  // standaard "Verder →"-link).
   | { type: "finalChoices" };
 
 export interface IntroExerciseOptionSeed {
@@ -523,6 +531,245 @@ export const introLessons: IntroLessonSeed[] = [
         type: "TRUE_FALSE",
         prompt: "In het Boek van Mormon verandert niemand ooit van gedrag of overtuiging.",
         answers: ["false"],
+      },
+    ],
+  },
+  {
+    number: 9,
+    slug: "jezus-christus-verschijnt",
+    title: "Jezus Christus verschijnt",
+    summary: "Het hoogtepunt van het boek.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Ergens halverwege het boek gebeurt het meest bijzondere moment van het hele verhaal: Jezus Christus " +
+          "verschijnt zelf aan het volk, kort na zijn opstanding in Jeruzalem.",
+      },
+      {
+        type: "text",
+        body:
+          "Een grote menigte was bijeen rond de tempel. Ze hoorden een stem uit de hemel — geen harde stem, maar " +
+          "een zachte die toch door hen heen leek te gaan. Pas de derde keer verstonden ze wat er werd gezegd.",
+      },
+      {
+        type: "scripture",
+        bookSlug: "3-nephi",
+        chapterNumber: 11,
+        verseNumbers: [8, 9, 10, 11],
+        label: "3 Nephi 11:8-11",
+      },
+      {
+        type: "text",
+        body:
+          "Daarna liet Hij de mensen, één voor één, de tekens van de nagels in zijn handen en voeten voelen — zodat " +
+          "ze niet alleen hoorden, maar ook zelf konden vaststellen dat het echt Hem was.",
+      },
+      {
+        type: "reflection",
+        question: "Wat zou jij denken of voelen als je daar zelf bij had gestaan?",
+      },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat zei de stem uit de hemel over de Man die uit de hemel neerdaalde?",
+        answers: ["Dat het zijn geliefde Zoon was"],
+        options: [
+          { label: "Dat het zijn geliefde Zoon was", isCorrect: true },
+          { label: "Dat het een engel was", isCorrect: false },
+          { label: "Dat het Mormon was", isCorrect: false },
+        ],
+      },
+      {
+        type: "FILL_BLANK",
+        prompt: "Ik ben ______, die volgens het getuigenis der profeten in de wereld zou komen.",
+        answers: ["jezus christus"],
+        options: [
+          { label: "Jezus Christus", isCorrect: true },
+          { label: "een engel", isCorrect: false },
+          { label: "Mormon", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "De menigte mocht de tekens van de nagels in zijn handen en voeten voelen.",
+        answers: ["true"],
+      },
+    ],
+  },
+  {
+    number: 10,
+    slug: "hoe-lees-je-het-boek-van-mormon",
+    title: "Hoe lees je het Boek van Mormon?",
+    summary: "Praktische tips om zelf te beginnen.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Je hebt nu het grote plaatje gezien: de belangrijkste mensen, hoe het boek is opgebouwd, en waar het " +
+          "steeds weer om draait. Deze les gaat over iets praktisch: hoe begin je zelf met lezen?",
+      },
+      {
+        type: "steps",
+        title: "Een paar tips om te beginnen",
+        steps: [
+          { label: "Begin bij het begin", description: "1 Nephi 1 is een prima startpunt — je maakt meteen kennis met Nephi." },
+          { label: "Een klein stukje per keer", description: "Een paar verzen per dag is al genoeg; het hoeft niet in één keer uit." },
+          { label: "Het is oké om iets niet meteen te snappen", description: "Sommige stukken lees je later nog eens, met nieuwe ogen." },
+          { label: "Let op namen en plaatsen", description: "Een overzicht van wie wie is erbij houden helpt — zoals in de vorige lessen." },
+        ],
+      },
+      {
+        type: "text",
+        body:
+          "In deze app staat elk hoofdstuk klaar om te lezen, met korte oefeningen erbij om te checken of iets is " +
+          "blijven hangen. Je hoeft niets te onthouden voordat je begint.",
+      },
+      {
+        type: "poll",
+        question: "Wat spreekt je het meest aan om als eerste te doen?",
+        options: ["Een hoofdstuk lezen", "Een spelletje spelen ter oefening", "Eerst nog meer over het verhaal ontdekken"],
+      },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat is een goed startpunt om zelf te beginnen met lezen?",
+        answers: ["1 Nephi 1"],
+        options: [
+          { label: "1 Nephi 1", isCorrect: true },
+          { label: "Moroni 10", isCorrect: false },
+          { label: "Ether 15", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Je moet een hoofdstuk pas verder lezen als je alles er meteen van begrijpt.",
+        answers: ["false"],
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat helpt om bij te houden wie wie is?",
+        answers: ["Een overzicht erbij houden"],
+        options: [
+          { label: "Een overzicht erbij houden", isCorrect: true },
+          { label: "Namen gewoon overslaan", isCorrect: false },
+          { label: "Alleen de eerste letter van elke naam onthouden", isCorrect: false },
+        ],
+      },
+    ],
+  },
+  {
+    number: 11,
+    slug: "je-eerste-hoofdstuk",
+    title: "Je eerste hoofdstuk",
+    summary: "Tijd om echt te beginnen — 1 Nephi 1.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Je hebt het verhaal gezien, de belangrijkste mensen leren kennen, en tips gekregen om te beginnen. Nu is " +
+          "het moment om het zelf te gaan lezen.",
+      },
+      {
+        type: "text",
+        body:
+          "1 Nephi 1 is geschreven door Nephi zelf, en is de allereerste bladzijde van het hele Boek van Mormon.",
+      },
+      {
+        type: "chapterLink",
+        bookSlug: "1-nephi",
+        chapterNumber: 1,
+        label: "Lees 1 Nephi 1",
+      },
+      {
+        type: "text",
+        body: "Kom hierna terug om deze les af te ronden.",
+      },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie schreef 1 Nephi 1?",
+        answers: ["Nephi"],
+        options: [
+          { label: "Nephi", isCorrect: true },
+          { label: "Mormon", isCorrect: false },
+          { label: "Lehi", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "1 Nephi 1 is het allereerste hoofdstuk van het Boek van Mormon.",
+        answers: ["true"],
+      },
+    ],
+  },
+  {
+    number: 12,
+    slug: "jij-bent-klaar-om-te-ontdekken",
+    title: "Jij bent klaar om te ontdekken",
+    summary: "Een korte eindtoets, en drie manieren om verder te gaan.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Je hebt nu de basis: wie de belangrijkste personen zijn, hoe het boek is opgebouwd, waar het steeds weer " +
+          "om draait, en hoe je zelf kunt beginnen met lezen. Tijd voor een korte eindtoets.",
+      },
+      {
+        type: "reflection",
+        question: "Wat is je grootste vraag die je nog hebt over het Boek van Mormon?",
+      },
+      { type: "finalChoices" },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie bracht de verslagen van eerdere schrijvers samen tot het Boek van Mormon?",
+        answers: ["Mormon"],
+        options: [
+          { label: "Mormon", isCorrect: true },
+          { label: "Nephi", isCorrect: false },
+          { label: "Alma", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Lehi en Sariah zijn de ouders van Laman, Lemuel, Sam en Nephi.",
+        answers: ["true"],
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet het verhaal in de juiste volgorde.",
+        answers: ["Jeruzalem", "Wildernis", "Nieuw land", "Jezus Christus verschijnt"],
+        wordBank: ["Jeruzalem", "Wildernis", "Nieuw land", "Jezus Christus verschijnt"],
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Waar draait het Boek van Mormon volgens zichzelf steeds weer om?",
+        answers: ["Jezus Christus"],
+        options: [
+          { label: "Jezus Christus", isCorrect: true },
+          { label: "Oorlogen", isCorrect: false },
+          { label: "Koningen", isCorrect: false },
+        ],
+      },
+      {
+        type: "FILL_BLANK",
+        prompt: "Een goed startpunt om zelf te beginnen met lezen is ______.",
+        answers: ["1 nephi 1"],
+        options: [
+          { label: "1 Nephi 1", isCorrect: true },
+          { label: "Moroni 10", isCorrect: false },
+          { label: "Ether 1", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Een profeet geeft in het Boek van Mormon een boodschap van God door aan het volk.",
+        answers: ["true"],
       },
     ],
   },

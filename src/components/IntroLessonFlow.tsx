@@ -61,6 +61,15 @@ export default function IntroLessonFlow({
   blocks: ResolvedIntroBlock[];
   exercises: Exercise[];
 }) {
+  // Een finalChoices-blok (alleen in de laatste les) hoort ná de eindtoets
+  // te verschijnen, niet als content-blok ertussenin — het heeft zelf geen
+  // "Verder"-knop, dus als het als gewoon content-blok in `blocks` zou staan
+  // vóór de oefeningen, zou de flow daar vastlopen en de oefeningen nooit
+  // bereiken. Daarom lichten we het er hier uit en tonen we het in de
+  // eindsamenvatting, in plaats van de standaard "Verder →"-link.
+  const hasFinalChoices = blocks.length > 0 && blocks[blocks.length - 1].type === "finalChoices";
+  const contentBlocks = hasFinalChoices ? blocks.slice(0, -1) : blocks;
+
   const [phase, setPhase] = useState<Phase>("content");
   const [blockIndex, setBlockIndex] = useState(0);
   const [exerciseIndex, setExerciseIndex] = useState(0);
@@ -94,7 +103,7 @@ export default function IntroLessonFlow({
   }
 
   function nextBlock() {
-    if (blockIndex + 1 < blocks.length) {
+    if (blockIndex + 1 < contentBlocks.length) {
       setBlockIndex(blockIndex + 1);
     } else if (exercises.length > 0) {
       setPhase("exercises");
@@ -104,14 +113,14 @@ export default function IntroLessonFlow({
   }
 
   if (phase === "content") {
-    const block = blocks[blockIndex];
+    const block = contentBlocks[blockIndex];
     return (
       <div className="max-w-2xl mx-auto flex flex-col gap-6">
         <Header number={number} title={title} />
         <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
           <div
             className="h-full bg-brand-500 transition-all duration-300"
-            style={{ width: `${Math.round(((blockIndex + 1) / Math.max(1, blocks.length + exercises.length)) * 100)}%` }}
+            style={{ width: `${Math.round(((blockIndex + 1) / Math.max(1, contentBlocks.length + exercises.length)) * 100)}%` }}
           />
         </div>
         <BlockView block={block} onNext={nextBlock} />
@@ -128,7 +137,7 @@ export default function IntroLessonFlow({
           <div
             className="h-full bg-brand-500 transition-all duration-300"
             style={{
-              width: `${Math.round(((blocks.length + exerciseIndex + 1) / Math.max(1, blocks.length + exercises.length)) * 100)}%`,
+              width: `${Math.round(((contentBlocks.length + exerciseIndex + 1) / Math.max(1, contentBlocks.length + exercises.length)) * 100)}%`,
             }}
           />
         </div>
@@ -184,9 +193,35 @@ export default function IntroLessonFlow({
           </div>
         )}
 
-        <Link href="/courses" className="btn-primary mt-1">
-          Verder →
-        </Link>
+        {hasFinalChoices ? (
+          <div className="flex flex-col gap-3 w-full mt-1">
+            <Link href="/lesson" className="card flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
+              <span className="text-3xl">📖</span>
+              <div className="text-left">
+                <p className="font-extrabold dark:text-slate-100">Begin met lezen</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">1 Nephi 1</p>
+              </div>
+            </Link>
+            <Link href="/practice" className="card flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
+              <span className="text-3xl">🎮</span>
+              <div className="text-left">
+                <p className="font-extrabold dark:text-slate-100">Oefen wat je hebt geleerd</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Snelle ronde</p>
+              </div>
+            </Link>
+            <Link href="/courses" className="card flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
+              <span className="text-3xl">🗺️</span>
+              <div className="text-left">
+                <p className="font-extrabold dark:text-slate-100">Ontdek het verhaal</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Cursussen</p>
+              </div>
+            </Link>
+          </div>
+        ) : (
+          <Link href="/courses" className="btn-primary mt-1">
+            Verder →
+          </Link>
+        )}
       </div>
     );
   }
@@ -341,33 +376,6 @@ function BlockView({ block, onNext }: { block: ResolvedIntroBlock; onNext: () =>
             {block.label}
           </Link>
           <NextButton onNext={onNext} label="Verder in de les →" />
-        </div>
-      );
-
-    case "finalChoices":
-      return (
-        <div className="flex flex-col gap-4">
-          <Link href="/lesson" className="card flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
-            <span className="text-3xl">📖</span>
-            <div>
-              <p className="font-extrabold dark:text-slate-100">Begin met lezen</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">1 Nephi 1</p>
-            </div>
-          </Link>
-          <Link href="/practice" className="card flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
-            <span className="text-3xl">🎮</span>
-            <div>
-              <p className="font-extrabold dark:text-slate-100">Oefen wat je hebt geleerd</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Snelle ronde</p>
-            </div>
-          </Link>
-          <Link href="/courses" className="card flex items-center gap-4 hover:shadow-md hover:-translate-y-0.5 transition">
-            <span className="text-3xl">🗺️</span>
-            <div>
-              <p className="font-extrabold dark:text-slate-100">Ontdek het verhaal</p>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Cursussen</p>
-            </div>
-          </Link>
         </div>
       );
 

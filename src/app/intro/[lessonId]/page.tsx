@@ -58,6 +58,16 @@ export default async function IntroLessonPage({ params }: { params: Promise<{ le
           books: b.bookSlugs.map((slug) => bookBySlug.get(slug) ?? { slug, name: slug }),
         };
       }
+      if (b.type === "chapterLink") {
+        const chapter = await prisma.chapter.findFirst({
+          where: { number: b.chapterNumber, book: { slug: b.bookSlug } },
+        });
+        return {
+          type: "readMore",
+          label: b.label,
+          href: chapter ? `/lesson/${chapter.id}` : "/courses/per-boek",
+        };
+      }
       if (b.type === "scripture") {
         const chapter = await prisma.chapter.findFirst({
           where: { number: b.chapterNumber, book: { slug: b.bookSlug } },
