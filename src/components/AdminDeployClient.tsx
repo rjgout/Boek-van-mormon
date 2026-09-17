@@ -30,6 +30,24 @@ export default function AdminDeployClient({ configured }: { configured: boolean 
   const [error, setError] = useState<string | null>(null);
   const [actionBusy, setActionBusy] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // Tijdens een echte deploy/rollback stopt jehova-app zelf even helemaal —
+  // en dat is precies de container waar deze pagina op draait. Een gewone
+  // fetch() daarnaartoe faalt dan met een kale netwerkfout; een échte
+  // paginaherlaad (i.p.v. die fout tonen) laat de proxy ervoor in plaats
+  // daarvan de onderhoudspagina serveren, die zelf weer vanzelf ververst
+  // zodra de nieuwe versie online is (zie deploy/nginx/maintenance.html).
+  // Alleen aanzetten tijdens een bewust gestarte deploy/rollback, zodat een
+  // toevallige netwerkhapering op een ander moment niet ook een onnodige
+  // herlaad veroorzaakt.
+  const deployInFlightRef = useRef(false);
+
+  function handleUnreachable() {
+    if (deployInFlightRef.current) {
+      window.location.reload();
+      return;
+    }
+    setError("Kon de deploy-agent niet bereiken.");
+  }
 
   async function refresh() {
     try {
@@ -38,10 +56,12 @@ export default function AdminDeployClient({ configured }: { configured: boolean 
         setError((await res.json().catch(() => null))?.error ?? "Kon status niet ophalen.");
         return;
       }
-      setStatus(await res.json());
+      const data: DeployStatus = await res.json();
+      setStatus(data);
       setError(null);
+      if (!BUSY_PHASES.includes(data.phase)) deployInFlightRef.current = false;
     } catch {
-      setError("Kon de deploy-agent niet bereiken.");
+      handleUnreachable();
     }
   }
 
@@ -58,6 +78,11 @@ export default function AdminDeployClient({ configured }: { configured: boolean 
   async function callAction(path: string, body?: unknown) {
     setActionBusy(true);
     setError(null);
+    // Alleen deze twee acties vervangen de container zelf — de
+    // onderhoudsmodus-knop schakelt alleen een vlag bij de proxy om, zonder
+    // jehova-app te herstarten.
+    const startsOutage = path === "/api/admin/deploy/start" || path === "/api/admin/deploy/rollback";
+    if (startsOutage) deployInFlightRef.current = true;
     try {
       const res = await fetch(path, {
         method: "POST",
@@ -65,11 +90,12 @@ export default function AdminDeployClient({ configured }: { configured: boolean 
         body: body ? JSON.stringify(body) : undefined,
       });
       if (!res.ok) {
+        if (startsOutage) deployInFlightRef.current = false;
         setError((await res.json().catch(() => null))?.error ?? "Actie mislukt.");
       }
       await refresh();
     } catch {
-      setError("Kon de deploy-agent niet bereiken.");
+      handleUnreachable();
     }
     setActionBusy(false);
   }
