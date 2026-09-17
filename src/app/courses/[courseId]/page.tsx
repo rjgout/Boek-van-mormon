@@ -6,6 +6,7 @@ import { advanceCourseProgress } from "@/lib/courses";
 import ChapterListCourseView from "@/components/ChapterListCourseView";
 import PodcastCourseView from "@/components/PodcastCourseView";
 import KidsCourseView from "@/components/KidsCourseView";
+import IntroCourseView from "@/components/IntroCourseView";
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ courseId: string }> }) {
   const user = await getCurrentUser();
@@ -90,6 +91,27 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             bestScore: story.progress[0] ? story.progress[0].bestScore : null,
           };
         })}
+      />
+    );
+  }
+
+  if (course.type === "INTRO") {
+    const lessons = await prisma.introLesson.findMany({
+      orderBy: { number: "asc" },
+      include: { progress: { where: { userId: user.id } } },
+    });
+
+    return (
+      <IntroCourseView
+        courseName={course.name}
+        lessons={lessons.map((lesson) => ({
+          id: lesson.id,
+          number: lesson.number,
+          title: lesson.title,
+          summary: lesson.summary,
+          completed: lesson.progress[0]?.completed ?? false,
+          bestScore: lesson.progress[0] ? lesson.progress[0].bestScore : null,
+        }))}
       />
     );
   }

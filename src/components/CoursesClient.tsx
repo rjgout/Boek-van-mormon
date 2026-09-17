@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { SortableList, DragHandle } from "@/components/SortableList";
+import { applyPersonalOrder, fetchListOrder, saveListOrder } from "@/lib/listOrder";
 
 interface CourseView {
   id: string;
   slug: string;
-  type: "FRONT_TO_BACK" | "FREE_CHOICE" | "BY_BOOK" | "PODCAST" | "KIDS";
+  type: "FRONT_TO_BACK" | "FREE_CHOICE" | "BY_BOOK" | "PODCAST" | "KIDS" | "INTRO";
   name: string;
   description: string | null;
   totalChapters: number;
@@ -25,6 +27,7 @@ interface CatalogCourseView {
 }
 
 const TYPE_LABELS: Record<CourseView["type"], string> = {
+  INTRO: "Introductie",
   FRONT_TO_BACK: "Van voor naar achter",
   FREE_CHOICE: "Vrije keuze",
   BY_BOOK: "Per boek",
@@ -41,17 +44,27 @@ export default function CoursesClient() {
   const [catalog, setCatalog] = useState<CatalogCourseView[] | null>(null);
 
   function loadCourses() {
-    fetch("/api/courses")
-      .then(async (r) => {
+    Promise.all([
+      fetch("/api/courses").then(async (r) => {
         const data = await r.json().catch(() => null);
         if (!r.ok) throw new Error(data?.error ?? `Er ging iets mis (${r.status}).`);
         return data;
-      })
-      .then((d) => setCourses(d.courses ?? []))
+      }),
+      fetchListOrder("courses"),
+    ])
+      .then(([d, order]) => setCourses(applyPersonalOrder(d.courses ?? [], order)))
       .catch((e) => setLoadError(e instanceof Error ? e.message : "Er ging iets mis."));
   }
 
   useEffect(loadCourses, []);
+
+  function reorder(newCourses: CourseView[]) {
+    setCourses(newCourses);
+    saveListOrder(
+      "courses",
+      newCourses.map((c) => c.id)
+    );
+  }
 
   async function loadCatalog() {
     const res = await fetch("/api/courses/catalog");
@@ -135,20 +148,27 @@ export default function CoursesClient() {
         </div>
       )}
 
-      <div className="flex flex-col gap-3">
-        {courses.map((course) => {
+      <SortableList
+        dndId="courses-list"
+        items={courses}
+        onReorder={reorder}
+        className="flex flex-col gap-3"
+        renderItem={(course, handle) => {
           const pct = course.totalChapters > 0 ? Math.round((course.completedCount / course.totalChapters) * 100) : 0;
           return (
-            <div key={course.id} className={`card flex flex-col gap-3 ${course.isActive ? "ring-2 ring-brand-400" : ""}`}>
+            <div className={`card flex flex-col gap-3 ${course.isActive ? "ring-2 ring-brand-400" : ""}`}>
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
-                    {TYPE_LABELS[course.type]}
-                  </p>
-                  <h2 className="font-extrabold text-lg dark:text-slate-100">{course.name}</h2>
-                  {course.description && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400">{course.description}</p>
-                  )}
+                <div className="flex items-start gap-2 min-w-0">
+                  <DragHandle {...handle} />
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
+                      {TYPE_LABELS[course.type]}
+                    </p>
+                    <h2 className="font-extrabold text-lg dark:text-slate-100">{course.name}</h2>
+                    {course.description && (
+                      <p className="text-sm text-slate-500 dark:text-slate-400">{course.description}</p>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   {course.isActive && (
@@ -196,8 +216,8 @@ export default function CoursesClient() {
               </div>
             </div>
           );
-        })}
-      </div>
+        }}
+      />
 
       {!showCatalog ? (
         <button className="btn-secondary self-center" onClick={openCatalog}>

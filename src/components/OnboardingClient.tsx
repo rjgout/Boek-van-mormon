@@ -15,9 +15,9 @@ interface OnboardingClientProps {
   emailConfigured: boolean;
 }
 
-type StepId = "webapp" | "uitleg" | "vrienden" | "notificaties";
+type StepId = "kennis" | "webapp" | "uitleg" | "vrienden" | "notificaties";
 
-const ALL_STEPS: StepId[] = ["webapp", "uitleg", "vrienden", "notificaties"];
+const ALL_STEPS: StepId[] = ["kennis", "webapp", "uitleg", "vrienden", "notificaties"];
 
 /**
  * Vierstaps onboarding: webapp-installatie (overgeslagen als de app al
@@ -74,6 +74,7 @@ export default function OnboardingClient({
         ))}
       </div>
 
+      {step === "kennis" && <KennisStep onNext={next} />}
       {step === "webapp" && <WebappStep onNext={next} />}
       {step === "uitleg" && <UitlegStep onNext={next} />}
       {step === "vrienden" && <VriendenStep email={email} initialSearchable={searchableByEmail} onNext={next} />}
@@ -90,6 +91,50 @@ export default function OnboardingClient({
       <button className="text-sm text-slate-400 dark:text-slate-500 underline self-center" onClick={finish} disabled={finishing}>
         Overslaan
       </button>
+    </div>
+  );
+}
+
+const KNOWLEDGE_OPTIONS: { level: "NEVER" | "SOME" | "READ_BEFORE" | "UNSURE"; label: string }[] = [
+  { level: "NEVER", label: "Nog nooit" },
+  { level: "SOME", label: "Een paar stukjes" },
+  { level: "READ_BEFORE", label: "Ik heb het al eens gelezen" },
+  { level: "UNSURE", label: "Ik weet het eigenlijk niet meer" },
+];
+
+function KennisStep({ onNext }: { onNext: () => void }) {
+  const [saving, setSaving] = useState(false);
+
+  async function choose(level: (typeof KNOWLEDGE_OPTIONS)[number]["level"]) {
+    setSaving(true);
+    await fetch("/api/onboarding/knowledge-level", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ level }),
+    }).catch(() => {});
+    setSaving(false);
+    onNext();
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h1 className="text-xl font-extrabold text-brand-800 dark:text-brand-300 text-center">Welkom!</h1>
+      <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
+        Heb je het Boek van Mormon al eens gelezen? Voorkennis is niet nodig — dit bepaalt alleen wat we je als eerste
+        laten zien.
+      </p>
+      <div className="flex flex-col gap-2">
+        {KNOWLEDGE_OPTIONS.map((opt) => (
+          <button
+            key={opt.level}
+            className="card text-left hover:border-brand-300 border-2 border-transparent dark:text-slate-100"
+            disabled={saving}
+            onClick={() => choose(opt.level)}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

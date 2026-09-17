@@ -81,6 +81,13 @@ model User {
   // migratie met terugwerkende kracht gevuld, zodat zij 'm nooit te zien
   // krijgen — alleen nieuwe registraties na deze wijziging doorlopen 'm.
   onboardingSeenAt   DateTime?
+  // Zelfgerapporteerd tijdens de onboarding ("Hoeveel ken je het Boek van
+  // Mormon al?") — bepaalt alleen de standaardvolgorde van cursussen/
+  // spelletjes (zie UserListOrder hieronder), nooit een harde blokkade.
+  // Null = nooit gevraagd (bestaande gebruikers vóór deze wijziging, of
+  // iemand die de onboarding oversloeg vóór dit scherm bereikt werd) — dan
+  // blijft de standaardvolgorde gewoon ongewijzigd.
+  bomKnowledgeLevel  IntroKnowledgeLevel?
 
   // Changelog ("Wat is er nieuw?", zie /adminbackend en het profiel): staat
   // standaard AAN maar is door de gebruiker zelf uit/aan te zetten op het
@@ -188,6 +195,9 @@ model User {
   podcastPlaybackHistory PodcastPlaybackProgress[]
   kidsAttempts           KidsExerciseAttempt[]
   kidsProgress           KidsStoryProgress[]
+  introAttempts          IntroExerciseAttempt[]
+  introProgress          IntroLessonProgress[]
+  listOrders             UserListOrder[]
 
   feedbackReports     Feedback[]
   streakDays          StreakDay[]
@@ -314,6 +324,10 @@ enum CourseType {
   PODCAST
   // Singleton, net als PODCAST: alle KidsStory-rijen horen er impliciet bij.
   KIDS
+  // Singleton, net als PODCAST/KIDS: alle IntroLesson-rijen horen er
+  // impliciet bij ("Ontdek het Boek van Mormon", de introductiecursus voor
+  // wie nog geen voorkennis heeft).
+  INTRO
 }
 
 model Course {
@@ -538,6 +552,109 @@ model KidsStoryProgress {
   completedAt DateTime?
 
   @@unique([userId, storyId])
+}
+
+// --- Introductiecursus ("Ontdek het Boek van Mormon") ----------------------
+//
+// Eigen modelfamilie, net als Kids*/Podcast* hierboven — een IntroLesson is
+// geen Chapter/Verse (geen schrifttekst, maar zelfgeschreven uitleg +
+// verwijzingen naar echte content, zie het "content"-veld hieronder), en zo
+// blijft Book/Chapter/Verse (en alles wat daarvan uitgaat, zoals "Raad het
+// hoofdstuk" en de boek-per-boek-lijst) vrij van niet-schriftuurlijke content.
+//
+// `content` is een JSON-array van content-blokken (getypeerd in
+// prisma/introContent.ts, niet hier in het schema — zie dat bestand voor de
+// exacte vorm). Blokken verwijzen voor echte tekst/personen/boeken altijd
+// naar bestaande Verse/Person/Book-rijen (via slug/nummer), nooit met
+// gekopieerde tekst — zo kan er nooit verzonnen brontekst insluipen en blijft
+// alles vanzelf in sync met een her-import van de brontekst.
+model IntroLesson {
+  id      String @id @default(cuid())
+  number  Int    @unique
+  slug    String @unique
+  title   String
+  summary String? // korte "wat leer je"-tekst voor het cursusoverzicht
+  content String // JSON-array van content-blokken, zie prisma/introContent.ts
+  order   Int    @default(0)
+
+  exercises IntroExercise[]
+  progress  IntroLessonProgress[]
+}
+
+// Handmatig geschreven (zie prisma/introContent.ts) — net als bij Kids/
+// Podcast kan dit niet automatisch uit brontekst gegenereerd worden, want de
+// vragen gaan over lesconcepten, niet over een specifiek vers.
+model IntroExercise {
+  id       String                @id @default(cuid())
+  lessonId String
+  lesson   IntroLesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  order    Int
+  type     ExerciseType
+  prompt   String
+  answers  String // JSON-array van geaccepteerde antwoorden
+  wordBank String? // JSON-array voor WORD_BANK/SEQUENCE-opgaven
+  options  IntroExerciseOption[]
+
+  attempts IntroExerciseAttempt[]
+}
+
+model IntroExerciseOption {
+  id         String        @id @default(cuid())
+  exerciseId String
+  exercise   IntroExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  label      String
+  isCorrect  Boolean       @default(false)
+  order      Int           @default(0)
+}
+
+model IntroExerciseAttempt {
+  id         String        @id @default(cuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId String
+  exercise   IntroExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  givenText  String
+  correct    Boolean
+  createdAt  DateTime      @default(now())
+}
+
+model IntroLessonProgress {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      IntroLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed   Boolean     @default(false)
+  bestScore   Int         @default(0)
+  xpEarned    Int         @default(0)
+  completedAt DateTime?
+
+  @@unique([userId, lessonId])
+}
+
+// Zelfgerapporteerd kennisniveau bij de onboarding (zie User.bomKnowledgeLevel
+// hierboven) — bepaalt alleen de voorgestelde volgorde, nooit een blokkade.
+enum IntroKnowledgeLevel {
+  NEVER // "Nog nooit"
+  SOME // "Een paar stukjes"
+  READ_BEFORE // "Ik heb het al eens gelezen"
+  UNSURE // "Ik weet het eigenlijk niet meer"
+}
+
+// Persoonlijke volgorde van cursussen/spelletjes (sleep-en-herordenen op
+// /courses en /live) — één generiek mechanisme voor beide lijsten i.p.v. twee
+// losse ad-hoc kolommen. Geen rij voor een item = gebruik de standaardvolgorde
+// (Course.order, resp. de vaste volgorde in de spelletjeslijst) — dus een
+// gebruiker die nooit herordent, merkt nooit iets van deze tabel.
+model UserListOrder {
+  id      String @id @default(cuid())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listKey String // "courses" | "games"
+  itemKey String // Course.id, resp. een vaste spelletjes-slug
+  order   Int
+
+  @@unique([userId, listKey, itemKey])
 }
 
 model Verse {
@@ -784,6 +901,8 @@ enum XPReason {
   // Het dagelijkse woordspel (woord raden) goed geraden. Zie
   // completeWordGame in src/lib/streak.ts.
   WORD_GAME_WON
+  // Een les uit de introductiecursus afgerond. Zie completeIntroLesson.
+  INTRO_LESSON_COMPLETED
 }
 
 model XPTransaction {

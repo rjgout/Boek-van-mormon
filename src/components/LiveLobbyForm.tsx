@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import ActiveGamesBanner from "@/components/ActiveGamesBanner";
+import { SortableList, DragHandle, type DragHandleProps } from "@/components/SortableList";
+import { applyPersonalOrder, fetchListOrder, saveListOrder } from "@/lib/listOrder";
 
 interface ChapterOption {
   id: string;
@@ -25,22 +27,69 @@ interface Props {
   isAdmin: boolean;
 }
 
-// Uitgezet (zie /adminbackend) betekent: verborgen voor gewone gebruikers,
-// maar een admin blijft alles zien — dan met deze roodgerande "uitgeschakeld
-// voor gebruikers"-badge in plaats van dat de kaart gewoon verdwijnt.
-function GameCard({ enabled, isAdmin, children }: { enabled: boolean; isAdmin: boolean; children: ReactNode }) {
-  if (!enabled && !isAdmin) return null;
-  return (
-    <div className={`card flex flex-col gap-3 ${!enabled ? "border-2 border-red-300 dark:border-red-800" : ""}`}>
-      {!enabled && (
-        <span className="text-xs font-bold uppercase text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950 rounded-full px-2 py-0.5 self-start">
-          Uitgeschakeld voor gebruikers
-        </span>
-      )}
-      {children}
-    </div>
-  );
+interface GameEntry {
+  id: string; // stabiele sleutel voor de sleepvolgorde (UserListOrder.itemKey)
+  enabledKey: keyof GameSettings;
+  icon: string;
+  title: string;
+  description: string;
+  href: string;
+  linkLabel: string;
 }
+
+// Vaste catalogus — nu data-driven (i.p.v. losse hardcoded kaarten) zodat
+// hij herordend kan worden (zie SortableList/listOrder.ts, listKey="games").
+const GAMES: GameEntry[] = [
+  {
+    id: "word-game",
+    enabledKey: "wordGameEnabled",
+    icon: "🟩",
+    title: "Woord van de dag",
+    description:
+      "Raad het 5-letterwoord uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één poging per dag, en het telt mee voor je streak.",
+    href: "/word-game",
+    linkLabel: "Woord van de dag openen",
+  },
+  {
+    id: "scrabble",
+    enabledKey: "scrabbleEnabled",
+    icon: "🔤",
+    title: "Woordspel",
+    description:
+      "Een woordlegspel met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt, ieder op je eigen tempo.",
+    href: "/scrabble",
+    linkLabel: "Woordspel openen",
+  },
+  {
+    id: "gezinsavond",
+    enabledKey: "gezinsavondEnabled",
+    icon: "🎉",
+    title: "Gezinsavond",
+    description:
+      "Een avontuurlijk bordspel over het Boek van Mormon voor het hele gezin — samen aan tafel op één apparaat, of ieder op je eigen telefoon. Ook leuk zonder veel voorkennis.",
+    href: "/gezinsavond",
+    linkLabel: "Gezinsavond openen",
+  },
+  {
+    id: "chapter-guess",
+    enabledKey: "chapterGuessEnabled",
+    icon: "🔎",
+    title: "Raad het hoofdstuk",
+    description:
+      "Lees het eerste vers van een hoofdstuk en raad welk hoofdstuk het is — kies zelf je niveau, alleen of live met vrienden.",
+    href: "/chapter-guess",
+    linkLabel: "Raad het hoofdstuk openen",
+  },
+  {
+    id: "challenges",
+    enabledKey: "challengesEnabled",
+    icon: "⚔️",
+    title: "Uitdagingen",
+    description: "Daag een vriend uit op een hoofdstuk: jullie spelen allebei wanneer het uitkomt, en zien daarna wie beter scoorde.",
+    href: "/challenges",
+    linkLabel: "Uitdagingen openen",
+  },
+];
 
 export default function LiveLobbyForm({ settings, isAdmin }: Props) {
   const router = useRouter();
@@ -48,6 +97,7 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
   const [chapterId, setChapterId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [games, setGames] = useState<GameEntry[]>(() => GAMES.filter((g) => settings[g.enabledKey] || isAdmin));
 
   useEffect(() => {
     fetch("/api/chapters")
@@ -57,6 +107,20 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
         setChapterId(data[0]?.id ?? "");
       });
   }, []);
+
+  useEffect(() => {
+    const visible = GAMES.filter((g) => settings[g.enabledKey] || isAdmin);
+    fetchListOrder("games").then((order) => setGames(applyPersonalOrder(visible, order)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function reorderGames(newGames: GameEntry[]) {
+    setGames(newGames);
+    saveListOrder(
+      "games",
+      newGames.map((g) => g.id)
+    );
+  }
 
   async function createGame(e: FormEvent) {
     e.preventDefault();
@@ -82,77 +146,63 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
 
       <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Spelletjes en uitdagingen</h1>
 
-      <GameCard enabled={settings.wordGameEnabled} isAdmin={isAdmin}>
-        <h2 className="font-extrabold dark:text-slate-100">🟩 Woord van de dag</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Raad het 5-letterwoord uit het Boek van Mormon — elke dag om 18:00 uur een nieuw woord, één
-          poging per dag, en het telt mee voor je streak.
-        </p>
-        <Link href="/word-game" className="btn-secondary self-start">
-          Woord van de dag openen
-        </Link>
-      </GameCard>
+      <SortableList
+        dndId="games-list"
+        items={games}
+        onReorder={reorderGames}
+        className="flex flex-col gap-4"
+        renderItem={(game, handle) => {
+          const enabled = settings[game.enabledKey];
+          if (!enabled && !isAdmin) return null;
+          return <GameCardBody game={game} enabled={enabled} handle={handle} />;
+        }}
+      />
 
-      <GameCard enabled={settings.scrabbleEnabled} isAdmin={isAdmin}>
-        <h2 className="font-extrabold dark:text-slate-100">🔤 Woordspel</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Een woordlegspel met alleen woorden uit het Boek van Mormon — daag een vriend uit en speel om de beurt,
-          ieder op je eigen tempo.
-        </p>
-        <Link href="/scrabble" className="btn-secondary self-start">
-          Woordspel openen
-        </Link>
-      </GameCard>
+      {settings.liveExercisesEnabled && (
+        <div className="card flex flex-col gap-3">
+          <form onSubmit={createGame} className="flex flex-col gap-4">
+            <h2 className="font-extrabold dark:text-slate-100">Nieuw spel starten</h2>
+            <select className="input" value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
+              {chapters.map((c) => (
+                <option key={c.id} value={c.id} disabled={c.exerciseCount === 0}>
+                  {c.label} ({c.exerciseCount} oefeningen)
+                </option>
+              ))}
+            </select>
+            <button className="btn-primary self-start" disabled={creating || !chapterId} type="submit">
+              {creating ? "Bezig..." : "Maak spel & nodig vrienden uit"}
+            </button>
+            {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
 
-      <GameCard enabled={settings.gezinsavondEnabled} isAdmin={isAdmin}>
-        <h2 className="font-extrabold dark:text-slate-100">🎉 Gezinsavond</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Een avontuurlijk bordspel over het Boek van Mormon voor het hele gezin — samen aan tafel op één apparaat, of
-          ieder op je eigen telefoon. Ook leuk zonder veel voorkennis.
-        </p>
-        <Link href="/gezinsavond" className="btn-secondary self-start">
-          Gezinsavond openen
-        </Link>
-      </GameCard>
-
-      <GameCard enabled={settings.chapterGuessEnabled} isAdmin={isAdmin}>
-        <h2 className="font-extrabold dark:text-slate-100">🔎 Raad het hoofdstuk</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Lees het eerste vers van een hoofdstuk en raad welk hoofdstuk het is — kies zelf je niveau, alleen of live
-          met vrienden.
-        </p>
-        <Link href="/chapter-guess" className="btn-secondary self-start">
-          Raad het hoofdstuk openen
-        </Link>
-      </GameCard>
-
-      <GameCard enabled={settings.challengesEnabled} isAdmin={isAdmin}>
-        <h2 className="font-extrabold dark:text-slate-100">⚔️ Uitdagingen</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Daag een vriend uit op een hoofdstuk: jullie spelen allebei wanneer het uitkomt, en zien daarna wie beter
-          scoorde.
-        </p>
-        <Link href="/challenges" className="btn-secondary self-start">
-          Uitdagingen openen
-        </Link>
-      </GameCard>
-
-      <GameCard enabled={settings.liveExercisesEnabled} isAdmin={isAdmin}>
-        <form onSubmit={createGame} className="flex flex-col gap-4">
-          <h2 className="font-extrabold">Nieuw spel starten</h2>
-          <select className="input" value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
-            {chapters.map((c) => (
-              <option key={c.id} value={c.id} disabled={c.exerciseCount === 0}>
-                {c.label} ({c.exerciseCount} oefeningen)
-              </option>
-            ))}
-          </select>
-          <button className="btn-primary self-start" disabled={creating || !chapterId} type="submit">
-            {creating ? "Bezig..." : "Maak spel & nodig vrienden uit"}
-          </button>
-          {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
-        </form>
-      </GameCard>
+// Uitgezet (zie /adminbackend) betekent: verborgen voor gewone gebruikers,
+// maar een admin blijft alles zien — dan met deze roodgerande "uitgeschakeld
+// voor gebruikers"-badge in plaats van dat de kaart gewoon verdwijnt. Deze
+// render-functie krijgt de sleepgreep via het "handle"-argument van
+// SortableList (zie renderItem hierboven) doorgegeven.
+function GameCardBody({ game, enabled, handle }: { game: GameEntry; enabled: boolean; handle: DragHandleProps }) {
+  return (
+    <div className={`card flex flex-col gap-3 ${!enabled ? "border-2 border-red-300 dark:border-red-800" : ""}`}>
+      {!enabled && (
+        <span className="text-xs font-bold uppercase text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950 rounded-full px-2 py-0.5 self-start">
+          Uitgeschakeld voor gebruikers
+        </span>
+      )}
+      <div className="flex items-center gap-2">
+        <DragHandle {...handle} />
+        <h2 className="font-extrabold dark:text-slate-100">
+          {game.icon} {game.title}
+        </h2>
+      </div>
+      <p className="text-sm text-slate-500 dark:text-slate-400">{game.description}</p>
+      <Link href={game.href} className="btn-secondary self-start">
+        {game.linkLabel}
+      </Link>
     </div>
   );
 }

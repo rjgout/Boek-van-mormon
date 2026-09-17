@@ -532,6 +532,76 @@ export async function completeKidsStory(
   });
 }
 
+export async function completeIntroLesson(
+  userId: string,
+  lessonId: string,
+  scorePercent: number,
+  xpForThisAttempt: number
+): Promise<StudyResult> {
+  return prisma.$transaction(async (tx) => {
+    const existing = await tx.introLessonProgress.findUnique({
+      where: { userId_lessonId: { userId, lessonId } },
+    });
+    const wasAlreadyCompleted = existing?.completed ?? false;
+    const nowCompleted = wasAlreadyCompleted || scorePercent >= PASS_THRESHOLD;
+
+    await tx.introLessonProgress.upsert({
+      where: { userId_lessonId: { userId, lessonId } },
+      create: {
+        userId,
+        lessonId,
+        completed: nowCompleted,
+        bestScore: scorePercent,
+        xpEarned: xpForThisAttempt,
+        completedAt: nowCompleted ? new Date() : null,
+      },
+      update: {
+        completed: nowCompleted,
+        bestScore: Math.max(existing?.bestScore ?? 0, scorePercent),
+        xpEarned: { increment: xpForThisAttempt },
+        completedAt: !wasAlreadyCompleted && nowCompleted ? new Date() : undefined,
+      },
+    });
+
+    const daily = await applyDailyStreak(tx, userId);
+    const freezeCount = daily.freezeCountBeforeMilestone + daily.freezesEarned;
+
+    await tx.user.update({
+      where: { id: userId },
+      data: {
+        currentStreak: daily.currentStreak,
+        longestStreak: daily.longestStreak,
+        lastStudyDate: daily.today,
+        freezeCount,
+      },
+    });
+
+    if (daily.freezesEarned > 0) {
+      await tx.freezeTransaction.create({
+        data: { userId, type: "EARNED", amount: daily.freezesEarned, reason: "Mijlpaal bereikt" },
+      });
+    }
+
+    await awardXp(tx, userId, xpForThisAttempt, "INTRO_LESSON_COMPLETED", { lessonId, scorePercent });
+    await awardCompetitionXp(tx, userId, "INTRO_LESSON", xpForThisAttempt, { metadata: { lessonId, scorePercent } });
+
+    const newAchievements = await checkAndAwardAchievements(tx, userId);
+
+    return {
+      xpEarned: xpForThisAttempt,
+      chapterCompleted: nowCompleted,
+      scorePercent,
+      currentStreak: daily.currentStreak,
+      longestStreak: daily.longestStreak,
+      streakBroken: daily.streakBroken,
+      freezeUsed: daily.freezeUsed,
+      freezesEarned: daily.freezesEarned,
+      freezeCount,
+      newAchievements,
+    };
+  });
+}
+
 /** Geeft een streak freeze weg aan een vriend. */
 export async function giftFreeze(fromUserId: string, toUserId: string) {
   if (fromUserId === toUserId) {

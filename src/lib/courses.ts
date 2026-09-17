@@ -4,6 +4,7 @@ export const FRONT_TO_BACK_SLUG = "voor-naar-achter";
 export const FREE_CHOICE_SLUG = "vrije-keuze";
 export const PODCAST_SLUG = "podcast";
 export const KIDS_SLUG = "kinderen";
+export const INTRO_SLUG = "ontdek-boek-van-mormon";
 
 /**
  * Bouwt de structurele cursussen (van-voor-naar-achter, vrije keuze, en één
@@ -27,6 +28,23 @@ export async function syncCourses(db: PrismaClient): Promise<void> {
   const books = await db.book.findMany({
     orderBy: { order: "asc" },
     include: { chapters: { orderBy: { order: "asc" } } },
+  });
+
+  // Negatieve order (i.p.v. de andere cursussen te moeten opschuiven) zodat
+  // deze cursus standaard bovenaan staat — passend bij "voor wie nog geen
+  // voorkennis heeft". Singleton, net als PODCAST/KIDS: geen CourseChapter-
+  // rijen, alle IntroLesson-rijen (zie prisma/importIntro.ts) horen er
+  // impliciet allemaal bij.
+  await db.course.upsert({
+    where: { slug: INTRO_SLUG },
+    update: { name: "Ontdek het Boek van Mormon", order: -1 },
+    create: {
+      slug: INTRO_SLUG,
+      type: "INTRO",
+      name: "Ontdek het Boek van Mormon",
+      description: "Een korte introductiecursus voor wie nog nooit het Boek van Mormon heeft gelezen.",
+      order: -1,
+    },
   });
 
   const freeChoice = await db.course.upsert({

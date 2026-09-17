@@ -7,6 +7,9 @@ import { importPodcastEpisodes } from "../../prisma/importPodcast";
 import { syncPodcastFeed } from "./podcastFeed";
 import { importKidsStories, type KidsStorySeed } from "../../prisma/importKids";
 import kidsManifest from "../../prisma/kidsManifest.json";
+import { importIntroLessons, importIntroPersons } from "../../prisma/importIntro";
+import { introLessons } from "../../prisma/introContent";
+import { introPersons } from "../../prisma/introPersons";
 
 // Namen/omschrijvingen bij de achievement-slugs uit src/lib/achievements.ts.
 const achievementDefs = [
@@ -51,6 +54,12 @@ export async function runSeed(client: PrismaClient, log: (msg: string) => void =
 
   log("Seeding kindercursus (Verhalen uit het Boek van Mormon)...");
   await importKidsStories(client, kidsManifest as KidsStorySeed[], log);
+
+  log("Seeding personen voor de introductiecursus...");
+  await importIntroPersons(client, introPersons, log);
+
+  log("Seeding introductiecursus (Ontdek het Boek van Mormon)...");
+  await importIntroLessons(client, introLessons, log);
 
   log("Seeding achievements...");
   for (const def of achievementDefs) {
