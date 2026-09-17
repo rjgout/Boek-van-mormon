@@ -15,7 +15,8 @@ type XPReason =
   | "HINT_PURCHASED"
   | "FREEZE_PURCHASED"
   | "CHAPTER_GUESS_COMPLETED"
-  | "WORD_GAME_WON";
+  | "WORD_GAME_WON"
+  | "INTRO_LESSON_COMPLETED";
 
 interface XpTransaction {
   id: string;
@@ -37,6 +38,7 @@ const REASON_LABELS: Record<XPReason, string> = {
   FREEZE_PURCHASED: "Streak freeze gekocht",
   CHAPTER_GUESS_COMPLETED: "Raad het hoofdstuk",
   WORD_GAME_WON: "Woordspel gewonnen",
+  INTRO_LESSON_COMPLETED: "Introductieles afgerond",
 };
 
 const REASON_ICONS: Record<XPReason, string> = {
@@ -52,6 +54,7 @@ const REASON_ICONS: Record<XPReason, string> = {
   FREEZE_PURCHASED: "🧊",
   CHAPTER_GUESS_COMPLETED: "🔍",
   WORD_GAME_WON: "🔤",
+  INTRO_LESSON_COMPLETED: "🧭",
 };
 
 function formatDate(iso: string): string {
