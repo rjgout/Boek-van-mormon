@@ -129,7 +129,7 @@ export default function IntroLessonFlow({
             style={{ width: `${Math.round(((blockIndex + 1) / Math.max(1, contentBlocks.length + exercises.length)) * 100)}%` }}
           />
         </div>
-        <BlockView block={block} onNext={nextBlock} lessonId={lessonId} />
+        <BlockView block={block} onNext={nextBlock} />
       </div>
     );
   }
@@ -259,7 +259,7 @@ function NextButton({ onNext, label = "Verder →" }: { onNext: () => void; labe
   );
 }
 
-function BlockView({ block, onNext, lessonId }: { block: ResolvedIntroBlock; onNext: () => void; lessonId: string }) {
+function BlockView({ block, onNext }: { block: ResolvedIntroBlock; onNext: () => void }) {
   const [pollChoice, setPollChoice] = useState<string | null>(null);
   const [reflected, setReflected] = useState(false);
 
@@ -339,7 +339,7 @@ function BlockView({ block, onNext, lessonId }: { block: ResolvedIntroBlock; onN
           {block.intro && <p className="dark:text-slate-100">{block.intro}</p>}
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             {block.persons.map((p) => (
-              <PersonCard key={p.slug} slug={p.slug} name={p.name} returnTo={`/intro/${lessonId}`} />
+              <PersonCard key={p.slug} slug={p.slug} name={p.name} />
             ))}
           </div>
           <NextButton onNext={onNext} />

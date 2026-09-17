@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 
-// Voor het "tik op een naam"-kaartje in de introductiecursus en de
-// personenprofielpagina (/persons/[slug]) — leest de tot nu toe ongebruikte
-// Person-tabel (zie het schemacommentaar bij Person in schema.prisma).
+// Voor het "tik op een naam"-kaartje in de introductiecursus
+// (PersonCard.tsx, ook geneste vader-/kinderkaartjes) — leest de tot nu toe
+// ongebruikte Person-tabel (zie het schemacommentaar bij Person in
+// schema.prisma).
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string }> }) {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Niet ingelogd" }, { status: 401 });

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
 interface PersonInfo {
   slug: string;
@@ -18,8 +17,16 @@ interface PersonInfo {
  * andere uitklapbare kaartjes elders in de app (bv. PodcastCourseView) —
  * geen nieuwe tooltip-library nodig, en werkt vanzelf ook met toetsenbord/
  * schermlezers.
+ *
+ * Vader/kinderen tonen we bewust ook als (geneste) PersonCard's, in plaats
+ * van een link naar een aparte pagina: dit kaartje verschijnt altijd middenin
+ * een les, en wegnavigeren zou je voortgang in die les (welk contentblok je
+ * al gezien had) kwijtraken — dat is client-only React-state die niet
+ * overleeft bij het opnieuw laden van de lespagina, ook niet via de
+ * "terug"-knop van de browser. Helemaal niet wegnavigeren lost dat in de
+ * kern op i.p.v. het te symptoombestrijden.
  */
-export default function PersonCard({ slug, name, returnTo }: { slug: string; name: string; returnTo?: string }) {
+export default function PersonCard({ slug, name }: { slug: string; name: string }) {
   const [info, setInfo] = useState<PersonInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [opened, setOpened] = useState(false);
@@ -50,12 +57,22 @@ export default function PersonCard({ slug, name, returnTo }: { slug: string; nam
           <>
             <p className="font-extrabold dark:text-slate-100">{info.name}</p>
             {info.description && <p className="text-slate-600 dark:text-slate-300">{info.description}</p>}
-            <Link
-              href={returnTo ? `/persons/${info.slug}?from=${encodeURIComponent(returnTo)}` : `/persons/${info.slug}`}
-              className="text-brand-600 dark:text-brand-300 font-bold text-xs"
-            >
-              Meer over {info.name} →
-            </Link>
+            {info.father && (
+              <p className="text-slate-500 dark:text-slate-400">
+                Vader: <PersonCard slug={info.father.slug} name={info.father.name} />
+              </p>
+            )}
+            {info.children.length > 0 && (
+              <p className="text-slate-500 dark:text-slate-400">
+                Kinderen:{" "}
+                {info.children.map((c, i) => (
+                  <span key={c.slug}>
+                    <PersonCard slug={c.slug} name={c.name} />
+                    {i < info.children.length - 1 ? ", " : ""}
+                  </span>
+                ))}
+              </p>
+            )}
           </>
         )}
         {!loading && !info && <p className="text-slate-400 dark:text-slate-500">Niet gevonden.</p>}
