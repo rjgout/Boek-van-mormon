@@ -20,6 +20,7 @@ interface Summary {
   freezeUsed: boolean;
   streakBroken: boolean;
   newAchievements: string[];
+  alreadyStudiedToday: boolean;
 }
 
 export default function PodcastLessonFlow({
@@ -69,7 +70,9 @@ export default function PodcastLessonFlow({
           {summary.correctCount} / {summary.total} goed
         </h2>
         <p className="text-gold-600 dark:text-gold-400 font-extrabold text-lg">+{summary.xpEarned} XP</p>
-        <p className="text-orange-500 font-extrabold text-lg">🔥 {summary.currentStreak}</p>
+        {!summary.alreadyStudiedToday && (
+          <p className="text-orange-500 font-extrabold text-lg">🔥 {summary.currentStreak}</p>
+        )}
 
         {summary.freezeUsed && (
           <p className="text-sm bg-ice-50 dark:bg-slate-700 text-ice-600 dark:text-ice-400 rounded-xl px-3 py-2">

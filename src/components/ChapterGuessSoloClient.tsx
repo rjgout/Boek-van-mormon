@@ -46,6 +46,7 @@ interface Summary {
   xpEarned?: number;
   currentStreak?: number;
   newAchievements?: string[];
+  alreadyStudiedToday?: boolean;
 }
 
 interface AnswerResult {
@@ -207,7 +208,9 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
           {finalSummary.correctCount} / {finalSummary.total} goed
         </h2>
         {!!finalSummary.xpEarned && <p className="text-gold-600 dark:text-gold-400 font-extrabold text-lg">+{finalSummary.xpEarned} XP</p>}
-        {!!finalSummary.currentStreak && <p className="text-orange-500 font-extrabold text-lg">🔥 {finalSummary.currentStreak}</p>}
+        {!!finalSummary.currentStreak && !finalSummary.alreadyStudiedToday && (
+          <p className="text-orange-500 font-extrabold text-lg">🔥 {finalSummary.currentStreak}</p>
+        )}
         <div className="flex gap-3 mt-2">
           <Link href="/chapter-guess" className="btn-primary">
             Nog een keer

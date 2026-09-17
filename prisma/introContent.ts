@@ -29,8 +29,14 @@ export type IntroBlock =
   // Toont een echt fragment — leest live uit de Verse-tabel, nooit
   // gekopieerde tekst hier in dit bestand.
   | { type: "scripture"; bookSlug: string; chapterNumber: number; verseNumbers?: number[]; label?: string }
-  // Link naar iets echts binnen de app (lezer, cursusoverzicht, personen).
-  | { type: "readMore"; label: string; href: string }
+  // Bewust GEEN los "readMore { href }"-blok met een handmatig ingevulde
+  // link meer: die verwees ooit naar /courses/per-boek, dat een admin via
+  // /adminbackend kan uitschakelen (Course.enabled) — met alle
+  // per-boek-cursussen uit staat toont die pagina dan gewoon niets, dus de
+  // link "werkte" technisch wel maar leidde nergens meer heen. Elke link
+  // naar echte content hoort daarom altijd dynamisch opgelost te worden
+  // (zie chapterLink hieronder), nooit als vaste href hier vastgelegd.
+  //
   // Diepe link naar een echt hoofdstuk in de lezer — leest live het bestaande
   // Chapter-id op (nooit een hardcoded /lesson/<id>, want dat id verschilt
   // per omgeving), net als het scripture-blok hierboven nooit gekopieerde
@@ -260,9 +266,10 @@ export const introLessons: IntroLessonSeed[] = [
           "geschiedenis en geloofsleer van hun volk tot dan toe.",
       },
       {
-        type: "readMore",
+        type: "chapterLink",
+        bookSlug: "1-nephi",
+        chapterNumber: 1,
         label: "Lees zelf hoe dit verhaal begint",
-        href: "/courses/per-boek",
       },
     ],
     exercises: [

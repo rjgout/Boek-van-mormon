@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { isEmailConfigured } from "@/lib/email";
 import PodcastLessonFlow from "@/components/PodcastLessonFlow";
 import type { Exercise } from "@/components/LessonFlow";
+import { shuffleForDisplay } from "@/lib/exerciseGen";
 
 export default async function PodcastLessonPage({
   params,
@@ -39,8 +40,8 @@ export default async function PodcastLessonPage({
     verseRef: `Aflevering ${episode.number}`,
     prompt: e.prompt,
     blanks: (JSON.parse(e.answers) as string[]).length,
-    wordBank: e.wordBank ? (JSON.parse(e.wordBank) as string[]) : undefined,
-    options: e.options.length > 0 ? e.options.map((o) => o.label) : undefined,
+    wordBank: e.wordBank ? shuffleForDisplay(JSON.parse(e.wordBank) as string[]) : undefined,
+    options: e.options.length > 0 ? shuffleForDisplay(e.options.map((o) => o.label)) : undefined,
   }));
 
   return (

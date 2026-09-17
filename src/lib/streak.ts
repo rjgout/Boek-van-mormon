@@ -21,6 +21,11 @@ export interface StudyResult {
   freezesEarned: number;
   freezeCount: number;
   newAchievements: string[];
+  // Had je vandaag al eerder iets afgerond? Dan is de reeks nu niet verder
+  // opgelopen (die stond al goed) — de client gebruikt dit om de
+  // vlammetje-viering alleen bij de EERSTE afronding per dag te tonen, niet
+  // bij elke volgende les diezelfde dag.
+  alreadyStudiedToday: boolean;
 }
 
 type Tx = Prisma.TransactionClient;
@@ -231,6 +236,7 @@ export async function completeLesson(
       freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }
@@ -280,6 +286,7 @@ export async function completeQuickPractice(userId: string, correctCount: number
       freezesEarned: daily.freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }
@@ -335,6 +342,7 @@ export async function completeChapterGuess(
       freezesEarned: daily.freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }
@@ -385,6 +393,7 @@ export async function completeWordGame(userId: string, xpEarned: number): Promis
       freezesEarned: daily.freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }
@@ -468,6 +477,7 @@ export async function completePodcastLesson(
       freezesEarned: daily.freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }
@@ -542,6 +552,7 @@ export async function completeKidsStory(
       freezesEarned: daily.freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }
@@ -616,6 +627,7 @@ export async function completeIntroLesson(
       freezesEarned: daily.freezesEarned,
       freezeCount,
       newAchievements,
+      alreadyStudiedToday: daily.alreadyStudiedToday,
     };
   });
 }

@@ -62,6 +62,7 @@ interface SummaryResult {
   freezesEarned: number;
   freezeCount: number;
   newAchievements: string[];
+  alreadyStudiedToday: boolean;
 }
 
 const FONT_SCALE_KEY = "bom-reader-font-scale";
@@ -771,10 +772,12 @@ function SummaryScreen({ summary, nextChapterId }: { summary: SummaryResult; nex
       <p className="text-gold-600 dark:text-gold-400 font-extrabold text-lg">+{summary.xpEarned} XP</p>
 
       <div className="flex gap-6 mt-2">
-        <div>
-          <div className="text-xl font-extrabold text-orange-500">🔥 {summary.currentStreak}</div>
-          <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Streak</div>
-        </div>
+        {!summary.alreadyStudiedToday && (
+          <div>
+            <div className="text-xl font-extrabold text-orange-500">🔥 {summary.currentStreak}</div>
+            <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Streak</div>
+          </div>
+        )}
         <div>
           <div className="text-xl font-extrabold text-ice-600">🧊 {summary.freezeCount}</div>
           <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Freezes</div>

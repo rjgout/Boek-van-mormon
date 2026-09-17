@@ -166,6 +166,18 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
 - E-mail is optioneel en admin-configureerbaar (`/adminbackend`, generieke
   SMTP); check altijd `isEmailConfigured()` voordat je een flow laat
   blokkeren op e-mail — zonder configuratie moet de app blijven werken.
+- **Keuzeopties van oefeningen altijd geschud tonen, nooit de opslagvolgorde
+  direct.** Voor automatisch gegenereerde hoofdstukoefeningen
+  (`src/lib/exerciseGen.ts`) gebeurt dit al bij het genereren zelf
+  (`shuffleWithSeed`). Voor handmatig geschreven content (introcursus,
+  kindercursus, podcast, en toekomstige vergelijkbare content) staan
+  `options`/`wordBank` in de database in de volgorde waarin ze getypt zijn —
+  in de praktijk vaak "het juiste antwoord eerst" of (bij WORD_BANK/SEQUENCE)
+  zelfs al helemaal in de juiste volgorde. Haal daarom bij het samenstellen
+  van een `Exercise` voor de client altijd `options`/`wordBank` door
+  `shuffleForDisplay()` (ook in `src/lib/exerciseGen.ts`) — puur presentatie,
+  geen seed nodig, want antwoorden worden op tekst gecontroleerd, nooit op
+  positie (zie `isExerciseCorrect`).
 
 ## Codestijl
 

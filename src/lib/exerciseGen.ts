@@ -37,6 +37,26 @@ export function shuffleWithSeed<T>(items: T[], seed: number): T[] {
   return shuffled;
 }
 
+/**
+ * Schudt de weergavevolgorde van handmatig geschreven `options`/`wordBank`
+ * (introcursus, kinderverhalen, podcast, gezinsspel, live quiz) — die staan
+ * in de database in de volgorde waarin de auteur ze getypt heeft, en dat was
+ * in de praktijk vaak "het juiste antwoord eerst" (bij MULTIPLE_CHOICE/
+ * FILL_BLANK) of zelfs "exact de goede volgorde" (bij WORD_BANK/SEQUENCE,
+ * waar wordBank toevallig gelijk was aan answers) — dus altijd hierdoorheen
+ * halen vóór het naar de client gaat, nooit de opslagvolgorde direct tonen.
+ * Puur presentatie (geen seed nodig: het antwoord wordt op tekst
+ * gecontroleerd, nooit op positie, zie isExerciseCorrect hieronder).
+ */
+export function shuffleForDisplay<T>(items: T[]): T[] {
+  const shuffled = [...items];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 // Bekende namen (demo-parafrases + kindercursus); gebruikt om een vals
 // statement te maken voor TRUE_FALSE-oefeningen (naam vervangen door een
 // andere naam uit deze lijst).

@@ -166,7 +166,14 @@ export interface AnswerResult {
   finished: boolean;
   nextQuestion: QuestionView | null;
   hintCredits: number;
-  summary: { correctCount: number; total: number; xpEarned: number; currentStreak: number; newAchievements: string[] } | null;
+  summary: {
+    correctCount: number;
+    total: number;
+    xpEarned: number;
+    currentStreak: number;
+    newAchievements: string[];
+    alreadyStudiedToday: boolean;
+  } | null;
 }
 
 export async function submitChapterGuessAnswer(
@@ -227,6 +234,7 @@ export async function submitChapterGuessAnswer(
         xpEarned: result.xpEarned,
         currentStreak: result.currentStreak,
         newAchievements: result.newAchievements,
+        alreadyStudiedToday: result.alreadyStudiedToday,
       },
     };
   }

@@ -5,6 +5,7 @@ import { isEmailConfigured } from "@/lib/email";
 import IntroLessonFlow, { type ResolvedIntroBlock } from "@/components/IntroLessonFlow";
 import type { Exercise } from "@/components/LessonFlow";
 import type { IntroBlock } from "../../../../prisma/introContent";
+import { shuffleForDisplay } from "@/lib/exerciseGen";
 
 export default async function IntroLessonPage({ params }: { params: Promise<{ lessonId: string }> }) {
   const user = await getCurrentUser();
@@ -95,8 +96,8 @@ export default async function IntroLessonPage({ params }: { params: Promise<{ le
     verseRef: `Les ${lesson.number}`,
     prompt: e.prompt,
     blanks: (JSON.parse(e.answers) as string[]).length,
-    wordBank: e.wordBank ? (JSON.parse(e.wordBank) as string[]) : undefined,
-    options: e.options.length > 0 ? e.options.map((o) => o.label) : undefined,
+    wordBank: e.wordBank ? shuffleForDisplay(JSON.parse(e.wordBank) as string[]) : undefined,
+    options: e.options.length > 0 ? shuffleForDisplay(e.options.map((o) => o.label)) : undefined,
   }));
 
   // Na afronden bij voorkeur direct doorlinken naar de volgende les (net als
