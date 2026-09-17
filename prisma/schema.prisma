@@ -1170,12 +1170,10 @@ model ChapterGuessQuestion {
 // --- Dagelijks woordspel (woord raden) --------------------------------
 //
 // Eén woord van de dag voor iedereen, gekozen uit de 5-letterwoorden van het
-// Boek van Mormon (zie src/lib/wordGame.ts — een deterministieke, geen state
-// vereisende functie van de datum: geen aparte tabel met "het woord van
-// vandaag" nodig). De dag wisselt om 18:00 Nederlandse tijd, niet om
-// middernacht UTC — vandaar een eigen dayKey-functie i.p.v. dayKey() uit
-// src/lib/dates.ts. @@unique([userId, dayKey]) is wat "één keer per dag"
-// afdwingt.
+// Boek van Mormon (zie src/lib/wordGame.ts). De dag wisselt om 18:00
+// Nederlandse tijd, niet om middernacht UTC — vandaar een eigen
+// dayKey-functie i.p.v. dayKey() uit src/lib/dates.ts.
+// @@unique([userId, dayKey]) is wat "één keer per dag" afdwingt.
 model WordGame {
   id         String         @id @default(cuid())
   userId     String
@@ -1189,6 +1187,23 @@ model WordGame {
   finishedAt DateTime?
 
   @@unique([userId, dayKey])
+}
+
+// Het woord zelf komt uit een deterministische functie van de dayKey (zie
+// getWordForDay in src/lib/wordGame.ts) — die was bewust "geen state nodig"
+// ontworpen. In de praktijk bleek dat niet waterdicht: twee spelers die
+// dezelfde avond na 18:00 speelden kregen ooit toch een ander woord,
+// vermoedelijk omdat er tussen hun beurten een nieuwe versie van de app
+// live ging (elke wijziging die de woordenlijst of de volgorde ervan
+// raakt, verandert de uitkomst van diezelfde functie). Deze tabel legt het
+// woord voor een dayKey vast zodra de allereerste speler van die dag 'm
+// opvraagt (atomische upsert, zie getOrCreateTodayGame) — elke speler
+// daarna krijgt gegarandeerd exact datzelfde, opgeslagen woord terug, ook
+// als de code/woordenlijst ondertussen verandert.
+model DailyWord {
+  dayKey    String   @id
+  word      String
+  createdAt DateTime @default(now())
 }
 
 enum WordGameStatus {

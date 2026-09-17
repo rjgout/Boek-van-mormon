@@ -141,13 +141,28 @@ async function buildView(game: {
   };
 }
 
+/**
+ * Legt het woord voor een dayKey definitief vast — atomisch, dus de eerste
+ * speler van die dag "wint" en iedereen daarna (ongeacht eventuele
+ * codewijzigingen tussendoor) krijgt exact datzelfde woord terug. Zie de
+ * toelichting bij het DailyWord-model in schema.prisma.
+ */
+async function getOrLockWordForDay(dayKey: string): Promise<string> {
+  const daily = await prisma.dailyWord.upsert({
+    where: { dayKey },
+    update: {},
+    create: { dayKey, word: getWordForDay(dayKey) },
+  });
+  return daily.word;
+}
+
 /** Haalt het potje van vandaag op, en maakt het aan als het nog niet bestaat — dit dwingt meteen "één keer per dag" af via @@unique([userId, dayKey]). */
 export async function getOrCreateTodayGame(userId: string): Promise<WordGameView> {
   const dayKey = wordGameDayKey();
   const existing = await prisma.wordGame.findUnique({ where: { userId_dayKey: { userId, dayKey } } });
   if (existing) return await buildView(existing);
 
-  const word = getWordForDay(dayKey);
+  const word = await getOrLockWordForDay(dayKey);
   const created = await prisma.wordGame.upsert({
     where: { userId_dayKey: { userId, dayKey } },
     update: {},
