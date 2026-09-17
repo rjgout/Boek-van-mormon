@@ -18,6 +18,7 @@ export default function ReseedClient() {
   const [job, setJob] = useState<ReseedJobState | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const logBoxRef = useRef<HTMLPreElement | null>(null);
 
   function stopPolling() {
     if (pollRef.current) {
@@ -71,6 +72,15 @@ export default function ReseedClient() {
 
   const running = job?.status === "running";
 
+  // Automatisch meescrollen naar de nieuwste regel, zodat je de voortgang
+  // kan volgen zonder zelf te hoeven scrollen — net als bij een lopend
+  // buildlog. Zonder dit bleef het venster (bewust vast van hoogte, zie
+  // hieronder) bij de bovenkant staan terwijl nieuwe regels onderaan
+  // bijkwamen.
+  useEffect(() => {
+    if (logBoxRef.current) logBoxRef.current.scrollTop = logBoxRef.current.scrollHeight;
+  }, [job?.logs.length]);
+
   return (
     <details className="group card flex flex-col gap-4">
       <summary className="font-extrabold cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden flex items-center justify-between">
@@ -110,7 +120,10 @@ export default function ReseedClient() {
       )}
 
       {job && job.logs.length > 0 && (
-        <pre className="text-xs bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-xl p-3 overflow-x-auto whitespace-pre-wrap">
+        <pre
+          ref={logBoxRef}
+          className="text-xs bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-300 rounded-xl p-3 max-h-48 overflow-y-auto whitespace-pre-wrap"
+        >
           {job.logs.join("\n")}
         </pre>
       )}
