@@ -255,6 +255,7 @@ export default function ProfileClient() {
   if (!data) return <p className="text-slate-400">Laden...</p>;
 
   const earnedCount = data.achievements.filter((a) => a.earnedAt).length;
+  const initial = data.displayName.trim().charAt(0).toUpperCase() || "?";
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">
@@ -262,53 +263,61 @@ export default function ProfileClient() {
         💬 Feedback geven
       </Link>
 
-      <div className="card flex flex-col gap-4">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div>
-            <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">{data.displayName}</h1>
-            <p className="text-slate-400 dark:text-slate-500">{formatTag(data.handle, data.discriminator)}</p>
+      <div className="card bg-gradient-to-br from-brand-500 to-brand-700 dark:from-brand-600 dark:to-brand-900 text-white flex flex-col gap-5">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-3">
+            <div className="h-14 w-14 shrink-0 rounded-full bg-black/15 flex items-center justify-center text-2xl font-extrabold text-gold-400">
+              {initial}
+            </div>
+            <div>
+              <h1 className="text-xl font-extrabold">{data.displayName}</h1>
+              <p className="text-brand-100 text-sm">{formatTag(data.handle, data.discriminator)}</p>
+            </div>
           </div>
           {data.tier && (
-            <span className="text-sm font-bold bg-brand-50 dark:bg-slate-700 text-brand-700 dark:text-brand-200 rounded-full px-3 py-1.5">
+            <span className="text-sm font-bold bg-black/15 rounded-full px-3.5 py-1.5 text-gold-400 shrink-0">
               {TIER_ICONS[data.tier]} {TIER_LABELS[data.tier]}
             </span>
           )}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <Stat value={`🔥 ${data.currentStreak}`} label="Reeks" href="/streak" />
-          <Stat value={`⭐ ${data.xpTotal}`} label="XP" href="/xp" />
-          <Stat value={`🧊 ${data.freezeCount}`} label="Freezes" />
-          <Stat value={`📖 ${data.chaptersCompleted}`} label="Hoofdstukken" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <HeroStat value={`🔥 ${data.currentStreak}`} label="Reeks" href="/streak" />
+          <HeroStat value={`⭐ ${data.xpTotal}`} label="XP" href="/xp" />
+          <HeroStat value={`🧊 ${data.freezeCount}`} label="Freezes" />
+          <HeroStat value={`📖 ${data.chaptersCompleted}`} label="Hoofdstukken" />
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center text-sm text-slate-500 dark:text-slate-400">
-          <Stat value={data.longestStreak.toString()} label="Langste reeks" small />
-          <Stat value={`${data.duelsWon}/${data.duelsPlayed}`} label="Duels gewonnen" small />
-          <Stat value={earnedCount.toString()} label="Achievements" small />
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center text-sm text-brand-100 border-t border-white/15 pt-4">
+          <Stat value={data.longestStreak.toString()} label="Langste reeks" small light />
+          <Stat value={`${data.duelsWon}/${data.duelsPlayed}`} label="Duels gewonnen" small light />
+          <Stat value={earnedCount.toString()} label="Achievements" small light />
         </div>
       </div>
 
-      <div className="card flex flex-col gap-4">
+      <div className="card !py-4 bg-gold-50 dark:bg-slate-800 border-gold-400/30 dark:border-slate-700 flex flex-col gap-4">
         <h2 className="font-extrabold text-lg dark:text-slate-100">Competitie</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <Stat
-            value={data.tier ? `${TIER_ICONS[data.tier]} ${data.groupPosition ? `#${data.groupPosition}` : "—"}` : "—"}
-            label="Deze week"
-            href="/competition"
-          />
-          <Stat
-            value={data.bestTierEver ? `${TIER_ICONS[data.bestTierEver]} ${TIER_LABELS[data.bestTierEver]}` : "—"}
-            label="Beste divisie ooit"
-            small
-          />
-          <Stat value={data.bestNationalRank ? `#${data.bestNationalRank}` : "—"} label="Beste NL-ranglijstpositie" small />
-          <Stat value={data.seasonCount.toString()} label="Seizoenen" small />
+        <div className="grid grid-cols-2 gap-3">
+          <div className="rounded-2xl bg-white/70 dark:bg-slate-700/70 !py-3 flex flex-col items-center gap-0.5">
+            <Link href="/competition" className="block text-center hover:opacity-75">
+              <div className="text-lg font-extrabold text-gold-600 dark:text-gold-400">
+                {data.tier ? `${TIER_ICONS[data.tier]} ${data.groupPosition ? `#${data.groupPosition}` : "—"}` : "—"}
+              </div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Deze week</div>
+            </Link>
+          </div>
+          <div className="rounded-2xl bg-white/70 dark:bg-slate-700/70 !py-3 flex flex-col items-center gap-0.5">
+            <div className="text-lg font-extrabold text-gold-600 dark:text-gold-400">
+              {data.bestTierEver ? `${TIER_ICONS[data.bestTierEver]} ${TIER_LABELS[data.bestTierEver]}` : "—"}
+            </div>
+            <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">Beste divisie ooit</div>
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-4 text-center text-sm text-slate-500 dark:text-slate-400">
+        <div className="grid grid-cols-4 gap-2 text-center text-sm text-slate-500 dark:text-slate-400">
           <Stat value={data.lifetimePromotions.toString()} label="Promoties" small />
           <Stat value={data.lifetimeDemotions.toString()} label="Degradaties" small />
-          <Stat value={data.competitionsWon.toString()} label="Competities gewonnen" small />
+          <Stat value={data.competitionsWon.toString()} label="Competities" small />
+          <Stat value={data.bestNationalRank ? `#${data.bestNationalRank}` : "—"} label="NL-rang" small />
         </div>
       </div>
 
@@ -330,14 +339,19 @@ export default function ProfileClient() {
       )}
 
       <section>
-        <h2 className="font-extrabold text-lg mb-3 dark:text-slate-100">Achievements</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-extrabold text-lg dark:text-slate-100">Achievements</h2>
+          <span className="text-sm font-bold text-slate-400 dark:text-slate-500">
+            {earnedCount}/{data.achievements.length}
+          </span>
+        </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {data.achievements.map((a) => (
             <div
               key={a.slug}
               title={a.description}
               className={`card !p-4 flex flex-col items-center text-center gap-1 ${
-                a.earnedAt ? "" : "opacity-40 grayscale"
+                a.earnedAt ? "bg-gold-50 dark:bg-slate-700" : "opacity-40 grayscale"
               }`}
             >
               <span className="text-3xl">{a.icon}</span>
@@ -691,11 +705,27 @@ function ChangelogSection({ enabled, saving, onToggle }: { enabled: boolean; sav
   );
 }
 
-function Stat({ value, label, small, href }: { value: string; label: string; small?: boolean; href?: string }) {
+function Stat({
+  value,
+  label,
+  small,
+  href,
+  light,
+}: {
+  value: string;
+  label: string;
+  small?: boolean;
+  href?: string;
+  light?: boolean;
+}) {
   const content = (
     <>
-      <div className={small ? "font-extrabold dark:text-slate-100" : "text-xl font-extrabold dark:text-slate-100"}>{value}</div>
-      <div className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase">{label}</div>
+      <div className={`${small ? "font-extrabold" : "text-xl font-extrabold"} ${light ? "text-white" : "dark:text-slate-100"}`}>
+        {value}
+      </div>
+      <div className={`text-xs font-bold uppercase ${light ? "text-brand-100" : "text-slate-400 dark:text-slate-500"}`}>
+        {label}
+      </div>
     </>
   );
   if (href) {
@@ -706,4 +736,20 @@ function Stat({ value, label, small, href }: { value: string; label: string; sma
     );
   }
   return <div>{content}</div>;
+}
+
+// Pil-vormige variant voor de statsrij in de gradient-hero — zelfde
+// waarde/label-inhoud als Stat, maar met een eigen donkere achtergrond zodat
+// de tegels zichtbaar blijven op de blauwe hero i.p.v. enkel platte tekst.
+function HeroStat({ value, label, href }: { value: string; label: string; href?: string }) {
+  const content = (
+    <div className="rounded-2xl bg-black/15 py-2.5 flex flex-col items-center gap-0.5 hover:bg-black/25 transition-colors">
+      <div className="font-extrabold text-white">{value}</div>
+      <div className="text-[10px] text-brand-100 font-bold uppercase">{label}</div>
+    </div>
+  );
+  if (href) {
+    return <Link href={href}>{content}</Link>;
+  }
+  return content;
 }
