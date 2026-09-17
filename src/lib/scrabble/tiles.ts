@@ -1,4 +1,5 @@
-// Officiële Nederlandse Scrabble-letterverdeling en -waarden (102 stenen).
+// Gebaseerd op de officiële Nederlandse Scrabble-letterverdeling en -waarden
+// (102 stenen) — met één bewuste aanpassing, zie de q hieronder.
 export const BLANK = "?";
 
 export const LETTER_DISTRIBUTION: Record<string, { count: number; value: number }> = {
@@ -18,7 +19,11 @@ export const LETTER_DISTRIBUTION: Record<string, { count: number; value: number 
   N: { count: 10, value: 1 },
   O: { count: 6, value: 1 },
   P: { count: 2, value: 3 },
-  Q: { count: 1, value: 10 },
+  // Geen Q: de woordenlijst (prisma/bomWords.json, zie
+  // src/lib/scrabble/dictionary.ts) bevat geen enkel woord met een q — die
+  // steen zou dus nooit ergens neer te leggen zijn. De steen die de
+  // officiële verdeling er hier normaal aan besteedt gaat naar de blanco
+  // hieronder, zodat het totaal van 102 stenen gelijk blijft.
   R: { count: 5, value: 2 },
   S: { count: 5, value: 2 },
   T: { count: 5, value: 2 },
@@ -28,7 +33,7 @@ export const LETTER_DISTRIBUTION: Record<string, { count: number; value: number 
   X: { count: 1, value: 8 },
   Y: { count: 1, value: 8 },
   Z: { count: 2, value: 4 },
-  [BLANK]: { count: 2, value: 0 },
+  [BLANK]: { count: 3, value: 0 },
 };
 
 // Dubbel zo groot als het officiële Scrabble-rek (7) — maakt het spel

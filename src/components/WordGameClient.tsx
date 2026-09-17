@@ -30,7 +30,11 @@ interface GameView {
 }
 
 const TILE_STYLES: Record<LetterState, string> = {
-  correct: "bg-brand-500 border-brand-500 text-white",
+  // Groen voor "goede letter, goede plek" is de universeel herkende kleur
+  // hiervoor; emerald (i.p.v. een generiek groen) omdat dat al elders in de
+  // huisstijl gebruikt wordt (zie bv. ScrabbleBoardClient.tsx) en beter
+  // combineert met het blauw/goud-palet dan een fel primair groen.
+  correct: "bg-emerald-500 border-emerald-500 text-white",
   present: "bg-gold-500 border-gold-500 text-white",
   absent: "bg-slate-400 dark:bg-slate-600 border-slate-400 dark:border-slate-600 text-white",
 };
