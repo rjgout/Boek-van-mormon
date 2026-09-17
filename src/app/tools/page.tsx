@@ -45,6 +45,18 @@ export default async function ToolsPage() {
             ⭐
           </span>
         </Link>
+
+        <Link href="/tools/persons" className="card flex items-center justify-between gap-3 hover:ring-2 hover:ring-brand-400">
+          <div>
+            <h2 className="font-extrabold text-lg dark:text-slate-100">Personages</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Wie is wie in het Boek van Mormon, inclusief familieverbanden.
+            </p>
+          </div>
+          <span className="text-2xl" aria-hidden>
+            👤
+          </span>
+        </Link>
       </div>
     </div>
   );

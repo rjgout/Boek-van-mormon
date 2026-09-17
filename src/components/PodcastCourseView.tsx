@@ -17,6 +17,7 @@ interface EpisodeView {
   bomCompleted: boolean;
   bomBestScore: number | null;
   hasBomExercises: boolean;
+  resumeSeconds: number;
 }
 
 interface Props {
@@ -197,6 +198,11 @@ function EpisodePlayButton({ episode }: { episode: EpisodeView }) {
 
   const isThisEpisode = player.episode?.id === episode.id;
   const isPlaying = isThisEpisode && player.isPlaying;
+  // "Hervatten" hoort niet alleen bij de op dit moment geladen aflevering,
+  // maar bij elke aflevering met een eerder opgeslagen afspeelpositie — ook
+  // als de mini-player inmiddels gesloten is (zie PodcastMiniPlayer's
+  // sluitknop, die de positie bewust bewaart).
+  const hasResumePoint = isThisEpisode ? player.currentTime > 0 : episode.resumeSeconds > 0;
 
   function handleClick() {
     if (isThisEpisode) {
@@ -209,7 +215,7 @@ function EpisodePlayButton({ episode }: { episode: EpisodeView }) {
   return (
     <button onClick={handleClick} className="btn-secondary !px-4 !py-2 self-start flex items-center gap-2">
       <span aria-hidden>{isPlaying ? "⏸" : "▶"}</span>
-      {isThisEpisode ? (isPlaying ? "Pauzeren" : "Hervatten") : "Afspelen"}
+      {isPlaying ? "Pauzeren" : hasResumePoint ? "Hervatten" : "Afspelen"}
     </button>
   );
 }

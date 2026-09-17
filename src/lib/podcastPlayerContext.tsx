@@ -38,6 +38,32 @@ const SAVE_INTERVAL_MS = 10_000;
 // de opgeslagen positie wordt dan gewist i.p.v. bijgewerkt.
 const FINISHED_REMAINING_SECONDS = 15;
 
+// Onthoudt, puur lokaal in deze browser, welke aflevering je bewust met het
+// kruisje hebt weggeklikt — anders duikt "waar was ik gebleven" (zie de
+// mount-effect hieronder) 'm bij elke nieuwe paginalading weer op, ook al
+// wilde je 'm net even niet meer zien. De opgeslagen afspeelpositie zelf
+// blijft gewoon bestaan (zie close()), dus expliciet opnieuw afspelen vanaf
+// de aflevering zelf hervat nog steeds op de juiste plek.
+const DISMISSED_KEY = "podcast-dismissed-episode-id";
+
+function getDismissedEpisodeId(): string | null {
+  try {
+    return localStorage.getItem(DISMISSED_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setDismissedEpisodeId(id: string | null) {
+  try {
+    if (id) localStorage.setItem(DISMISSED_KEY, id);
+    else localStorage.removeItem(DISMISSED_KEY);
+  } catch {
+    // Privé-modus/geblokkeerde storage: dan komt de mini-player soms
+    // opnieuw terug na sluiten, maar de speler zelf blijft werken.
+  }
+}
+
 /**
  * Eén gedeelde, altijd-gemonteerde <audio>-speler (zie layout.tsx) — zodat
  * navigeren tussen pagina's het afspelen niet meer onderbreekt, en de
@@ -79,7 +105,7 @@ export function PodcastPlayerProvider({ children }: { children: React.ReactNode 
     fetch("/api/podcast-playback")
       .then((r) => r.json())
       .then((data) => {
-        if (data.episode) {
+        if (data.episode && data.episode.id !== getDismissedEpisodeId()) {
           pendingSeekRef.current = data.positionSeconds ?? 0;
           setCurrentTime(data.positionSeconds ?? 0);
           setEpisode(data.episode);
@@ -175,6 +201,11 @@ export function PodcastPlayerProvider({ children }: { children: React.ReactNode 
     const audio = audioRef.current;
     if (!audio) return;
 
+    // Een bewuste, nieuwe afspeelactie overschrijft een eerdere "wegklik" —
+    // de mini-player is nu toch weer zichtbaar, dus de dismissal heeft
+    // verder geen functie meer totdat er weer op het kruisje wordt gedrukt.
+    setDismissedEpisodeId(null);
+
     if ("mediaSession" in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: `Aflevering ${newEpisode.number} — ${newEpisode.title}`,
@@ -227,6 +258,7 @@ export function PodcastPlayerProvider({ children }: { children: React.ReactNode 
       audio.removeAttribute("src");
       audio.load();
     }
+    if (episode) setDismissedEpisodeId(episode.id);
     loadedEpisodeIdRef.current = null;
     setEpisode(null);
     setIsPlaying(false);

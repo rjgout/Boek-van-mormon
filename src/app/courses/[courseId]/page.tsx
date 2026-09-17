@@ -43,6 +43,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
       include: {
         progress: { where: { userId: user.id } },
         exercises: { select: { mode: true } },
+        playbackProgress: { where: { userId: user.id }, select: { positionSeconds: true } },
       },
     });
 
@@ -65,6 +66,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
             bomCompleted: bomProgress?.completed ?? false,
             bomBestScore: bomProgress ? bomProgress.bestScore : null,
             hasBomExercises: episode.exercises.some((e) => e.mode === "BOM_CONNECTION"),
+            resumeSeconds: episode.playbackProgress[0]?.positionSeconds ?? 0,
           };
         })}
       />
