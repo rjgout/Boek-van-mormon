@@ -3,11 +3,25 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/db";
 
-export default async function PersonProfilePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PersonProfilePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ from?: string }>;
+}) {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
   const { slug } = await params;
+  const { from } = await searchParams;
+  // Alleen een eigen, relatief pad vertrouwen (nooit een externe/absolute
+  // URL uit een query-param) — dit stuurt waar "Terug" en de vader-/
+  // kinderlinks hieronder naartoe gaan, dus zonder deze check zou een
+  // gemanipuleerde link een open redirect kunnen zijn.
+  const backHref = from && from.startsWith("/") && !from.startsWith("//") ? from : "/courses";
+  const fromQuery = backHref !== "/courses" ? `?from=${encodeURIComponent(backHref)}` : "";
+
   const person = await prisma.person.findUnique({
     where: { slug },
     include: {
@@ -29,7 +43,10 @@ export default async function PersonProfilePage({ params }: { params: Promise<{ 
         <div className="card flex flex-col gap-3">
           {person.father && (
             <p className="dark:text-slate-100">
-              Vader: <Link href={`/persons/${person.father.slug}`} className="font-extrabold text-brand-600 dark:text-brand-300">{person.father.name}</Link>
+              Vader:{" "}
+              <Link href={`/persons/${person.father.slug}${fromQuery}`} className="font-extrabold text-brand-600 dark:text-brand-300">
+                {person.father.name}
+              </Link>
             </p>
           )}
           {person.children.length > 0 && (
@@ -37,7 +54,7 @@ export default async function PersonProfilePage({ params }: { params: Promise<{ 
               Kinderen:{" "}
               {person.children.map((c, i) => (
                 <span key={c.slug}>
-                  <Link href={`/persons/${c.slug}`} className="font-extrabold text-brand-600 dark:text-brand-300">
+                  <Link href={`/persons/${c.slug}${fromQuery}`} className="font-extrabold text-brand-600 dark:text-brand-300">
                     {c.name}
                   </Link>
                   {i < person.children.length - 1 ? ", " : ""}
@@ -48,7 +65,7 @@ export default async function PersonProfilePage({ params }: { params: Promise<{ 
         </div>
       )}
 
-      <Link href="/courses" className="btn-secondary self-start">
+      <Link href={backHref} className="btn-secondary self-start">
         ← Terug
       </Link>
     </div>

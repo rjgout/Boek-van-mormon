@@ -99,5 +99,25 @@ export default async function IntroLessonPage({ params }: { params: Promise<{ le
     options: e.options.length > 0 ? e.options.map((o) => o.label) : undefined,
   }));
 
-  return <IntroLessonFlow lessonId={lesson.id} number={lesson.number} title={lesson.title} blocks={blocks} exercises={exercises} />;
+  // Na afronden bij voorkeur direct doorlinken naar de volgende les (net als
+  // "Volgend hoofdstuk →" bij de reguliere lezer, zie LessonFlow.tsx) i.p.v.
+  // terug naar het algemene cursusoverzicht — en anders naar de introcursus
+  // zélf (nooit de generieke /courses-lijst van alle cursustypes), zie
+  // IntroLessonFlow.tsx.
+  const [nextLesson, introCourse] = await Promise.all([
+    prisma.introLesson.findFirst({ where: { number: lesson.number + 1 }, select: { id: true } }),
+    prisma.course.findFirst({ where: { type: "INTRO" }, select: { id: true } }),
+  ]);
+
+  return (
+    <IntroLessonFlow
+      lessonId={lesson.id}
+      number={lesson.number}
+      title={lesson.title}
+      blocks={blocks}
+      exercises={exercises}
+      nextLessonId={nextLesson?.id ?? null}
+      courseHref={introCourse ? `/courses/${introCourse.id}` : "/courses"}
+    />
+  );
 }

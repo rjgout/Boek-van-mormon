@@ -54,12 +54,18 @@ export default function IntroLessonFlow({
   title,
   blocks,
   exercises,
+  nextLessonId,
+  courseHref,
 }: {
   lessonId: string;
   number: number;
   title: string;
   blocks: ResolvedIntroBlock[];
   exercises: Exercise[];
+  /** Volgende les in de reeks, indien die bestaat (server-side bepaald). */
+  nextLessonId: string | null;
+  /** Terug naar dé introductiecursus zelf, nooit de generieke /courses-lijst van alle cursustypes. */
+  courseHref: string;
 }) {
   // Een finalChoices-blok (alleen in de laatste les) hoort ná de eindtoets
   // te verschijnen, niet als content-blok ertussenin — het heeft zelf geen
@@ -123,7 +129,7 @@ export default function IntroLessonFlow({
             style={{ width: `${Math.round(((blockIndex + 1) / Math.max(1, contentBlocks.length + exercises.length)) * 100)}%` }}
           />
         </div>
-        <BlockView block={block} onNext={nextBlock} />
+        <BlockView block={block} onNext={nextBlock} lessonId={lessonId} />
       </div>
     );
   }
@@ -218,9 +224,16 @@ export default function IntroLessonFlow({
             </Link>
           </div>
         ) : (
-          <Link href="/courses" className="btn-primary mt-1">
-            Verder →
-          </Link>
+          <div className="flex gap-3 mt-1">
+            <Link href={courseHref} className="btn-secondary">
+              Terug naar cursussen
+            </Link>
+            {nextLessonId && (
+              <Link href={`/intro/${nextLessonId}`} className="btn-primary">
+                Volgende les →
+              </Link>
+            )}
+          </div>
         )}
       </div>
     );
@@ -246,7 +259,7 @@ function NextButton({ onNext, label = "Verder →" }: { onNext: () => void; labe
   );
 }
 
-function BlockView({ block, onNext }: { block: ResolvedIntroBlock; onNext: () => void }) {
+function BlockView({ block, onNext, lessonId }: { block: ResolvedIntroBlock; onNext: () => void; lessonId: string }) {
   const [pollChoice, setPollChoice] = useState<string | null>(null);
   const [reflected, setReflected] = useState(false);
 
@@ -326,7 +339,7 @@ function BlockView({ block, onNext }: { block: ResolvedIntroBlock; onNext: () =>
           {block.intro && <p className="dark:text-slate-100">{block.intro}</p>}
           <div className="flex flex-wrap gap-x-4 gap-y-2">
             {block.persons.map((p) => (
-              <PersonCard key={p.slug} slug={p.slug} name={p.name} />
+              <PersonCard key={p.slug} slug={p.slug} name={p.name} returnTo={`/intro/${lessonId}`} />
             ))}
           </div>
           <NextButton onNext={onNext} />

@@ -19,7 +19,7 @@ interface PersonInfo {
  * geen nieuwe tooltip-library nodig, en werkt vanzelf ook met toetsenbord/
  * schermlezers.
  */
-export default function PersonCard({ slug, name }: { slug: string; name: string }) {
+export default function PersonCard({ slug, name, returnTo }: { slug: string; name: string; returnTo?: string }) {
   const [info, setInfo] = useState<PersonInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [opened, setOpened] = useState(false);
@@ -50,7 +50,10 @@ export default function PersonCard({ slug, name }: { slug: string; name: string 
           <>
             <p className="font-extrabold dark:text-slate-100">{info.name}</p>
             {info.description && <p className="text-slate-600 dark:text-slate-300">{info.description}</p>}
-            <Link href={`/persons/${info.slug}`} className="text-brand-600 dark:text-brand-300 font-bold text-xs">
+            <Link
+              href={returnTo ? `/persons/${info.slug}?from=${encodeURIComponent(returnTo)}` : `/persons/${info.slug}`}
+              className="text-brand-600 dark:text-brand-300 font-bold text-xs"
+            >
               Meer over {info.name} →
             </Link>
           </>
