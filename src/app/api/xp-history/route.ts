@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
+import { weekStartKey } from "@/lib/dates";
 
 const PAGE_SIZE = 30;
 
@@ -22,10 +23,23 @@ export async function GET(req: NextRequest) {
     take: PAGE_SIZE + 1,
   });
 
+  // Alleen op de eerste pagina nodig (voor de "deze week"-pil in de hero-
+  // kaart) — bij "meer laden" onnodig opnieuw optellen.
+  let xpThisWeek: number | undefined;
+  if (skip === 0) {
+    const weekStart = new Date(`${weekStartKey()}T00:00:00.000Z`);
+    const agg = await prisma.xPTransaction.aggregate({
+      where: { userId: user.id, createdAt: { gte: weekStart }, amount: { gt: 0 } },
+      _sum: { amount: true },
+    });
+    xpThisWeek = agg._sum.amount ?? 0;
+  }
+
   const hasMore = transactions.length > PAGE_SIZE;
   return NextResponse.json({
     transactions: transactions.slice(0, PAGE_SIZE),
     hasMore,
     xpTotal: user.xpTotal,
+    ...(xpThisWeek !== undefined ? { xpThisWeek } : {}),
   });
 }

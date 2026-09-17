@@ -116,37 +116,38 @@ export default function StreakClient() {
   const today = todayKey();
 
   return (
-    <div className="max-w-xl mx-auto flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">🔥 Reeks</h1>
-      </div>
+    <div className="max-w-xl mx-auto flex flex-col gap-5">
+      <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">🔥 Reeks</h1>
 
-      <div className="card flex items-center gap-6">
-        <div className="text-6xl" aria-hidden>
-          🔥
-        </div>
-        <div>
-          <div className="text-5xl font-extrabold text-orange-500 leading-none">{overview.currentStreak}</div>
-          <div className="text-slate-500 dark:text-slate-400 font-bold mt-1">dagen geoefend!</div>
-        </div>
-      </div>
-
-      <div className="card flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-        <span className="text-2xl" aria-hidden>
+      <div className="card bg-gradient-to-br from-orange-400 to-red-500 text-white flex flex-col items-center gap-1 !py-8">
+        <span className="text-4xl" aria-hidden>
           🔥
         </span>
-        <p>
-          Behoud je <span className="font-bold text-orange-500">reeks</span> door elke dag te oefenen! Mis je een dag,
-          dan wordt automatisch een beschikbare freeze ingezet — heb je geen freeze meer, dan breekt je reeks.
+        <div className="text-5xl font-extrabold leading-none">{overview.currentStreak}</div>
+        <div className="text-orange-50 font-bold text-sm mt-1">dagen op rij geoefend!</div>
+        {overview.longestStreak > 0 && (
+          <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-black/15 px-3.5 py-1.5 text-xs font-bold text-white">
+            🏆 Langste reeks: {overview.longestStreak} dagen
+          </span>
+        )}
+      </div>
+
+      <div className="card !py-4 bg-ice-50 dark:bg-slate-800 border-ice-400/30 dark:border-slate-700 flex items-center gap-3">
+        <span className="text-2xl shrink-0" aria-hidden>
+          🧊
+        </span>
+        <p className="text-sm text-ice-700 dark:text-ice-400">
+          Behoud je <span className="font-bold text-orange-500">reeks</span> door elke dag te oefenen! Mis je een dag, dan
+          wordt automatisch een beschikbare freeze ingezet — heb je geen freeze meer, dan breekt je reeks.
         </p>
       </div>
 
-      <div className="flex gap-4 justify-center text-center">
-        <div className="card !py-3 !px-5">
-          <div className="text-xl font-extrabold text-brand-600 dark:text-brand-300">{overview.longestStreak}</div>
-          <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Langste reeks</div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="card !py-4 flex flex-col items-center gap-0.5">
+          <div className="text-xl font-extrabold text-orange-500">🔥 {month.daysStudied}</div>
+          <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Dagen deze maand</div>
         </div>
-        <div className="card !py-3 !px-5">
+        <div className="card !py-4 flex flex-col items-center gap-0.5">
           <div className="text-xl font-extrabold text-ice-600 dark:text-ice-400">🧊 {overview.freezeCount}</div>
           <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Freezes</div>
         </div>
@@ -157,7 +158,12 @@ export default function StreakClient() {
           <button className="btn-secondary !px-3 !py-1.5" onClick={() => goToMonth(-1)} aria-label="Vorige maand">
             ‹
           </button>
-          <h2 className="font-extrabold text-lg capitalize dark:text-slate-100">{monthLabel(month.year, month.month)}</h2>
+          <div className="text-center">
+            <h2 className="font-extrabold text-lg capitalize dark:text-slate-100">{monthLabel(month.year, month.month)}</h2>
+            {month.freezesUsed > 0 && (
+              <p className="text-xs text-slate-400 dark:text-slate-500">🧊 {month.freezesUsed} bevriezing{month.freezesUsed > 1 ? "en" : ""} gebruikt</p>
+            )}
+          </div>
           <button
             className="btn-secondary !px-3 !py-1.5 disabled:opacity-30"
             onClick={() => goToMonth(1)}
@@ -166,17 +172,6 @@ export default function StreakClient() {
           >
             ›
           </button>
-        </div>
-
-        <div className="flex gap-4 justify-center text-center">
-          <div className="rounded-xl bg-brand-50 dark:bg-slate-700 !py-2 px-4">
-            <div className="font-extrabold text-brand-700 dark:text-brand-300">🔥 {month.daysStudied}</div>
-            <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Dagen geoefend</div>
-          </div>
-          <div className="rounded-xl bg-ice-50 dark:bg-slate-700 !py-2 px-4">
-            <div className="font-extrabold text-ice-600 dark:text-ice-400">🧊 {month.freezesUsed}</div>
-            <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Bevriezingen gebruikt</div>
-          </div>
         </div>
 
         <div>
