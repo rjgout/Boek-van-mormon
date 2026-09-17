@@ -5,14 +5,13 @@ import { validateAndScoreMove, type Placement } from "@/lib/scrabble/engine";
 import { findHint } from "@/lib/scrabble/hint";
 import { notifyScrabbleInvite, notifyScrabbleDeclined, notifyScrabbleYourTurn, notifyScrabbleFinished } from "@/lib/notify";
 import { awardCompetitionXp } from "@/lib/competitionXp";
+import { SCRABBLE_WIN_XP, SCRABBLE_PARTICIPATION_XP } from "@/lib/xpRules";
 
 // Scrabble geeft (net als Uitdagingen) bewust geen algemene XP — zie
 // completeLesson/completeChapterGuess e.a. in streak.ts, die dat wel doen.
 // Dit is puur competitie-XP (zie src/lib/competitionXp.ts): een activiteit
 // die vroeger nul invloed had op de wekelijkse competitie, telt nu wel mee,
 // zonder de algemene XP-economie (winkel, achievements) aan te raken.
-const SCRABBLE_WIN_XP = 30;
-const SCRABBLE_PARTICIPATION_XP = 10;
 
 /** Wordt aangeroepen op elk van de drie afrondpunten (winst, gelijkspel, opgeven). */
 async function awardScrabbleCompetitionXp(winnerUserId: string | null, player1Id: string, player2Id: string): Promise<void> {

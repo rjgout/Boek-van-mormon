@@ -4,6 +4,7 @@ import { addDays, dayKey, daysBetween } from "@/lib/dates";
 import { awardXp } from "@/lib/xp";
 import { checkAndAwardAchievements } from "@/lib/achievements";
 import { awardCompetitionXp } from "@/lib/competitionXp";
+import { XP_PER_CORRECT_LIGHT, applyRepeatDiscount } from "@/lib/xpRules";
 
 const PASS_THRESHOLD = 60; // percentage nodig om een hoofdstuk als voltooid te tellen
 const STREAK_MILESTONE_FOR_FREEZE = 7; // elke 7-daagse streak levert een freeze op
@@ -151,6 +152,15 @@ export async function completeLesson(
     const wasAlreadyCompleted = existing?.completed ?? false;
     const nowCompleted = wasAlreadyCompleted || scorePercent >= PASS_THRESHOLD;
 
+    // Herhalingskorting: had je dit hoofdstuk al eerder perfect (100%)
+    // afgerond, dan is dit geen nieuwe prestatie meer — telt nog maar voor
+    // een tiende, zodat een al-beheerst hoofdstuk geen oneindige XP-bron
+    // wordt. Bewust niet voor live-quizspellen (xpReason !== default): dat
+    // is een sociale activiteit met een live tegenstander, geen solo-
+    // herhaling van al-beheerste content.
+    const alreadyPerfect = xpReason === "LESSON_COMPLETED" && (existing?.bestScore ?? 0) === 100;
+    const xpToAward = alreadyPerfect ? applyRepeatDiscount(xpForThisAttempt) : xpForThisAttempt;
+
     await tx.chapterProgress.upsert({
       where: { userId_chapterId: { userId, chapterId } },
       create: {
@@ -158,13 +168,13 @@ export async function completeLesson(
         chapterId,
         completed: nowCompleted,
         bestScore: scorePercent,
-        xpEarned: xpForThisAttempt,
+        xpEarned: xpToAward,
         completedAt: nowCompleted ? new Date() : null,
       },
       update: {
         completed: nowCompleted,
         bestScore: Math.max(existing?.bestScore ?? 0, scorePercent),
-        xpEarned: { increment: xpForThisAttempt },
+        xpEarned: { increment: xpToAward },
         completedAt: !wasAlreadyCompleted && nowCompleted ? new Date() : undefined,
       },
     });
@@ -197,13 +207,13 @@ export async function completeLesson(
       },
     });
 
-    await awardXp(tx, userId, xpForThisAttempt, xpReason, {
+    await awardXp(tx, userId, xpToAward, xpReason, {
       chapterId,
       scorePercent,
       perfect: scorePercent === 100,
     });
 
-    await awardCompetitionXp(tx, userId, "LESSON", xpForThisAttempt, {
+    await awardCompetitionXp(tx, userId, "LESSON", xpToAward, {
       won: xpReason === "LIVE_GAME_WON",
       metadata: { chapterId, scorePercent, xpReason },
     });
@@ -211,7 +221,7 @@ export async function completeLesson(
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 
     return {
-      xpEarned: xpForThisAttempt,
+      xpEarned: xpToAward,
       chapterCompleted: nowCompleted,
       scorePercent,
       currentStreak: daily.currentStreak,
@@ -224,8 +234,6 @@ export async function completeLesson(
     };
   });
 }
-
-const XP_PER_CORRECT_QUICK_PRACTICE = 5;
 
 /**
  * Een korte, hoofdstukloze oefenronde ("Snelle ronde") — redt de dagstreak
@@ -253,7 +261,7 @@ export async function completeQuickPractice(userId: string, correctCount: number
       });
     }
 
-    const xp = correctCount * XP_PER_CORRECT_QUICK_PRACTICE;
+    const xp = correctCount * XP_PER_CORRECT_LIGHT;
     if (xp > 0) {
       await awardXp(tx, userId, xp, "QUICK_PRACTICE", { correctCount, total });
       await awardCompetitionXp(tx, userId, "QUICK_PRACTICE", xp, { metadata: { correctCount, total } });
@@ -275,8 +283,6 @@ export async function completeQuickPractice(userId: string, correctCount: number
     };
   });
 }
-
-const XP_PER_CORRECT_CHAPTER_GUESS = 5;
 
 /**
  * Rondt een potje "Raad het hoofdstuk" af (alleen of live, zie
@@ -310,7 +316,7 @@ export async function completeChapterGuess(
       });
     }
 
-    const xp = correctCount * XP_PER_CORRECT_CHAPTER_GUESS;
+    const xp = correctCount * XP_PER_CORRECT_LIGHT;
     if (xp > 0) {
       await awardXp(tx, userId, xp, "CHAPTER_GUESS_COMPLETED", { correctCount, total });
       await awardCompetitionXp(tx, userId, "CHAPTER_GUESS", xp, { level, metadata: { correctCount, total, level } });
@@ -404,6 +410,10 @@ export async function completePodcastLesson(
     const wasAlreadyCompleted = existing?.completed ?? false;
     const nowCompleted = wasAlreadyCompleted || scorePercent >= PASS_THRESHOLD;
 
+    // Herhalingskorting, zie completeLesson hierboven.
+    const alreadyPerfect = (existing?.bestScore ?? 0) === 100;
+    const xpToAward = alreadyPerfect ? applyRepeatDiscount(xpForThisAttempt) : xpForThisAttempt;
+
     await tx.podcastEpisodeProgress.upsert({
       where: { userId_episodeId_mode: { userId, episodeId, mode } },
       create: {
@@ -412,13 +422,13 @@ export async function completePodcastLesson(
         mode,
         completed: nowCompleted,
         bestScore: scorePercent,
-        xpEarned: xpForThisAttempt,
+        xpEarned: xpToAward,
         completedAt: nowCompleted ? new Date() : null,
       },
       update: {
         completed: nowCompleted,
         bestScore: Math.max(existing?.bestScore ?? 0, scorePercent),
-        xpEarned: { increment: xpForThisAttempt },
+        xpEarned: { increment: xpToAward },
         completedAt: !wasAlreadyCompleted && nowCompleted ? new Date() : undefined,
       },
     });
@@ -442,13 +452,13 @@ export async function completePodcastLesson(
       });
     }
 
-    await awardXp(tx, userId, xpForThisAttempt, "PODCAST_LESSON_COMPLETED", { episodeId, mode, scorePercent });
-    await awardCompetitionXp(tx, userId, "PODCAST_LESSON", xpForThisAttempt, { metadata: { episodeId, mode, scorePercent } });
+    await awardXp(tx, userId, xpToAward, "PODCAST_LESSON_COMPLETED", { episodeId, mode, scorePercent });
+    await awardCompetitionXp(tx, userId, "PODCAST_LESSON", xpToAward, { metadata: { episodeId, mode, scorePercent } });
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 
     return {
-      xpEarned: xpForThisAttempt,
+      xpEarned: xpToAward,
       chapterCompleted: nowCompleted,
       scorePercent,
       currentStreak: daily.currentStreak,
@@ -475,6 +485,10 @@ export async function completeKidsStory(
     const wasAlreadyCompleted = existing?.completed ?? false;
     const nowCompleted = wasAlreadyCompleted || scorePercent >= PASS_THRESHOLD;
 
+    // Herhalingskorting, zie completeLesson hierboven.
+    const alreadyPerfect = (existing?.bestScore ?? 0) === 100;
+    const xpToAward = alreadyPerfect ? applyRepeatDiscount(xpForThisAttempt) : xpForThisAttempt;
+
     await tx.kidsStoryProgress.upsert({
       where: { userId_storyId: { userId, storyId } },
       create: {
@@ -482,13 +496,13 @@ export async function completeKidsStory(
         storyId,
         completed: nowCompleted,
         bestScore: scorePercent,
-        xpEarned: xpForThisAttempt,
+        xpEarned: xpToAward,
         completedAt: nowCompleted ? new Date() : null,
       },
       update: {
         completed: nowCompleted,
         bestScore: Math.max(existing?.bestScore ?? 0, scorePercent),
-        xpEarned: { increment: xpForThisAttempt },
+        xpEarned: { increment: xpToAward },
         completedAt: !wasAlreadyCompleted && nowCompleted ? new Date() : undefined,
       },
     });
@@ -512,13 +526,13 @@ export async function completeKidsStory(
       });
     }
 
-    await awardXp(tx, userId, xpForThisAttempt, "KIDS_STORY_COMPLETED", { storyId, scorePercent });
-    await awardCompetitionXp(tx, userId, "KIDS_STORY", xpForThisAttempt, { metadata: { storyId, scorePercent } });
+    await awardXp(tx, userId, xpToAward, "KIDS_STORY_COMPLETED", { storyId, scorePercent });
+    await awardCompetitionXp(tx, userId, "KIDS_STORY", xpToAward, { metadata: { storyId, scorePercent } });
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 
     return {
-      xpEarned: xpForThisAttempt,
+      xpEarned: xpToAward,
       chapterCompleted: nowCompleted,
       scorePercent,
       currentStreak: daily.currentStreak,
@@ -545,6 +559,10 @@ export async function completeIntroLesson(
     const wasAlreadyCompleted = existing?.completed ?? false;
     const nowCompleted = wasAlreadyCompleted || scorePercent >= PASS_THRESHOLD;
 
+    // Herhalingskorting, zie completeLesson hierboven.
+    const alreadyPerfect = (existing?.bestScore ?? 0) === 100;
+    const xpToAward = alreadyPerfect ? applyRepeatDiscount(xpForThisAttempt) : xpForThisAttempt;
+
     await tx.introLessonProgress.upsert({
       where: { userId_lessonId: { userId, lessonId } },
       create: {
@@ -552,13 +570,13 @@ export async function completeIntroLesson(
         lessonId,
         completed: nowCompleted,
         bestScore: scorePercent,
-        xpEarned: xpForThisAttempt,
+        xpEarned: xpToAward,
         completedAt: nowCompleted ? new Date() : null,
       },
       update: {
         completed: nowCompleted,
         bestScore: Math.max(existing?.bestScore ?? 0, scorePercent),
-        xpEarned: { increment: xpForThisAttempt },
+        xpEarned: { increment: xpToAward },
         completedAt: !wasAlreadyCompleted && nowCompleted ? new Date() : undefined,
       },
     });
@@ -582,13 +600,13 @@ export async function completeIntroLesson(
       });
     }
 
-    await awardXp(tx, userId, xpForThisAttempt, "INTRO_LESSON_COMPLETED", { lessonId, scorePercent });
-    await awardCompetitionXp(tx, userId, "INTRO_LESSON", xpForThisAttempt, { metadata: { lessonId, scorePercent } });
+    await awardXp(tx, userId, xpToAward, "INTRO_LESSON_COMPLETED", { lessonId, scorePercent });
+    await awardCompetitionXp(tx, userId, "INTRO_LESSON", xpToAward, { metadata: { lessonId, scorePercent } });
 
     const newAchievements = await checkAndAwardAchievements(tx, userId);
 
     return {
-      xpEarned: xpForThisAttempt,
+      xpEarned: xpToAward,
       chapterCompleted: nowCompleted,
       scorePercent,
       currentStreak: daily.currentStreak,

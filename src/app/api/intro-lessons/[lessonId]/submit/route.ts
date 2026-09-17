@@ -5,6 +5,7 @@ import { getCurrentUser } from "@/lib/session";
 import { isExerciseCorrect } from "@/lib/exerciseGen";
 import { completeIntroLesson } from "@/lib/streak";
 import { notifyNewAchievements } from "@/lib/notify";
+import { standardContentXp } from "@/lib/xpRules";
 
 const schema = z.object({
   answers: z.array(
@@ -14,9 +15,6 @@ const schema = z.object({
     })
   ),
 });
-
-const XP_PER_CORRECT = 10;
-const XP_PERFECT_BONUS = 20;
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ lessonId: string }> }) {
   const user = await getCurrentUser();
@@ -61,7 +59,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ les
 
   const total = exercises.length;
   const scorePercent = total === 0 ? 0 : Math.round((correctCount / total) * 100);
-  const xp = correctCount * XP_PER_CORRECT + (scorePercent === 100 ? XP_PERFECT_BONUS : 0);
+  const xp = standardContentXp(correctCount, total);
 
   const lessonResult = await completeIntroLesson(user.id, lessonId, scorePercent, xp);
   notifyNewAchievements(user.id, lessonResult.newAchievements).catch(() => {});
