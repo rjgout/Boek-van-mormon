@@ -66,4 +66,18 @@ export const introPersons: IntroPersonSeed[] = [
       "De zoon van Mormon. Maakte het boek af nadat zijn vader was overleden, en voegde er zelf nog een deel aan toe.",
     fatherSlug: "mormon",
   },
+  {
+    slug: "alma",
+    name: "Alma",
+    description:
+      "Werd door zijn vader (die ook al Alma heette) gewijd tot hogepriester, en predikte daarna door het hele " +
+      "land — te beginnen in de stad Zarahemla. Leeft veel later dan Lehi's gezin.",
+  },
+  {
+    slug: "samuel-de-lamaniet",
+    name: "Samuel de Lamaniet",
+    description:
+      "Een Lamaniet die naar de stad Zarahemla kwam om tot de Nephieten te prediken. Toen ze hem niet binnen " +
+      "wilden laten, klom hij op de stadsmuur en riep zijn boodschap vandaar.",
+  },
 ];

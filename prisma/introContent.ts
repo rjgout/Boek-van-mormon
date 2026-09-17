@@ -276,4 +276,254 @@ export const introLessons: IntroLessonSeed[] = [
       },
     ],
   },
+  {
+    number: 5,
+    slug: "hoe-zit-het-boek-in-elkaar",
+    title: "Hoe zit het boek in elkaar?",
+    summary: "Een boek van meerdere schrijvers, samengebracht door Mormon.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Het Boek van Mormon is niet door één persoon in één keer geschreven — het bestaat uit meerdere kleinere " +
+          "boeken, elk met een eigen schrijver, die achter elkaar zijn gebundeld.",
+      },
+      {
+        type: "bookList",
+        intro: "Dit zijn de boeken, in de volgorde waarin ze in het Boek van Mormon staan:",
+        bookSlugs: [
+          "1-nephi",
+          "2-nephi",
+          "jakob",
+          "enos",
+          "jarom",
+          "omni",
+          "woorden-van-mormon",
+          "mosiah",
+          "alma",
+          "helaman",
+          "3-nephi",
+          "4-nephi",
+          "mormon",
+          "ether",
+          "moroni",
+        ],
+      },
+      {
+        type: "personTree",
+        intro: "Mormon speelde daarbij een bijzondere rol:",
+        personSlugs: ["mormon"],
+      },
+      {
+        type: "text",
+        body:
+          "Mormon las de verslagen van al die eerdere schrijvers, en bracht ze samen tot één, korter boek — met " +
+          "zijn eigen naam erop. Zijn zoon Moroni voegde er na hem nog het laatste stuk aan toe.",
+      },
+      {
+        type: "reflection",
+        question: "Je hoeft deze lijst nog niet uit je hoofd te kennen. Wat valt je op aan zo'n lange rij schrijvers?",
+      },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie bracht de boeken van eerdere schrijvers samen tot het Boek van Mormon?",
+        answers: ["Mormon"],
+        options: [
+          { label: "Mormon", isCorrect: true },
+          { label: "Nephi", isCorrect: false },
+          { label: "Lehi", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Het Boek van Mormon is door één en dezelfde persoon geschreven.",
+        answers: ["false"],
+      },
+      {
+        type: "SEQUENCE",
+        prompt: "Zet deze vier boeken in de juiste volgorde.",
+        answers: ["1 Nephi", "2 Nephi", "Jakob", "Enos"],
+        wordBank: ["1 Nephi", "2 Nephi", "Jakob", "Enos"],
+      },
+    ],
+  },
+  {
+    number: 6,
+    slug: "waarom-staat-jezus-christus-centraal",
+    title: "Waarom staat Jezus Christus centraal?",
+    summary: "Het Boek van Mormon draait steeds weer om Hem.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Op de titelpagina noemt het Boek van Mormon zichzelf bedoeld om mensen te overtuigen dat Jezus Christus " +
+          "de Christus is. Dat thema komt telkens terug — niet in één apart hoofdstuk, maar door het hele boek heen.",
+      },
+      {
+        type: "text",
+        body:
+          "Een paar woorden die je vaak zal tegenkomen: geloof, bekering, hoop, en opstanding. Je hoeft ze nu nog " +
+          "niet allemaal scherp te kunnen uitleggen — ze komen vanzelf terug tijdens het lezen.",
+      },
+      {
+        type: "reflection",
+        question: "Wat verwacht je van een boek dat zegt dat het vooral over Jezus Christus gaat?",
+      },
+      {
+        type: "text",
+        body: "Als je het Boek van Mormon gaat lezen, zul je Jezus Christus steeds opnieuw tegenkomen.",
+      },
+    ],
+    exercises: [
+      {
+        type: "FILL_BLANK",
+        prompt: "Het Boek van Mormon draait steeds weer om ______.",
+        answers: ["jezus christus"],
+        options: [
+          { label: "Jezus Christus", isCorrect: true },
+          { label: "Mormon", isCorrect: false },
+          { label: "de geschiedenis van oorlogen", isCorrect: false },
+        ],
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Welk van deze woorden hoort NIET bij de thema's die vaak terugkomen?",
+        answers: ["belastingen"],
+        options: [
+          { label: "geloof", isCorrect: false },
+          { label: "bekering", isCorrect: false },
+          { label: "belastingen", isCorrect: true },
+          { label: "hoop", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Jezus Christus wordt pas helemaal aan het einde van het Boek van Mormon voor het eerst genoemd.",
+        answers: ["false"],
+      },
+    ],
+  },
+  {
+    number: 7,
+    slug: "profeten-openbaring-en-god",
+    title: "Profeten, openbaring en God",
+    summary: "Wat doet een profeet eigenlijk?",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "In het Boek van Mormon is een profeet iemand die een boodschap van God ontvangt — dat heet openbaring " +
+          "— en die vervolgens aan anderen doorgeeft. Niet iedereen luistert, en niet iedereen reageert hetzelfde.",
+      },
+      {
+        type: "steps",
+        title: "Een terugkerend patroon",
+        steps: [
+          { label: "God", description: "Heeft een boodschap voor zijn volk." },
+          { label: "Openbaring", description: "Die boodschap komt bij een profeet terecht." },
+          { label: "Profeet", description: "Geeft de boodschap door aan het volk." },
+          { label: "Boodschap", description: "Vaak een oproep tot verandering of een waarschuwing." },
+          { label: "Reactie", description: "Sommigen luisteren, anderen niet." },
+        ],
+      },
+      {
+        type: "personTree",
+        intro: "Een paar profeten die je in het Boek van Mormon tegenkomt, verspreid over een lange periode:",
+        personSlugs: ["lehi", "nephi", "alma", "samuel-de-lamaniet", "mormon", "moroni"],
+      },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie klom op de stadsmuur van Zarahemla om zijn boodschap te roepen, toen hij de stad niet in mocht?",
+        answers: ["Samuel de Lamaniet"],
+        options: [
+          { label: "Samuel de Lamaniet", isCorrect: true },
+          { label: "Alma", isCorrect: false },
+          { label: "Nephi", isCorrect: false },
+        ],
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie werd door zijn eigen vader gewijd tot hogepriester, en begon toen te prediken in Zarahemla?",
+        answers: ["Alma"],
+        options: [
+          { label: "Alma", isCorrect: true },
+          { label: "Lehi", isCorrect: false },
+          { label: "Moroni", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "Een profeet spreekt in het Boek van Mormon zijn eigen mening uit, nooit een boodschap namens God.",
+        answers: ["false"],
+      },
+    ],
+  },
+  {
+    number: 8,
+    slug: "keuzes-goed-en-kwaad",
+    title: "Keuzes, goed en kwaad",
+    summary: "Waarom mensen doen wat ze doen.",
+    blocks: [
+      {
+        type: "text",
+        body:
+          "Het is verleidelijk om te denken: Nephi is de goede, Laman en Lemuel zijn de slechten. Maar het verhaal " +
+          "laat vooral mensen zien die verschillende keuzes maken, en verschillend reageren op God, op moeilijke " +
+          "omstandigheden, en op elkaar.",
+      },
+      {
+        type: "reflection",
+        question:
+          "Stel: een vriend vraagt je mee te doen aan iets dat niet eerlijk voelt. Wat zou meespelen in jouw keuze?",
+      },
+      {
+        type: "steps",
+        title: "Een patroon dat vaak terugkomt",
+        steps: [
+          { label: "Keuzevrijheid", description: "Iedereen mag zelf kiezen hoe te reageren." },
+          { label: "Keuzes", description: "Verschillende mensen kiezen verschillend, in dezelfde situatie." },
+          { label: "Gevolgen", description: "Elke keuze heeft een uitwerking — op jezelf en op anderen." },
+          { label: "Verandering", description: "Mensen kunnen, soms drastisch, van koers veranderen." },
+        ],
+      },
+      {
+        type: "text",
+        body:
+          "Laman en Lemuel klaagden bijvoorbeeld herhaaldelijk tegen hun vader Lehi, terwijl Nephi in dezelfde " +
+          "situaties bleef vertrouwen. Dat verschil in reactie, niet alleen een simpel \"goed\" of \"slecht\" label, " +
+          "is waar het verhaal steeds weer op terugkomt.",
+      },
+    ],
+    exercises: [
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wat betekent keuzevrijheid het beste?",
+        answers: ["De vrijheid om zelf te kiezen hoe je reageert"],
+        options: [
+          { label: "De vrijheid om zelf te kiezen hoe je reageert", isCorrect: true },
+          { label: "Altijd precies doen wat je ouders zeggen", isCorrect: false },
+          { label: "Nooit de gevolgen van je keuzes dragen", isCorrect: false },
+        ],
+      },
+      {
+        type: "MULTIPLE_CHOICE",
+        prompt: "Wie klaagden herhaaldelijk tegen hun vader Lehi?",
+        answers: ["Laman en Lemuel"],
+        options: [
+          { label: "Laman en Lemuel", isCorrect: true },
+          { label: "Nephi en Sam", isCorrect: false },
+          { label: "Jakob en Jozef", isCorrect: false },
+        ],
+      },
+      {
+        type: "TRUE_FALSE",
+        prompt: "In het Boek van Mormon verandert niemand ooit van gedrag of overtuiging.",
+        answers: ["false"],
+      },
+    ],
+  },
 ];
