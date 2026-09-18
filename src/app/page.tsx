@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
 import { getBranding } from "@/lib/branding";
 import { resolveAppName } from "@/lib/brand";
+import Footer from "@/components/Footer";
 
 const FEATURES = [
   {
@@ -49,6 +50,7 @@ export default async function HomePage() {
   const displayName = resolveAppName(appName);
 
   return (
+    <>
     <div className="flex flex-col items-center text-center gap-10 py-8 sm:py-12">
       {heroLogoDataUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -89,5 +91,7 @@ export default async function HomePage() {
         ))}
       </div>
     </div>
+    <Footer />
+    </>
   );
 }

@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto max-w-5xl px-4 py-8 flex flex-col gap-3">
         <p>
           Deze website is een onafhankelijk initiatief en wordt niet gesponsord, ondersteund, goedgekeurd of
-          onderhouden door The Church of Jesus Christ of Latter-day Saints.
+          onderhouden door De Kerk van Jezus Christus van de Heiligen der Laatste Dagen.
         </p>
         <div className="flex gap-4 flex-wrap">
           <Link href="/privacy" className="hover:text-brand-600 dark:hover:text-brand-300 underline">

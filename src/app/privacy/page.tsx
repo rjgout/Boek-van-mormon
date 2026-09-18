@@ -5,7 +5,7 @@ export default function PrivacyPage() {
 
       <p>
         Deze website is een onafhankelijk, niet-commercieel initiatief en wordt niet gesponsord, ondersteund,
-        goedgekeurd of onderhouden door The Church of Jesus Christ of Latter-day Saints.
+        goedgekeurd of onderhouden door De Kerk van Jezus Christus van de Heiligen der Laatste Dagen.
       </p>
 
       <h2 className="font-extrabold text-lg mt-2">Welke gegevens verwerken we?</h2>
