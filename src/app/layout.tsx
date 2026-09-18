@@ -107,7 +107,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             geheel bovenaan blijven staan, ongeacht de exacte hoogte van de
             header — zie PodcastMiniPlayer.tsx. */}
         <div className="sticky top-0 z-20">
-        <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-100 dark:border-slate-800">
+        <header className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
           <div className="mx-auto max-w-5xl px-4 py-3 flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg shrink-0">
               {logoDataUrl ? (
