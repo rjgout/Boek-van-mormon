@@ -451,23 +451,19 @@ export const introLessons: IntroLessonSeed[] = [
     ],
     exercises: [
       {
-        type: "MULTIPLE_CHOICE",
-        prompt: "Wie klom op de stadsmuur van Zarahemla om zijn boodschap te roepen, toen hij de stad niet in mocht?",
-        answers: ["Samuel de Lamaniet"],
-        options: [
-          { label: "Samuel de Lamaniet", isCorrect: true },
-          { label: "Alma", isCorrect: false },
-          { label: "Nephi", isCorrect: false },
-        ],
+        type: "SEQUENCE",
+        prompt: "Zet dit terugkerende patroon in de juiste volgorde.",
+        answers: ["God", "Openbaring", "Profeet", "Boodschap", "Reactie"],
+        wordBank: ["God", "Openbaring", "Profeet", "Boodschap", "Reactie"],
       },
       {
         type: "MULTIPLE_CHOICE",
-        prompt: "Wie werd door zijn eigen vader gewijd tot hogepriester, en begon toen te prediken in Zarahemla?",
-        answers: ["Alma"],
+        prompt: "Wat is, volgens deze les, een profeet in het Boek van Mormon?",
+        answers: ["Iemand die een boodschap van God ontvangt en doorgeeft"],
         options: [
-          { label: "Alma", isCorrect: true },
-          { label: "Lehi", isCorrect: false },
-          { label: "Moroni", isCorrect: false },
+          { label: "Iemand die een boodschap van God ontvangt en doorgeeft", isCorrect: true },
+          { label: "Iemand die de toekomst exact kan voorspellen", isCorrect: false },
+          { label: "Een koning die het volk regeert", isCorrect: false },
         ],
       },
       {
