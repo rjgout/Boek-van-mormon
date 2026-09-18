@@ -13,6 +13,7 @@ import ThemeScript from "@/components/ThemeScript";
 import BottomNav from "@/components/BottomNav";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import PodcastMiniPlayer from "@/components/PodcastMiniPlayer";
+import HeaderInstallHint from "@/components/HeaderInstallHint";
 import { PodcastPlayerProvider } from "@/lib/podcastPlayerContext";
 import { APP_TAGLINE, resolveAppName } from "@/lib/brand";
 
@@ -107,8 +108,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             header — zie PodcastMiniPlayer.tsx. */}
         <div className="sticky top-0 z-20">
         <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-100 dark:border-slate-800">
-          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
-            <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg">
+          <div className="mx-auto max-w-5xl px-4 py-3 flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-2 font-extrabold text-brand-700 dark:text-brand-300 text-lg shrink-0">
               {logoDataUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={logoDataUrl} alt={displayName} className="h-8 w-auto" />
@@ -119,6 +120,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </>
               )}
             </Link>
+
+            {/* Middenin de header (i.p.v. bij de andere navigatie) zodat de
+                installatiehint opvalt zonder een extra header-item te lijken —
+                zie HeaderInstallHint.tsx voor waarom deze na elke paginalading
+                weer kan terugkeren. */}
+            <div className="flex-1 flex justify-center">{user && <HeaderInstallHint />}</div>
 
             {user ? (
               <nav className="flex items-center gap-4">

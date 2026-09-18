@@ -1,25 +1,12 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { isStandalone } from "@/lib/pwaInstall";
 
-/**
- * Op mobiel/tablet (buiten een al-geïnstalleerde PWA) blijven deze knoppen
- * bewust weg uit de altijd-zichtbare header — zie WelcomeCta.tsx voor
- * dezelfde afweging op het welkomscherm zelf, dat op die schermformaten al
- * naar "zet de app op je scherm" stuurt i.p.v. naar deze knoppen. Zodra de
- * app al als PWA op het scherm staat horen ze er ook hier weer gewoon bij.
- */
+// Altijd zichtbaar, ook op mobiel — installatie van de app wordt niet meer
+// hier voorgesteld (zie HeaderInstallHint.tsx voor die, alleen-na-inloggen,
+// terugkerende hint), dus deze twee knoppen mogen gewoon altijd de weg naar
+// aanmelden/inloggen wijzen.
 export default function HeaderAuthLinks() {
-  const [showOnMobile, setShowOnMobile] = useState(false);
-
-  useEffect(() => {
-    setShowOnMobile(isStandalone());
-  }, []);
-
   return (
-    <nav className={`items-center gap-2 ${showOnMobile ? "flex" : "hidden lg:flex"}`}>
+    <nav className="flex items-center gap-2">
       <Link href="/login" className="btn-secondary !px-4 !py-2">
         Inloggen
       </Link>

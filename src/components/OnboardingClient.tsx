@@ -143,7 +143,7 @@ function WebappStep({ onNext }: { onNext: () => void }) {
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-extrabold text-brand-800 dark:text-brand-300 text-center">Welkom! Eerst dit...</h1>
-      <InstallAppCard variant="full" />
+      <InstallAppCard />
       <button className="btn-primary self-center" onClick={onNext}>
         Volgende
       </button>

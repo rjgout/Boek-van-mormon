@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { hasInstallPrompt, onInstallPromptChange, promptInstall, isStandalone, isIOS } from "@/lib/pwaInstall";
 
 /**
- * Gedeeld tussen de homepage (variant="compact", als vast onderdeel van het
- * functie-overzicht), de mobiele/tablet-welkomweergave (variant="hero", zie
- * WelcomeCta.tsx — vervangt daar de inloggen/account-maken-knoppen) en stap 0
- * van de onboarding (variant="full", ná registratie) — zelfde installatielogica,
- * alleen andere hoeveelheid tekst/toelichting eromheen.
+ * Stap 0 van de onboarding (ná registratie) — de enige plek waar deze volle
+ * kaart nog gebruikt wordt. Zie HeaderInstallHint.tsx voor de kleinere,
+ * terugkerende herinnering die daarna in de header verschijnt zolang de app
+ * nog niet geïnstalleerd is.
  */
-export default function InstallAppCard({ variant = "full" }: { variant?: "compact" | "hero" | "full" }) {
+export default function InstallAppCard() {
   const [standalone, setStandalone] = useState(false);
   const [promptAvailable, setPromptAvailable] = useState(false);
   const [ios, setIos] = useState(false);
@@ -25,7 +24,6 @@ export default function InstallAppCard({ variant = "full" }: { variant?: "compac
   }, []);
 
   if (standalone) {
-    if (variant === "compact") return null;
     return (
       <div className="card text-left">
         <div className="text-3xl mb-2">✅</div>
@@ -49,11 +47,7 @@ export default function InstallAppCard({ variant = "full" }: { variant?: "compac
         Zet de app op je {ios ? "beginscherm" : "startscherm"}
       </h3>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">
-        {variant === "compact"
-          ? "Werkt als een echte app: sneller starten en pushmeldingen."
-          : variant === "hero"
-            ? "Daarna kan je vanuit de app zelf inloggen of een account maken — én werkt het sneller, met pushmeldingen voor je streak."
-            : "Nodig, want pushmeldingen (zie de laatste stap) werken alleen als de app op je scherm staat."}
+        Nodig, want pushmeldingen (zie de laatste stap) werken alleen als de app op je scherm staat.
       </p>
 
       {promptAvailable && (
