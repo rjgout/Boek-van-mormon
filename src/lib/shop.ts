@@ -7,7 +7,7 @@ import { applyWeeklyXp } from "@/lib/leagues";
 // hier of verdiend bij het Woordspel/Raad het hoofdstuk komt op dezelfde
 // plek terecht, zodat overal waar hints te gebruiken zijn precies hetzelfde
 // getal te zien is.
-export const HINT_PRICE_XP = 10;
+export const HINT_PRICE_XP = 50;
 
 export type BuyHintResult =
   | { ok: true; xpTotal: number; hintBalance: number }
@@ -50,7 +50,7 @@ export async function buyHints(userId: string, quantity: number): Promise<BuyHin
 // vriend (giftFreeze) — dit is gewoon een derde manier om aan User.freezeCount
 // te komen, en telt daarom net als die andere twee mee in een eigen
 // FreezeTransaction voor de audittrail.
-export const FREEZE_PRICE_XP = 1000;
+export const FREEZE_PRICE_XP = 500;
 
 export type BuyFreezeResult =
   | { ok: true; xpTotal: number; freezeCount: number }
