@@ -6,7 +6,6 @@ import { getCurrentUser } from "@/lib/session";
 import { getBranding } from "@/lib/branding";
 import { cacheDetectedAppUrl } from "@/lib/baseUrl";
 import NavUserBadges from "@/components/NavUserBadges";
-import HeaderAuthLinks from "@/components/HeaderAuthLinks";
 import InviteListener from "@/components/InviteListener";
 import ChangelogPopup from "@/components/ChangelogPopup";
 import ThemeScript from "@/components/ThemeScript";
@@ -170,9 +169,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 )}
                 <NavUserBadges streak={user.currentStreak} xp={user.xpTotal} displayName={user.handle} />
               </nav>
-            ) : (
-              <HeaderAuthLinks />
-            )}
+            ) : null}
           </div>
         </header>
         {user && <PodcastMiniPlayer />}
