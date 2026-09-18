@@ -132,7 +132,7 @@ export default function StreakClient() {
         )}
       </div>
 
-      <div className="card !py-4 bg-ice-50 dark:bg-slate-800 border-ice-400/30 dark:border-slate-700 flex items-center gap-3">
+      <div className="card !py-4 !bg-ice-50 dark:!bg-slate-800 !border-ice-400/30 dark:!border-slate-700 flex items-center gap-3">
         <span className="text-2xl shrink-0" aria-hidden>
           🧊
         </span>

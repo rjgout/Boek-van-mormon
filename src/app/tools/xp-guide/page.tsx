@@ -89,7 +89,7 @@ export default async function XpGuidePage() {
         ))}
       </div>
 
-      <div className="card bg-gold-50 dark:bg-slate-800 border-gold-200 dark:border-slate-700">
+      <div className="card !bg-gold-50 dark:!bg-slate-800 !border-gold-200 dark:!border-slate-700">
         <p className="font-extrabold dark:text-slate-100">🔁 Herhalen</p>
         <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
           Had je een hoofdstuk, introles, kinderverhaal of podcastles al eerder met een perfecte score (100%)

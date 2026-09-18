@@ -74,9 +74,14 @@ export default function PerBookClient() {
         <div className="flex flex-col gap-3">
           {courses.map((course) => (
             <div key={course.id} className="card flex items-center justify-between gap-3">
-              <h2 className="font-extrabold text-lg dark:text-slate-100">{course.name}</h2>
+              <div>
+                <h2 className="font-extrabold text-lg dark:text-slate-100">{course.name}</h2>
+                <p className="text-xs font-bold text-slate-400 dark:text-slate-500">
+                  {course.totalChapters} hoofdstukken
+                </p>
+              </div>
               <button
-                className="btn-secondary self-start"
+                className="btn-primary self-start"
                 disabled={activatingId === course.id}
                 onClick={() => activate(course.id)}
               >

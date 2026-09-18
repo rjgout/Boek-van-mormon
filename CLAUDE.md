@@ -195,6 +195,19 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
   in plaats daarvan. Interne codenamen (bestandsnamen, functie-/modelnamen)
   zijn hierop de uitzondering: die omdopen is een aparte, grotere refactor
   en levert gebruikers niets op, dus dat gebeurt niet automatisch mee.
+- **Een `bg-`/`border-`-kleur overschrijven op een element met `.card`/`.btn`/
+  `.btn-primary`/`.btn-secondary`/`.input` (globals.css) moet altijd met een
+  `!`-prefix** (bv. `!bg-gold-50 dark:!bg-slate-800 !border-gold-400/30`).
+  Die basisklassen staan in de gecompileerde CSS ná Tailwinds eigen
+  utility-laag (ze zijn plain CSS, niet via `@layer components`), dus zonder
+  `!` wint `.card`'s eigen `bg-white`/`border-slate-100` alsnog ondanks
+  gelijke specificiteit — de kleur ziet er in de JSX uit alsof die klopt,
+  maar rendert gewoon wit/de standaardkleur. Alleen `bg-gradient-to-br`
+  (een ander CSS-veld, `background-image`) en pseudo-class-varianten zoals
+  `hover:` (hogere specificiteit) zijn hier vanzelf immuun voor. Controleer
+  bij twijfel met `getComputedStyle(el).backgroundColor` in de browser, niet
+  alleen visueel — het verschil tussen wit en een lichte tint (bv. gold-50)
+  is op een screenshot makkelijk te missen.
 
 ## Content & auteursrecht (relevant bij wijzigingen aan content/seeds)
 

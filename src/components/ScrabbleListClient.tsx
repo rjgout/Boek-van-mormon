@@ -119,7 +119,10 @@ export default function ScrabbleListClient() {
           <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Nieuwe uitnodigingen</h2>
           <div className="flex flex-col gap-2">
             {incoming.map((g) => (
-              <div key={g.id} className="card flex items-center justify-between !py-3 flex-wrap gap-2">
+              <div
+                key={g.id}
+                className="card !bg-gold-50 dark:!bg-slate-800 !border-gold-400/30 dark:!border-slate-700 flex items-center justify-between !py-3 flex-wrap gap-2"
+              >
                 <span className="dark:text-slate-100">
                   <strong>{g.opponent.displayName}</strong> daagt je uit voor een woordspel
                 </span>
@@ -144,14 +147,18 @@ export default function ScrabbleListClient() {
             {active.map((g) => (
               <div
                 key={g.id}
-                className="card flex items-center justify-between !py-3 flex-wrap gap-2 cursor-pointer"
+                className={`card flex items-center justify-between !py-3 flex-wrap gap-2 cursor-pointer ${
+                  g.isMyTurn ? "!border-gold-400/40 dark:!border-gold-400/30" : ""
+                }`}
                 onClick={() => router.push(`/scrabble/${g.id}`)}
               >
                 <span className="dark:text-slate-100">
                   Tegen <strong>{g.opponent.displayName}</strong> — {g.myScore} - {g.opponentScore}
                 </span>
                 {g.isMyTurn ? (
-                  <span className="text-sm font-bold text-brand-600 dark:text-brand-300">Jij bent aan de beurt!</span>
+                  <span className="text-xs font-extrabold uppercase text-gold-700 dark:text-gold-400 bg-gold-50 dark:bg-slate-700 rounded-full px-3 py-1">
+                    Jij bent aan de beurt!
+                  </span>
                 ) : (
                   <span className="text-sm text-slate-400 dark:text-slate-500">Wachten op {g.opponent.displayName}...</span>
                 )}
@@ -185,7 +192,17 @@ export default function ScrabbleListClient() {
                 ) : (
                   <span>
                     Tegen {g.opponent.displayName}: {g.myScore} - {g.opponentScore}{" "}
-                    <strong>{g.tied ? "gelijkspel" : g.won ? "🎉 gewonnen" : "verloren"}</strong>
+                    <strong
+                      className={
+                        g.tied
+                          ? "text-slate-500 dark:text-slate-400"
+                          : g.won
+                            ? "text-gold-600 dark:text-gold-400"
+                            : "text-slate-400 dark:text-slate-500"
+                      }
+                    >
+                      {g.tied ? "gelijkspel" : g.won ? "🎉 gewonnen" : "verloren"}
+                    </strong>
                   </span>
                 )}
               </div>

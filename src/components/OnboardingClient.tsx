@@ -127,7 +127,7 @@ function KennisStep({ onNext }: { onNext: () => void }) {
         {KNOWLEDGE_OPTIONS.map((opt) => (
           <button
             key={opt.level}
-            className="card text-left hover:border-brand-300 border-2 border-transparent dark:text-slate-100"
+            className="card text-left hover:!border-brand-300 !border-2 !border-transparent dark:text-slate-100"
             disabled={saving}
             onClick={() => choose(opt.level)}
           >

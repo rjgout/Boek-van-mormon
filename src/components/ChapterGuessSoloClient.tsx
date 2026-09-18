@@ -253,7 +253,7 @@ export default function ChapterGuessSoloClient({ gameId }: { gameId: string }) {
       </div>
 
       {confirmingGiveUp && (
-        <div className="card !py-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-2 border-red-200 dark:border-red-900">
+        <div className="card !py-3 flex flex-col sm:flex-row items-center justify-between gap-3 !border-2 !border-red-200 dark:!border-red-900">
           <p className="text-sm font-bold text-red-600 dark:text-red-400">
             Weet je het zeker? Je krijgt dan geen XP voor dit potje.
           </p>

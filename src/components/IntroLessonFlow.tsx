@@ -369,7 +369,7 @@ function BlockView({ block, onNext }: { block: ResolvedIntroBlock; onNext: () =>
 
     case "scripture":
       return (
-        <div className="card flex flex-col gap-3 animate-pop border-l-4 border-brand-400">
+        <div className="card flex flex-col gap-3 animate-pop !border-l-4 !border-brand-400">
           <p className="text-xs font-bold uppercase text-brand-500 tracking-wide">
             {block.label ?? `${block.bookName} ${block.chapterNumber}`}
           </p>

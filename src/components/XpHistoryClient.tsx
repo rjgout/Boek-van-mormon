@@ -178,7 +178,7 @@ export default function XpHistoryClient() {
 
       <Link
         href="/tools/xp-guide"
-        className="card !py-4 bg-gold-50 dark:bg-slate-800 border-gold-400/30 dark:border-slate-700 flex items-center gap-3 hover:ring-2 hover:ring-gold-300"
+        className="card !py-4 !bg-gold-50 dark:!bg-slate-800 !border-gold-400/30 dark:!border-slate-700 flex items-center gap-3 hover:ring-2 hover:ring-gold-300"
       >
         <span className="text-2xl shrink-0" aria-hidden>
           💡

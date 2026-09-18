@@ -71,59 +71,57 @@ export default function LeaderboardClient() {
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">
-            {scope === "league" && leagueData ? (
-              <>
-                {TIER_ICONS[leagueData.myTier]} {TIER_LABELS[leagueData.myTier]}
-              </>
-            ) : scope === "national" ? (
-              "🇳🇱 Nederlandse ranglijst"
-            ) : (
-              "Competitie"
-            )}
-          </h1>
-          {scope === "league" && <p className="text-sm text-slate-400 dark:text-slate-500">Deze week</p>}
+      {scope === "league" && leagueData ? (
+        <div className="card bg-gradient-to-br from-brand-500 to-brand-700 dark:from-brand-600 dark:to-brand-900 text-white flex flex-col items-center gap-1 !py-8">
+          <span className="text-5xl" aria-hidden>
+            {TIER_ICONS[leagueData.myTier]}
+          </span>
+          <h1 className="text-2xl font-extrabold">{TIER_LABELS[leagueData.myTier]}</h1>
+          <p className="text-brand-100 text-sm">Deze week</p>
         </div>
-        <div className="flex bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-1 flex-wrap">
-          <button
-            onClick={() => setScope("league")}
-            className={`px-4 py-1.5 rounded-xl text-sm font-bold ${
-              scope === "league" ? "bg-brand-500 text-white" : "text-slate-500 dark:text-slate-300"
-            }`}
-          >
-            Divisie
-          </button>
-          <button
-            onClick={() => setScope("friends")}
-            className={`px-4 py-1.5 rounded-xl text-sm font-bold ${
-              scope === "friends" ? "bg-brand-500 text-white" : "text-slate-500 dark:text-slate-300"
-            }`}
-          >
-            Vrienden
-          </button>
-          <button
-            onClick={() => setScope("national")}
-            className={`px-4 py-1.5 rounded-xl text-sm font-bold ${
-              scope === "national" ? "bg-brand-500 text-white" : "text-slate-500 dark:text-slate-300"
-            }`}
-          >
-            Nederlandse ranglijst
-          </button>
-        </div>
+      ) : (
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">
+          {scope === "national" ? "🇳🇱 Nederlandse ranglijst" : "Competitie"}
+        </h1>
+      )}
+
+      <div className="flex bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-1 flex-wrap justify-center">
+        <button
+          onClick={() => setScope("league")}
+          className={`px-4 py-1.5 rounded-xl text-sm font-bold ${
+            scope === "league" ? "bg-brand-500 text-white" : "text-slate-500 dark:text-slate-300"
+          }`}
+        >
+          Divisie
+        </button>
+        <button
+          onClick={() => setScope("friends")}
+          className={`px-4 py-1.5 rounded-xl text-sm font-bold ${
+            scope === "friends" ? "bg-brand-500 text-white" : "text-slate-500 dark:text-slate-300"
+          }`}
+        >
+          Vrienden
+        </button>
+        <button
+          onClick={() => setScope("national")}
+          className={`px-4 py-1.5 rounded-xl text-sm font-bold ${
+            scope === "national" ? "bg-brand-500 text-white" : "text-slate-500 dark:text-slate-300"
+          }`}
+        >
+          Nederlandse ranglijst
+        </button>
       </div>
 
       {scope === "league" && leagueData && (
-        <p className="text-sm text-slate-400 dark:text-slate-500">
+        <p className="text-sm text-slate-400 dark:text-slate-500 text-center">
           De bovenste {leagueData.promoteCount} promoveren aan het einde van de week, de onderste {leagueData.demoteCount}{" "}
           degraderen.
         </p>
       )}
 
       {scope === "league" && leagueData?.xpGap && (
-        <div className="card !py-3 bg-brand-50 dark:bg-slate-700 border-brand-100 dark:border-slate-600">
-          <p className="font-bold text-brand-700 dark:text-brand-300">
+        <div className="card !py-3 !bg-gold-50 dark:!bg-slate-700 !border-gold-400/30 dark:!border-slate-600 text-center">
+          <p className="font-extrabold text-gold-700 dark:text-gold-400">
             {leagueData.xpGap.toward === "SAFETY" && `Nog ${leagueData.xpGap.xp} XP tot veiligheid.`}
             {leagueData.xpGap.toward === "PROMOTION" && `Nog ${leagueData.xpGap.xp} XP tot promotie.`}
             {leagueData.xpGap.toward === "FIRST_PLACE" && `Nog ${leagueData.xpGap.xp} XP tot de eerste plek!`}
@@ -157,7 +155,7 @@ export default function LeaderboardClient() {
                   {e.handle} {e.isMe && <span className="text-brand-500 dark:text-brand-300">(jij)</span>}
                 </span>
               </div>
-              <span className="text-gold-600 dark:text-gold-400 font-bold">{e.xp} XP</span>
+              <span className="text-gold-600 dark:text-gold-400 font-extrabold">{e.xp} XP</span>
             </div>
           ))}
         </div>
@@ -171,7 +169,7 @@ export default function LeaderboardClient() {
             ))}
           </div>
           {nationalData.me && (
-            <div className="card !py-3 bg-brand-50 dark:bg-slate-700">
+            <div className="card !py-3 !bg-gold-50 dark:!bg-slate-700 !border-gold-400/30 dark:!border-slate-600">
               <NationalRow e={nationalData.me} />
             </div>
           )}
@@ -193,7 +191,7 @@ function NationalRow({ e }: { e: NationalEntry }) {
       </div>
       <div className="flex items-center gap-3 text-sm">
         <span className="text-orange-500 font-bold">🔥 {e.currentStreak}</span>
-        <span className="text-gold-600 dark:text-gold-400 font-bold">⭐ {e.xpTotal}</span>
+        <span className="text-gold-600 dark:text-gold-400 font-extrabold">⭐ {e.xpTotal}</span>
       </div>
     </div>
   );

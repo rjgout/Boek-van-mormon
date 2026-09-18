@@ -141,41 +141,57 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
   }
 
   return (
-    <div className="max-w-xl mx-auto flex flex-col gap-8">
+    <div className="max-w-2xl mx-auto flex flex-col gap-8">
       <ActiveGamesBanner />
 
-      <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Spelletjes en uitdagingen</h1>
-
-      <SortableList
-        dndId="games-list"
-        items={games}
-        onReorder={reorderGames}
-        className="flex flex-col gap-4"
-        renderItem={(game, handle) => {
-          const enabled = settings[game.enabledKey];
-          if (!enabled && !isAdmin) return null;
-          return <GameCardBody game={game} enabled={enabled} handle={handle} />;
-        }}
-      />
+      <div>
+        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Spelletjes en uitdagingen</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm">
+          Oefen op je eigen manier, of daag een vriend uit — sleep de kaarten in de volgorde die jou het beste uitkomt.
+        </p>
+      </div>
 
       {settings.liveExercisesEnabled && (
-        <div className="card flex flex-col gap-3">
-          <form onSubmit={createGame} className="flex flex-col gap-4">
-            <h2 className="font-extrabold dark:text-slate-100">Nieuw spel starten</h2>
-            <select className="input" value={chapterId} onChange={(e) => setChapterId(e.target.value)}>
+        <div className="card bg-gradient-to-br from-brand-500 to-brand-700 dark:from-brand-600 dark:to-brand-900 text-white flex flex-col gap-4">
+          <div>
+            <h2 className="font-extrabold text-lg">⚡ Live quiz starten</h2>
+            <p className="text-brand-100 text-sm">Kies een hoofdstuk en nodig vrienden uit voor een live duel.</p>
+          </div>
+          <form onSubmit={createGame} className="flex flex-col gap-3">
+            <select
+              className="input !bg-white/90 dark:!bg-slate-900/60 !text-slate-800 dark:!text-slate-100 !border-0"
+              value={chapterId}
+              onChange={(e) => setChapterId(e.target.value)}
+            >
               {chapters.map((c) => (
                 <option key={c.id} value={c.id} disabled={c.exerciseCount === 0}>
                   {c.label} ({c.exerciseCount} oefeningen)
                 </option>
               ))}
             </select>
-            <button className="btn-primary self-start" disabled={creating || !chapterId} type="submit">
+            <button
+              className="rounded-2xl bg-gold-400 text-brand-900 font-extrabold uppercase tracking-wide text-sm py-3 shadow-[0_4px_0_0_theme(colors.gold.600)] active:shadow-none active:translate-y-1 transition disabled:opacity-50"
+              disabled={creating || !chapterId}
+              type="submit"
+            >
               {creating ? "Bezig..." : "Maak spel & nodig vrienden uit"}
             </button>
-            {error && <p className="text-red-600 text-sm font-semibold">{error}</p>}
+            {error && <p className="text-red-100 text-sm font-semibold">{error}</p>}
           </form>
         </div>
       )}
+
+      <SortableList
+        dndId="games-list"
+        items={games}
+        onReorder={reorderGames}
+        className="grid sm:grid-cols-2 gap-4"
+        renderItem={(game, handle) => {
+          const enabled = settings[game.enabledKey];
+          if (!enabled && !isAdmin) return null;
+          return <GameCardBody game={game} enabled={enabled} handle={handle} />;
+        }}
+      />
     </div>
   );
 }
@@ -187,7 +203,9 @@ export default function LiveLobbyForm({ settings, isAdmin }: Props) {
 // SortableList (zie renderItem hierboven) doorgegeven.
 function GameCardBody({ game, enabled, handle }: { game: GameEntry; enabled: boolean; handle: DragHandleProps }) {
   return (
-    <div className={`card flex flex-col gap-3 ${!enabled ? "border-2 border-red-300 dark:border-red-800" : ""}`}>
+    <div
+      className={`card flex flex-col gap-3 h-full ${!enabled ? "!border-2 !border-red-300 dark:!border-red-800" : ""}`}
+    >
       {!enabled && (
         <span className="text-xs font-bold uppercase text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950 rounded-full px-2 py-0.5 self-start">
           Uitgeschakeld voor gebruikers
@@ -195,11 +213,12 @@ function GameCardBody({ game, enabled, handle }: { game: GameEntry; enabled: boo
       )}
       <div className="flex items-center gap-2">
         <DragHandle {...handle} />
-        <h2 className="font-extrabold dark:text-slate-100">
-          {game.icon} {game.title}
-        </h2>
+        <div className="text-2xl" aria-hidden>
+          {game.icon}
+        </div>
       </div>
-      <p className="text-sm text-slate-500 dark:text-slate-400">{game.description}</p>
+      <h2 className="font-extrabold dark:text-slate-100">{game.title}</h2>
+      <p className="text-sm text-slate-500 dark:text-slate-400 flex-1">{game.description}</p>
       <Link href={game.href} className="btn-secondary self-start">
         {game.linkLabel}
       </Link>

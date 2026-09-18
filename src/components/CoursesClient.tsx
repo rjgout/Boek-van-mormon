@@ -156,12 +156,16 @@ export default function CoursesClient() {
         renderItem={(course, handle) => {
           const pct = course.totalChapters > 0 ? Math.round((course.completedCount / course.totalChapters) * 100) : 0;
           return (
-            <div className={`card flex flex-col gap-3 ${course.isActive ? "ring-2 ring-brand-400" : ""}`}>
+            <div
+              className={`card flex flex-col gap-3 ${
+                course.isActive ? "!border-2 !border-brand-400 dark:!border-brand-500" : ""
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start gap-2 min-w-0">
                   <DragHandle {...handle} />
                   <div className="min-w-0">
-                    <p className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">
+                    <p className="text-xs font-extrabold uppercase tracking-wide text-slate-400 dark:text-slate-500">
                       {TYPE_LABELS[course.type]}
                     </p>
                     <h2 className="font-extrabold text-lg dark:text-slate-100">{course.name}</h2>
@@ -172,7 +176,7 @@ export default function CoursesClient() {
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
                   {course.isActive && (
-                    <span className="text-xs font-bold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
+                    <span className="text-xs font-extrabold uppercase text-brand-600 dark:text-brand-300 bg-brand-50 dark:bg-slate-700 rounded-full px-3 py-1">
                       Actief
                     </span>
                   )}
@@ -189,7 +193,7 @@ export default function CoursesClient() {
               {course.type !== "FREE_CHOICE" && course.totalChapters > 0 && (
                 <div className="flex flex-col gap-1">
                   <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                    <div className="h-full bg-brand-500" style={{ width: `${pct}%` }} />
+                    <div className="h-full bg-gold-400" style={{ width: `${pct}%` }} />
                   </div>
                   <p className="text-xs text-slate-400 dark:text-slate-500">
                     {course.completedCount} / {course.totalChapters} hoofdstukken voltooid
@@ -220,7 +224,10 @@ export default function CoursesClient() {
       />
 
       {!showCatalog ? (
-        <button className="btn-secondary self-center" onClick={openCatalog}>
+        <button
+          className="rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 font-extrabold text-sm py-3 hover:border-brand-400 hover:text-brand-600 dark:hover:text-brand-300 transition-colors"
+          onClick={openCatalog}
+        >
           ➕ Voeg nieuwe cursus toe
         </button>
       ) : (

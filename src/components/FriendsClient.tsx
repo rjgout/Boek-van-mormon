@@ -234,7 +234,7 @@ export default function FriendsClient() {
             {data.incoming.map(({ friendshipId, from }) => (
               <div
                 key={friendshipId}
-                className="card !py-3 bg-gold-50 dark:bg-slate-800 border-gold-400/30 dark:border-slate-700 flex items-center justify-between gap-3 flex-wrap"
+                className="card !py-3 !bg-gold-50 dark:!bg-slate-800 !border-gold-400/30 dark:!border-slate-700 flex items-center justify-between gap-3 flex-wrap"
               >
                 <span className="flex items-center gap-2 font-bold dark:text-slate-100">
                   <Avatar id={from.id} handle={from.handle} />

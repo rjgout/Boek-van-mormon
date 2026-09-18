@@ -77,21 +77,20 @@ export default function ShopClient() {
 
   return (
     <div className="max-w-xl mx-auto flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-extrabold text-brand-800 dark:text-brand-300">Winkel</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm">Wissel je verdiende XP in voor handige extra's.</p>
+      <div className="card bg-gradient-to-br from-brand-500 to-brand-700 dark:from-brand-600 dark:to-brand-900 text-white flex flex-col items-center gap-1 !py-8">
+        <span className="text-4xl" aria-hidden>
+          ⭐
+        </span>
+        <div className="text-4xl font-extrabold leading-none">{data.xpTotal}</div>
+        <div className="text-brand-100 font-bold text-sm mt-1">XP beschikbaar</div>
       </div>
 
-      <div className="flex gap-4 text-center justify-center">
-        <div className="card !py-3 !px-5">
-          <div className="text-xl font-extrabold text-gold-600 dark:text-gold-400">⭐ {data.xpTotal}</div>
-          <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Jouw XP</div>
-        </div>
-        <div className="card !py-3 !px-5">
+      <div className="grid grid-cols-2 gap-4 text-center">
+        <div className="card !py-3 !px-5 !bg-brand-50 dark:!bg-slate-800 !border-brand-100 dark:!border-slate-700">
           <div className="text-xl font-extrabold text-brand-600 dark:text-brand-300">💡 {data.hintBalance}</div>
           <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Hints</div>
         </div>
-        <div className="card !py-3 !px-5">
+        <div className="card !py-3 !px-5 !bg-ice-50 dark:!bg-slate-800 !border-ice-400/30 dark:!border-slate-700">
           <div className="text-xl font-extrabold text-ice-600 dark:text-ice-400">🧊 {data.freezeCount}</div>
           <div className="text-xs font-bold uppercase text-slate-400 dark:text-slate-500">Freezes</div>
         </div>
@@ -106,8 +105,8 @@ export default function ShopClient() {
               waar hints gebruikt kunnen worden, ongeacht hoeveel je er verzamelt.
             </p>
           </div>
-          <span className="text-sm font-bold text-gold-600 dark:text-gold-400 whitespace-nowrap">
-            {data.hintPriceXp} XP / stuk
+          <span className="text-sm font-extrabold text-gold-600 dark:text-gold-400 whitespace-nowrap bg-gold-50 dark:bg-slate-700 rounded-full px-3 py-1">
+            {data.hintPriceXp} XP
           </span>
         </div>
 
@@ -151,8 +150,8 @@ export default function ShopClient() {
               verdient op een mijlpaal of van een vriend krijgt.
             </p>
           </div>
-          <span className="text-sm font-bold text-gold-600 dark:text-gold-400 whitespace-nowrap">
-            {data.freezePriceXp} XP / stuk
+          <span className="text-sm font-extrabold text-gold-600 dark:text-gold-400 whitespace-nowrap bg-gold-50 dark:bg-slate-700 rounded-full px-3 py-1">
+            {data.freezePriceXp} XP
           </span>
         </div>
 

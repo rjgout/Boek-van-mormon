@@ -156,7 +156,10 @@ export default function ChallengesClient() {
           <h2 className="font-extrabold mb-2 text-slate-700 dark:text-slate-200">Nieuwe uitdagingen</h2>
           <div className="flex flex-col gap-2">
             {incoming.map((c) => (
-              <div key={c.id} className="card flex items-center justify-between !py-3 flex-wrap gap-2">
+              <div
+                key={c.id}
+                className="card !bg-gold-50 dark:!bg-slate-800 !border-gold-400/30 dark:!border-slate-700 flex items-center justify-between !py-3 flex-wrap gap-2"
+              >
                 <span className="dark:text-slate-100">
                   <strong>{c.opponent.displayName}</strong> daagt je uit op {c.bookName} {c.chapterNumber}
                 </span>
@@ -228,7 +231,17 @@ export default function ChallengesClient() {
                   <span>
                     {c.bookName} {c.chapterNumber} tegen {c.opponent.displayName}: jij {c.myScore ?? "–"}% —{" "}
                     {c.opponent.displayName} {c.opponentScore ?? "–"}%{" "}
-                    <strong>{c.tied ? "gelijkspel" : c.won ? "🎉 gewonnen" : "verloren"}</strong>
+                    <strong
+                      className={
+                        c.tied
+                          ? "text-slate-500 dark:text-slate-400"
+                          : c.won
+                            ? "text-gold-600 dark:text-gold-400"
+                            : "text-slate-400 dark:text-slate-500"
+                      }
+                    >
+                      {c.tied ? "gelijkspel" : c.won ? "🎉 gewonnen" : "verloren"}
+                    </strong>
                   </span>
                 )}
               </div>

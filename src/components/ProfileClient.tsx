@@ -295,7 +295,7 @@ export default function ProfileClient() {
         </div>
       </div>
 
-      <div className="card !py-4 bg-gold-50 dark:bg-slate-800 border-gold-400/30 dark:border-slate-700 flex flex-col gap-4">
+      <div className="card !py-4 !bg-gold-50 dark:!bg-slate-800 !border-gold-400/30 dark:!border-slate-700 flex flex-col gap-4">
         <h2 className="font-extrabold text-lg dark:text-slate-100">Competitie</h2>
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-white/70 dark:bg-slate-700/70 !py-3 flex flex-col items-center gap-0.5">
@@ -351,7 +351,7 @@ export default function ProfileClient() {
               key={a.slug}
               title={a.description}
               className={`card !p-4 flex flex-col items-center text-center gap-1 ${
-                a.earnedAt ? "bg-gold-50 dark:bg-slate-700" : "opacity-40 grayscale"
+                a.earnedAt ? "!bg-gold-50 dark:!bg-slate-700" : "opacity-40 grayscale"
               }`}
             >
               <span className="text-3xl">{a.icon}</span>
