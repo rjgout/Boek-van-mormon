@@ -157,4 +157,76 @@ export const introPersons: IntroPersonSeed[] = [
     description: "Koning der Nephieten. Leidde zijn volk naar de stad Zarahemla en gaf hen rechtschapenheid.",
     gender: "man",
   },
+  {
+    slug: "benjamin",
+    name: "Benjamin",
+    description: "Een rechtschapen koning der Nephieten die zijn volk verenigde en hen zijn kostbare woorden gaf.",
+    gender: "man",
+  },
+  {
+    slug: "lamoni",
+    name: "Lamoni",
+    description:
+      "Een Lamaniëtische koning die tot het geloof werd gebracht door Ammon. Zijn hart veranderde van hoop voor zijn volk.",
+    gender: "man",
+  },
+  {
+    slug: "anti-nephi-lehi",
+    name: "Anti-Nephi-Lehi",
+    description:
+      "Een Lamaniëtische koning die zich tot God wendde en zijn volk van veel zonden bevrijd. Stierf samen met veel van zijn volk " +
+      "om hun verbond te bewaren.",
+    gender: "man",
+  },
+  {
+    slug: "amulek",
+    name: "Amulek",
+    description:
+      "Een man van Zarahemla die naast Alma predikte en tegen de priesterschap van Noe sprak. Werd vervolgd vanwege zijn getuigenis.",
+    gender: "man",
+  },
+  {
+    slug: "helaman",
+    name: "Helaman",
+    description:
+      "Zoon van Alma de Jongere. Leidde een groep jonge Nephieten in de slag en bewees zich een rechtschapen bevelhebber.",
+    gender: "man",
+    fatherSlug: "alma-de-jongere",
+  },
+  {
+    slug: "teancum",
+    name: "Teancum",
+    description:
+      "Een Nephietische bevelhebber die dapper tegen de Lamanieten en tegen Amalickiah streed. Een man van groot vertrouwen.",
+    gender: "man",
+  },
+  {
+    slug: "amalickiah",
+    name: "Amalickiah",
+    description:
+      "Een ambistieuze Nephiet die zich tegen Moroni verzette en naar de Lamanieten vluchtte. Werd daar een machtige koning.",
+    gender: "man",
+  },
+  {
+    slug: "moroni-bevelhebber",
+    name: "Moroni (bevelhebber)",
+    description:
+      "Een rechtschapen Nephietische bevelhebber die tegen Amalickiah en de Lamanieten streed. Volledig gewijd aan Gods volk.",
+    gender: "man",
+  },
+  {
+    slug: "korihor",
+    name: "Korihor",
+    description:
+      "Een antichrist-profeet die tegen de kerken predikte en gezegd werd dat er geen Christus zou komen. " +
+      "Werd gedwongen te zwijgen en vertreden.",
+    gender: "man",
+  },
+  {
+    slug: "sherem",
+    name: "Sherem",
+    description:
+      "Een antichrist-leraar die Jakob uitdaagde over de komst van Christus. Werd door Gods macht voorgoed dood geslagen.",
+    gender: "man",
+  },
 ];
