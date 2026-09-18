@@ -684,9 +684,13 @@ model Person {
   slug        String        @unique
   name        String
   description String?
+  gender      String?       // "man", "vrouw" of null voor onbekend
   fatherId    String?
-  father      Person?       @relation("Parentage", fields: [fatherId], references: [id], onDelete: SetNull)
-  children    Person[]      @relation("Parentage")
+  father      Person?       @relation("FathersChildren", fields: [fatherId], references: [id], onDelete: SetNull)
+  children    Person[]      @relation("FathersChildren")
+  motherId    String?
+  mother      Person?       @relation("MothersChildren", fields: [motherId], references: [id], onDelete: SetNull)
+  motherChildren Person[]   @relation("MothersChildren")
   verses      VersePerson[]
 }
 

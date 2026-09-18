@@ -70,27 +70,41 @@ export async function importIntroLessons(
 
 /**
  * Vult de (bij deze cursus geïntroduceerde) Person-tabel — voorheen volledig
- * ongebruikt fundament, zie het schemacommentaar bij Person. Twee losse
- * upserts (eerst alle personen zonder vader, dan pas fatherId koppelen) zodat
- * de volgorde in introPersons.ts er niet toe doet.
+ * ongebruikt fundament, zie het schemacommentaar bij Person. Meerdere passes
+ * (eerst alle personen, dan relaties) zodat de volgorde in introPersons.ts
+ * er niet toe doet.
  */
 export async function importIntroPersons(
   prisma: PrismaClient,
   persons: IntroPersonSeed[],
   log: (msg: string) => void = console.log
 ) {
+  // Pass 1: Voeg alle personen in
   for (const p of persons) {
     await prisma.person.upsert({
       where: { slug: p.slug },
-      update: { name: p.name, description: p.description },
-      create: { slug: p.slug, name: p.name, description: p.description },
+      update: { name: p.name, description: p.description, gender: p.gender },
+      create: { slug: p.slug, name: p.name, description: p.description, gender: p.gender },
     });
   }
+
+  // Pass 2: Verbind familierelaties
   for (const p of persons) {
-    if (!p.fatherSlug) continue;
-    const father = await prisma.person.findUnique({ where: { slug: p.fatherSlug } });
-    if (!father) continue;
-    await prisma.person.update({ where: { slug: p.slug }, data: { fatherId: father.id } });
+    const updates: Record<string, string | null> = {};
+
+    if (p.fatherSlug) {
+      const father = await prisma.person.findUnique({ where: { slug: p.fatherSlug } });
+      if (father) updates.fatherId = father.id;
+    }
+
+    if (p.motherSlug) {
+      const mother = await prisma.person.findUnique({ where: { slug: p.motherSlug } });
+      if (mother) updates.motherId = mother.id;
+    }
+
+    if (Object.keys(updates).length > 0) {
+      await prisma.person.update({ where: { slug: p.slug }, data: updates as any });
+    }
   }
   log(`  - ${persons.length} personen`);
 }

@@ -10,60 +10,95 @@ export interface IntroPersonSeed {
   slug: string;
   name: string;
   description: string;
+  gender?: "man" | "vrouw";
   fatherSlug?: string;
+  motherSlug?: string;
 }
 
 export const introPersons: IntroPersonSeed[] = [
+  // Familie van Lehi
   {
     slug: "lehi",
     name: "Lehi",
     description:
       "Woonde met zijn gezin in Jeruzalem. Kreeg de opdracht om, vlak voordat de stad zou worden verwoest, met " +
-      "zijn familie de wildernis in te trekken. Vader van Laman, Lemuel, Sam, Nephi, en later ook Jakob en Jozef.",
+      "zijn familie de wildernis in te trekken. Vader van Laman, Lemuel, Sam, Nephi, Jakob en Jozef.",
+    gender: "man",
   },
   {
     slug: "sariah",
     name: "Sariah",
     description: "De vrouw van Lehi en moeder van hun kinderen. Trok samen met het gezin de wildernis in.",
+    gender: "vrouw",
   },
   {
     slug: "laman",
     name: "Laman",
-    description: "De oudste zoon van Lehi en Sariah.",
+    description: "De oudste zoon van Lehi en Sariah. Rebelde tegen Gods plan en voerde de Lamaniten aan.",
+    gender: "man",
     fatherSlug: "lehi",
+    motherSlug: "sariah",
   },
   {
     slug: "lemuel",
     name: "Lemuel",
-    description: "Zoon van Lehi en Sariah, jonger dan Laman.",
+    description: "Zoon van Lehi en Sariah, jonger dan Laman. Sloot zich aan bij de opstandige groep van Laman.",
+    gender: "man",
     fatherSlug: "lehi",
+    motherSlug: "sariah",
   },
   {
     slug: "sam",
     name: "Sam",
-    description: "Zoon van Lehi en Sariah.",
+    description:
+      "Zoon van Lehi en Sariah. Ondersteunde Nephi in zijn rechtschapenheid en volgde het plan van God.",
+    gender: "man",
     fatherSlug: "lehi",
+    motherSlug: "sariah",
   },
   {
     slug: "nephi",
     name: "Nephi",
     description:
       "Jongste van de vier oudste zonen van Lehi en Sariah. Schrijft zelf het eerste boek van het Boek van " +
-      "Mormon, en vertelt daarin het verhaal van zijn familie.",
+      "Mormon, en vertelt daarin het verhaal van zijn familie. Stichtte de Nephietische civilisatie.",
+    gender: "man",
     fatherSlug: "lehi",
+    motherSlug: "sariah",
   },
+  {
+    slug: "jakob",
+    name: "Jakob",
+    description:
+      "Zoon van Lehi en Sariah, geboren in de wildernis. Schrijver van het tweede boek van het Boek van Mormon.",
+    gender: "man",
+    fatherSlug: "lehi",
+    motherSlug: "sariah",
+  },
+  {
+    slug: "jozef",
+    name: "Jozef",
+    description: "Jongste zoon van Lehi en Sariah, eveneens geboren in de wildernis.",
+    gender: "man",
+    fatherSlug: "lehi",
+    motherSlug: "sariah",
+  },
+
+  // Centrale figuren later in het Boek van Mormon
   {
     slug: "mormon",
     name: "Mormon",
     description:
       "Bracht, veel later in de geschiedenis, de verslagen van eerdere schrijvers samen en maakte er een " +
       "samenvatting van — het grootste deel van het Boek van Mormon is zijn werk. Vader van Moroni.",
+    gender: "man",
   },
   {
     slug: "moroni",
     name: "Moroni",
     description:
       "De zoon van Mormon. Maakte het boek af nadat zijn vader was overleden, en voegde er zelf nog een deel aan toe.",
+    gender: "man",
     fatherSlug: "mormon",
   },
   {
@@ -72,6 +107,14 @@ export const introPersons: IntroPersonSeed[] = [
     description:
       "Werd door zijn vader (die ook al Alma heette) gewijd tot hogepriester, en predikte daarna door het hele " +
       "land — te beginnen in de stad Zarahemla. Leeft veel later dan Lehi's gezin.",
+    gender: "man",
+  },
+  {
+    slug: "alma-de-jongere",
+    name: "Alma de Jongere",
+    description: "Zoon van Alma de Oudere. Wordt eerst tot zonde verleid, maar keert zich later tot God.",
+    gender: "man",
+    fatherSlug: "alma",
   },
   {
     slug: "samuel-de-lamaniet",
@@ -79,5 +122,39 @@ export const introPersons: IntroPersonSeed[] = [
     description:
       "Een Lamaniet die naar de stad Zarahemla kwam om tot de Nephieten te prediken. Toen ze hem niet binnen " +
       "wilden laten, klom hij op de stadsmuur en riep zijn boodschap vandaar.",
+    gender: "man",
+  },
+  {
+    slug: "abinadi",
+    name: "Abinadi",
+    description:
+      "Een profeet die tegen koning Noe en zijn priesterschap predikte. Werd ter dood veroordeeld voor zijn boodschap.",
+    gender: "man",
+  },
+  {
+    slug: "amaleki",
+    name: "Amaleki",
+    description: "Een Nephiet die aansloot bij het volk van Limhi en later naar Zarahemla reisde.",
+    gender: "man",
+  },
+  {
+    slug: "ammon",
+    name: "Ammon",
+    description:
+      "Zendelingverkondiger die tot de Lamaniten ging. Toonde grote moed en geloof in zijn missie onder het volk van Lamoni.",
+    gender: "man",
+  },
+  {
+    slug: "aaron",
+    name: "Aaron",
+    description:
+      "Broer van Ammon. Ook zendeling onder de Lamaniten. Predikte het evangelie ondanks veel tegenstand.",
+    gender: "man",
+  },
+  {
+    slug: "mosiah",
+    name: "Mosiah",
+    description: "Koning der Nephieten. Leidde zijn volk naar de stad Zarahemla en gaf hen rechtschapenheid.",
+    gender: "man",
   },
 ];

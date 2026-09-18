@@ -11,6 +11,7 @@ export default async function PersonsToolPage() {
     orderBy: { name: "asc" },
     include: {
       father: { select: { slug: true, name: true } },
+      mother: { select: { slug: true, name: true } },
       children: { select: { slug: true, name: true }, orderBy: { name: "asc" } },
     },
   });
@@ -40,13 +41,21 @@ export default async function PersonsToolPage() {
             <h2 className="font-extrabold text-lg text-brand-700 dark:text-brand-300">{person.name}</h2>
             {person.description && <p className="text-sm text-slate-600 dark:text-slate-300">{person.description}</p>}
 
-            {(person.father || person.children.length > 0) && (
+            {(person.father || person.mother || person.children.length > 0) && (
               <div className="flex flex-col gap-1 text-sm text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-2 mt-1">
                 {person.father && (
                   <p>
                     Vader:{" "}
                     <a href={`#${person.father.slug}`} className="font-bold text-brand-600 dark:text-brand-300 hover:underline">
                       {person.father.name}
+                    </a>
+                  </p>
+                )}
+                {person.mother && (
+                  <p>
+                    Moeder:{" "}
+                    <a href={`#${person.mother.slug}`} className="font-bold text-brand-600 dark:text-brand-300 hover:underline">
+                      {person.mother.name}
                     </a>
                   </p>
                 )}
