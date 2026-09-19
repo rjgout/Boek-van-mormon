@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import "./globals.css";
 import { getCurrentUser } from "@/lib/session";
 import { getBranding } from "@/lib/branding";
-import { cacheDetectedAppUrl } from "@/lib/baseUrl";
+import { cacheDetectedAppUrl, getAppUrl } from "@/lib/baseUrl";
 import NavUserBadges from "@/components/NavUserBadges";
 import InviteListener from "@/components/InviteListener";
 import ChangelogPopup from "@/components/ChangelogPopup";
@@ -26,11 +26,29 @@ import { APP_TAGLINE, resolveAppName } from "@/lib/brand";
 export async function generateMetadata(): Promise<Metadata> {
   const { faviconDataUrl, appName } = await getBranding();
   const displayName = resolveAppName(appName);
+  // Nodig zodat openGraph.images hieronder een absolute URL wordt i.p.v.
+  // localhost:3000 (Next's eigen fallback) — WhatsApp/Telegram/Discord e.d.
+  // halen de preview-afbeelding zonder browsercontext op, dus een relatieve
+  // of localhost-URL levert daar gewoon niets op.
+  const appUrl = await getAppUrl();
 
   return {
     title: displayName,
     description: APP_TAGLINE,
     manifest: "/manifest.webmanifest",
+    metadataBase: new URL(appUrl),
+    // Bepaalt de voorvertoning (titel/beschrijving/afbeelding) die apps als
+    // WhatsApp, Telegram en Discord tonen bij het delen van een link — dit is
+    // een los mechanisme van de favicon/browsericonen hieronder.
+    openGraph: {
+      title: displayName,
+      description: APP_TAGLINE,
+      url: appUrl,
+      siteName: displayName,
+      images: [{ url: "/icons/icon-512.png", width: 512, height: 512 }],
+      locale: "nl_NL",
+      type: "website",
+    },
     icons: {
       // Een eigen favicon vervangt de standaard-set volledig — anders kiest
       // de browser soms toch de hogere-resolutie standaard-PNG's in plaats
