@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { getSocket } from "@/lib/socketClient";
-import { firstGrapheme } from "@/lib/handle";
 
 type Phase = "connecting" | "lobby" | "playing" | "finished" | "error";
 type Region = "JERUZALEM" | "WILDERNIS" | "ZEE" | "BELOOFDE_LAND" | "ZARAHEMLA";
@@ -556,7 +555,7 @@ export default function FamilyGameRoom({ code, myUserId }: { code: string; myUse
                 }}
                 title={p.displayName}
               >
-                {firstGrapheme(p.displayName).toUpperCase()}
+                {p.displayName.slice(0, 1).toUpperCase()}
               </div>
             ))}
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatTag, firstGrapheme, isEmojiChar } from "@/lib/handle";
+import { formatTag } from "@/lib/handle";
 import { getSocket } from "@/lib/socketClient";
 
 interface FriendUser {
@@ -10,6 +10,7 @@ interface FriendUser {
   discriminator: string;
   xpTotal: number;
   currentStreak: number;
+  avatarEmoji: string | null;
 }
 
 interface FriendStatus {
@@ -41,21 +42,27 @@ function avatarColorFor(id: string): string {
   return AVATAR_COLORS[hash % AVATAR_COLORS.length];
 }
 function initialsFor(handle: string): string {
-  // Begint de naam met een emoji, toon dan die ene emoji heel i.p.v. de
-  // eerste twee losse tekens (die anders een emoji doormidden zou knippen).
-  const first = firstGrapheme(handle);
-  if (isEmojiChar(first)) return first;
   return handle.slice(0, 2).toUpperCase();
 }
 
-function Avatar({ id, handle, size = "md" }: { id: string; handle: string; size?: "sm" | "md" }) {
+function Avatar({
+  id,
+  handle,
+  avatarEmoji,
+  size = "md",
+}: {
+  id: string;
+  handle: string;
+  avatarEmoji?: string | null;
+  size?: "sm" | "md";
+}) {
   const dims = size === "sm" ? "w-9 h-9 text-xs" : "w-11 h-11 text-sm";
   return (
     <span
       className={`shrink-0 ${dims} rounded-full ${avatarColorFor(id)} text-white font-extrabold flex items-center justify-center`}
       aria-hidden
     >
-      {initialsFor(handle)}
+      {avatarEmoji || initialsFor(handle)}
     </span>
   );
 }
@@ -241,7 +248,7 @@ export default function FriendsClient() {
                 className="card !py-3 !bg-gold-50 dark:!bg-slate-800 !border-gold-400/30 dark:!border-slate-700 flex items-center justify-between gap-3 flex-wrap"
               >
                 <span className="flex items-center gap-2 font-bold dark:text-slate-100">
-                  <Avatar id={from.id} handle={from.handle} />
+                  <Avatar id={from.id} handle={from.handle} avatarEmoji={from.avatarEmoji} />
                   {formatTag(from.handle, from.discriminator)}
                 </span>
                 <div className="flex gap-2">
@@ -264,7 +271,7 @@ export default function FriendsClient() {
           <div className="flex flex-col gap-2">
             {data.outgoing.map(({ friendshipId, to }) => (
               <div key={friendshipId} className="card flex items-center gap-2 !py-3 text-slate-500 dark:text-slate-400">
-                <Avatar id={to.id} handle={to.handle} size="sm" />
+                <Avatar id={to.id} handle={to.handle} avatarEmoji={to.avatarEmoji} size="sm" />
                 <span aria-hidden>⏳</span>
                 Wachten op {formatTag(to.handle, to.discriminator)}
               </div>
@@ -290,7 +297,7 @@ export default function FriendsClient() {
                   <span
                     className={`shrink-0 rounded-full ${status?.online ? "ring-2 ring-green-400 ring-offset-2 dark:ring-offset-slate-800" : ""}`}
                   >
-                    <Avatar id={f.id} handle={f.handle} />
+                    <Avatar id={f.id} handle={f.handle} avatarEmoji={f.avatarEmoji} />
                   </span>
                   <div className="min-w-0">
                     <div className="font-bold flex items-center gap-1.5 dark:text-slate-100">

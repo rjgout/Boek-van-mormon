@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/session";
 import { SESSION_COOKIE, hashPassword, verifyPassword } from "@/lib/auth";
-import { generateDiscriminator, HANDLE_REGEX, HANDLE_MIN_LENGTH, HANDLE_MAX_LENGTH, containsForbiddenEmoji } from "@/lib/handle";
+import { generateDiscriminator, HANDLE_REGEX, HANDLE_MIN_LENGTH, HANDLE_MAX_LENGTH, containsForbiddenEmoji, isSingleEmoji } from "@/lib/handle";
 import { setIncognito, INCOGNITO_DURATIONS_HOURS } from "@/lib/presence";
 
 const patchSchema = z.object({
@@ -15,6 +15,14 @@ const patchSchema = z.object({
     .max(HANDLE_MAX_LENGTH, `Gebruikersnaam mag maximaal ${HANDLE_MAX_LENGTH} tekens zijn.`)
     .regex(HANDLE_REGEX, "Alleen letters, cijfers, spaties, -, _ en emoji toegestaan.")
     .refine((v) => !containsForbiddenEmoji(v), "Deze emoji is niet toegestaan in een gebruikersnaam.")
+    .optional(),
+  // Eigen emoji voor het avatar-rondje (zie ProfileClient.tsx), los van de
+  // gebruikersnaam — null = weer de letter-avatar tonen.
+  avatarEmoji: z
+    .string()
+    .refine((v) => isSingleEmoji(v), "Kies precies één emoji.")
+    .refine((v) => !containsForbiddenEmoji(v), "Deze emoji is niet toegestaan.")
+    .nullable()
     .optional(),
   searchableByEmail: z.boolean().optional(),
   emailNotificationsEnabled: z.boolean().optional(),

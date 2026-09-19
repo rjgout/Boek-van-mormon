@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
-import { formatTag, firstGrapheme } from "@/lib/handle";
+import { formatTag, firstGrapheme, isSingleEmoji } from "@/lib/handle";
 import { enableBrowserPush, disableBrowserPush, isPushSupported } from "@/lib/pushClient";
 import { getSocket } from "@/lib/socketClient";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -22,6 +22,7 @@ interface ProfileData {
   displayName: string;
   handle: string;
   discriminator: string;
+  avatarEmoji: string | null;
   email: string;
   searchableByEmail: boolean;
   shareOnlineStatus: boolean;
@@ -55,6 +56,15 @@ interface ProfileData {
   achievements: AchievementView[];
 }
 
+// Kleine, willekeurige greep uit veelgebruikte emoji — puur een handig
+// startpunt, geen uitputtende lijst; het invoerveld ernaast accepteert
+// elke andere emoji (behalve de geweerde, zie isSingleEmoji/containsForbiddenEmoji).
+const AVATAR_EMOJI_OPTIONS = [
+  "😀", "😎", "🤓", "🥳", "😇", "🙂", "🚀", "⭐", "🔥", "💪",
+  "🎉", "🎮", "📖", "🐶", "🐱", "🦁", "🐸", "🦄", "🌈", "⚡",
+  "🍕", "⚽", "🎸", "🌻", "🌊", "🏔️",
+];
+
 export default function ProfileClient() {
   const [data, setData] = useState<ProfileData | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -68,6 +78,10 @@ export default function ProfileClient() {
   const [handleInput, setHandleInput] = useState("");
   const [savingHandle, setSavingHandle] = useState(false);
   const [handleError, setHandleError] = useState<string | null>(null);
+  const [avatarPickerOpen, setAvatarPickerOpen] = useState(false);
+  const [avatarInput, setAvatarInput] = useState("");
+  const [savingAvatarEmoji, setSavingAvatarEmoji] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -235,6 +249,34 @@ export default function ProfileClient() {
     setEditingHandle(false);
   }
 
+  async function saveAvatarEmoji(emoji: string | null) {
+    if (!data) return;
+    setSavingAvatarEmoji(true);
+    setAvatarError(null);
+    const res = await fetch("/api/account", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ avatarEmoji: emoji }),
+    });
+    const body = await res.json().catch(() => ({}));
+    setSavingAvatarEmoji(false);
+    if (!res.ok) {
+      setAvatarError(body.error ?? "Kon de emoji niet opslaan.");
+      return;
+    }
+    setData({ ...data, avatarEmoji: emoji });
+    setAvatarPickerOpen(false);
+    setAvatarInput("");
+  }
+
+  function saveCustomAvatarEmoji() {
+    if (!isSingleEmoji(avatarInput)) {
+      setAvatarError("Kies precies één emoji.");
+      return;
+    }
+    saveAvatarEmoji(avatarInput.trim());
+  }
+
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
@@ -266,8 +308,76 @@ export default function ProfileClient() {
       <div className="card bg-gradient-to-br from-brand-500 to-brand-700 dark:from-brand-600 dark:to-brand-900 text-white flex flex-col gap-5">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-3">
-            <div className="h-14 w-14 shrink-0 rounded-full bg-black/15 flex items-center justify-center text-2xl font-extrabold text-gold-400">
-              {initial}
+            <div className="relative shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setAvatarError(null);
+                  setAvatarInput("");
+                  setAvatarPickerOpen((open) => !open);
+                }}
+                className="h-14 w-14 rounded-full bg-black/15 flex items-center justify-center text-2xl font-extrabold text-gold-400 hover:opacity-80"
+                title="Avatar wijzigen"
+              >
+                {data.avatarEmoji || initial}
+              </button>
+              {/* Wijzig-icoontje overlay, puur decoratief — de hele knop erachter is al klikbaar. */}
+              <span
+                className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-white dark:bg-slate-700 text-[10px] flex items-center justify-center shadow"
+                aria-hidden
+              >
+                ✏️
+              </span>
+
+              {avatarPickerOpen && (
+                <div className="absolute z-10 top-full left-0 mt-2 w-72 card !p-4 flex flex-col gap-3 text-slate-800 dark:text-slate-100 shadow-xl">
+                  <p className="text-sm font-bold">Kies een avatar-emoji</p>
+                  <div className="grid grid-cols-6 gap-1.5">
+                    {AVATAR_EMOJI_OPTIONS.map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        className="h-9 w-9 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-xl flex items-center justify-center"
+                        disabled={savingAvatarEmoji}
+                        onClick={() => saveAvatarEmoji(emoji)}
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      className="input !w-auto flex-1 !py-1.5"
+                      placeholder="Eigen emoji"
+                      value={avatarInput}
+                      onChange={(e) => setAvatarInput(e.target.value)}
+                      maxLength={8}
+                    />
+                    <button
+                      className="btn-primary !px-3 !py-1.5 !text-xs"
+                      disabled={savingAvatarEmoji || !avatarInput}
+                      onClick={saveCustomAvatarEmoji}
+                    >
+                      Opslaan
+                    </button>
+                  </div>
+                  {avatarError && <p className="text-xs text-red-600 dark:text-red-400">{avatarError}</p>}
+                  <div className="flex items-center gap-3 border-t border-slate-100 dark:border-slate-700 pt-2">
+                    {data.avatarEmoji && (
+                      <button
+                        className="text-xs text-red-500 hover:underline"
+                        disabled={savingAvatarEmoji}
+                        onClick={() => saveAvatarEmoji(null)}
+                      >
+                        Verwijderen
+                      </button>
+                    )}
+                    <button className="text-xs text-slate-400 hover:underline ml-auto" onClick={() => setAvatarPickerOpen(false)}>
+                      Sluiten
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               <h1 className="text-xl font-extrabold">{data.displayName}</h1>

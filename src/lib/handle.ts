@@ -30,13 +30,6 @@ export const HANDLE_REGEX = /^[\p{L}\p{N} _\-\p{Extended_Pictographic}\p{Emoji_M
 export const HANDLE_MIN_LENGTH = 2;
 export const HANDLE_MAX_LENGTH = 24;
 
-const EMOJI_RE = /\p{Extended_Pictographic}/u;
-
-/** Herkent of een los teken (bv. het resultaat van firstGrapheme) een emoji is. */
-export function isEmojiChar(value: string): boolean {
-  return EMOJI_RE.test(value);
-}
-
 /**
  * Codepoint-bewuste "eerste teken" van een naam, voor gebruik in
  * avatar-rondjes — .charAt(0)/.slice(0, 1) knipt een emoji die uit een
@@ -54,4 +47,17 @@ const FORBIDDEN_HANDLE_RE = /\u{1F595}[\u{1F3FB}-\u{1F3FF}\u{FE0F}]?/u;
 /** True als de naam de geweerde middelvinger-emoji bevat (in elke huidskleur-variant). */
 export function containsForbiddenEmoji(value: string): boolean {
   return FORBIDDEN_HANDLE_RE.test(value);
+}
+
+// Precies één emoji: een vlag (twee regionale-indicatorletters), of één
+// pictogram met optionele huidskleur-variant/variatieselector, eventueel via
+// ZWJ samengevoegd met meer pictogrammen (bv. 👨‍👩‍👧 of 🏳️‍🌈) — bewust ruimer dan
+// firstGrapheme hierboven, want een avatar-emoji mag zo'n samengestelde emoji
+// zijn, maar geen losse tekst/meerdere afzonderlijke emoji.
+const SINGLE_EMOJI_RE =
+  /^(?:\p{Regional_Indicator}\p{Regional_Indicator}|\p{Extended_Pictographic}️?\p{Emoji_Modifier}?(?:‍\p{Extended_Pictographic}️?)*)$/u;
+
+/** True als de waarde (na trimmen) precies één emoji is — voor het avatar-emoji-veld. */
+export function isSingleEmoji(value: string): boolean {
+  return SINGLE_EMOJI_RE.test(value.trim());
 }

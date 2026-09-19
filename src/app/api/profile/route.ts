@@ -63,6 +63,7 @@ export async function GET() {
     displayName: user.handle,
     handle: user.handle,
     discriminator: user.discriminator,
+    avatarEmoji: user.avatarEmoji,
     email: user.email,
     searchableByEmail: user.searchableByEmail,
     shareOnlineStatus: user.shareOnlineStatus,
