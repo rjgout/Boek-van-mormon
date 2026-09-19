@@ -179,6 +179,36 @@ Controleer bij twijfel: `grep -rn "next/headers" src/lib src/server server.ts`
   geen seed nodig, want antwoorden worden op tekst gecontroleerd, nooit op
   positie (zie `isExerciseCorrect`).
 
+## Content-API (`/api/content-api/*`)
+
+Losstaande, sleutel-beveiligde route-namespace zodat Claude Code (of een
+ander extern proces) live contentstatus kan uitlezen zonder in te loggen —
+bedoeld voor workflows als "check of er nieuwe content klaarstaat om te
+verwerken". Fundamenteel anders dan de rest van de API:
+
+- **Auth**: geen cookie-sessie, maar een vaste sleutel in de
+  `X-API-Key`-header, gecontroleerd met `verifyContentApiKey()` in
+  `src/lib/contentApi.ts` tegen de env var `CONTENT_API_KEY` (constant-time
+  vergelijking, zie die functie voor waarom). Geen env var gezet = de hele
+  namespace retourneert altijd 401 — nooit "open" bij ontbrekende configuratie.
+- **Scope, hard begrensd**: uitsluitend content (`Book`/`Chapter`/`Verse`,
+  `Course`, `IntroLesson`, `PodcastEpisode`, `KidsStory`, `Person`/`Place`/
+  `Topic`, en vergelijkbare content-modellen uit `prisma/schema.prisma`).
+  **Nooit** gebruikers-, activiteit- of persoonsgegevens (dus niets uit
+  `User`, `Friendship`, `LiveGame`, `WeeklyScore`, `Feedback`, enz.) — dat
+  blijft uitsluitend via de gewone, sessie-beveiligde routes lopen. Twijfel
+  je of een veld hieronder valt: dan hoort het er niet in.
+  - `GET /api/content-api/status`: eerste endpoint, telt alleen aantallen
+    per content-tabel. Dient als sjabloon voor nieuwe, specifiekere routes
+    in dezelfde namespace (zelfde `verifyContentApiKey`-check bovenaan,
+    zelfde "alleen content"-grens).
+- **Alleen lezen vooralsnog.** Nieuwe content plaatsen gebeurt nog steeds
+  via de bestaande weg: een TS-object toevoegen aan het relevante
+  seed-bestand (bv. `prisma/podcastContent.ts`), `npx tsc --noEmit`, committen
+  naar de werkbranch — zie "Podcastafleveringen verwerken" hieronder. Een
+  schrijvende content-API-route (bv. om die stap te automatiseren) is een
+  bewuste, aparte vervolgstap — niet zomaar aannemen dat die er al is.
+
 ## Codestijl
 
 - Commentaar in het Nederlands, en legt **waarom** uit (niet-vanzelfsprekende
