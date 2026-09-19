@@ -202,12 +202,78 @@ verwerken". Fundamenteel anders dan de rest van de API:
     per content-tabel. Dient als sjabloon voor nieuwe, specifiekere routes
     in dezelfde namespace (zelfde `verifyContentApiKey`-check bovenaan,
     zelfde "alleen content"-grens).
-- **Alleen lezen vooralsnog.** Nieuwe content plaatsen gebeurt nog steeds
-  via de bestaande weg: een TS-object toevoegen aan het relevante
-  seed-bestand (bv. `prisma/podcastContent.ts`), `npx tsc --noEmit`, committen
-  naar de werkbranch — zie "Podcastafleveringen verwerken" hieronder. Een
-  schrijvende content-API-route (bv. om die stap te automatiseren) is een
-  bewuste, aparte vervolgstap — niet zomaar aannemen dat die er al is.
+  - `GET /api/content-api/official-lessons`, `GET .../official-lessons/[id]`,
+    `GET .../official-lessons/runs`, `POST .../official-lessons/import`: zie
+    de sectie "Officiële content importeren" hieronder.
+- **Voor de bestaande, met de hand geschreven content (podcast/intro/kids)
+  blijft dit alleen lezen** — die plaats je nog steeds via de bestaande weg:
+  een TS-object toevoegen aan het relevante seed-bestand (bv.
+  `prisma/podcastContent.ts`), `npx tsc --noEmit`, committen naar de
+  werkbranch — zie "Podcastafleveringen verwerken" hieronder. De
+  `official-lessons/import`-route hierboven is hier een bewuste uitzondering
+  op: die schrijft, maar uitsluitend naar de losstaande
+  `ImportedOfficialLesson`-staging­tabel (zie hieronder), nooit naar een
+  bestaande content- of gebruikerstabel.
+
+## Officiële content importeren (`ImportedOfficialLesson`, `src/lib/officialContentImport.ts`)
+
+Haalt automatisch de officiële Nederlandse jeugd-lesmaterialen van
+`churchofjesuschrist.org` op — "Voor de kracht van de jeugd" (maandelijkse
+jeugdlessen: vastenzondag/tweede zondag/.../vijfde zondag) en "Kom, Volg Mij"
+voor jeugdwerk/zondagsschool — en slaat de **ongewijzigde, originele**
+brontekst op. Bewust een losstaande staging-tabel: (nog) niet gekoppeld aan
+enige bestaande content-tabel of aan de gebruikersinterface. AI-verwerking
+van deze content (oefeningen genereren e.d.) is een aparte, latere stap —
+hier bewust niet gebouwd.
+
+- **⚠️ De aannames over de bron-URL-structuur zijn NIET geverifieerd tegen
+  live HTML.** Deze devcontainer kan `churchofjesuschrist.org` (en eigenlijk
+  elk extern domein) niet bereiken — `WebFetch` en directe `curl`/`fetch`
+  worden hier organisatiebreed geblokkeerd op netwerkniveau, ook los van deze
+  app. De aangenomen structuur (hieronder) komt van de gebruiker zelf, niet
+  uit eigen onderzoek. `runOfficialContentImport()` faalt daarom bewust per
+  URL (gelogd in `OfficialContentImportRun.errors`) i.p.v. de hele run te
+  laten crashen — een verkeerde aanname moet zichtbaar mislukken, niet stil
+  de verkeerde dingen opslaan. **Controleer bij de eerste echte run in
+  productie altijd eerst `GET /api/content-api/official-lessons/runs`** om te
+  zien of er daadwerkelijk iets is gevonden, vóór je verder bouwt op deze
+  fundering.
+  - FSY: `/study/ftsoy/{jaar}/{maand}/` (overzicht) met lessen onder
+    `.../fsy-lessons/{volgnummer}-{slug}?lang=nld`.
+  - Kom, Volg Mij: ontdekt zelf het actuele jaar/manual via de vaste
+    landingspagina `/study/come-follow-me?lang=nld` (i.p.v. een jaartal te
+    hardcoden) — zoekt daar de eerste link naar
+    `/study/manual/come-follow-me-for-home-and-church-*`, en haalt vervolgens
+    alle sub-pagina's van dát manual op als weken. Geen filter op
+    "introductiepagina's" versus "echte weken" — alles onder het manual-pad
+    wordt geïmporteerd; `periodLabel`/`title` komt van de bronpagina zelf.
+- **Opslag**: de volledige, ruwe HTTP-responsebody (HTML) wordt verbatim
+  opgeslagen in `rawHtml` — geen contentextractie/opschoning, juist om nooit
+  per ongeluk de originele brontekst te herschrijven of iets te missen.
+  `title` is wel best-effort geëxtraheerd (`og:title` / `<title>`) puur voor
+  leesbaarheid in overzichten.
+- **Duplicaten/wijzigingen**: `sourceUrl` is uniek; bestaat de URL al, dan
+  wordt een sha256-hash van de nieuwe HTML vergeleken met `contentHash` — 
+  gelijk = alleen `lastCheckedAt` bijwerken, anders = content + `contentHash`
+  + `lastChangedAt` bijwerken. Geen enkele URL levert dus ooit een dubbele rij op.
+  `sequenceInPeriod` = volgorde van aantreffen op de overzichtspagina van de
+  bron (1 = eerst gevonden) — dat bepaalt de week-/zondagvolgorde, zonder zelf
+  een kalender te moeten narekenen; bijzondere weken (vastenzondag, een
+  eventuele vijfde zondag) zijn hierdoor vanzelf correct, want die bestaan als
+  losse lessen op de bron zelf of ontbreken simpelweg in maanden zonder vijfde
+  zondag.
+- **Runtime, geen Docker-rebuild nodig**: import gebeurt via `fetch()` op een
+  al draaiende server, niet tijdens de build. Twee triggers, beide roepen
+  dezelfde `runOfficialContentImport()` aan:
+  1. Automatisch: `runOfficialContentImportTick()` in `src/lib/scheduler.ts`,
+     dagelijks om 03:00 (Nederlandse tijd), zelfde self-gating-patroon als de
+     andere ticks in dat bestand.
+  2. Op verzoek: `POST /api/content-api/official-lessons/import` (zelfde
+     sleutel-auth als de rest van de content-API) — geeft de volledige
+     samenvatting (aantal nieuw/gewijzigd/ongewijzigd/mislukt) direct terug.
+- **Beleefd tegenover de bron**: een vaste, herkenbare `User-Agent`
+  (geen browser voorwenden) en een korte pauze (`FETCH_DELAY_MS`) tussen
+  verzoeken — dit is een klein aantal pagina's per dag, geen bulk-crawl.
 
 ## Codestijl
 

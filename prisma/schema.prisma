@@ -1556,3 +1556,55 @@ model GameSettings {
   challengesEnabled    Boolean @default(true)
   liveExercisesEnabled Boolean @default(true) // "Nieuw spel starten"-formulier (oefeningen-race)
 }
+
+// --- Officiële content-import (zie CLAUDE.md, sectie "Officiële content
+// importeren", en src/lib/officialContentImport.ts) ---
+
+enum OfficialLessonSource {
+  FSY_YOUTH            // "Voor de kracht van de jeugd" — maandelijkse jeugdlessen (vastenzondag/tweede zondag/...)
+  COME_FOLLOW_ME_YOUTH // "Kom, Volg Mij" voor jeugdwerk en zondagsschool
+}
+
+// Ruwe, ongewijzigde broncontent van de officiële kerksite. Bewust een
+// losstaande staging-tabel: (nog) niet gekoppeld aan enige bestaande
+// content-/lestabel of gebruikersfunctionaliteit — zie officialContentImport.ts
+// voor de volledige achtergrond en de aannames over de bron-URL-structuur.
+model ImportedOfficialLesson {
+  id               String               @id @default(cuid())
+  source           OfficialLessonSource
+  sourceUrl        String               @unique
+  language         String               @default("nld")
+  // title/periodLabel komen ongewijzigd van de bronpagina zelf (og:title/
+  // <title>, resp. de eerste herkenbare koptekst) — geen eigen samenvatting.
+  title            String
+  periodLabel      String?
+  year             Int?
+  month            Int?
+  // Volgorde zoals aangetroffen op de overzichtspagina van de bron (1 = eerst
+  // gevonden), gebruikt om weken/zondagen op volgorde te zetten zonder zelf
+  // een kalender te moeten narekenen.
+  sequenceInPeriod Int?
+  rawHtml          String               @db.Text
+  contentHash      String
+  firstImportedAt  DateTime             @default(now())
+  lastCheckedAt    DateTime             @default(now())
+  lastChangedAt    DateTime             @default(now())
+
+  @@index([source, year, month])
+}
+
+// Eén rij per importrun (handmatig via de content-API, of automatisch via de
+// scheduler) — puur voor zichtbaarheid: wat is er gevonden, nieuw, gewijzigd,
+// of misgegaan.
+model OfficialContentImportRun {
+  id             String    @id @default(cuid())
+  startedAt      DateTime  @default(now())
+  finishedAt     DateTime?
+  urlsChecked    Int       @default(0)
+  newCount       Int       @default(0)
+  updatedCount   Int       @default(0)
+  unchangedCount Int       @default(0)
+  errorCount     Int       @default(0)
+  errors         String?   @db.Text // JSON-array van { url, message }, alleen gezet bij errorCount > 0
+  triggeredBy    String // "scheduler" | "api"
+}

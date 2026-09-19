@@ -5,6 +5,7 @@ import { notifyDailyReminder, notifyWeeklyResult, notifySeasonResult, notifyWord
 import { wordGameDayKey } from "@/lib/wordGame";
 import { broadcastPresenceUpdate } from "@/lib/presence";
 import { getIO } from "@/server/gameServer";
+import { runOfficialContentImport } from "@/lib/officialContentImport";
 
 const TICK_MS = 60_000;
 // Vast (niet instelbaar) moment voor de wekelijkse uitslag — dit is geen
@@ -261,6 +262,20 @@ async function runIncognitoExpiryTick(): Promise<void> {
   }
 }
 
+/**
+ * Eén keer per dag, buiten piekuren, automatisch de officiële jeugd-
+ * lesmaterialen ophalen/verversen (zie officialContentImport.ts) — puur
+ * self-gating op tijdstip, net als de andere dag-/tijdgebonden ticks
+ * hierboven. Fouten op individuele pagina's worden door
+ * runOfficialContentImport zelf al opgevangen en gelogd (OfficialContentImportRun);
+ * hier alleen nog een vangnet voor een fout die de hele run laat crashen.
+ */
+async function runOfficialContentImportTick(): Promise<void> {
+  const amsterdam = amsterdamNow();
+  if (amsterdam.hour !== 3 || amsterdam.minute !== 0) return;
+  await runOfficialContentImport("scheduler");
+}
+
 let started = false;
 
 /** Start de in-process schedulers — bewust geen losse cron-infrastructuur (zie ook src/lib/leagues.ts). Eenmalig aan te roepen vanuit server.ts. */
@@ -273,5 +288,6 @@ export function startNotificationSchedulers(): void {
     runSeasonRolloverTick().catch((e) => console.error("Seizoensafsluiting mislukt:", e));
     runWordGameNotificationTick().catch((e) => console.error("Woord-van-de-dag-melding mislukt:", e));
     runIncognitoExpiryTick().catch((e) => console.error("Incognito-vervaltijd mislukt:", e));
+    runOfficialContentImportTick().catch((e) => console.error("Officiële content-import mislukt:", e));
   }, TICK_MS);
 }
