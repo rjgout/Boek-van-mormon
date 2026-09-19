@@ -1,0 +1,95 @@
+"use client";
+
+import { useState, useMemo } from "react";
+
+export default function PersonsSearch({ persons }: { persons: any[] }) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredPersons = useMemo(() => {
+    if (!searchQuery.trim()) return persons;
+
+    const query = searchQuery.toLowerCase();
+    return persons.filter(
+      (p) =>
+        p.name.toLowerCase().includes(query) ||
+        p.description?.toLowerCase().includes(query)
+    );
+  }, [searchQuery, persons]);
+
+  return (
+    <>
+      {/* Zoekveld */}
+      <div>
+        <input
+          type="text"
+          placeholder="Zoek personen op naam of beschrijving..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="input w-full"
+          aria-label="Zoek personen"
+        />
+        {searchQuery && (
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+            {filteredPersons.length} van {persons.length} personen
+          </p>
+        )}
+      </div>
+
+      {filteredPersons.length === 0 && searchQuery && (
+        <p className="text-slate-400 dark:text-slate-500">Geen personen gevonden. Probeer een ander zoekterm.</p>
+      )}
+      {filteredPersons.length === 0 && !searchQuery && (
+        <p className="text-slate-400 dark:text-slate-500">Geen personages beschikbaar.</p>
+      )}
+
+      {filteredPersons.length > 0 && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          {filteredPersons.map((person) => (
+            <div
+              key={person.slug}
+              id={person.slug}
+              className="card flex flex-col gap-2 scroll-mt-24 target:ring-2 target:ring-brand-400"
+            >
+              <h2 className="font-extrabold text-lg text-brand-700 dark:text-brand-300">{person.name}</h2>
+              {person.description && <p className="text-sm text-slate-600 dark:text-slate-300">{person.description}</p>}
+
+              {(person.father || person.mother || person.children.length > 0) && (
+                <div className="flex flex-col gap-1 text-sm text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-2 mt-1">
+                  {person.father && (
+                    <p>
+                      Vader:{" "}
+                      <a href={`#${person.father.slug}`} className="font-bold text-brand-600 dark:text-brand-300 hover:underline">
+                        {person.father.name}
+                      </a>
+                    </p>
+                  )}
+                  {person.mother && (
+                    <p>
+                      Moeder:{" "}
+                      <a href={`#${person.mother.slug}`} className="font-bold text-brand-600 dark:text-brand-300 hover:underline">
+                        {person.mother.name}
+                      </a>
+                    </p>
+                  )}
+                  {person.children.length > 0 && (
+                    <p>
+                      Kinderen:{" "}
+                      {person.children.map((c: any, i: number) => (
+                        <span key={c.slug}>
+                          <a href={`#${c.slug}`} className="font-bold text-brand-600 dark:text-brand-300 hover:underline">
+                            {c.name}
+                          </a>
+                          {i < person.children.length - 1 ? ", " : ""}
+                        </span>
+                      ))}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+}
