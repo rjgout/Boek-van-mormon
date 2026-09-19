@@ -59,7 +59,15 @@ function ImageSlot({
   async function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
-    if (!file || !file.type.startsWith("image/")) return;
+    if (!file) return;
+    // file.type is bij .ico-bestanden vaak een lege string (browsers/OS'en
+    // registreren dat mimetype niet altijd), dus val bij twijfel terug op de
+    // bestandsextensie in plaats van de upload stilzwijgend te negeren.
+    const looksLikeImage = file.type.startsWith("image/") || /\.(png|jpe?g|webp|svg|ico)$/i.test(file.name);
+    if (!looksLikeImage) {
+      setError("Kies een afbeeldingsbestand (PNG, JPEG, WebP, SVG of ICO).");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
