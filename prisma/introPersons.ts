@@ -349,7 +349,7 @@ export const introPersons: IntroPersonSeed[] = [
   {
     slug: "kishkumen",
     name: "Kishkumen",
-    description: "Een moordernaar die betrokken was bij Gadianton-rovers. Werkte aan het doden van rechtvaardige leiders.",
+    description: "Een moordenaar die betrokken was bij Gadianton-rovers. Werkte aan het doden van rechtvaardige leiders.",
     gender: "man",
   },
   {
