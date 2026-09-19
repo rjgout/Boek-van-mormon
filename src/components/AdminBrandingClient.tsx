@@ -10,7 +10,7 @@ interface BrandingView {
 }
 
 // PNG (niet JPEG) om transparantie in een logo/favicon te behouden.
-function resizeToDataUrl(file: File, maxDimension: number): Promise<string> {
+function resizeToDataUrl(file: File, maxDimension: number, minDimension?: number): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("Kon het bestand niet lezen."));
@@ -19,6 +19,15 @@ function resizeToDataUrl(file: File, maxDimension: number): Promise<string> {
       img.onerror = () => reject(new Error("Ongeldige afbeelding."));
       img.onload = () => {
         let { width, height } = img;
+        // Kleiner dan het minimum weigeren i.p.v. uitrekken: een favicon
+        // dient ook als linkpreview-afbeelding (zie openGraph.images in
+        // layout.tsx), en een piepklein bronbestand zou daar wazig/opgerekt
+        // uitkomen — beter vooraf een duidelijke melding dan achteraf een
+        // matige preview in WhatsApp e.d.
+        if (minDimension && (width < minDimension || height < minDimension)) {
+          reject(new Error(`Deze afbeelding is te klein (${width}×${height}px). Minimaal ${minDimension}×${minDimension}px nodig.`));
+          return;
+        }
         if (width > maxDimension || height > maxDimension) {
           const scale = maxDimension / Math.max(width, height);
           width = Math.round(width * scale);
@@ -42,6 +51,7 @@ function ImageSlot({
   description,
   value,
   maxDimension,
+  minDimension,
   previewClassName,
   onChange,
 }: {
@@ -49,6 +59,7 @@ function ImageSlot({
   description: string;
   value: string | null;
   maxDimension: number;
+  minDimension?: number;
   previewClassName: string;
   onChange: (dataUrl: string | null) => Promise<void>;
 }) {
@@ -71,7 +82,7 @@ function ImageSlot({
     setBusy(true);
     setError(null);
     try {
-      const dataUrl = await resizeToDataUrl(file, maxDimension);
+      const dataUrl = await resizeToDataUrl(file, maxDimension, minDimension);
       await onChange(dataUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Kon de afbeelding niet verwerken.");
@@ -207,9 +218,10 @@ export default function AdminBrandingClient() {
 
       <ImageSlot
         label="Favicon"
-        description="Het icoontje in het browsertabblad."
+        description="Het icoontje in het browsertabblad — verschijnt ook als voorvertoning bij het delen van een link (WhatsApp, Telegram e.d.). Minimaal 200×200px."
         value={branding.faviconDataUrl}
         maxDimension={256}
+        minDimension={200}
         previewClassName="h-12 w-12"
         onChange={(faviconDataUrl) => save({ faviconDataUrl })}
       />

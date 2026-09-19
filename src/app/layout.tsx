@@ -39,13 +39,17 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(appUrl),
     // Bepaalt de voorvertoning (titel/beschrijving/afbeelding) die apps als
     // WhatsApp, Telegram en Discord tonen bij het delen van een link — dit is
-    // een los mechanisme van de favicon/browsericonen hieronder.
+    // een los mechanisme van de browsericonen hieronder, maar gebruikt bewust
+    // dezelfde bron: een eigen favicon moet ook in linkpreviews verschijnen.
+    // AdminBrandingClient.tsx eist daarom een minimale afmeting bij het
+    // instellen van een eigen favicon, zodat 'm hier niet als een piepklein,
+    // opgerekt icoontje eindigt.
     openGraph: {
       title: displayName,
       description: APP_TAGLINE,
       url: appUrl,
       siteName: displayName,
-      images: [{ url: "/icons/icon-512.png", width: 512, height: 512 }],
+      images: faviconDataUrl ? [{ url: "/api/branding/favicon" }] : [{ url: "/icons/icon-512.png", width: 512, height: 512 }],
       locale: "nl_NL",
       type: "website",
     },
