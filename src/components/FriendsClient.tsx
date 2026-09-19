@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatTag } from "@/lib/handle";
+import { formatTag, firstGrapheme, isEmojiChar } from "@/lib/handle";
 import { getSocket } from "@/lib/socketClient";
 
 interface FriendUser {
@@ -41,6 +41,10 @@ function avatarColorFor(id: string): string {
   return AVATAR_COLORS[hash % AVATAR_COLORS.length];
 }
 function initialsFor(handle: string): string {
+  // Begint de naam met een emoji, toon dan die ene emoji heel i.p.v. de
+  // eerste twee losse tekens (die anders een emoji doormidden zou knippen).
+  const first = firstGrapheme(handle);
+  if (isEmojiChar(first)) return first;
   return handle.slice(0, 2).toUpperCase();
 }
 

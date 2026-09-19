@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { LeagueTier } from "@prisma/client";
 import { TIER_LABELS, TIER_ICONS } from "@/lib/leagues";
-import { formatTag } from "@/lib/handle";
+import { formatTag, firstGrapheme } from "@/lib/handle";
 import { enableBrowserPush, disableBrowserPush, isPushSupported } from "@/lib/pushClient";
 import { getSocket } from "@/lib/socketClient";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -255,7 +255,7 @@ export default function ProfileClient() {
   if (!data) return <p className="text-slate-400">Laden...</p>;
 
   const earnedCount = data.achievements.filter((a) => a.earnedAt).length;
-  const initial = data.displayName.trim().charAt(0).toUpperCase() || "?";
+  const initial = firstGrapheme(data.displayName).toUpperCase() || "?";
 
   return (
     <div className="max-w-2xl mx-auto flex flex-col gap-8">

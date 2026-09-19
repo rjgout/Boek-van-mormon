@@ -21,6 +21,37 @@ export function parseTag(input: string): { handle: string; discriminator: string
   return { handle, discriminator: discriminator.padStart(2, "0") };
 }
 
-export const HANDLE_REGEX = /^[\p{L}\p{N} _-]+$/u;
+// \p{Extended_Pictographic} dekt de gangbare emoji-set, \p{Emoji_Modifier}
+// de huidskleur-varianten (Fitzpatrick), \p{Regional_Indicator} de letters
+// waaruit vlagemoji zijn opgebouwd, en ‍/️ de onzichtbare
+// samenvoeg-/presentatietekens die samengestelde emoji (bv. 👨‍👩‍👧) aan elkaar
+// plakken.
+export const HANDLE_REGEX = /^[\p{L}\p{N} _\-\p{Extended_Pictographic}\p{Emoji_Modifier}\p{Regional_Indicator}‍️]+$/u;
 export const HANDLE_MIN_LENGTH = 2;
 export const HANDLE_MAX_LENGTH = 24;
+
+const EMOJI_RE = /\p{Extended_Pictographic}/u;
+
+/** Herkent of een los teken (bv. het resultaat van firstGrapheme) een emoji is. */
+export function isEmojiChar(value: string): boolean {
+  return EMOJI_RE.test(value);
+}
+
+/**
+ * Codepoint-bewuste "eerste teken" van een naam, voor gebruik in
+ * avatar-rondjes — .charAt(0)/.slice(0, 1) knipt een emoji die uit een
+ * surrogaatpaar bestaat (verreweg de meeste) doormidden, wat een kapot
+ * teken oplevert i.p.v. de hele emoji.
+ */
+export function firstGrapheme(value: string): string {
+  return Array.from(value.trim())[0] ?? "";
+}
+
+// De enige expliciet geweerde emoji in een gebruikersnaam. Optioneel gevolgd
+// door een huidskleur-variant of de presentatie-variatieselector.
+const FORBIDDEN_HANDLE_RE = /\u{1F595}[\u{1F3FB}-\u{1F3FF}\u{FE0F}]?/u;
+
+/** True als de naam de geweerde middelvinger-emoji bevat (in elke huidskleur-variant). */
+export function containsForbiddenEmoji(value: string): boolean {
+  return FORBIDDEN_HANDLE_RE.test(value);
+}
